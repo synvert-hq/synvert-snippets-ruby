@@ -258,7 +258,7 @@ class ActiveSupport::TestCase
 end
     '''}
 
-    it 'process' do
+    it 'converts' do
       FileUtils.mkdir_p 'config/environments'
       FileUtils.mkdir_p 'config/initializers'
       FileUtils.mkdir_p 'db/migrate'

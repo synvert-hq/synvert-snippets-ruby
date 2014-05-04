@@ -18,7 +18,7 @@ describe 'Ruby uses new hash synax' do
 {foo_key: 'foo_value', bar_key: 42}
     """}
 
-    it 'process' do
+    it 'converts' do
       File.write 'test.rb', test_content
       @rewriter.process
       expect(File.read 'test.rb').to eq test_rewritten_content

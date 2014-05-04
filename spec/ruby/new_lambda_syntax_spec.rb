@@ -16,7 +16,7 @@ lambda { |a, b, c| a + b + c }
 ->(a, b, c) { a + b + c }
     """}
 
-    it 'process' do
+    it 'converts' do
       File.write 'test.rb', test_content
       @rewriter.process
       expect(File.read 'test.rb').to eq test_rewritten_content

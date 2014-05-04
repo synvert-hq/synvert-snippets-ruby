@@ -67,7 +67,7 @@ Synvert::Application.config.session_store :cookie_store, key: 'somethingold'
 Synvert::Application.config.session_store :cookie_store, key: '_synvert-session'
     """}
 
-    it 'process' do
+    it 'converts' do
       FileUtils.mkdir_p 'config/environments'
       FileUtils.mkdir_p 'config/initializers'
       File.write 'config/application.rb', application_content

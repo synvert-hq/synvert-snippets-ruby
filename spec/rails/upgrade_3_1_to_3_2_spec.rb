@@ -27,7 +27,7 @@ Synvert::Application.configure do
 end
     '''}
 
-    it 'process' do
+    it 'converts' do
       FileUtils.mkdir_p 'config/environments'
       File.write 'config/environments/development.rb', development_content
       File.write 'config/environments/test.rb', test_content

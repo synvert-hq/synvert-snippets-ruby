@@ -171,7 +171,7 @@ describe 'example' do
 end
     """}
 
-    it 'process' do
+    it 'converts' do
       FileUtils.mkdir_p 'spec/models'
       File.write 'spec/models/post_spec.rb', post_spec_content
       @rewriter.process

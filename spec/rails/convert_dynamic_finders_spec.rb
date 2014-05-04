@@ -68,7 +68,7 @@ class UsersController < ApplicationController
 end
     '''}
 
-    it 'process' do
+    it 'converts' do
       FileUtils.mkdir_p 'app/models'
       FileUtils.mkdir_p 'app/controllers'
       File.write 'app/models/post.rb', post_model_content
