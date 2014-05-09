@@ -6,10 +6,6 @@ require 'fakefs/spec_helpers'
 require 'coveralls'
 Coveralls.wear!
 
-Dir[File.join(File.dirname(__FILE__), 'support', '*')].each do |path|
-  require path
-end
-
 RSpec.configure do |config|
   config.include FakeFS::SpecHelpers, fakefs: true
 
