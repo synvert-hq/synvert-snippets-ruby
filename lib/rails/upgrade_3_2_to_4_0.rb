@@ -69,6 +69,8 @@ It upgrades rails from 3.2 to 4.0.
 18. it calls another snippet convert_rails_dynamic_finder.
 
 19. it calls another snippet strong_parameters.
+
+20. it replaces before_filter/after_filter with before_action/after_action in controllers.
   EOF
 
   if_gem 'rails', {gte: '3.2.0'}
@@ -202,6 +204,15 @@ It upgrades rails from 3.2 to 4.0.
       unless_exist_node type: 'block', caller: {type: 'send', message: 'lambda'} do
         replace_with 'default_scope -> { {{arguments.last}} }'
       end
+    end
+  end
+
+  within_files 'app/controllers/**/*.rb' do
+    # before_filter :load_post => before_action :load_post
+    # after_filter :increment_view_count => after_filter :increment_view_count
+    with_node type: 'send', receiver: nil, message: /_filter$/ do
+      new_message = node.message.to_s.sub('filter', 'action')
+      replace_with "#{new_message} {{arguments}}"
     end
   end
 

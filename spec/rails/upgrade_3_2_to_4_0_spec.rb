@@ -205,25 +205,35 @@ end
     '''}
     let(:posts_controller_content) {'''
 class PostsController < ApplicationController
+  before_filter :load_post
+
   def update
-    @post = Post.find(params[:id])
     if @post.update_attributes params[:post]
       redirect_to post_path(@post)
     else
       render :action => :edit
     end
   end
+
+  def load_post
+    @post = Post.find(params[:id])
+  end
 end
     '''}
     let(:posts_controller_rewritten_content) {'''
 class PostsController < ApplicationController
+  before_action :load_post
+
   def update
-    @post = Post.find(params[:id])
     if @post.update_attributes post_params
       redirect_to post_path(@post)
     else
       render :action => :edit
     end
+  end
+
+  def load_post
+    @post = Post.find(params[:id])
   end
 
   def post_params
