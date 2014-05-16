@@ -196,6 +196,13 @@ It upgrades rails from 3.2 to 4.0.
         replace_with 'scope {{arguments.first}}, -> { {{arguments.last}} }'
       end
     end
+
+    # default_scope order("updated_at DESC") => default_scope -> { order("updated_at DESC") }
+    with_node type: 'send', receiver: nil, message: 'default_scope' do
+      unless_exist_node type: 'block', caller: {type: 'send', message: 'lambda'} do
+        replace_with 'default_scope -> { {{arguments.last}} }'
+      end
+    end
   end
 
   within_files '**/*.rb' do

@@ -130,6 +130,7 @@ end
     let(:post_model_content) {'''
 class Post < ActiveRecord::Base
   scope :active, where(active: true)
+  default_scope order("updated_at DESC")
 
   attr_accessible :title, :description
 
@@ -157,6 +158,7 @@ end
     let(:post_model_rewritten_content) {'''
 class Post < ActiveRecord::Base
   scope :active, -> { where(active: true) }
+  default_scope -> { order("updated_at DESC") }
 
   def serialized_attrs
     self.class.serialized_attributes
