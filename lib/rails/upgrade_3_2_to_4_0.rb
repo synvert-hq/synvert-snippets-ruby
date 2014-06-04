@@ -73,6 +73,8 @@ It upgrades rails from 3.2 to 4.0.
 20. it replaces before_filter/after_filter with before_action/after_action in controllers.
 
 21. it replaces dependent: :restrict to dependent: :restrict_with_exception.
+
+22. it removes config.whiny_nils = true.
   EOF
 
   if_gem 'rails', {gte: '3.2.0'}
@@ -92,41 +94,30 @@ It upgrades rails from 3.2 to 4.0.
     with_node type: 'send', receiver: {type: 'send', receiver: {type: 'send', message: 'config'}, message: 'active_record'}, message: 'identity_map=' do
       remove
     end
-  end
 
-  within_file 'config/**/*.rb' do
+    # remove config.whiny_nils = true
+    with_node type: 'send', receiver: {type: 'send', message: 'config'}, message: 'whiny_nils=' do
+      remove
+    end
+
     # config.assets.compress = ... => config.assets.js_compressor = ...
     with_node type: 'send', receiver: {type: 'send', receiver: {type: 'send', message: 'config'}, message: 'assets'}, message: 'compress=' do
       replace_with "config.assets.js_compressor = {{arguments}}"
     end
-  end
 
-  within_file 'config/initializers/wrap_parameters.rb' do
-    # remove
-    # ActiveSupport.on_load(:active_record) do
-    #   self.include_root_in_json = false
-    # end
-    with_node type: 'block', caller: {receiver: 'ActiveSupport', message: 'on_load', arguments: [:active_record]} do
-      if_only_exist_node type: 'send', receiver: 'self', message: 'include_root_in_json=', arguments: [false] do
-        remove
-      end
-    end
-  end
-
-  within_file 'config/initializers/secret_token.rb' do
-    # insert Application.config.secret_key_base = '...'
-    unless_exist_node type: 'send', message: 'secret_key_base=' do
-      with_node type: 'send', message: 'secret_token=' do
-        secret = SecureRandom.hex(64)
-        insert_after "{{receiver}}.secret_key_base = \"#{secret}\""
-      end
-    end
-  end
-
-  within_files 'config/**/*.rb' do
     # remove config.action_dispatch.best_standards_support = ...
     with_node type: 'send', receiver: {type: 'send', receiver: {type: 'send', message: 'config'}, message: 'action_dispatch'}, message: 'best_standards_support=' do
       remove
+    end
+
+    # remove config.middleware.xxx(..., ActionDispatch::BestStandardsSupport)
+    with_node type: 'send', arguments: {any: 'ActionDispatch::BestStandardsSupport'} do
+      remove
+    end
+
+    # ActionController::Base.page_cache_extension = ... => ActionController::Base.default_static_extension = ...
+    with_node type: 'send', message: 'page_cache_extension=' do
+      replace_with 'ActionController::Base.default_static_extension = {{arguments}}'
     end
   end
 
@@ -151,17 +142,25 @@ It upgrades rails from 3.2 to 4.0.
     end
   end
 
-  within_files 'config/**/*.rb' do
-    # remove config.middleware.xxx(..., ActionDispatch::BestStandardsSupport)
-    with_node type: 'send', arguments: {any: 'ActionDispatch::BestStandardsSupport'} do
-      remove
+  within_file 'config/initializers/wrap_parameters.rb' do
+    # remove
+    # ActiveSupport.on_load(:active_record) do
+    #   self.include_root_in_json = false
+    # end
+    with_node type: 'block', caller: {receiver: 'ActiveSupport', message: 'on_load', arguments: [:active_record]} do
+      if_only_exist_node type: 'send', receiver: 'self', message: 'include_root_in_json=', arguments: [false] do
+        remove
+      end
     end
   end
 
-  within_files 'config/**/*.rb' do
-    # ActionController::Base.page_cache_extension = ... => ActionController::Base.default_static_extension = ...
-    with_node type: 'send', message: 'page_cache_extension=' do
-      replace_with 'ActionController::Base.default_static_extension = {{arguments}}'
+  within_file 'config/initializers/secret_token.rb' do
+    # insert Application.config.secret_key_base = '...'
+    unless_exist_node type: 'send', message: 'secret_key_base=' do
+      with_node type: 'send', message: 'secret_token=' do
+        secret = SecureRandom.hex(64)
+        insert_after "{{receiver}}.secret_key_base = \"#{secret}\""
+      end
     end
   end
 

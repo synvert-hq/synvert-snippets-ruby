@@ -65,6 +65,7 @@ end
     '''}
     let(:test_content) {'''
 Synvert::Application.configure do
+  config.whiny_nils = true
   config.cache_classes = false
 end
     '''}
