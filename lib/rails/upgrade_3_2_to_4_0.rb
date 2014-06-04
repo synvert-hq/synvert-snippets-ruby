@@ -71,6 +71,8 @@ It upgrades rails from 3.2 to 4.0.
 19. it calls another snippet strong_parameters.
 
 20. it replaces before_filter/after_filter with before_action/after_action in controllers.
+
+21. it replaces dependent: :restrict to dependent: :restrict_with_exception.
   EOF
 
   if_gem 'rails', {gte: '3.2.0'}
@@ -203,6 +205,17 @@ It upgrades rails from 3.2 to 4.0.
     with_node type: 'send', receiver: nil, message: 'default_scope' do
       unless_exist_node type: 'block', caller: {type: 'send', message: 'lambda'} do
         replace_with 'default_scope -> { {{arguments.last}} }'
+      end
+    end
+  end
+
+  within_files 'app/models/**/*.rb' do
+    # has_many :comments, dependent: :restrict => has_many :comments, dependent: restrict_with_exception
+    %w(has_one has_many).each do |message|
+      within_node type: 'send', receiver: nil, message: message do
+        with_node type: 'pair', key: 'dependent', value: :restrict do
+          replace_with 'dependent: :restrict_with_exception'
+        end
       end
     end
   end

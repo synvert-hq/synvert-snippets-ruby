@@ -129,6 +129,7 @@ end
     """}
     let(:post_model_content) {'''
 class Post < ActiveRecord::Base
+  has_many :comments, dependent: :restrict
   scope :active, where(active: true)
   default_scope order("updated_at DESC")
 
@@ -157,6 +158,7 @@ end
     '''}
     let(:post_model_rewritten_content) {'''
 class Post < ActiveRecord::Base
+  has_many :comments, dependent: :restrict_with_exception
   scope :active, -> { where(active: true) }
   default_scope -> { order("updated_at DESC") }
 
