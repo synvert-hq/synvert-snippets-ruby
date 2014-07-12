@@ -11,7 +11,7 @@ It converts RAILS_ROOT to Rails.root.
   RAILS_ROOT + 'config/database.yml')
   => Rails.root.join('config/database.yml')
 
-  "#{RAILS_ROOT}/config/database.yml"
+  "\#{RAILS_ROOT}/config/database.yml"
   => Rails.root.join('config/database.yml')
   EOF
 
