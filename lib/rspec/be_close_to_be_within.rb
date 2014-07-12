@@ -10,8 +10,8 @@ It converts rspec be_close matcher to be_within matcher.
   within_files 'spec/**/*.rb' do
     # expect(1.0 / 3.0).to be_close(0.333, 0.001) => expect(1.0 / 3.0).to be_within(0.001).of(0.333)
     with_node type: 'send', message: 'to', arguments: {first: {type: 'send', message: 'be_close'}} do
-      within_arg = node.arguments.first.arguments.last.source(self)
-      of_arg = node.arguments.first.arguments.first.source(self)
+      within_arg = node.arguments.first.arguments.last.to_source
+      of_arg = node.arguments.first.arguments.first.to_source
       replace_with "{{receiver}}.to be_within(#{within_arg}).of(#{of_arg})"
     end
   end

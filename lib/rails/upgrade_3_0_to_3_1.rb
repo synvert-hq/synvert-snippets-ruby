@@ -116,7 +116,7 @@ It upgrade rails from 3.0 to 3.1.
   within_file 'config/initializers/session_store.rb' do
     # add Application.session_store :cookie_store, key: '_xxx-session'
     with_node type: 'send', receiver: {type: 'send', message: 'config'}, message: 'session_store', arguments: {first: :cookie_store} do
-      session_store_key = node.receiver.receiver.source(self).split(":").first.underscore
+      session_store_key = node.receiver.receiver.to_source.split(":").first.underscore
       replace_with "{{receiver}}.session_store :cookie_store, key: '_#{session_store_key}-session'"
     end
   end
