@@ -239,7 +239,7 @@ It upgrades rails from 3.2 to 4.0.
      'ActionController::AbstractResponse' => 'ActionDispatch::Response',
      'ActionController::Response' => 'ActionDispatch::Response',
      'ActionController::Routing' => 'ActionDispatch::Routing'}.each do |deprecated, favor|
-      with_node source: deprecated do
+      with_node to_source: deprecated do
         replace_with favor
       end
     end

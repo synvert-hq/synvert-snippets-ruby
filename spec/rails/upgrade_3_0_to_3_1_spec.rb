@@ -13,8 +13,8 @@ end
     """}
     let(:application_rewritten_content) {"""
 Synvert::Application.configure do
-  config.assets.enabled = true
   config.assets.version = '1.0'
+  config.assets.enabled = true
 end
     """}
     let(:development_content) {"""
@@ -34,9 +34,9 @@ end
     """}
     let(:production_rewritten_content) {"""
 Synvert::Application.configure do
-  config.assets.compress = true
-  config.assets.compile = false
   config.assets.digest = true
+  config.assets.compile = false
+  config.assets.compress = true
 end
     """}
     let(:test_content) {"""
@@ -45,8 +45,8 @@ end
     """}
     let(:test_rewritten_content) {'''
 Synvert::Application.configure do
-  config.serve_static_assets = true
   config.static_cache_control = "public, max-age=3600"
+  config.serve_static_assets = true
 end
     '''}
     let(:wrap_parameters_rewritten_content) {"""

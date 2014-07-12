@@ -14,7 +14,7 @@ It converts rails dynamic finders to arel syntax.
     fields = node.message.to_s[prefix.length..-1].split("_and_")
     if fields.length == node.arguments.length && :hash != node.arguments.first.type
       fields.length.times.map { |i|
-        fields[i] + ": " + node.arguments[i].source(self)
+        fields[i] + ": " + node.arguments[i].to_source
       }.join(", ")
     else
       "{{arguments}}"

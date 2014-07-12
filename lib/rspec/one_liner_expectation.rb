@@ -29,7 +29,7 @@ It convers rspec one liner expectation.
         if_only_exist_node type: 'send', receiver: nil, message: old_message do
           receiver = node.body.first.arguments.first.receiver
           unless receiver && matcher_converters.include?(receiver.message)
-            matcher = node.body.first.arguments.first.source(self)
+            matcher = node.body.first.arguments.first.to_source
             replace_with "it { is_expected.#{new_message} #{matcher} }"
           end
         end
@@ -49,7 +49,7 @@ It convers rspec one liner expectation.
       matcher_converters.each do |old_matcher, new_matcher|
         with_node type: 'block', caller: {message: 'it'} do
           if_only_exist_node type: 'send', receiver: nil, message: old_message, arguments: {first: {type: 'send', receiver: {type: 'send', message: old_matcher}}} do
-            times = node.body.first.arguments.first.receiver.arguments.first.source(self)
+            times = node.body.first.arguments.first.receiver.arguments.first.to_source
             items_name = node.body.first.arguments.first.message
             new_code = ""
             if :items == items_name
