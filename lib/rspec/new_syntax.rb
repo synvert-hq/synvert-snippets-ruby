@@ -2,7 +2,7 @@ Synvert::Rewriter.new "rspec_new_syntax" do
   description <<-EOF
 It converts rspec code to new syntax, it calls all convert_rspec_* snippets.
 
-It also removes `config.treat_symbols_as_metadata_keys_with_true_values = true` from `spec/spec_helper.rb`.
+It also removes `config.treat_symbols_as_metadata_keys_with_true_values = true` from `spec/spec_helper.rb`
   EOF
 
   add_snippet "convert_rspec_should_to_expect"
