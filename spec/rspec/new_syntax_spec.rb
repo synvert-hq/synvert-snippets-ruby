@@ -170,12 +170,23 @@ describe 'example' do
   end
 end
     """}
+    let(:spec_helper_content) {"""
+RSpec.configure do |config|
+  config.treat_symbols_as_metadata_keys_with_true_values = true
+end
+    """}
+    let(:spec_helper_rewritten_content) {"""
+RSpec.configure do |config|
+end
+    """}
 
     it 'converts' do
       FileUtils.mkdir_p 'spec/models'
       File.write 'spec/models/post_spec.rb', post_spec_content
+      File.write 'spec/spec_helper.rb', spec_helper_content
       @rewriter.process
       expect(File.read 'spec/models/post_spec.rb').to eq post_spec_rewritten_content
+      expect(File.read 'spec/spec_helper.rb').to eq spec_helper_rewritten_content
     end
   end
 end
