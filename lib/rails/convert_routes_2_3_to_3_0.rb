@@ -285,7 +285,7 @@ It converts rails routes from 2.3 to 3.0.
     # => post "/admin_signup", :to => "admin_signup#new", :as => "admin_signup"
     within_node type: 'send', receiver: 'map' do
       message = node.message
-      unless %i(root connect resource resources).include? message
+      unless [:root, :connect, :resource, :resources].include? message
         url = node.arguments.first.to_value
         hash_node = node.arguments.last
         if hash_node.type == :hash

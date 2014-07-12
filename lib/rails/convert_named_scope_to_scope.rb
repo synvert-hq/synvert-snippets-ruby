@@ -3,7 +3,7 @@ Synvert::Rewriter.new 'convert_named_scope_to_scope' do
 
   if_gem 'rails', {gte: '2.3.0'}
 
-  KEYS = %i(conditions order joins select from having group include limit offset lock readonly)
+  KEYS = [:conditions, :order, :joins, :select, :from, :having, :group, :include, :limit, :offset, :lock, :readonly]
   KEYS_CONVERTERS = {
     :conditions => :where,
     :include => :includes
