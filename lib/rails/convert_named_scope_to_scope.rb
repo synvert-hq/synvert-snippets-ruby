@@ -22,36 +22,42 @@ Synvert::Rewriter.new 'convert_named_scope_to_scope' do
     new_queries.join(".")
   end
 
-  within_files "app/models/*.rb" do
-    # named_scope :active, :conditions => {:active => true}
-    # =>
-    # named_scope :active, where(:active => true)
-    within_node type: 'send', message: 'named_scope', arguments: {last: {type: 'hash'}} do
-      with_node type: 'hash' do
-        if KEYS.any? { |key| node.has_key? key }
-          replace_with generate_new_queries(node)
-        end
-      end
-    end
-
-    # named_scope :active, lambda { {:conditions => {:active => true}} }
-    # =>
-    # named_scope :active, lambda { where(:active => true) }
-    within_node type: 'send', message: 'named_scope', arguments: {last: {type: 'block'}} do
-      within_node type: 'block' do
+  %w(app/models/**/*.rb lib/**/*.rb).each do |file_pattern|
+    within_files file_pattern do
+      # named_scope :active, :conditions => {:active => true}
+      # =>
+      # named_scope :active, where(:active => true)
+      within_node type: 'send', message: 'named_scope', arguments: {last: {type: 'hash'}} do
         with_node type: 'hash' do
           if KEYS.any? { |key| node.has_key? key }
             replace_with generate_new_queries(node)
           end
         end
       end
-    end
 
-    # named_scope :active, where(:active => true)
-    # =>
-    # scope :active, where(:active => true)
-    with_node type: 'send', message: 'named_scope' do
-      replace_with "scope {{arguments}}"
+      # named_scope :active, lambda { {:conditions => {:active => true}} }
+      # =>
+      # named_scope :active, lambda { where(:active => true) }
+      within_node type: 'send', message: 'named_scope', arguments: {last: {type: 'block'}} do
+        within_node type: 'block' do
+          with_node type: 'hash' do
+            if KEYS.any? { |key| node.has_key? key }
+              replace_with generate_new_queries(node)
+            end
+          end
+        end
+      end
+
+      # named_scope :active, where(:active => true)
+      # =>
+      # scope :active, where(:active => true)
+      with_node type: 'send', message: 'named_scope' do
+        if node.receiver
+          replace_with "{{receiver}}.scope {{arguments}}"
+        else
+          replace_with "scope {{arguments}}"
+        end
+      end
     end
   end
 end
