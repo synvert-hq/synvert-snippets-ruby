@@ -1,0 +1,97 @@
+require 'spec_helper'
+
+describe 'Use shoulda matcher syntax' do
+  before do
+    rewriter_path = File.join(File.dirname(__FILE__), '../../lib/shoulda/use_matcher_syntax.rb')
+    @rewriter = eval(File.read(rewriter_path))
+  end
+
+  describe 'with fakefs', fakefs: true do
+    let(:post_test_content) {"""
+describe Post do
+  should_belong_to :user
+  should_have_one :category, :location
+  should_have_many :comments
+  should_have_many :contributors, :through => :comments
+  should_have_and_belong_to_many :tags
+
+  should_validate_presence_of :title, :body
+
+  should_validate_uniqueness_of :keyword, :username
+  should_validate_uniqueness_of :name, :message => 'O NOES! SOMEONE STOELED YER NAME!'
+  should_validate_uniqueness_of :address, :scoped_to => [:first_name, :last_name]
+  should_validate_uniqueness_of :email, :case_sensitive => false
+
+  should_validate_numericality_of :age
+
+  should_validate_acceptance_of :eula
+
+  should_ensure_length_in_range :password, (6..20)
+  should_ensure_length_at_least :name, 3
+  should_ensure_length_is :ssn, 9
+
+  should_ensure_value_in_range :age, (0..100)
+
+  should_allow_values_for :isbn, 'isbn 1 2345 6789 0', 'ISBN 1-2345-6789-0'
+  should_not_allow_values_for :isbn, 'bad 1', 'bad 2'
+
+  should_allow_mass_assignment_of :first_name, :last_name
+  should_not_allow_mass_assignment_of :password, :admin_flag
+
+  should_have_readonly_attributes :password, :admin_flag
+end
+    """}
+    let(:post_test_rewritten_content) {"""
+describe Post do
+  should belong_to(:user)
+
+  should have_one(:category)
+  should have_one(:location)
+  should have_many(:comments)
+  should have_many(:contributors).through(:comments)
+  should have_and_belong_to_many(:tags)
+
+  should validate_presence_of(:title)
+  should validate_presence_of(:body)
+
+  should validate_uniqueness_of(:keyword)
+  should validate_uniqueness_of(:username)
+  should validate_uniqueness_of(:name).with_message('O NOES! SOMEONE STOELED YER NAME!')
+  should validate_uniqueness_of(:address).scoped_to([:first_name, :last_name])
+  should validate_uniqueness_of(:email).case_insensitive
+
+  should validate_numericality_of(:age)
+
+  should validate_acceptance_of(:eula)
+
+  should ensure_length_of(:password).is_at_least(6).is_at_most(20)
+  should ensure_length_of(:name).is_at_least(3)
+  should ensure_length_of(:ssn).is_equal_to(9)
+
+  should ensure_inclusion_of(:age).in_range(0..100)
+
+  should allow_value('isbn 1 2345 6789 0').for(:isbn)
+  should allow_value('ISBN 1-2345-6789-0').for(:isbn)
+
+  should_not allow_value('bad 1').for(:isbn)
+  should_not allow_value('bad 2').for(:isbn)
+
+  should allow_mass_assignment_of(:first_name)
+  should allow_mass_assignment_of(:last_name)
+
+  should_not allow_mass_assignment_of(:password)
+  should_not allow_mass_assignment_of(:admin_flag)
+
+  should have_readonly_attributes(:password)
+  should have_readonly_attributes(:admin_flag)
+end
+    """}
+
+    it 'converts' do
+      FileUtils.mkdir_p 'test/unit'
+      File.write 'test/unit/post_test.rb', post_test_content
+      @rewriter.process
+      expect(File.read 'test/unit/post_test.rb').to eq post_test_rewritten_content
+    end
+  end
+end
