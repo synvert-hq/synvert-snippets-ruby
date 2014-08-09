@@ -2,6 +2,8 @@ Synvert::Rewriter.new "use_shoulda_matcher_syntax" do
   description <<-EOF
 It converts shoulda macros to matcher syntax.
 
+models:
+
   should_belongs_to :user => should belong_to(:user)
 
   should_have_one :category => should have_one(:category)
@@ -57,6 +59,57 @@ It converts shoulda macros to matcher syntax.
   =>
   should have_readonly_attributes(:password)
   should have_readonly_attributes(:admin_flag)
+
+controllers:
+
+  should_set_the_flash_to "Thank you for placing this order."
+  =>
+  should set_the_flash.to("Thank you for placing this order.")
+
+  should_not_set_the_flash => should_not set_the_flash
+
+  should_filter_params :password, :ssn
+  =>
+  should filter_param(:password)
+  should filter_param(:ssn)
+
+  should_assign_to :user, :posts
+  =>
+  should assign_to(:user)
+  should assign_to(:posts)
+
+  should_assign_to :user, :class => User
+  =>
+  should assign_to(:user).with_kind_of(User)
+
+  should_assign_to(:user) { @user } => should assign_to(:user).with(@user)
+
+  should_not_assign_to :user, :posts
+  =>
+  should_not assign_to(:user)
+  should_not assign_to(:posts)
+
+  should_set_session(:user_id) { @user.id }
+  =>
+  should set_session(:user_id).to(@user.id)
+
+  should_respond_with :success => should respond_with(:success)
+
+  should_respond_with_content_type :rss => should respond_with_content_type(:rss)
+
+  should_render_template :new => should render_template(:new)
+
+  should_render_with_layout "special" => should render_with_layout("special")
+
+  should_render_without_layout => should_not render_layout
+
+  should_route :get, "/posts", :controller => :posts, :action => :index
+  =>
+  should route(:get, "/posts").to(:controller => :posts, :action => :index)
+
+  should_redirect_to("the user profile") { user_url(@user) }
+  =>
+  should redirect_to("the user profile") { user_url(@user) }
   EOF
 
   if_gem 'shoulda', {gt: '2.11.0'}
@@ -172,6 +225,110 @@ It converts shoulda macros to matcher syntax.
             "#{should_or_should_not} allow_value(#{node_argument.to_source}).for(#{field})"
           }.join("\n")
         end
+      end
+    end
+  end
+
+  %w(test/functional/**/*_test.rb).each do |file_pattern|
+    within_files file_pattern do
+      # should_assign_to(:user) { @user } => should assign_to(:user).with(@user)
+      with_node type: 'block', caller: {type: 'send', message: 'should_assign_to'} do
+        replace_with "should assign_to({{caller.arguments}}).with({{body}})"
+      end
+
+      # should_set_session(:user_id) { @user.id }
+      # =>
+      # should set_session(:user_id).to(@user.id)
+      with_node type: 'block', caller: {type: 'send', message: 'should_set_session'} do
+        replace_with "should set_session({{caller.arguments}}).to({{body}})"
+      end
+
+      # should_redirect_to("the user profile") { user_url(@user) }
+      # =>
+      # should redirect_to("the user profile") { user_url(@user) }
+      with_node type: 'block', caller: {type: 'send', message: 'should_redirect_to'} do
+        replace_with "should redirect_to({{caller.arguments}}) { {{body}} }"
+      end
+    end
+  end
+
+  %w(test/functional/**/*_test.rb).each do |file_pattern|
+    within_files file_pattern do
+      # should_set_the_flash_to "Thank you for placing this order."
+      # =>
+      # should set_the_flash.to("Thank you for placing this order.")
+      with_node type: 'send', message: 'should_set_the_flash_to' do
+        replace_with "should set_the_flash.to({{arguments}})"
+      end
+
+      # should_not_set_the_flash => should_not set_the_flash
+      with_node type: 'send', message: 'should_not_set_the_flash' do
+        replace_with "should_not set_the_flash"
+      end
+
+      # should_filter_params :password, :ssn
+      # =>
+      # should filter_param(:password)
+      # should filter_param(:ssn)
+      with_node type: 'send', message: 'should_filter_params' do
+        replace_with node.arguments.map { |node_argument|
+          "should filter_param(#{node_argument.to_source})"
+        }.join("\n")
+      end
+
+      # should_assign_to :user, :posts
+      # =>
+      # should assign_to(:user)
+      # should assign_to(:posts)
+      #
+      # should_assign_to :user, :class => User
+      # =>
+      # should assign_to(:user).with_kind_of(User)
+      with_node type: 'send', message: 'should_assign_to' do
+        if node.arguments.last.type == :hash
+          klazz = node.arguments.last.values.first
+          replace_with "should assign_to({{arguments.first}}).with_kind_of(#{klazz.to_source})"
+        else
+          replace_with node.arguments.map { |node_argument|
+            "should assign_to(#{node_argument.to_source})"
+          }.join("\n")
+        end
+      end
+
+      # should_not_assign_to :user, :posts
+      # =>
+      # should_not assign_to(:user)
+      # should_not assign_to(:posts)
+      with_node type: 'send', message: 'should_not_assign_to' do
+        replace_with node.arguments.map { |node_argument|
+          "should_not assign_to(#{node_argument.to_source})"
+        }.join("\n")
+      end
+
+      # should_respond_with :success => should respond_with(:success)
+      #
+      # should_respond_with_content_type :rss => should respond_with_content_type(:rss)
+      #
+      # should_render_template :new => should render_template(:new)
+      #
+      # should_render_with_layout "special" => should render_with_layout("special")
+      %w(should_respond_with should_respond_with_content_type should_render_template should_render_with_layout).each do |message|
+        with_node type: 'send', message: message do
+          new_message = message.sub('_', ' ')
+          replace_with "#{new_message}({{arguments}})"
+        end
+      end
+
+      # should_render_without_layout => should_not render_layout
+      with_node type: 'send', message: 'should_render_without_layout' do
+        replace_with "should_not render_with_layout"
+      end
+
+      # should_route :get, "/posts", :controller => :posts, :action => :index
+      # =>
+      # should route(:get, "/posts").to(:controller => :posts, :action => :index)
+      with_node type: 'send', message: 'should_route' do
+        replace_with "should route({{arguments.first}}, {{arguments[1]}}).to({{arguments.last}})"
       end
     end
   end

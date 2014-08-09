@@ -8,7 +8,7 @@ describe 'Use shoulda matcher syntax' do
 
   describe 'with fakefs', fakefs: true do
     let(:post_test_content) {"""
-describe Post do
+class PostTest < ActiveSupport::TestCase
   should_belong_to :user
   should_have_one :category, :location
   should_have_many :comments
@@ -42,7 +42,7 @@ describe Post do
 end
     """}
     let(:post_test_rewritten_content) {"""
-describe Post do
+class PostTest < ActiveSupport::TestCase
   should belong_to(:user)
 
   should have_one(:category)
@@ -86,12 +86,78 @@ describe Post do
   should have_readonly_attributes(:admin_flag)
 end
     """}
+    let(:posts_controller_test_content) {'''
+class UsersControllerTest < ActionController::TestCase
+  should "test" do
+    should_set_the_flash_to "Thank you for placing this order."
+    should_not_set_the_flash
+    should_filter_params :password, :ssn
+
+    should_assign_to :user, :posts
+    should_assign_to :user, :class => User
+    should_assign_to(:user) { @user }
+    should_not_assign_to :user, :posts
+
+    should_respond_with :success
+    should_respond_with_content_type :rss
+
+    should_set_session(:user_id) { @user.id }
+
+    should_render_template :new
+
+    should_render_with_layout "special"
+
+    should_render_without_layout
+
+    should_redirect_to("the user profile") { user_url(@user) }
+
+    should_route :get, "/posts", :controller => :posts, :action => :index
+  end
+end
+    '''}
+    let(:posts_controller_test_rewritten_content) {'''
+class UsersControllerTest < ActionController::TestCase
+  should "test" do
+    should set_the_flash.to("Thank you for placing this order.")
+    should_not set_the_flash
+
+    should filter_param(:password)
+    should filter_param(:ssn)
+
+    should assign_to(:user)
+    should assign_to(:posts)
+    should assign_to(:user).with_kind_of(User)
+    should assign_to(:user).with(@user)
+
+    should_not assign_to(:user)
+    should_not assign_to(:posts)
+
+    should respond_with(:success)
+    should respond_with_content_type(:rss)
+
+    should set_session(:user_id).to(@user.id)
+
+    should render_template(:new)
+
+    should render_with_layout("special")
+
+    should_not render_with_layout
+
+    should redirect_to("the user profile") { user_url(@user) }
+
+    should route(:get, "/posts").to(:controller => :posts, :action => :index)
+  end
+end
+    '''}
 
     it 'converts' do
       FileUtils.mkdir_p 'test/unit'
+      FileUtils.mkdir_p 'test/functional'
       File.write 'test/unit/post_test.rb', post_test_content
+      File.write 'test/functional/posts_controller_test.rb', posts_controller_test_content
       @rewriter.process
       expect(File.read 'test/unit/post_test.rb').to eq post_test_rewritten_content
+      expect(File.read 'test/functional/posts_controller_test.rb').to eq posts_controller_test_rewritten_content
     end
   end
 end
