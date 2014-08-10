@@ -75,6 +75,12 @@ It upgrades rails from 3.2 to 4.0.
 21. it replaces dependent: :restrict to dependent: :restrict_with_exception.
 
 22. it removes config.whiny_nils = true.
+
+23. it replaces
+
+    link_to 'delete', post_path(post), confirm: 'Are you sure to delete post?'
+    =>
+    link_to 'delete', post_path(post), data: {confirm: 'Are you sure to delete post?'}
   EOF
 
   if_gem 'rails', {gte: '3.2.0'}
@@ -225,6 +231,19 @@ It upgrades rails from 3.2 to 4.0.
     with_node type: 'send', receiver: nil, message: /_filter$/ do
       new_message = node.message.to_s.sub('filter', 'action')
       replace_with "#{new_message} {{arguments}}"
+    end
+  end
+
+  within_files 'app/views/**/*.erb' do
+    # link_to 'delete', post_path(post), confirm: 'Are you sure to delete post?'
+    # =>
+    # link_to 'delete', post_path(post), data: {confirm: 'Are you sure to delete post?'}
+    within_node type: 'send', message: 'link_to', arguments: {last: {type: 'hash'}} do
+      if node.arguments.last.has_key?(:confirm)
+        other_arguments_str = node.arguments[0...-1].map(&:to_source).join(", ")
+        confirm = node.arguments.last.hash_value(:confirm).to_source
+        replace_with "link_to #{other_arguments_str}, data: {confirm: #{confirm}}"
+      end
     end
   end
 

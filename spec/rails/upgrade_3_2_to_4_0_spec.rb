@@ -244,6 +244,16 @@ class PostsController < ApplicationController
   end
 end
     '''}
+    let(:posts_index_content) {'''
+<% @posts.each do |post| %>
+  <%= link_to "delete", post_url(post), confirm: "Are you sure to delete a post" %>
+<% end %>
+    '''}
+    let(:posts_index_rewritten_content) {'''
+<% @posts.each do |post| %>
+  <%= link_to "delete", post_url(post), data: {confirm: "Are you sure to delete a post"} %>
+<% end %>
+    '''}
     let(:post_test_content) {'''
 require "test_helper"
 
@@ -279,6 +289,7 @@ end
       FileUtils.mkdir_p 'db/migrate'
       FileUtils.mkdir_p 'app/models'
       FileUtils.mkdir_p 'app/controllers'
+      FileUtils.mkdir_p 'app/views/posts'
       FileUtils.mkdir_p 'test/unit'
       File.write 'config/application.rb', application_content
       File.write 'config/environments/production.rb', production_content
@@ -291,6 +302,7 @@ end
       File.write 'app/models/post.rb', post_model_content
       File.write 'app/controllers/users_controller.rb', users_controller_content
       File.write 'app/controllers/posts_controller.rb', posts_controller_content
+      File.write 'app/views/posts/index.html.erb', posts_index_content
       File.write 'test/unit/post_test.rb', post_test_content
       File.write 'test/test_helper.rb', test_helper_content
       @rewriter.process
@@ -305,6 +317,7 @@ end
       expect(File.read 'app/models/post.rb').to eq post_model_rewritten_content
       expect(File.read 'app/controllers/users_controller.rb').to eq users_controller_rewritten_content
       expect(File.read 'app/controllers/posts_controller.rb').to eq posts_controller_rewritten_content
+      expect(File.read 'app/views/posts/index.html.erb').to eq posts_index_rewritten_content
       expect(File.read 'test/unit/post_test.rb').to eq post_test_rewritten_content
       expect(File.read 'test/test_helper.rb').to eq test_helper_rewritten_content
     end
