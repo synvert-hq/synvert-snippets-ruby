@@ -114,32 +114,25 @@ controllers:
 
   if_gem 'shoulda', {gt: '2.11.0'}
 
-  helper_method :hash_to_calls do |hash_node|
-    new_calls = []
-    message_converts = {message: 'with_message', short_message: 'with_short_message', long_message: 'with_long_message',
-                        high_message: 'with_high_message', low_message: 'with_low_message'}
-    hash_node.children.each do |pair_node|
-      method = pair_node.key.to_value
-      if method == :case_sensitive
-        new_calls << (pair_node.value.to_value ? "case_sensitive" : "case_insensitive")
-      else
-        new_calls << "#{message_converts.has_key?(method) ? message_converts[method] : method}(#{pair_node.value.to_source})"
-      end
-    end
-    new_calls.join(".")
-  end
-
-  helper_method :with_other_calls do |node, new_code|
+  helper_method :replace_with_other_calls do |new_code|
     if node.arguments.last.type == :hash
-      other_calls = hash_to_calls(node.arguments.last)
+      hash_node = node.arguments.last
+      new_calls = []
+      message_converts = {message: 'with_message', short_message: 'with_short_message', long_message: 'with_long_message',
+                          high_message: 'with_high_message', low_message: 'with_low_message'}
+      hash_node.children.each do |pair_node|
+        method = pair_node.key.to_value
+        if method == :case_sensitive
+          new_calls << (pair_node.value.to_value ? "case_sensitive" : "case_insensitive")
+        else
+          new_calls << "#{message_converts.has_key?(method) ? message_converts[method] : method}(#{pair_node.value.to_source})"
+        end
+      end
+      other_calls = new_calls.join(".")
       replace_with "#{new_code}.#{other_calls}"
     else
       replace_with "#{new_code}"
     end
-  end
-
-  helper_method :truncate_wrap do |source|
-    source.sub(/^[{(\[]/, '').sub(/[})\]]$/, '')
   end
 
   UNIT_TESTS_FILE_PATTERNS = %w(test/unit/**/*_test.rb spec/models/**/*_spec.rb)
@@ -167,8 +160,7 @@ controllers:
           if node.arguments.size == 1
             replace_with "#{new_message}({{arguments}})"
           elsif node.arguments.last.type == :hash
-            other_calls = hash_to_calls(node.arguments.last)
-            replace_with "#{new_message}({{arguments.first}}).#{other_calls}"
+            replace_with_other_calls("#{new_message}({{arguments.first}})")
           else
             replaced_code = []
             node.arguments.each do |argument|
@@ -183,37 +175,37 @@ controllers:
       # =>
       # should ensure_length_of(:password).is_at_least(6).is_at_most(20)
       with_node type: 'send', message: 'should_ensure_length_in_range' do
-        range = truncate_wrap(node.arguments[1].to_source).split('..')
-        with_other_calls(node, "should ensure_length_of({{arguments.first}}).is_at_least(#{range.first}).is_at_most(#{range.last})")
+        range = strip_brackets(node.arguments[1].to_source).split('..')
+        replace_with_other_calls("should ensure_length_of({{arguments.first}}).is_at_least(#{range.first}).is_at_most(#{range.last})")
       end
 
       # should_ensure_length_at_least :name, 3
       # =>
       # should ensure_length_of(:name).is_at_least(3)
       with_node type: 'send', message: 'should_ensure_length_at_least' do
-        with_other_calls(node, "should ensure_length_of({{arguments.first}}).is_at_least({{arguments[1]}})")
+        replace_with_other_calls("should ensure_length_of({{arguments.first}}).is_at_least({{arguments[1]}})")
       end
 
       # should_ensure_length_at_most :name, 30
       # =>
       # should ensure_length_of(:name).is_at_most(30)
       with_node type: 'send', message: 'should_ensure_length_at_most' do
-        with_other_calls(node, "should ensure_length_of({{arguments.first}}).is_at_most({{arguments[1]}})")
+        replace_with_other_calls("should ensure_length_of({{arguments.first}}).is_at_most({{arguments[1]}})")
       end
 
       # should_ensure_length_is :ssn, 9
       # =>
       # should ensure_length_of(:ssn).is_equal_to(9)
       with_node type: 'send', message: 'should_ensure_length_is' do
-        with_other_calls(node, "should ensure_length_of({{arguments.first}}).is_equal_to({{arguments[1]}})")
+        replace_with_other_calls("should ensure_length_of({{arguments.first}}).is_equal_to({{arguments[1]}})")
       end
 
       # should_ensure_value_in_range :age, (0..100)
       # =>
       # should allow_inclusion_of(:age).in_range(0..100)
       with_node type: 'send', message: 'should_ensure_value_in_range' do
-        range = truncate_wrap(node.arguments[1].to_source)
-        with_other_calls(node, "should ensure_inclusion_of({{arguments.first}}).in_range(#{range})")
+        range = strip_brackets(node.arguments[1].to_source)
+        replace_with_other_calls("should ensure_inclusion_of({{arguments.first}}).in_range(#{range})")
       end
 
       # should_allow_values_for :isbn, 'isbn 1 2345 6789 0', 'ISBN 1-2345-6789-0'
