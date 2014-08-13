@@ -57,7 +57,6 @@ ActionController::Routing::Routes.draw do |map|
     resources :comments
     resource :author
   end
-
   resources :questions do
     collection do
       match :generate_csv

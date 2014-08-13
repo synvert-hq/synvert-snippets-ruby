@@ -143,24 +143,20 @@ it { is_expected.not_to matcher }
 it 'has 3 items' do
   expect(subject.size).to eq(3)
 end
-
 it 'has at least 3 players' do
   expect(subject.players.size).to be >= 3
 end
 
 describe 'example' do
   subject { { foo: 1, bar: 2 } }
-
   describe '#size' do
     subject { super().size }
     it { should == 2 }
   end
-
   describe '[:foo]' do
     subject { super()[:foo] }
     it { should == 1 }
   end
-
   describe '#keys' do
     subject { super().keys }
     describe '#first' do
