@@ -21,7 +21,7 @@ Synvert::Rewriter.new 'convert_views_2_3_to_3_0' do
       end
     end
 
-    %w(form_for form_tag).each do |message|
+    %w(form_for form_tag fields_for).each do |message|
       # <% form_for post do |f| %>
       # <% end %>
       # =>

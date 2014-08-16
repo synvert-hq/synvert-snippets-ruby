@@ -13,7 +13,9 @@ describe 'Convert rails views from 2.3 to 3.0' do
   <%= h user.login %>
   <%= post.title %>
 
-  <% form_for post, :html => {:id => 'post-form'} do |f| %>
+  <% form_for post, :html => {:id => 'post-form'} do |post_form| %>
+    <% fields_for :author, post.author do |author_form| %>
+    <% end %>
   <% end %>
   <%= form_for post do |f| %>
   <% end %>
@@ -22,7 +24,9 @@ describe 'Convert rails views from 2.3 to 3.0' do
   <%= user.login %>
   <%= post.title %>
 
-  <%= form_for post, :html => {:id => 'post-form'} do |f| %>
+  <%= form_for post, :html => {:id => 'post-form'} do |post_form| %>
+    <%= fields_for :author, post.author do |author_form| %>
+    <% end %>
   <% end %>
   <%= form_for post do |f| %>
   <% end %>
