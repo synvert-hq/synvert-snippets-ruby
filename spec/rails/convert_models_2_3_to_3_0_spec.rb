@@ -2,9 +2,9 @@
 
 require 'spec_helper'
 
-describe 'Convert rails queries from 2.3 to 3.0' do
+describe 'Convert rails models from 2.3 to 3.0' do
   before do
-    rewriter_path = File.join(File.dirname(__FILE__), '../../lib/rails/convert_queries_2_3_to_3_0.rb')
+    rewriter_path = File.join(File.dirname(__FILE__), '../../lib/rails/convert_models_2_3_to_3_0.rb')
     @rewriter = eval(File.read(rewriter_path))
   end
 
@@ -31,6 +31,18 @@ class Post
     Client.max("age", :conditions => {:active => true})
     Client.sum("orders_count", :conditions => {:active => true})
   end
+
+  def validate_email
+    self.errors.on(:email).present?
+  end
+
+  def save_with_validate
+    self.save
+  end
+
+  def save_without_validate
+    self.save(false)
+  end
 end
     '''}
     let(:post_rewritten_content) {'''
@@ -54,6 +66,18 @@ class Post
     Client.where(:active => true).min("age")
     Client.where(:active => true).max("age")
     Client.where(:active => true).sum("orders_count")
+  end
+
+  def validate_email
+    self.errors[:email].present?
+  end
+
+  def save_with_validate
+    self.save
+  end
+
+  def save_without_validate
+    self.save(:validate => false)
   end
 end
     '''}

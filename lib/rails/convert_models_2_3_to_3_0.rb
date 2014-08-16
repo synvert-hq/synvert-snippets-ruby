@@ -1,6 +1,6 @@
-Synvert::Rewriter.new "convert_queries_2_3_to_3_0" do
+Synvert::Rewriter.new "convert_models_2_3_to_3_0" do
   description <<-EOF
-It converts rails query from 2.3 to 3.0.
+It converts rails models from 2.3 to 3.0.
   EOF
 
   KEYS = [:conditions, :order, :joins, :select, :from, :having, :group, :include, :limit, :offset, :lock, :readonly]
@@ -129,6 +129,19 @@ It converts rails query from 2.3 to 3.0.
             replace_with "#{message}(#{generate_new_queries(argument_node.hash_value(:find))})"
           end
         end
+      end
+    end
+  end
+
+  %w(app/**/*.rb lib/**/*.rb test/**/*_test.rb).each do |file_pattern|
+    within_files file_pattern do
+      with_node type: 'send', message: 'on', receiver: /errors$/ do
+        replace_with "{{receiver}}[{{arguments}}]"
+      end
+
+      with_node type: 'send', message: 'save', arguments: [false] do
+        # recevier could be nil
+        replace_with add_receiver_if_necessary("save(:validate => false)")
       end
     end
   end
