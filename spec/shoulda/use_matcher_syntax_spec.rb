@@ -44,7 +44,6 @@ end
     let(:post_test_rewritten_content) {"""
 class PostTest < ActiveSupport::TestCase
   should belong_to(:user)
-
   should have_one(:category)
   should have_one(:location)
   should have_many(:comments)
@@ -72,13 +71,11 @@ class PostTest < ActiveSupport::TestCase
 
   should allow_value('isbn 1 2345 6789 0').for(:isbn)
   should allow_value('ISBN 1-2345-6789-0').for(:isbn)
-
   should_not allow_value('bad 1').for(:isbn)
   should_not allow_value('bad 2').for(:isbn)
 
   should allow_mass_assignment_of(:first_name)
   should allow_mass_assignment_of(:last_name)
-
   should_not allow_mass_assignment_of(:password)
   should_not allow_mass_assignment_of(:admin_flag)
 
@@ -120,7 +117,6 @@ class UsersControllerTest < ActionController::TestCase
   should "test" do
     should set_the_flash.to("Thank you for placing this order.")
     should_not set_the_flash
-
     should filter_param(:password)
     should filter_param(:ssn)
 
@@ -128,7 +124,6 @@ class UsersControllerTest < ActionController::TestCase
     should assign_to(:posts)
     should assign_to(:user).with_kind_of(User)
     should assign_to(:user).with(@user)
-
     should_not assign_to(:user)
     should_not assign_to(:posts)
 
