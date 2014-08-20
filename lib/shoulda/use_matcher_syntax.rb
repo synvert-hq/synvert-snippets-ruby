@@ -112,7 +112,7 @@ controllers:
   should redirect_to("the user profile") { user_url(@user) }
   EOF
 
-  if_gem 'shoulda', {gt: '2.11.0'}
+  if_gem 'shoulda', {gte: '2.11.0'}
 
   helper_method :hash_to_calls do |hash_node|
     new_calls = []
