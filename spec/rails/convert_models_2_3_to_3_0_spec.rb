@@ -19,8 +19,19 @@ class Post
     Post.find(:all, :limit => 2)
     Post.find(:all)
     Post.find(:first)
+    Post.find(:last, :conditions => {:title => "test"})
     Post.first(:conditions => {:title => "test"})
     Post.all(:joins => :comments)
+
+    Post.find_each(:conditions => {:title => "test"}, :batch_size => 100) do |post|
+    end
+    Post.find_each(:conditions => {:title => "test"}) do |post|
+    end
+
+    Post.find_in_batches(:conditions => {:title => "test"}, :batch_size => 100) do |posts|
+    end
+    Post.find_in_batches(:conditions => {:title => "test"}) do |posts|
+    end
 
     with_scope(:find => {:conditions => {:active => true}}) { Post.first }
     with_exclusive_scope(:find => {:limit =>1}) { Post.last }
@@ -33,6 +44,7 @@ class Post
   end
 
   def validate_email
+    self.errors.add_to_base("error message")
     self.errors.on(:email).present?
   end
 
@@ -55,8 +67,19 @@ class Post
     Post.limit(2)
     Post.all
     Post.first
+    Post.where(:title => "test").last
     Post.where(:title => "test").first
     Post.joins(:comments)
+
+    Post.where(:title => "test").find_each(:batch_size => 100) do |post|
+    end
+    Post.where(:title => "test").find_each do |post|
+    end
+
+    Post.where(:title => "test").find_in_batches(:batch_size => 100) do |posts|
+    end
+    Post.where(:title => "test").find_in_batches do |posts|
+    end
 
     with_scope(where(:active => true)) { Post.first }
     with_exclusive_scope(limit(1)) { Post.last }
@@ -69,6 +92,7 @@ class Post
   end
 
   def validate_email
+    self.errors.add(:base, "error message")
     self.errors[:email].present?
   end
 
