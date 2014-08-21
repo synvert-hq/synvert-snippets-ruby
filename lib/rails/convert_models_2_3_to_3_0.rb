@@ -68,8 +68,8 @@ It converts rails models from 2.3 to 3.0.
     self.save(:validate => false)
   EOF
 
-  KEYS = [:conditions, :order, :joins, :select, :from, :having, :group, :include, :limit, :offset, :lock, :readonly]
-  KEYS_CONVERTERS = {
+  keys = [:conditions, :order, :joins, :select, :from, :having, :group, :include, :limit, :offset, :lock, :readonly]
+  keys_converters = {
     :conditions => :where,
     :include => :includes
   }
@@ -77,8 +77,8 @@ It converts rails models from 2.3 to 3.0.
   helper_method :generate_new_queries do |hash_node|
     new_queries = []
     hash_node.children.each do |pair_node|
-      if KEYS.include? pair_node.key.to_value
-        method = KEYS_CONVERTERS[pair_node.key.to_value] || pair_node.key.to_value
+      if keys.include? pair_node.key.to_value
+        method = keys_converters[pair_node.key.to_value] || pair_node.key.to_value
         new_queries << "#{method}(#{strip_brackets(pair_node.value.to_source)})"
       end
     end
@@ -107,7 +107,7 @@ It converts rails models from 2.3 to 3.0.
       %w(named_scope default_scope).each do |message|
         within_node type: 'send', message: message, arguments: {last: {type: 'hash'}} do
           with_node type: 'hash' do
-            if KEYS.any? { |key| node.has_key? key }
+            if keys.any? { |key| node.has_key? key }
               replace_with generate_new_queries(node)
             end
           end
@@ -123,7 +123,7 @@ It converts rails models from 2.3 to 3.0.
         within_node type: 'send', message: message, arguments: {last: {type: 'block'}} do
           within_node type: 'block' do
             with_node type: 'hash' do
-              if KEYS.any? { |key| node.has_key? key }
+              if keys.any? { |key| node.has_key? key }
                 replace_with generate_new_queries(node)
               end
             end
@@ -144,7 +144,7 @@ It converts rails models from 2.3 to 3.0.
       within_node type: 'send', message: 'scoped' do
         if node.arguments.length == 1
           argument_node = node.arguments.first
-          if KEYS.any? { |key| argument_node.has_key? key }
+          if keys.any? { |key| argument_node.has_key? key }
             replace_with add_receiver_if_necessary(generate_new_queries(argument_node))
           end
         end
@@ -155,7 +155,7 @@ It converts rails models from 2.3 to 3.0.
       # Post.joins(:comments).all
       within_node type: 'send', message: 'all', arguments: {size: 1} do
         argument_node = node.arguments.first
-        if :hash == argument_node.type && KEYS.any? { |key| argument_node.has_key? key }
+        if :hash == argument_node.type && keys.any? { |key| argument_node.has_key? key }
           replace_with add_receiver_if_necessary(generate_new_queries(argument_node))
         end
       end
@@ -166,7 +166,7 @@ It converts rails models from 2.3 to 3.0.
         # Post.where(:title => "test").first
         within_node type: 'send', message: message, arguments: {size: 1} do
           argument_node = node.arguments.first
-          if :hash == argument_node.type && KEYS.any? { |key| argument_node.has_key? key }
+          if :hash == argument_node.type && keys.any? { |key| argument_node.has_key? key }
             replace_with add_receiver_if_necessary("#{generate_new_queries(argument_node)}.#{message}")
           end
         end
@@ -186,7 +186,7 @@ It converts rails models from 2.3 to 3.0.
         # Client.where(:active => true).sum("orders_count")
         within_node type: 'send', message: message, arguments: {size: 2} do
           argument_node = node.arguments.last
-          if :hash == argument_node.type && KEYS.any? { |key| argument_node.has_key? key }
+          if :hash == argument_node.type && keys.any? { |key| argument_node.has_key? key }
             replace_with add_receiver_if_necessary("#{generate_new_queries(argument_node)}.#{message}({{arguments.first}})")
           end
         end
@@ -197,7 +197,7 @@ It converts rails models from 2.3 to 3.0.
       # Post.where(:limit => 2)
       with_node type: 'send', message: 'find', arguments: {size: 2, first: :all} do
         argument_node = node.arguments.last
-        if :hash == argument_node.type && KEYS.any? { |key| argument_node.has_key? key }
+        if :hash == argument_node.type && keys.any? { |key| argument_node.has_key? key }
           replace_with add_receiver_if_necessary(generate_new_queries(argument_node))
         end
       end
@@ -215,7 +215,7 @@ It converts rails models from 2.3 to 3.0.
         # Post.where(:title => "title").last
         within_node type: 'send', message: 'find', arguments: {size: 2, first: message} do
           argument_node = node.arguments.last
-          if :hash == argument_node.type && KEYS.any? { |key| argument_node.has_key? key }
+          if :hash == argument_node.type && keys.any? { |key| argument_node.has_key? key }
             replace_with add_receiver_if_necessary("#{generate_new_queries(argument_node)}.#{message}")
           end
         end
@@ -242,7 +242,7 @@ It converts rails models from 2.3 to 3.0.
         # end
         within_node type: 'send', message: message, arguments: {size: 1} do
           argument_node = node.arguments.first
-          if :hash == argument_node.type && KEYS.any? { |key| argument_node.has_key? key }
+          if :hash == argument_node.type && keys.any? { |key| argument_node.has_key? key }
             batch_options = generate_batch_options(argument_node)
             if batch_options.length > 0
               replace_with add_receiver_if_necessary("#{generate_new_queries(argument_node)}.#{message}(#{batch_options})")
