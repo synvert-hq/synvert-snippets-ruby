@@ -10,7 +10,7 @@ Use ruby new hash syntax.
       # {:foo => 'bar'} => {foo: 'bar'}
       within_node type: 'hash' do
         with_node type: 'pair' do
-          if :sym == node.key.type && node.key.to_source[0] == ':'
+          if :sym == node.key.type && node.key.to_source[0] == ':' && !%w(' ").include?(node.key.to_source[1])
             new_key = node.key.to_source[1..-1]
             replace_with "#{new_key}: {{value}}"
           end
