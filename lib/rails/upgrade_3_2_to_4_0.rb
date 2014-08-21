@@ -1,6 +1,6 @@
 require 'securerandom'
 
-Synvert::Rewriter.new "upgrade_rails_3_2_to_4_0" do
+Synvert::Rewriter.new 'rails', 'upgrade_3_2_to_4_0' do
   description <<-EOF
 It upgrades rails from 3.2 to 4.0.
 
@@ -264,8 +264,8 @@ It upgrades rails from 3.2 to 4.0.
     end
   end
 
-  add_snippet 'convert_rails_dynamic_finders'
-  add_snippet 'strong_parameters'
+  add_snippet 'rails', 'convert_dynamic_finders'
+  add_snippet 'rails', 'strong_parameters'
 
   todo <<-EOF
 1. Rails 4.0 no longer supports loading plugins from vendor/plugins. You must replace any plugins by extracting them to gems and adding them to your Gemfile. If you choose not to make them gems, you can move them into, say, lib/my_plugin/* and add an appropriate initializer in config/initializers/my_plugin.rb.

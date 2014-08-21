@@ -1,4 +1,4 @@
-Synvert::Rewriter.new "convert_rspec_collection_matcher" do
+Synvert::Rewriter.new 'rspec', 'collection_matcher' do
   description <<-EOF
 It converts rspec collection matcher.
 

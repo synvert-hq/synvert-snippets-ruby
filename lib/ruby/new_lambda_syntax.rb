@@ -1,4 +1,4 @@
-Synvert::Rewriter.new "ruby_new_lambda_syntax" do
+Synvert::Rewriter.new 'ruby', 'new_lambda_syntax' do
   description <<-EOF
 Use ruby new lambda syntax
 

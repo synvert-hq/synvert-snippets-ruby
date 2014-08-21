@@ -1,4 +1,4 @@
-Synvert::Rewriter.new "strong_parameters" do
+Synvert::Rewriter.new 'rails', 'strong_parameters' do
   description <<-EOF
 It uses string_parameters to replace attr_accessible.
 

@@ -1,4 +1,4 @@
-Synvert::Rewriter.new "convert_rspec_stub_and_mock_to_double" do
+Synvert::Rewriter.new 'rspec', 'stub_and_mock_to_double' do
   description <<-EOF
 It converts stub and mock to double.
 

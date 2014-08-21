@@ -1,4 +1,4 @@
-Synvert::Rewriter.new 'convert_routes_2_3_to_3_0' do
+Synvert::Rewriter.new 'rails', 'convert_routes_2_3_to_3_0' do
   description <<-EOF
 It converts rails routes from 2.3 to 3.0.
 

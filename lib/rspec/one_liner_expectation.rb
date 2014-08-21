@@ -1,4 +1,4 @@
-Synvert::Rewriter.new "convert_rspec_one_liner_expectation" do
+Synvert::Rewriter.new 'rspec', 'one_liner_expectation' do
   description <<-EOF
 It convers rspec one liner expectation.
 

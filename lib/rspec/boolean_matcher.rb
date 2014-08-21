@@ -1,4 +1,4 @@
-Synvert::Rewriter.new "convert_rspec_boolean_matcher" do
+Synvert::Rewriter.new 'rspec', 'boolean_matcher' do
   description <<-EOF
 It converts rspec boolean matcher.
 

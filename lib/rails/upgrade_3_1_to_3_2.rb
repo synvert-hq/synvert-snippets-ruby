@@ -1,4 +1,4 @@
-Synvert::Rewriter.new 'upgrade_rails_3_1_to_3_2' do
+Synvert::Rewriter.new 'rails', 'upgrade_3_1_to_3_2' do
   description <<-EOF
 It upgrades rails from 3.1 to 3.2.
 

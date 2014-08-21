@@ -1,6 +1,6 @@
 require 'securerandom'
 
-Synvert::Rewriter.new "upgrade_rails_4_0_to_4_1" do
+Synvert::Rewriter.new 'rails', 'upgrade_4_0_to_4_1' do
   description <<-EOF
 It upgrades rails from 4.0 to 4.1.
 

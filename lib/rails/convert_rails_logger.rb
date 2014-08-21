@@ -1,4 +1,4 @@
-Synvert::Rewriter.new 'convert_rails_logger' do
+Synvert::Rewriter.new 'rails', 'convert_rails_logger' do
   description "It converts RAILS_DEFAULT_LOGGER to Rails.logger."
 
   if_gem 'rails', {gte: '2.3.0'}

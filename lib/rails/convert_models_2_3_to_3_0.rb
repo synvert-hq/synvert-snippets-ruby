@@ -1,4 +1,4 @@
-Synvert::Rewriter.new "convert_models_2_3_to_3_0" do
+Synvert::Rewriter.new 'rails', 'convert_models_2_3_to_3_0' do
   description <<-EOF
 It converts rails models from 2.3 to 3.0.
 

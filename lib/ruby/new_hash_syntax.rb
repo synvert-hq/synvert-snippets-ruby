@@ -1,4 +1,4 @@
-Synvert::Rewriter.new "ruby_new_hash_syntax" do
+Synvert::Rewriter.new 'ruby', 'new_hash_syntax' do
   description <<-EOF
 Use ruby new hash syntax.
 

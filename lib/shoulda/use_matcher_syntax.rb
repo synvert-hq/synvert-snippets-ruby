@@ -1,4 +1,4 @@
-Synvert::Rewriter.new "use_shoulda_matcher_syntax" do
+Synvert::Rewriter.new 'shoulda', 'use_matcher_syntax' do
   description <<-EOF
 It converts shoulda macros to matcher syntax.
 

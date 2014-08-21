@@ -1,4 +1,4 @@
-Synvert::Rewriter.new 'convert_views_2_3_to_3_0' do
+Synvert::Rewriter.new 'rails', 'convert_views_2_3_to_3_0' do
   description <<-EOF
 1. remove h helper, rails 3 uses it by default.
 

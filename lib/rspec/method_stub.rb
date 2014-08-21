@@ -1,4 +1,4 @@
-Synvert::Rewriter.new "convert_rspec_method_stub" do
+Synvert::Rewriter.new 'rspec', 'method_stub' do
   description <<-EOF
 It converts rspec method stub.
 

@@ -1,4 +1,4 @@
-Synvert::Rewriter.new "convert_rspec_negative_error_expectation" do
+Synvert::Rewriter.new 'rspec', 'negative_error_expectation' do
   description <<-EOF
 It converts rspec negative error expectation.
 

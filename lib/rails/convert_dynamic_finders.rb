@@ -1,4 +1,4 @@
-Synvert::Rewriter.new "convert_rails_dynamic_finders" do
+Synvert::Rewriter.new 'rails', 'convert_dynamic_finders' do
   description <<-EOF
 It converts rails dynamic finders to arel syntax.
 

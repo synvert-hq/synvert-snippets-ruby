@@ -1,4 +1,4 @@
-Synvert::Rewriter.new "convert_rspec_be_close_to_be_within" do
+Synvert::Rewriter.new 'rspec', 'be_close_to_be_within' do
   description <<-EOF
 It converts rspec be_close matcher to be_within matcher.
 

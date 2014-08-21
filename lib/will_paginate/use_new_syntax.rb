@@ -1,4 +1,4 @@
-Synvert::Rewriter.new "use_will_paginate_new_syntax" do
+Synvert::Rewriter.new "will_paginate",  "use_new_syntax" do
   description <<-EOF
 It uses will_paginate new syntax.
 

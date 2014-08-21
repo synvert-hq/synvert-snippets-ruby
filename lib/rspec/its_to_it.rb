@@ -1,4 +1,4 @@
-Synvert::Rewriter.new "convert_rspec_its_to_it" do
+Synvert::Rewriter.new 'rspec', 'its_to_it' do
   description <<-EOF
 It converts rspec its to it.
 

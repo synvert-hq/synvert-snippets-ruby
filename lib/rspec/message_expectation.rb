@@ -1,4 +1,4 @@
-Synvert::Rewriter.new "convert_rspec_message_expectation" do
+Synvert::Rewriter.new 'rspec', 'message_expectation' do
   description <<-EOF
 It convert rspec message expectation.
 

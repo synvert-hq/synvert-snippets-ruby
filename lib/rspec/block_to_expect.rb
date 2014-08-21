@@ -1,4 +1,4 @@
-Synvert::Rewriter.new "convert_rspec_block_to_expect" do
+Synvert::Rewriter.new 'rspec', 'block_to_expect' do
   description <<-EOF
 It converts rspec block to expect.
 
