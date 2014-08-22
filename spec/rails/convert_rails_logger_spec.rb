@@ -9,8 +9,10 @@ describe 'Upgrade RAILS_DEFAULT_LOGGER to Rails.logger' do
   describe 'with fakefs', fakefs: true do
     let(:constant_content) {"""
 RAILS_DEFAULT_LOGGER
+::RAILS_DEFAULT_LOGGER
     """}
     let(:constant_rewritten_content) {"""
+Rails.logger
 Rails.logger
     """}
 

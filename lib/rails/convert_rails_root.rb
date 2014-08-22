@@ -23,6 +23,9 @@ It converts RAILS_ROOT to Rails.root.
       with_node type: 'const', to_source: 'RAILS_ROOT' do
         replace_with "Rails.root"
       end
+      with_node type: 'const', to_source: '::RAILS_ROOT' do
+        replace_with "Rails.root"
+      end
     end
 
     within_files file_pattern do

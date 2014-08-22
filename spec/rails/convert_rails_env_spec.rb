@@ -9,12 +9,14 @@ describe 'Convert RAILS_ENV to Rails.env' do
   describe 'with fakefs', fakefs: true do
     let(:constant_content) {"""
 RAILS_ENV
+::RAILS_ENV
 RAILS_ENV == 'test'
 'development' == RAILS_ENV
 RAILS_ENV != 'test'
 'development' != RAILS_ENV
     """}
     let(:constant_rewritten_content) {"""
+Rails.env
 Rails.env
 Rails.env.test?
 Rails.env.development?

@@ -8,6 +8,9 @@ Synvert::Rewriter.new 'rails', 'convert_rails_logger' do
       with_node type: 'const', to_source: 'RAILS_DEFAULT_LOGGER' do
         replace_with "Rails.logger"
       end
+      with_node type: 'const', to_source: '::RAILS_DEFAULT_LOGGER' do
+        replace_with "Rails.logger"
+      end
     end
   end
 end

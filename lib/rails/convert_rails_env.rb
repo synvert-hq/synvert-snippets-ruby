@@ -28,6 +28,9 @@ It converts RAILS_ENV to Rails.env.
       with_node type: 'const', to_source: 'RAILS_ENV' do
         replace_with "Rails.env"
       end
+      with_node type: 'const', to_source: '::RAILS_ENV' do
+        replace_with "Rails.env"
+      end
     end
   end
 
