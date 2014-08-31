@@ -39,6 +39,20 @@ It upgrade rails from 3.0 to 3.1.
 7. it replaces session_store in config/initializers/session_store.rb
 
     Application.session_store :cookie_store, key: '_xxx-session'
+
+8. Migrations now use instance methods rather than class methods
+
+    def self.up
+    end
+    =>
+    def up
+    end
+
+    def self.down
+    end
+    =>
+    def down
+    end
   EOF
 
   if_gem 'rails', {gte: '3.0.0'}
@@ -118,6 +132,19 @@ It upgrade rails from 3.0 to 3.1.
     with_node type: 'send', receiver: {type: 'send', message: 'config'}, message: 'session_store', arguments: {first: :cookie_store} do
       session_store_key = node.receiver.receiver.to_source.split(":").first.underscore
       replace_with "{{receiver}}.session_store :cookie_store, key: '_#{session_store_key}-session'"
+    end
+  end
+
+  within_files 'db/migrate/*.rb' do
+    # def self.up => def up
+    # def self.down => def down
+    %w(up down).each do |name|
+      with_node type: 'defs', name: name do
+        body = node.body.map { |child_node| child_node.to_source.gsub("\n  ", "\n") }.join("\n  ")
+        replace_with """def #{name}
+  #{body}
+end"""
+      end
     end
   end
 

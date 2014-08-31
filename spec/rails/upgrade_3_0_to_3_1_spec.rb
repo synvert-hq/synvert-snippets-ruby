@@ -66,21 +66,50 @@ Synvert::Application.config.session_store :cookie_store, key: 'somethingold'
     let(:session_store_rewritten_content) {"""
 Synvert::Application.config.session_store :cookie_store, key: '_synvert-session'
     """}
+    let(:create_posts_content) {"""
+class CreatePosts < ActiveRecord::Migration
+  def self.up
+    create_table :posts do |t|
+      t.string :name
+    end
+    add_index :posts, :name
+  end
+  def self.down
+    drop_table :posts
+  end
+end
+    """}
+    let(:create_posts_rewritten_content) {"""
+class CreatePosts < ActiveRecord::Migration
+  def up
+    create_table :posts do |t|
+      t.string :name
+    end
+    add_index :posts, :name
+  end
+  def down
+    drop_table :posts
+  end
+end
+    """}
 
     it 'converts' do
       FileUtils.mkdir_p 'config/environments'
       FileUtils.mkdir_p 'config/initializers'
+      FileUtils.mkdir_p 'db/migrate'
       File.write 'config/application.rb', application_content
       File.write 'config/environments/development.rb', development_content
       File.write 'config/environments/production.rb', production_content
       File.write 'config/environments/test.rb', test_content
       File.write 'config/initializers/session_store.rb', session_store_content
+      File.write 'db/migrate/20140831000000_create_posts.rb', create_posts_content
       @rewriter.process
       expect(File.read 'config/application.rb').to eq application_rewritten_content
       expect(File.read 'config/environments/production.rb').to eq production_rewritten_content
       expect(File.read 'config/environments/test.rb').to eq test_rewritten_content
       expect(File.read 'config/initializers/wrap_parameters.rb').to eq wrap_parameters_rewritten_content
       expect(File.read 'config/initializers/session_store.rb').to eq session_store_rewritten_content
+      expect(File.read 'db/migrate/20140831000000_create_posts.rb').to eq create_posts_rewritten_content
     end
   end
 end
