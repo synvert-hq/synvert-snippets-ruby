@@ -33,7 +33,7 @@ models:
 
   should_ensure_value_in_range :age, (0..100)
   =>
-  should allow_inclusion_of(:age).in_range(0..100)
+  should ensure_inclusion_of(:age).in_range(0..100)
 
   should_allow_values_for :isbn, 'isbn 1 2345 6789 0', 'ISBN 1-2345-6789-0'
   =>
@@ -206,7 +206,7 @@ controllers:
 
       # should_ensure_value_in_range :age, (0..100)
       # =>
-      # should allow_inclusion_of(:age).in_range(0..100)
+      # should ensure_inclusion_of(:age).in_range(0..100)
       with_node type: 'send', message: 'should_ensure_value_in_range' do
         range = strip_brackets(node.arguments[1].to_source)
         with_other_calls(node, "should ensure_inclusion_of({{arguments.first}}).in_range(#{range})")
