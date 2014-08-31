@@ -26,14 +26,40 @@ Synvert::Application.configure do
   config.active_record.mass_assignment_sanitizer = :strict
 end
     '''}
+    let(:project_content) {'''
+class Project < ActiveRecord::Base
+  set_table_name "project"
+end
+    '''}
+    let(:project_rewritten_content) {'''
+class Project < ActiveRecord::Base
+  self.table_name = "project"
+end
+    '''}
+    let(:application_controller_content) {'''
+class ApplicationController < ActionController::Base
+  rescue_from ActionController::UnknownAction, :with => :render_404
+end
+    '''}
+    let(:application_controller_rewritten_content) {'''
+class ApplicationController < ActionController::Base
+  rescue_from AbstractController::ActionNotFound, :with => :render_404
+end
+    '''}
 
     it 'converts' do
       FileUtils.mkdir_p 'config/environments'
+      FileUtils.mkdir_p 'app/models'
+      FileUtils.mkdir_p 'app/controllers'
       File.write 'config/environments/development.rb', development_content
       File.write 'config/environments/test.rb', test_content
+      File.write 'app/models/project.rb', project_content
+      File.write 'app/controllers/application_controller.rb', application_controller_content
       @rewriter.process
       expect(File.read 'config/environments/development.rb').to eq development_rewritten_content
       expect(File.read 'config/environments/test.rb').to eq test_rewritten_content
+      expect(File.read 'app/models/project.rb').to eq project_rewritten_content
+      expect(File.read 'app/controllers/application_controller.rb').to eq application_controller_rewritten_content
     end
   end
 end
