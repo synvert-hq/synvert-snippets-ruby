@@ -126,7 +126,7 @@ end"""
     end
   end
 
-  if_gem 'shoulda-matchers', {ge: '2.6.2'}
+  if_gem 'shoulda-matchers', {gt: '2.6.2'}
 
   UNIT_TESTS_FILE_PATTERNS.each do |file_pattern|
     within_files file_pattern do
