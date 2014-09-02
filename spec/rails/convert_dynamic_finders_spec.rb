@@ -34,7 +34,7 @@ class Post < ActiveRecord::Base
     User.where(email: email, active: true).last
     User.where(email: email, active: true)
     User.find_by_sql(["select * from  users where email = ?", email])
-    User.where(:id => id).first
+    User.where(id: id).first
     User.where(account_id: Account.where(email: account_email).first.id).first
     User.find_or_create_by(parmas)
     User.find_or_initialize_by(:account_id => account_id)
