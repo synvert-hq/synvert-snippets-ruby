@@ -21,6 +21,8 @@ It converts rails dynamic finders to arel syntax.
     end
   end
 
+  if_gem 'rails', {gte: '3.0.0'}
+
   within_files '**/*.rb' do
     # find_all_by_... => where(...)
     with_node type: 'send', message: /^find_all_by_/ do
@@ -31,7 +33,7 @@ It converts rails dynamic finders to arel syntax.
     # find_by_... => where(...).first
     with_node type: 'send', message: /^find_by_/ do
       if :find_by_id == node.message
-        replace_with add_receiver_if_necessary("find({{arguments}})")
+        replace_with add_receiver_if_necessary("where(:id => {{arguments}}).first")
       elsif :find_by_sql != node.message
         hash_params = dynamic_finder_to_hash("find_by_")
         replace_with add_receiver_if_necessary("where(#{hash_params}).first")
@@ -49,7 +51,11 @@ It converts rails dynamic finders to arel syntax.
       hash_params = dynamic_finder_to_hash("scoped_by_")
       replace_with add_receiver_if_necessary("where(#{hash_params})")
     end
+  end
 
+  if_gem 'rails', {gte: '4.0.0'}
+
+  within_files '**/*.rb' do
     # find_or_initialize_by_... => find_or_initialize_by(...)
     with_node type: 'send', message: /^find_or_initialize_by_/ do
       hash_params = dynamic_finder_to_hash("find_or_initialize_by_")
