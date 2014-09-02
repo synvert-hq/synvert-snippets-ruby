@@ -138,10 +138,10 @@ controllers:
     end
   end
 
-  UNIT_TESTS_FILE_PATTERNS = %w(test/unit/**/*_test.rb spec/models/**/*_spec.rb)
-  FUNCTIONAL_TESTS_FILE_PATTERNS = %w(test/functional/**/*_test.rb spec/controllers/**/*_spec.rb)
+  unit_test_file_patterns = %w(test/unit/**/*_test.rb spec/models/**/*_spec.rb)
+  functional_test_file_patterns = %w(test/functional/**/*_test.rb spec/controllers/**/*_spec.rb)
 
-  UNIT_TESTS_FILE_PATTERNS.each do |file_pattern|
+  unit_test_file_patterns.each do |file_pattern|
     within_files file_pattern do
       # should_have_many :comments
       # =>
@@ -228,7 +228,7 @@ controllers:
     end
   end
 
-  FUNCTIONAL_TESTS_FILE_PATTERNS.each do |file_pattern|
+  functional_test_file_patterns.each do |file_pattern|
     within_files file_pattern do
       # should_assign_to(:user) { @user } => should assign_to(:user).with(@user)
       with_node type: 'block', caller: {type: 'send', message: 'should_assign_to'} do
@@ -251,7 +251,7 @@ controllers:
     end
   end
 
-  FUNCTIONAL_TESTS_FILE_PATTERNS.each do |file_pattern|
+  functional_test_file_patterns.each do |file_pattern|
     within_files file_pattern do
       # should_set_the_flash_to "Thank you for placing this order."
       # =>

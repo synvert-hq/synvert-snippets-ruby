@@ -41,10 +41,10 @@ Test
 
   if_gem 'factory_girl', {gte: '2.0.0'}
 
-  FACTORY_FILE_PATTERNS = %w(test/factories/**/*.rb spec/factories/**/*.rb)
-  TEST_FILE_PATTERNS = %w(test/**/*.rb spec/**/*.rb)
+  factory_file_patterns = %w(test/factories/**/*.rb spec/factories/**/*.rb)
+  test_file_patterns = %w(test/**/*.rb spec/**/*.rb)
 
-  FACTORY_FILE_PATTERNS.each do |file_pattern|
+  factory_file_patterns.each do |file_pattern|
     within_files file_pattern do
       # add
       # FactoryGirl.define do
@@ -146,7 +146,7 @@ end"""
     end
   end
 
-  TEST_FILE_PATTERNS.each do |file_pattern|
+  test_file_patterns.each do |file_pattern|
     within_files file_pattern do
       # Factory(:user) => create(:user)
       with_node type: 'send', receiver: nil, message: 'Factory' do

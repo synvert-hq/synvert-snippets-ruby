@@ -43,10 +43,10 @@ After version 2.6.2
 
   if_gem 'shoulda-matchers', {gte: '1.5.0'}
 
-  UNIT_TESTS_FILE_PATTERNS = %w(test/unit/**/*_test.rb spec/models/**/*_spec.rb)
-  FUNCTIONAL_TESTS_FILE_PATTERNS = %w(test/functional/**/*_test.rb spec/controllers/**/*_spec.rb)
+  unit_test_file_patterns = %w(test/unit/**/*_test.rb spec/models/**/*_spec.rb)
+  function_test_file_patterns = %w(test/functional/**/*_test.rb spec/controllers/**/*_spec.rb)
 
-  UNIT_TESTS_FILE_PATTERNS.each do |file_pattern|
+  unit_test_file_patterns.each do |file_pattern|
     within_files file_pattern do
       # should validate_format_of(:email).with('user@example.com')
       # =>
@@ -60,7 +60,7 @@ After version 2.6.2
     end
   end
 
-  FUNCTIONAL_TESTS_FILE_PATTERNS.each do |file_pattern|
+  function_test_file_patterns.each do |file_pattern|
     within_files file_pattern do
       # should assign_to(:user)
       # =>
@@ -128,7 +128,7 @@ end"""
 
   if_gem 'shoulda-matchers', {gt: '2.6.2'}
 
-  UNIT_TESTS_FILE_PATTERNS.each do |file_pattern|
+  unit_test_file_patterns.each do |file_pattern|
     within_files file_pattern do
       # should ensure_inclusion_of(:age).in_range(0..100)
       # =>
