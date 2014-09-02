@@ -3,7 +3,7 @@ require 'spec_helper'
 describe 'Use RSpec new syntax' do
   before do
     Dir.glob File.join(File.dirname(__FILE__), '../../lib/rspec/*') do |file|
-      if file =~ /new_syntax.rb$/
+      if file =~ /use_new_syntax.rb$/
         @rewriter = eval(File.read(file))
       else
         eval(File.read(file))

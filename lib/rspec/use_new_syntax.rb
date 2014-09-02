@@ -1,4 +1,4 @@
-Synvert::Rewriter.new 'rspec', 'new_syntax' do
+Synvert::Rewriter.new 'rspec', 'use_new_syntax' do
   description <<-EOF
 It converts rspec code to new syntax, it calls all convert_rspec_* snippets.
 
