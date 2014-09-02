@@ -80,6 +80,11 @@ It uses will_paginate new syntax.
         end
       end
 
+      # Post.paginated_each do |post|
+      # end
+      # =>
+      # Post.find_each do |post|
+      # end
       within_node type: 'send', message: 'paginated_each', arguments: {size: 0} do
         replace_with add_receiver_if_necessary('find_each')
       end
