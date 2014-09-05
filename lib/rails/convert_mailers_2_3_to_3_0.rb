@@ -56,35 +56,29 @@ It converts rails mailers from 2.3 to 3.0.
         class_name = node.name
         within_node type: 'def' do
           args = {}
-          node.body.each do |statement_node|
-            if :send == statement_node.type && statement_node.receiver.nil?
-              case statement_node.message
-              when :recipients, :subject, :from, :cc, :bcc
-                key = statement_node.message == :recipients ? :to : statement_node.message
-                args[key] = statement_node.arguments
-                process_with_other_node statement_node do
-                  remove
-                end
-              when :content_type
-                process_with_other_node statement_node do
-                  remove
-                end
-              when :body
-                body_argument = statement_node.arguments.first
-                if :hash == body_argument.type
-                  process_with_other_node statement_node do
-                    replace_with body_argument.children.map { |pair_node| "@#{pair_node.key.to_value} = #{pair_node.value.to_source}" }.join("\n")
-                  end
-                end
-              else
-                # do nothing
-              end
+          with_node type: 'send', message: 'recipients' do
+            args[:to] = node.arguments.first.to_source
+            remove
+          end
+          %w(subject from cc bcc).each do |message|
+            with_node type: 'send', message: message do
+              args[message.to_sym] = node.arguments.first.to_source
+              remove
+            end
+          end
+          with_node type: 'send', message: 'content_type' do
+            remove
+          end
+          with_node type: 'send', message: 'body' do
+            body_argument = node.arguments.first
+            if :hash == body_argument.type
+              replace_with body_argument.children.map { |pair_node| "@#{pair_node.key.to_value} = #{pair_node.value.to_source}" }.join("\n")
             end
           end
           if args.size > 0
             mailer_methods[class_name] ||= []
             mailer_methods[class_name] << node.name
-            args_str = args.map { |key, value| ":#{key} => #{Array(value).map(&:to_source).join(', ')}" }.join(', ')
+            args_str = args.map { |key, value| ":#{key} => #{value}" }.join(', ')
             append "  mail(#{args_str})"
           end
         end
