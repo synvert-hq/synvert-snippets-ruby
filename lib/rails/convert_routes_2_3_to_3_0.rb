@@ -47,7 +47,7 @@ It converts rails routes from 2.3 to 3.0.
 
   if_gem 'rails', {gte: '2.3.0'}
 
-  helper_method "extract_controller_action_name" do |hash_node|
+  helper_method :extract_controller_action_name do |hash_node|
     controller_name = hash_node.hash_value(:controller).to_value
     action_name = hash_node.hash_value(:action).to_value
     "#{controller_name}##{action_name}"

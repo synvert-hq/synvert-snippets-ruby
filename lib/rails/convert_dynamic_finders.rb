@@ -10,7 +10,7 @@ It converts rails dynamic finders to arel syntax.
     find_or_create_by_... => find_or_create_by(...)
   EOF
 
-  helper_method 'dynamic_finder_to_hash' do |prefix|
+  helper_method :dynamic_finder_to_hash do |prefix|
     fields = node.message.to_s[prefix.length..-1].split("_and_")
     if fields.length == node.arguments.length && :hash != node.arguments.first.type
       fields.length.times.map { |i|
