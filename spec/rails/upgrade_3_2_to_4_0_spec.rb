@@ -55,6 +55,7 @@ end
     let(:development_content) {'''
 Synvert::Application.configure do
   config.cache_classes = false
+  config.active_record.auto_explain_threshold_in_seconds = 0.5
 end
     '''}
     let(:development_rewritten_content) {'''

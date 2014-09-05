@@ -12,6 +12,7 @@ It upgrades rails from 3.2 to 4.0.
     => Bundler.require(:default, Rails.env)
 
 2. it removes config.active_record.identity_map = true from config files.
+   it removes config.active_record.auto_explain_threshold_in_seconds = 0.5 from config files.
 
 3. it changes config.assets.compress = ... to config.assets.js_compressor = ...
 
@@ -138,6 +139,11 @@ It upgrades rails from 3.2 to 4.0.
     # insert config.eager_load = false
     unless_exist_node type: 'send', message: 'eager_load=' do
       insert 'config.eager_load = false'
+    end
+
+    # remove config.active_record.auto_explain_threshold_in_seconds = x
+    with_node type: 'send', message: 'auto_explain_threshold_in_seconds=', receiver: {type: 'send', receiver: 'config', message: 'active_record'} do
+      remove
     end
   end
 
