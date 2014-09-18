@@ -2,7 +2,7 @@ Synvert::Rewriter.new 'factory_girl', 'use_short_syntax' do
   description <<-EOF
 Uses FactoryGirl short syntax.
 
-1. it adds FactoryGirl::Syntax::methods module to RSpec, Test::Unit, Cucumber, Spainach, MiniTest, MiniTest::Spec, minitest-rails.
+1. it adds FactoryGirl::Syntax::Methods module to RSpec, Test::Unit, Cucumber, Spainach, MiniTest, MiniTest::Spec, minitest-rails.
 
     # rspec
     RSpec.configure do |config|
