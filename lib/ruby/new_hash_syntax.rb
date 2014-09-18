@@ -5,7 +5,9 @@ Use ruby new hash syntax.
     {:foo => 'bar'} => {foo: 'bar'}
   EOF
 
-  if Gem::Version.new(RUBY_VERSION) >= Gem::Version.new("1.9.0")
+  # Gem::Version initialize will strip RUBY_VERSION directly in ruby 1.9,
+  # which is solved from ruby 2.0.0, which calls dup internally.
+  if Gem::Version.new(RUBY_VERSION.dup) >= Gem::Version.new("1.9.0")
     within_files '**/*.rb' do
       # {:foo => 'bar'} => {foo: 'bar'}
       within_node type: 'hash' do
