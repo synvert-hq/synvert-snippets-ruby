@@ -7,39 +7,39 @@ describe 'rails strong_parameters snippet' do
   end
 
   describe 'with fakefs', fakefs: true do
-    let(:application_content) {'''
+    let(:application_content) {'
 module Synvert
   class Application < Rails::Application
     config.active_record.whitelist_attributes = true
     config.active_record.mass_assignment_sanitizer = :strict
   end
 end
-    '''}
-    let(:application_rewritten_content) {'''
+    '}
+    let(:application_rewritten_content) {'
 module Synvert
   class Application < Rails::Application
   end
 end
-    '''}
-    let(:post_model_content) {'''
+    '}
+    let(:post_model_content) {'
 class Post < ActiveRecord::Base
   attr_accessible :title, :description
 end
-    '''}
-    let(:post_model_rewritten_content) {'''
+    '}
+    let(:post_model_rewritten_content) {'
 class Post < ActiveRecord::Base
 end
-    '''}
-    let(:user_model_content) {'''
+    '}
+    let(:user_model_content) {'
 class User < ActiveRecord::Base
   attr_protected :role, :admin
 end
-    '''}
-    let(:user_model_rewritten_content) {'''
+    '}
+    let(:user_model_rewritten_content) {'
 class User < ActiveRecord::Base
 end
-    '''}
-    let(:schema_content) {'''
+    '}
+    let(:schema_content) {'
 ActiveRecord::Schema.define(version: 20140211112752) do
   create_table "users", force: true do |t|
     t.string   "login"
@@ -50,8 +50,8 @@ ActiveRecord::Schema.define(version: 20140211112752) do
     t.boolean  "admin",                     default: false, null: false
   end
 end
-    '''}
-    let(:posts_controller_content) {'''
+    '}
+    let(:posts_controller_content) {'
 class PostsController < ApplicationController
   def update
     @post = Post.find(params[:id])
@@ -62,8 +62,8 @@ class PostsController < ApplicationController
     end
   end
 end
-    '''}
-    let(:posts_controller_rewritten_content) {'''
+    '}
+    let(:posts_controller_rewritten_content) {'
 class PostsController < ApplicationController
   def update
     @post = Post.find(params[:id])
@@ -78,8 +78,8 @@ class PostsController < ApplicationController
     params.require(:post).permit(:title, :description)
   end
 end
-    '''}
-    let(:users_controller_content) {'''
+    '}
+    let(:users_controller_content) {'
 class UsersController < ApplicationController
   def update
     @user = User.find(params[:id])
@@ -90,8 +90,8 @@ class UsersController < ApplicationController
     end
   end
 end
-    '''}
-    let(:users_controller_rewritten_content) {'''
+    '}
+    let(:users_controller_rewritten_content) {'
 class UsersController < ApplicationController
   def update
     @user = User.find(params[:id])
@@ -106,7 +106,7 @@ class UsersController < ApplicationController
     params.require(:user).permit(:login, :email, :created_at, :updated_at)
   end
 end
-    '''}
+    '}
 
     it 'process' do
       FileUtils.mkdir_p 'config'

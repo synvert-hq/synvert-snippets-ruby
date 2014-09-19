@@ -7,14 +7,14 @@ describe 'Upgrade RAILS_DEFAULT_LOGGER to Rails.logger' do
   end
 
   describe 'with fakefs', fakefs: true do
-    let(:constant_content) {"""
+    let(:constant_content) {"
 RAILS_DEFAULT_LOGGER
 ::RAILS_DEFAULT_LOGGER
-    """}
-    let(:constant_rewritten_content) {"""
+    "}
+    let(:constant_rewritten_content) {"
 Rails.logger
 Rails.logger
-    """}
+    "}
 
     it 'converts' do
       FileUtils.mkdir_p 'config/initializers'

@@ -7,7 +7,7 @@ describe 'Convert rails routes from 2.3 to 3.0' do
   end
 
   describe 'with fakefs', fakefs: true do
-    let(:routes_content) {'''
+    let(:routes_content) {'
 ActionController::Routing::Routes.draw do |map|
   map.connect "/main/:id", :controller => "main", :action => "home"
 
@@ -37,8 +37,8 @@ ActionController::Routing::Routes.draw do |map|
 
   map.root :controller => "home", :action => "index"
 end
-    '''}
-    let(:routes_rewritten_content) {'''
+    '}
+    let(:routes_rewritten_content) {'
 ActionController::Routing::Routes.draw do |map|
   match "/main/:id", :to => "main#home"
 
@@ -81,7 +81,7 @@ ActionController::Routing::Routes.draw do |map|
 
   root :to => "home#index"
 end
-    '''}
+    '}
 
     it 'converts' do
       FileUtils.mkdir_p 'config'

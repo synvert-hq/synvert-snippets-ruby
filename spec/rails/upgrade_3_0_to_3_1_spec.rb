@@ -7,49 +7,49 @@ describe 'Upgrade rails from 3.0 to 3.1' do
   end
 
   describe 'with fakefs', fakefs: true do
-    let(:application_content) {"""
+    let(:application_content) {"
 Synvert::Application.configure do
 end
-    """}
-    let(:application_rewritten_content) {"""
+    "}
+    let(:application_rewritten_content) {"
 Synvert::Application.configure do
   config.assets.version = '1.0'
   config.assets.enabled = true
 end
-    """}
-    let(:development_content) {"""
+    "}
+    let(:development_content) {"
 Synvert::Application.configure do
   config.action_view.debug_rjs = true
 end
-    """}
-    let(:development_rewritten_content) {"""
+    "}
+    let(:development_rewritten_content) {"
 Synvert::Application.configure do
   config.assets.compress = false
   config.assets.debug = true
 end
-    """}
-    let(:production_content) {"""
+    "}
+    let(:production_content) {"
 Synvert::Application.configure do
 end
-    """}
-    let(:production_rewritten_content) {"""
+    "}
+    let(:production_rewritten_content) {"
 Synvert::Application.configure do
   config.assets.digest = true
   config.assets.compile = false
   config.assets.compress = true
 end
-    """}
-    let(:test_content) {"""
+    "}
+    let(:test_content) {"
 Synvert::Application.configure do
 end
-    """}
-    let(:test_rewritten_content) {'''
+    "}
+    let(:test_rewritten_content) {'
 Synvert::Application.configure do
   config.static_cache_control = "public, max-age=3600"
   config.serve_static_assets = true
 end
-    '''}
-    let(:wrap_parameters_rewritten_content) {"""
+    '}
+    let(:wrap_parameters_rewritten_content) {"
 # Enable parameter wrapping for JSON. You can disable this by setting :format to an empty array.
 ActiveSupport.on_load(:action_controller) do
   wrap_parameters format: [:json]
@@ -59,14 +59,14 @@ end
 ActiveSupport.on_load(:active_record) do
   self.include_root_in_json = false
 end
-    """.strip}
-    let(:session_store_content) {"""
+    ".strip}
+    let(:session_store_content) {"
 Synvert::Application.config.session_store :cookie_store, key: 'somethingold'
-    """}
-    let(:session_store_rewritten_content) {"""
+    "}
+    let(:session_store_rewritten_content) {"
 Synvert::Application.config.session_store :cookie_store, key: '_synvert-session'
-    """}
-    let(:create_posts_content) {"""
+    "}
+    let(:create_posts_content) {"
 class CreatePosts < ActiveRecord::Migration
   def self.up
     create_table :posts do |t|
@@ -78,8 +78,8 @@ class CreatePosts < ActiveRecord::Migration
     drop_table :posts
   end
 end
-    """}
-    let(:create_posts_rewritten_content) {"""
+    "}
+    let(:create_posts_rewritten_content) {"
 class CreatePosts < ActiveRecord::Migration
   def up
     create_table :posts do |t|
@@ -91,7 +91,7 @@ class CreatePosts < ActiveRecord::Migration
     drop_table :posts
   end
 end
-    """}
+    "}
 
     it 'converts' do
       FileUtils.mkdir_p 'config/environments'

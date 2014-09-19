@@ -7,18 +7,18 @@ describe 'Ruby uses new hash synax' do
   end
 
   describe 'with fakefs', fakefs: true do
-    let(:test_content) {"""
+    let(:test_content) {"
 {:foo => 'bar', 'foo' => 'bar'}
 {:key1 => 'value1', :key2 => 'value2'}
 {foo_key: 'foo_value', bar_key: 42}
 {:'foo-key' => 'foo_value', :'bar-key' => 42}
-    """}
-    let(:test_rewritten_content) {"""
+    "}
+    let(:test_rewritten_content) {"
 {foo: 'bar', 'foo' => 'bar'}
 {key1: 'value1', key2: 'value2'}
 {foo_key: 'foo_value', bar_key: 42}
 {:'foo-key' => 'foo_value', :'bar-key' => 42}
-    """}
+    "}
 
     it 'converts' do
       File.write 'test.rb', test_content

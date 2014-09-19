@@ -12,7 +12,7 @@ describe 'Use RSpec new syntax' do
   end
 
   describe 'with fakefs', fakefs: true do
-    let(:post_spec_content) {"""
+    let(:post_spec_content) {"
 it 'case' do
   obj.should matcher
   obj.should_not matcher
@@ -80,8 +80,8 @@ describe 'example' do
   its([:foo]) { should == 1 }
   its('keys.first') { should == :foo }
 end
-    """}
-    let(:post_spec_rewritten_content) {"""
+    "}
+    let(:post_spec_rewritten_content) {"
 it 'case' do
   expect(obj).to matcher
   expect(obj).not_to matcher
@@ -165,16 +165,16 @@ describe 'example' do
     end
   end
 end
-    """}
-    let(:spec_helper_content) {"""
+    "}
+    let(:spec_helper_content) {"
 RSpec.configure do |config|
   config.treat_symbols_as_metadata_keys_with_true_values = true
 end
-    """}
-    let(:spec_helper_rewritten_content) {"""
+    "}
+    let(:spec_helper_rewritten_content) {"
 RSpec.configure do |config|
 end
-    """}
+    "}
 
     it 'converts' do
       FileUtils.mkdir_p 'spec/models'

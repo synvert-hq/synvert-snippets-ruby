@@ -9,7 +9,7 @@ describe 'Convert rails views from 2.3 to 3.0' do
   end
 
   describe 'with fakefs', fakefs: true do
-    let(:posts_show_content) {"""
+    let(:posts_show_content) {"
   <%= h user.login %>
   <%= post.title %>
 
@@ -19,8 +19,8 @@ describe 'Convert rails views from 2.3 to 3.0' do
   <% end %>
   <%= form_for post do |f| %>
   <% end %>
-    """}
-    let(:posts_show_rewritten_content) {"""
+    "}
+    let(:posts_show_rewritten_content) {"
   <%= user.login %>
   <%= post.title %>
 
@@ -30,7 +30,7 @@ describe 'Convert rails views from 2.3 to 3.0' do
   <% end %>
   <%= form_for post do |f| %>
   <% end %>
-    """}
+    "}
 
     it 'converts' do
       FileUtils.mkdir_p 'app/views/posts'

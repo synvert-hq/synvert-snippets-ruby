@@ -8,20 +8,20 @@ describe 'FactoryGirl uses short synax' do
 
   describe 'with fakefs', fakefs: true do
     describe 'rspec' do
-      let(:spec_helper_content) {'''
+      let(:spec_helper_content) {'
   RSpec.configure do |config|
     config.treat_symbols_as_metadata_keys_with_true_values = true
     config.run_all_when_everything_filtered = true
   end
-      '''}
-      let(:spec_helper_rewritten_content) {'''
+      '}
+      let(:spec_helper_rewritten_content) {'
   RSpec.configure do |config|
     config.include FactoryGirl::Syntax::Methods
     config.treat_symbols_as_metadata_keys_with_true_values = true
     config.run_all_when_everything_filtered = true
   end
-      '''}
-      let(:post_spec_content) {'''
+      '}
+      let(:post_spec_content) {'
   describe Post do
     it "tests post" do
       post1 = FactoryGirl.create(:post)
@@ -34,8 +34,8 @@ describe 'FactoryGirl uses short synax' do
       posts4 = FactoryGirl.build_pair(:post)
     end
   end
-      '''}
-      let(:post_spec_rewritten_content) {'''
+      '}
+      let(:post_spec_rewritten_content) {'
   describe Post do
     it "tests post" do
       post1 = create(:post)
@@ -48,7 +48,7 @@ describe 'FactoryGirl uses short synax' do
       posts4 = build_pair(:post)
     end
   end
-      '''}
+      '}
 
       it 'converts' do
         FileUtils.mkdir 'spec'
@@ -62,16 +62,16 @@ describe 'FactoryGirl uses short synax' do
     end
 
     describe 'test/unit' do
-      let(:test_helper_content) {'''
+      let(:test_helper_content) {'
   class ActiveSupport::TestCase
   end
-      '''}
-      let(:test_helper_rewritten_content) {'''
+      '}
+      let(:test_helper_rewritten_content) {'
   class ActiveSupport::TestCase
     include FactoryGirl::Syntax::Methods
   end
-      '''}
-      let(:post_test_content) {'''
+      '}
+      let(:post_test_content) {'
   test "post" do
     post1 = FactoryGirl.create(:post)
     post2 = FactoryGirl.build(:post)
@@ -82,8 +82,8 @@ describe 'FactoryGirl uses short synax' do
     posts3 = FactoryGirl.create_pair(:post)
     posts4 = FactoryGirl.build_pair(:post)
   end
-      '''}
-      let(:post_test_rewritten_content) {'''
+      '}
+      let(:post_test_rewritten_content) {'
   test "post" do
     post1 = create(:post)
     post2 = build(:post)
@@ -94,7 +94,7 @@ describe 'FactoryGirl uses short synax' do
     posts3 = create_pair(:post)
     posts4 = build_pair(:post)
   end
-      '''}
+      '}
 
       it 'converts' do
         FileUtils.mkdir 'test'
@@ -108,14 +108,14 @@ describe 'FactoryGirl uses short synax' do
     end
 
     describe 'cucumber' do
-      let(:env_content) {'''
+      let(:env_content) {'
   require "cucumber/rails"
-      '''}
-      let(:env_rewritten_content) {'''
+      '}
+      let(:env_rewritten_content) {'
   require "cucumber/rails"
   World(FactoryGirl::Syntax::Methods)
-      '''}
-      let(:post_steps_content) {'''
+      '}
+      let(:post_steps_content) {'
   test "post" do
     post1 = FactoryGirl.create(:post)
     post2 = FactoryGirl.build(:post)
@@ -126,8 +126,8 @@ describe 'FactoryGirl uses short synax' do
     posts3 = FactoryGirl.create_pair(:post)
     posts4 = FactoryGirl.build_pair(:post)
   end
-      '''}
-      let(:post_steps_rewritten_content) {'''
+      '}
+      let(:post_steps_rewritten_content) {'
   test "post" do
     post1 = create(:post)
     post2 = build(:post)
@@ -138,7 +138,7 @@ describe 'FactoryGirl uses short synax' do
     posts3 = create_pair(:post)
     posts4 = build_pair(:post)
   end
-      '''}
+      '}
 
       it 'converts' do
         FileUtils.mkdir_p 'features/support'

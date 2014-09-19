@@ -7,7 +7,7 @@ describe 'Convert dynamic finders' do
   end
 
   describe 'with fakefs', fakefs: true do
-    let(:post_model_content) {'''
+    let(:post_model_content) {'
 class Post < ActiveRecord::Base
   def active_users
     User.find_all_by_email_and_active(email, true)
@@ -25,8 +25,8 @@ class Post < ActiveRecord::Base
     find_all_by_role_and_active("admin", true)
   end
 end
-    '''}
-    let(:post_model_rewritten_content) {'''
+    '}
+    let(:post_model_rewritten_content) {'
 class Post < ActiveRecord::Base
   def active_users
     User.where(email: email, active: true)
@@ -44,8 +44,8 @@ class Post < ActiveRecord::Base
     where(role: "admin", active: true)
   end
 end
-    '''}
-    let(:users_controller_content) {'''
+    '}
+    let(:users_controller_content) {'
 class UsersController < ApplicationController
   def new
     @user = User.find_or_initialize_by_login_and_email(params[:user][:login], params[:user][:email])
@@ -55,8 +55,8 @@ class UsersController < ApplicationController
     @user = User.find_or_create_by_login_and_email(params[:user][:login], params[:user][:email])
   end
 end
-    '''}
-    let(:users_controller_rewritten_content) {'''
+    '}
+    let(:users_controller_rewritten_content) {'
 class UsersController < ApplicationController
   def new
     @user = User.find_or_initialize_by(login: params[:user][:login], email: params[:user][:email])
@@ -66,7 +66,7 @@ class UsersController < ApplicationController
     @user = User.find_or_create_by(login: params[:user][:login], email: params[:user][:email])
   end
 end
-    '''}
+    '}
 
     it 'converts' do
       FileUtils.mkdir_p 'app/models'
