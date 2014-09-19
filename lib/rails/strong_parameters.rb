@@ -38,8 +38,14 @@ It uses string_parameters to replace attr_accessible.
       object_name = eval(node.caller.arguments.first.to_source).singularize
       attributes[object_name] = []
       with_node type: 'send', receiver: 't' do
-        attribute_name = eval(node.arguments.first.to_source).to_sym
-        attributes[object_name] << attribute_name
+        column_name_or_names = eval(node.arguments.first.to_source)
+        column_names =  case column_name_or_names
+                        when String
+                          [column_name_or_names.to_sym]
+                        when Array
+                          column_name_or_names.map(&:to_sym)
+                        end
+        attributes[object_name] += column_names
       end
     end
   end
