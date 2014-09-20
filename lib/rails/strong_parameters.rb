@@ -38,7 +38,7 @@ It uses string_parameters to replace attr_accessible.
       object_name = node.caller.arguments.first.to_value.singularize
       attributes[object_name] = []
       with_node type: 'send', receiver: 't' do
-        attribute_name = node.arguments.first.to_value.to_sym
+        attribute_name = ':' + node.arguments.first.to_value
         attributes[object_name] << attribute_name
       end
     end
@@ -46,20 +46,18 @@ It uses string_parameters to replace attr_accessible.
 
   parameters = {}
   within_files 'app/models/**/*.rb' do
-    # assign and remove attr_accessible ...
     within_node type: 'class' do
       object_name = node.name.to_source.underscore
+
+      # assign and remove attr_accessible ...
       with_node type: 'send', message: 'attr_accessible' do
-        parameters[object_name] = node.arguments.map { |key| key.to_value }
+        parameters[object_name] = node.arguments.map { |key| key.to_source }
         remove
       end
-    end
 
-    # assign and remove attr_protected ...
-    within_node type: 'class' do
-      object_name = node.name.to_source.underscore
+      # assign and remove attr_protected ...
       with_node type: 'send', message: 'attr_protected' do
-        parameters[object_name] = attributes[object_name] - node.arguments.map { |key| key.to_value }
+        parameters[object_name] = attributes[object_name] - node.arguments.map { |key| key.to_source }
         remove
       end
     end
@@ -71,7 +69,7 @@ It uses string_parameters to replace attr_accessible.
       if_exist_node type: 'send', receiver: 'params', message: '[]', arguments: [object_name.to_sym] do
         if parameters[object_name]
           # append def xxx_params; ...; end
-          permit_params = ":" + parameters[object_name].join(", :")
+          permit_params = parameters[object_name].join(', ')
           unless_exist_node type: 'def', name: "#{object_name}_params" do
             new_code =  "def #{object_name}_params\n"
             new_code << "  params.require(:#{object_name}).permit(#{permit_params})\n"

@@ -39,6 +39,15 @@ end
 class User < ActiveRecord::Base
 end
     '}
+    let(:comment_model_content) {'
+class Comment < ActiveRecord::Base
+  attr_accessible *Model::MY_CONSTANT
+end
+    '}
+    let(:comment_model_rewritten_content) {'
+class Comment < ActiveRecord::Base
+end
+    '}
     let(:schema_content) {'
 ActiveRecord::Schema.define(version: 20140211112752) do
   create_table "users", force: true do |t|
@@ -79,6 +88,26 @@ class PostsController < ApplicationController
   end
 end
     '}
+    let(:comments_controller_content) {'
+class CommentsController < ApplicationController
+  def create
+    @post = Post.find(params[:id])
+    @post.comments.create params[:comment]
+  end
+end
+    '}
+    let(:comments_controller_rewritten_content) {'
+class CommentsController < ApplicationController
+  def create
+    @post = Post.find(params[:id])
+    @post.comments.create comment_params
+  end
+
+  def comment_params
+    params.require(:comment).permit(*Model::MY_CONSTANT)
+  end
+end
+    '}
     let(:users_controller_content) {'
 class UsersController < ApplicationController
   def update
@@ -116,14 +145,18 @@ end
       File.write 'config/application.rb', application_content
       File.write 'db/schema.rb', schema_content
       File.write 'app/models/post.rb', post_model_content
+      File.write 'app/models/comment.rb', comment_model_content
       File.write 'app/models/user.rb', user_model_content
       File.write 'app/controllers/posts_controller.rb', posts_controller_content
+      File.write 'app/controllers/comments_controller.rb', comments_controller_content
       File.write 'app/controllers/users_controller.rb', users_controller_content
       @rewriter.process
       expect(File.read 'config/application.rb').to eq application_rewritten_content
       expect(File.read 'app/models/post.rb').to eq post_model_rewritten_content
+      expect(File.read 'app/models/comment.rb').to eq comment_model_rewritten_content
       expect(File.read 'app/models/user.rb').to eq user_model_rewritten_content
       expect(File.read 'app/controllers/posts_controller.rb').to eq posts_controller_rewritten_content
+      expect(File.read 'app/controllers/comments_controller.rb').to eq comments_controller_rewritten_content
       expect(File.read 'app/controllers/users_controller.rb').to eq users_controller_rewritten_content
     end
   end
