@@ -35,10 +35,10 @@ It uses string_parameters to replace attr_accessible.
   attributes = {}
   within_file 'db/schema.rb' do
     within_node type: 'block', caller: {type: 'send', message: 'create_table'} do
-      object_name = eval(node.caller.arguments.first.to_source).singularize
+      object_name = node.caller.arguments.first.to_value.singularize
       attributes[object_name] = []
       with_node type: 'send', receiver: 't' do
-        attribute_name = eval(node.arguments.first.to_source).to_sym
+        attribute_name = node.arguments.first.to_value.to_sym
         attributes[object_name] << attribute_name
       end
     end
@@ -50,7 +50,7 @@ It uses string_parameters to replace attr_accessible.
     within_node type: 'class' do
       object_name = node.name.to_source.underscore
       with_node type: 'send', message: 'attr_accessible' do
-        parameters[object_name] = node.arguments.map { |key| eval(key.to_source) }
+        parameters[object_name] = node.arguments.map { |key| key.to_value }
         remove
       end
     end
@@ -59,7 +59,7 @@ It uses string_parameters to replace attr_accessible.
     within_node type: 'class' do
       object_name = node.name.to_source.underscore
       with_node type: 'send', message: 'attr_protected' do
-        parameters[object_name] = attributes[object_name] - node.arguments.map { |key| eval(key.to_source) }
+        parameters[object_name] = attributes[object_name] - node.arguments.map { |key| key.to_value }
         remove
       end
     end
@@ -81,7 +81,7 @@ It uses string_parameters to replace attr_accessible.
 
           # params[:xxx] => xxx_params
           with_node type: 'send', receiver: 'params', message: '[]' do
-            object_name = eval(node.arguments.first.to_source).to_s
+            object_name = node.arguments.first.to_value.to_s
             if parameters[object_name]
               replace_with "#{object_name}_params"
             end
