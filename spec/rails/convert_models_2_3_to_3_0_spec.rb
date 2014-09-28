@@ -41,6 +41,14 @@ class Post
     Client.min("age", :conditions => {:active => true})
     Client.max("age", :conditions => {:active => true})
     Client.sum("orders_count", :conditions => {:active => true})
+
+    Post.update_all({:title => "title"}, {:title => "test"})
+    Post.update_all("title = \'title\'", "title = \'test\'")
+    Post.update_all("title = \'title\'", ["title = ?", title])
+    Post.update_all({:title => "title"}, {:title => "test"}, {:limit => 2})
+
+    Post.delete_all("title = \'test\'")
+    Post.delete_all(["title = ?", title])
   end
 
   def validate_email
@@ -89,6 +97,14 @@ class Post
     Client.where(:active => true).min("age")
     Client.where(:active => true).max("age")
     Client.where(:active => true).sum("orders_count")
+
+    Post.where(:title => "test").update_all(:title => "title")
+    Post.where("title = \'test\'").update_all("title = \'title\'")
+    Post.where("title = ?", title).update_all("title = \'title\'")
+    Post.where(:title => "test").limit(2).update_all(:title => "title")
+
+    Post.where("title = \'test\'").delete_all
+    Post.where("title = ?", title).delete_all
   end
 
   def validate_email
