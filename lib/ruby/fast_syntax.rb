@@ -166,7 +166,7 @@ Use ruby fast syntax
     # b = 2
     with_node type: 'masgn' do
       if node.left_value.size == node.right_value.size
-        replace_with node.left_value.zip(node.right_value).map { |left, right| "#{left.to_source} = #{right.to_value}" }.join("\n")
+        replace_with node.left_value.zip(node.right_value).map { |left, right| "#{left.to_source} = #{right.to_source}" }.join("\n")
       end
     end
 
