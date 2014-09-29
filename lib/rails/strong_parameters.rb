@@ -37,7 +37,7 @@ It uses string_parameters to replace attr_accessible.
     within_node type: 'block', caller: {type: 'send', message: 'create_table'} do
       object_name = node.caller.arguments.first.to_value.singularize
       attributes[object_name] = []
-      with_node type: 'send', receiver: 't' do
+      with_node type: 'send', receiver: 't', message: {not: 'index'} do
         attribute_name = ':' + node.arguments.first.to_value
         attributes[object_name] << attribute_name
       end

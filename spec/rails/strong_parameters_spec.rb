@@ -57,6 +57,7 @@ ActiveRecord::Schema.define(version: 20140211112752) do
     t.datetime "updated_at"
     t.integer  "role",                      default: 0,     null: false
     t.boolean  "admin",                     default: false, null: false
+    t.index    [:email, :role]
   end
 end
     '}
