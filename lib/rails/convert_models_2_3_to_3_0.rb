@@ -66,6 +66,22 @@ It converts rails models from 2.3 to 3.0.
     self.save(false)
     =>
     self.save(:validate => false)
+
+    Post.update_all({:title => "title"}, {:title => "test"})
+    Post.update_all("title = \'title\'", "title = \'test\'")
+    Post.update_all("title = \'title\'", ["title = ?", title])
+    Post.update_all({:title => "title"}, {:title => "test"}, {:limit => 2})
+    =>
+    Post.where(:title => "test").update_all(:title => "title")
+    Post.where("title = \'test\'").update_all("title = \'title\'")
+    Post.where(["title = ?", title]).update_all("title = \'title\'")
+    Post.where(:title => "test").limit(2).update_all(:title => "title")
+
+    Post.delete_all("title = \'test\'")
+    Post.delete_all(["title = ?", title])
+    =>
+    Post.where("title = \'test\'").delete_all
+    Post.where("title = ?", title).delete_all
   EOF
 
   keys = [:conditions, :order, :joins, :select, :from, :having, :group, :include, :limit, :offset, :lock, :readonly]
@@ -226,6 +242,36 @@ It converts rails models from 2.3 to 3.0.
         within_node type: 'send', message: 'find', arguments: {size: 1, first: message} do
           replace_with add_receiver_if_necessary(message)
         end
+      end
+
+      # Post.update_all({:title => "title"}, {:title => "test"})
+      # Post.update_all("title = \'title\'", "title = \'test\'")
+      # Post.update_all("title = \'title\'", ["title = ?", title])
+      # =>
+      # Post.where(:title => "test").update_all(:title => "title")
+      # Post.where("title = \'test\'").update_all("title = \'title\'")
+      # Post.where("title = ?", title).update_all("title = \'title\'")
+      within_node type: 'send', message: :update_all, arguments: {size: 2} do
+        updates_node, conditions_node = node.arguments
+        replace_with add_receiver_if_necessary("where(#{(strip_brackets(conditions_node.to_source))}).update_all(#{strip_brackets(updates_node.to_source)})")
+      end
+
+      # Post.update_all({:title => "title"}, {:title => "test"}, {:limit => 2})
+      # =>
+      # Post.where(:title => "test").limit(2).update_all(:title => "title")
+      within_node type: 'send', message: :update_all, arguments: {size: 3} do
+        updates_node, conditions_node, options_node = node.arguments
+        replace_with add_receiver_if_necessary("where(#{strip_brackets(conditions_node.to_source)}).#{generate_new_queries(options_node)}.update_all(#{strip_brackets(updates_node.to_source)})")
+      end
+
+      # Post.delete_all("title = \'test\'")
+      # Post.delete_all(["title = ?", title])
+      # =>
+      # Post.where("title = \'test\'").delete_all
+      # Post.where("title = ?", title).delete_all
+      within_node type: 'send', message: :delete_all, arguments: {size: 1} do
+        conditions_node = node.arguments.first
+        replace_with add_receiver_if_necessary("where(#{strip_brackets(conditions_node.to_source)}).delete_all")
       end
 
       %w(find_each find_in_batches).each do |message|
