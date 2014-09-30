@@ -49,6 +49,9 @@ class Post
 
     Post.delete_all("title = \'test\'")
     Post.delete_all(["title = ?", title])
+
+    Post.destroy_all("title = \'test\'")
+    Post.destroy_all(["title = ?", title])
   end
 
   def validate_email
@@ -105,6 +108,9 @@ class Post
 
     Post.where("title = \'test\'").delete_all
     Post.where("title = ?", title).delete_all
+
+    Post.where("title = \'test\'").destroy_all
+    Post.where("title = ?", title).destroy_all
   end
 
   def validate_email
