@@ -82,6 +82,12 @@ It converts rails models from 2.3 to 3.0.
     =>
     Post.where("title = \'test\'").delete_all
     Post.where("title = ?", title).delete_all
+
+    Post.destroy_all("title = \'test\'")
+    Post.destroy_all(["title = ?", title])
+    =>
+    Post.where("title = \'test\'").destroy_all
+    Post.where("title = ?", title).destroy_all
   EOF
 
   keys = [:conditions, :order, :joins, :select, :from, :having, :group, :include, :limit, :offset, :lock, :readonly]
@@ -268,9 +274,17 @@ It converts rails models from 2.3 to 3.0.
     # =>
     # Post.where("title = \'test\'").delete_all
     # Post.where("title = ?", title).delete_all
-    within_node type: 'send', message: :delete_all, arguments: {size: 1} do
-      conditions_node = node.arguments.first
-      replace_with add_receiver_if_necessary("where(#{strip_brackets(conditions_node.to_source)}).delete_all")
+    #
+    # Post.destroy_all("title = \'test\'")
+    # Post.destroy_all(["title = ?", title])
+    # =>
+    # Post.where("title = \'test\'").destroy_all
+    # Post.where("title = ?", title).destroy_all
+    %w(delete_all destroy_all).each do |message|
+      within_node type: 'send', message: message, arguments: {size: 1} do
+        conditions_node = node.arguments.first
+        replace_with add_receiver_if_necessary("where(#{strip_brackets(conditions_node.to_source)}).#{message}")
+      end
     end
 
     %w(find_each find_in_batches).each do |message|
