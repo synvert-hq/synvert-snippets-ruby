@@ -32,12 +32,10 @@ It upgrades rails from 3.1 to 3.2.
     end
   end
 
-  %w(config/environments/development.rb config/environments/test.rb).each do |file_pattern|
-    within_file file_pattern do
-      # insert config.active_record.mass_assignment_sanitizer = :strict
-      unless_exist_node type: 'send', receiver: {type: 'send', receiver: {type: 'send', message: 'config'}, message: 'active_record'}, message: 'mass_assignment_sanitizer=' do
-        insert 'config.active_record.mass_assignment_sanitizer = :strict'
-      end
+  within_files "config/environments/{development,test}.rb" do
+    # insert config.active_record.mass_assignment_sanitizer = :strict
+    unless_exist_node type: 'send', receiver: {type: 'send', receiver: {type: 'send', message: 'config'}, message: 'active_record'}, message: 'mass_assignment_sanitizer=' do
+      insert 'config.active_record.mass_assignment_sanitizer = :strict'
     end
   end
 

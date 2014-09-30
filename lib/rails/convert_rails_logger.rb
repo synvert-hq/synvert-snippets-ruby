@@ -3,14 +3,12 @@ Synvert::Rewriter.new 'rails', 'convert_rails_logger' do
 
   if_gem 'rails', {gte: '2.3.0'}
 
-  %w(**/*.rb **/*.rake).each do |file_pattern|
-    within_files file_pattern do
-      with_node type: 'const', to_source: 'RAILS_DEFAULT_LOGGER' do
-        replace_with "Rails.logger"
-      end
-      with_node type: 'const', to_source: '::RAILS_DEFAULT_LOGGER' do
-        replace_with "Rails.logger"
-      end
+  within_files "**/*.{rb,rake}" do
+    with_node type: 'const', to_source: 'RAILS_DEFAULT_LOGGER' do
+      replace_with "Rails.logger"
+    end
+    with_node type: 'const', to_source: '::RAILS_DEFAULT_LOGGER' do
+      replace_with "Rails.logger"
     end
   end
 end

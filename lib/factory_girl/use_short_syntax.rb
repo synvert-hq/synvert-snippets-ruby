@@ -86,12 +86,10 @@ Uses FactoryGirl short syntax.
   # FactoryGirl.build_list(...) => build_list(...)
   # FactoryGirl.create_pair(...) => create_pair(...)
   # FactoryGirl.build_pair(...) => build_pair(...)
-  %w(test/**/*.rb spec/**/*.rb features/**/*.rb).each do |file_pattern|
-    within_files file_pattern do
-      %w(create build attributes_for build_stubbed create_list build_list create_pair build_pair).each do |message|
-        with_node type: 'send', receiver: 'FactoryGirl', message: message do
-          replace_with "#{message}({{arguments}})"
-        end
+  within_files "{test,spec,features}/**/*.rb" do
+    %w(create build attributes_for build_stubbed create_list build_list create_pair build_pair).each do |message|
+      with_node type: 'send', receiver: 'FactoryGirl', message: message do
+        replace_with "#{message}({{arguments}})"
       end
     end
   end

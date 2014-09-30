@@ -111,234 +111,230 @@ It converts rails models from 2.3 to 3.0.
     options.join(", ")
   end
 
-  %w(app/**/*.rb lib/**/*.rb).each do |file_pattern|
-    within_files file_pattern do
-      # named_scope :active, :conditions => {:active => true}
+  within_files "{app,lib}/**/*.rb" do
+    # named_scope :active, :conditions => {:active => true}
+    # =>
+    # named_scope :active, where(:active => true)
+    #
+    # default_scope :conditions => {:active => true}
+    # =>
+    # default_scope where(:active => true)
+    %w(named_scope default_scope).each do |message|
+      within_node type: 'send', message: message, arguments: {last: {type: 'hash'}} do
+        with_node type: 'hash' do
+          if keys.any? { |key| node.has_key? key }
+            replace_with generate_new_queries(node)
+          end
+        end
+      end
+
+      # named_scope :active, lambda { {:conditions => {:active => true}} }
       # =>
-      # named_scope :active, where(:active => true)
+      # named_scope :active, lambda { where(:active => true) }
       #
-      # default_scope :conditions => {:active => true}
+      # default_scope :active, lambda { {:conditions => {:active => true}} }
       # =>
-      # default_scope where(:active => true)
-      %w(named_scope default_scope).each do |message|
-        within_node type: 'send', message: message, arguments: {last: {type: 'hash'}} do
+      # default_scope :active, lambda { where(:active => true) }
+      within_node type: 'send', message: message, arguments: {last: {type: 'block'}} do
+        within_node type: 'block' do
           with_node type: 'hash' do
             if keys.any? { |key| node.has_key? key }
               replace_with generate_new_queries(node)
             end
           end
         end
+      end
+    end
 
-        # named_scope :active, lambda { {:conditions => {:active => true}} }
-        # =>
-        # named_scope :active, lambda { where(:active => true) }
-        #
-        # default_scope :active, lambda { {:conditions => {:active => true}} }
-        # =>
-        # default_scope :active, lambda { where(:active => true) }
-        within_node type: 'send', message: message, arguments: {last: {type: 'block'}} do
-          within_node type: 'block' do
-            with_node type: 'hash' do
-              if keys.any? { |key| node.has_key? key }
-                replace_with generate_new_queries(node)
-              end
-            end
-          end
+    # named_scope :active, where(:active => true)
+    # =>
+    # scope :active, where(:active => true)
+    with_node type: 'send', message: 'named_scope' do
+      replace_with add_receiver_if_necessary("scope {{arguments}}")
+    end
+
+    # scoped(:conditions => {:active => true})
+    # =>
+    # where(:active => true)
+    within_node type: 'send', message: 'scoped' do
+      if node.arguments.length == 1
+        argument_node = node.arguments.first
+        if keys.any? { |key| argument_node.has_key? key }
+          replace_with add_receiver_if_necessary(generate_new_queries(argument_node))
         end
       end
+    end
 
-      # named_scope :active, where(:active => true)
-      # =>
-      # scope :active, where(:active => true)
-      with_node type: 'send', message: 'named_scope' do
-        replace_with add_receiver_if_necessary("scope {{arguments}}")
+    # Post.all(:joins => :comments)
+    # =>
+    # Post.joins(:comments).all
+    within_node type: 'send', message: 'all', arguments: {size: 1} do
+      argument_node = node.arguments.first
+      if :hash == argument_node.type && keys.any? { |key| argument_node.has_key? key }
+        replace_with add_receiver_if_necessary(generate_new_queries(argument_node))
       end
+    end
 
-      # scoped(:conditions => {:active => true})
+    %w(first last).each do |message|
+      # Post.first(:conditions => {:title => "test"})
       # =>
-      # where(:active => true)
-      within_node type: 'send', message: 'scoped' do
-        if node.arguments.length == 1
-          argument_node = node.arguments.first
-          if keys.any? { |key| argument_node.has_key? key }
-            replace_with add_receiver_if_necessary(generate_new_queries(argument_node))
-          end
-        end
-      end
-
-      # Post.all(:joins => :comments)
-      # =>
-      # Post.joins(:comments).all
-      within_node type: 'send', message: 'all', arguments: {size: 1} do
+      # Post.where(:title => "test").first
+      within_node type: 'send', message: message, arguments: {size: 1} do
         argument_node = node.arguments.first
         if :hash == argument_node.type && keys.any? { |key| argument_node.has_key? key }
-          replace_with add_receiver_if_necessary(generate_new_queries(argument_node))
+          replace_with add_receiver_if_necessary("#{generate_new_queries(argument_node)}.#{message}")
         end
       end
+    end
 
-      %w(first last).each do |message|
-        # Post.first(:conditions => {:title => "test"})
-        # =>
-        # Post.where(:title => "test").first
-        within_node type: 'send', message: message, arguments: {size: 1} do
-          argument_node = node.arguments.first
-          if :hash == argument_node.type && keys.any? { |key| argument_node.has_key? key }
-            replace_with add_receiver_if_necessary("#{generate_new_queries(argument_node)}.#{message}")
-          end
-        end
-      end
-
-      %w(count average min max sum).each do |message|
-        # Client.count("age", :conditions => {:active => true})
-        # Client.average("orders_count", :conditions => {:active => true})
-        # Client.min("age", :conditions => {:active => true})
-        # Client.max("age", :conditions => {:active => true})
-        # Client.sum("orders_count", :conditions => {:active => true})
-        # =>
-        # Client.where(:active => true).count("age")
-        # Client.where(:active => true).average("orders_count")
-        # Client.where(:active => true).min("age")
-        # Client.where(:active => true).max("age")
-        # Client.where(:active => true).sum("orders_count")
-        within_node type: 'send', message: message, arguments: {size: 2} do
-          argument_node = node.arguments.last
-          if :hash == argument_node.type && keys.any? { |key| argument_node.has_key? key }
-            replace_with add_receiver_if_necessary("#{generate_new_queries(argument_node)}.#{message}({{arguments.first}})")
-          end
-        end
-      end
-
-      # Post.find(:all, :limit => 2)
+    %w(count average min max sum).each do |message|
+      # Client.count("age", :conditions => {:active => true})
+      # Client.average("orders_count", :conditions => {:active => true})
+      # Client.min("age", :conditions => {:active => true})
+      # Client.max("age", :conditions => {:active => true})
+      # Client.sum("orders_count", :conditions => {:active => true})
       # =>
-      # Post.where(:limit => 2)
-      with_node type: 'send', message: 'find', arguments: {size: 2, first: :all} do
+      # Client.where(:active => true).count("age")
+      # Client.where(:active => true).average("orders_count")
+      # Client.where(:active => true).min("age")
+      # Client.where(:active => true).max("age")
+      # Client.where(:active => true).sum("orders_count")
+      within_node type: 'send', message: message, arguments: {size: 2} do
         argument_node = node.arguments.last
         if :hash == argument_node.type && keys.any? { |key| argument_node.has_key? key }
-          replace_with add_receiver_if_necessary(generate_new_queries(argument_node))
+          replace_with add_receiver_if_necessary("#{generate_new_queries(argument_node)}.#{message}({{arguments.first}})")
+        end
+      end
+    end
+
+    # Post.find(:all, :limit => 2)
+    # =>
+    # Post.where(:limit => 2)
+    with_node type: 'send', message: 'find', arguments: {size: 2, first: :all} do
+      argument_node = node.arguments.last
+      if :hash == argument_node.type && keys.any? { |key| argument_node.has_key? key }
+        replace_with add_receiver_if_necessary(generate_new_queries(argument_node))
+      end
+    end
+
+    # Post.find(:all)
+    # =>
+    # Post.all
+    with_node type: 'send', message: 'find', arguments: {size: 1, first: :all} do
+      replace_with add_receiver_if_necessary("all")
+    end
+
+    [:first, :last].each do |message|
+      # Post.find(:last, :conditions => {:title => "test"})
+      # =>
+      # Post.where(:title => "title").last
+      within_node type: 'send', message: 'find', arguments: {size: 2, first: message} do
+        argument_node = node.arguments.last
+        if :hash == argument_node.type && keys.any? { |key| argument_node.has_key? key }
+          replace_with add_receiver_if_necessary("#{generate_new_queries(argument_node)}.#{message}")
         end
       end
 
-      # Post.find(:all)
+      # Post.find(:first)
       # =>
-      # Post.all
-      with_node type: 'send', message: 'find', arguments: {size: 1, first: :all} do
-        replace_with add_receiver_if_necessary("all")
+      # Post.first
+      within_node type: 'send', message: 'find', arguments: {size: 1, first: message} do
+        replace_with add_receiver_if_necessary(message)
       end
+    end
 
-      [:first, :last].each do |message|
-        # Post.find(:last, :conditions => {:title => "test"})
-        # =>
-        # Post.where(:title => "title").last
-        within_node type: 'send', message: 'find', arguments: {size: 2, first: message} do
-          argument_node = node.arguments.last
-          if :hash == argument_node.type && keys.any? { |key| argument_node.has_key? key }
+    # Post.update_all({:title => "title"}, {:title => "test"})
+    # Post.update_all("title = \'title\'", "title = \'test\'")
+    # Post.update_all("title = \'title\'", ["title = ?", title])
+    # =>
+    # Post.where(:title => "test").update_all(:title => "title")
+    # Post.where("title = \'test\'").update_all("title = \'title\'")
+    # Post.where("title = ?", title).update_all("title = \'title\'")
+    within_node type: 'send', message: :update_all, arguments: {size: 2} do
+      updates_node, conditions_node = node.arguments
+      replace_with add_receiver_if_necessary("where(#{(strip_brackets(conditions_node.to_source))}).update_all(#{strip_brackets(updates_node.to_source)})")
+    end
+
+    # Post.update_all({:title => "title"}, {:title => "test"}, {:limit => 2})
+    # =>
+    # Post.where(:title => "test").limit(2).update_all(:title => "title")
+    within_node type: 'send', message: :update_all, arguments: {size: 3} do
+      updates_node, conditions_node, options_node = node.arguments
+      replace_with add_receiver_if_necessary("where(#{strip_brackets(conditions_node.to_source)}).#{generate_new_queries(options_node)}.update_all(#{strip_brackets(updates_node.to_source)})")
+    end
+
+    # Post.delete_all("title = \'test\'")
+    # Post.delete_all(["title = ?", title])
+    # =>
+    # Post.where("title = \'test\'").delete_all
+    # Post.where("title = ?", title).delete_all
+    within_node type: 'send', message: :delete_all, arguments: {size: 1} do
+      conditions_node = node.arguments.first
+      replace_with add_receiver_if_necessary("where(#{strip_brackets(conditions_node.to_source)}).delete_all")
+    end
+
+    %w(find_each find_in_batches).each do |message|
+      # Post.find_each(:conditions => {:title => "test"}, :batch_size => 100) do |post|
+      # end
+      # =>
+      # Post.where(:title => "test").find_each(:batch_size => 100) do |post|
+      # end
+      #
+      # Post.find_in_batches(:conditions => {:title => "test"}, :batch_size => 100) do |posts|
+      # end
+      # =>
+      # Post.where(:title => "test").find_in_batches(:batch_size => 100) do |posts|
+      # end
+      within_node type: 'send', message: message, arguments: {size: 1} do
+        argument_node = node.arguments.first
+        if :hash == argument_node.type && keys.any? { |key| argument_node.has_key? key }
+          batch_options = generate_batch_options(argument_node)
+          if batch_options.length > 0
+            replace_with add_receiver_if_necessary("#{generate_new_queries(argument_node)}.#{message}(#{batch_options})")
+          else
             replace_with add_receiver_if_necessary("#{generate_new_queries(argument_node)}.#{message}")
           end
         end
-
-        # Post.find(:first)
-        # =>
-        # Post.first
-        within_node type: 'send', message: 'find', arguments: {size: 1, first: message} do
-          replace_with add_receiver_if_necessary(message)
-        end
       end
+    end
 
-      # Post.update_all({:title => "title"}, {:title => "test"})
-      # Post.update_all("title = \'title\'", "title = \'test\'")
-      # Post.update_all("title = \'title\'", ["title = ?", title])
+    %w(with_scope with_exclusive_scope).each do |message|
+      # with_scope(:find => {:conditions => {:active => true}}) { Post.first }
       # =>
-      # Post.where(:title => "test").update_all(:title => "title")
-      # Post.where("title = \'test\'").update_all("title = \'title\'")
-      # Post.where("title = ?", title).update_all("title = \'title\'")
-      within_node type: 'send', message: :update_all, arguments: {size: 2} do
-        updates_node, conditions_node = node.arguments
-        replace_with add_receiver_if_necessary("where(#{(strip_brackets(conditions_node.to_source))}).update_all(#{strip_brackets(updates_node.to_source)})")
-      end
-
-      # Post.update_all({:title => "title"}, {:title => "test"}, {:limit => 2})
+      # with_scope(where(:active => true)) { Post.first }
+      #
+      # with_exclusive_scope(:find => {:limit =>1}) { Post.last }
       # =>
-      # Post.where(:title => "test").limit(2).update_all(:title => "title")
-      within_node type: 'send', message: :update_all, arguments: {size: 3} do
-        updates_node, conditions_node, options_node = node.arguments
-        replace_with add_receiver_if_necessary("where(#{strip_brackets(conditions_node.to_source)}).#{generate_new_queries(options_node)}.update_all(#{strip_brackets(updates_node.to_source)})")
-      end
-
-      # Post.delete_all("title = \'test\'")
-      # Post.delete_all(["title = ?", title])
-      # =>
-      # Post.where("title = \'test\'").delete_all
-      # Post.where("title = ?", title).delete_all
-      within_node type: 'send', message: :delete_all, arguments: {size: 1} do
-        conditions_node = node.arguments.first
-        replace_with add_receiver_if_necessary("where(#{strip_brackets(conditions_node.to_source)}).delete_all")
-      end
-
-      %w(find_each find_in_batches).each do |message|
-        # Post.find_each(:conditions => {:title => "test"}, :batch_size => 100) do |post|
-        # end
-        # =>
-        # Post.where(:title => "test").find_each(:batch_size => 100) do |post|
-        # end
-        #
-        # Post.find_in_batches(:conditions => {:title => "test"}, :batch_size => 100) do |posts|
-        # end
-        # =>
-        # Post.where(:title => "test").find_in_batches(:batch_size => 100) do |posts|
-        # end
-        within_node type: 'send', message: message, arguments: {size: 1} do
-          argument_node = node.arguments.first
-          if :hash == argument_node.type && keys.any? { |key| argument_node.has_key? key }
-            batch_options = generate_batch_options(argument_node)
-            if batch_options.length > 0
-              replace_with add_receiver_if_necessary("#{generate_new_queries(argument_node)}.#{message}(#{batch_options})")
-            else
-              replace_with add_receiver_if_necessary("#{generate_new_queries(argument_node)}.#{message}")
-            end
-          end
-        end
-      end
-
-      %w(with_scope with_exclusive_scope).each do |message|
-        # with_scope(:find => {:conditions => {:active => true}}) { Post.first }
-        # =>
-        # with_scope(where(:active => true)) { Post.first }
-        #
-        # with_exclusive_scope(:find => {:limit =>1}) { Post.last }
-        # =>
-        # with_exclusive_scope(limit(1)) { Post.last }
-        within_node type: 'send', message: message, arguments: {size: 1} do
-          argument_node = node.arguments.first
-          if :hash == argument_node.type && argument_node.has_key?(:find)
-            replace_with "#{message}(#{generate_new_queries(argument_node.hash_value(:find))})"
-          end
+      # with_exclusive_scope(limit(1)) { Post.last }
+      within_node type: 'send', message: message, arguments: {size: 1} do
+        argument_node = node.arguments.first
+        if :hash == argument_node.type && argument_node.has_key?(:find)
+          replace_with "#{message}(#{generate_new_queries(argument_node.hash_value(:find))})"
         end
       end
     end
   end
 
-  %w(app/**/*.rb lib/**/*.rb test/**/*_test.rb).each do |file_pattern|
-    within_files file_pattern do
-      # self.errors.on(:email).present?
-      # =>
-      # self.errors[:email].present?
-      with_node type: 'send', message: 'on', receiver: /errors$/ do
-        replace_with "{{receiver}}[{{arguments}}]"
-      end
+  within_files "{app,lib,test}/**/*.rb" do
+    # self.errors.on(:email).present?
+    # =>
+    # self.errors[:email].present?
+    with_node type: 'send', message: 'on', receiver: /errors$/ do
+      replace_with "{{receiver}}[{{arguments}}]"
+    end
 
-      # self.errors.add_to_base("error message")
-      # =>
-      # self.errors.add(:base, "error message")
-      with_node type: 'send', message: 'add_to_base', receiver: {type: 'send', message: 'errors'} do
-        replace_with "{{receiver}}.add(:base, {{arguments}})"
-      end
+    # self.errors.add_to_base("error message")
+    # =>
+    # self.errors.add(:base, "error message")
+    with_node type: 'send', message: 'add_to_base', receiver: {type: 'send', message: 'errors'} do
+      replace_with "{{receiver}}.add(:base, {{arguments}})"
+    end
 
-      # self.save(false)
-      # =>
-      # self.save(:validate => false)
-      with_node type: 'send', message: 'save', arguments: [false] do
-        replace_with add_receiver_if_necessary("save(:validate => false)")
-      end
+    # self.save(false)
+    # =>
+    # self.save(:validate => false)
+    with_node type: 'send', message: 'save', arguments: [false] do
+      replace_with add_receiver_if_necessary("save(:validate => false)")
     end
   end
 end

@@ -157,7 +157,9 @@ Use ruby fast syntax
     # =>
     # 'slug from title'.tr(' ', '_')
     with_node type: 'send', message: 'gsub', arguments: {size: 2, first: {type: 'str'}, last: {type: 'str'}} do
-      replace_with "{{receiver}}.tr({{arguments}})"
+      if node.arguments.first.to_value.length == 1
+        replace_with "{{receiver}}.tr({{arguments}})"
+      end
     end
 
     # a, b = 1, 2
