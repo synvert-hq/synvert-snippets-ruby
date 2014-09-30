@@ -56,20 +56,20 @@ It converts rails mailers from 2.3 to 3.0.
         class_name = node.name
         within_node type: 'def' do
           args = {}
-          with_node type: 'send', message: 'recipients' do
+          with_node type: 'send', receiver: nil, message: 'recipients' do
             args[:to] = node.arguments.first.to_source
             remove
           end
           %w(subject from cc bcc).each do |message|
-            with_node type: 'send', message: message do
+            with_node type: 'send', receiver: nil, message: message do
               args[message.to_sym] = node.arguments.first.to_source
               remove
             end
           end
-          with_node type: 'send', message: 'content_type' do
+          with_node type: 'send', receiver: nil, message: 'content_type' do
             remove
           end
-          with_node type: 'send', message: 'body' do
+          with_node type: 'send', receiver: nil, message: 'body' do
             body_argument = node.arguments.first
             if :hash == body_argument.type
               replace_with body_argument.children.map { |pair_node| "@#{pair_node.key.to_value} = #{pair_node.value.to_source}" }.join("\n")
