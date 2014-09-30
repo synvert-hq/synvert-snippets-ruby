@@ -13,6 +13,7 @@ RAILS_ROOT
 File.join(RAILS_ROOT, "config", "database.yml")
 RAILS_ROOT + "/config/database.yml"
 "#{RAILS_ROOT}/config/database.yml"
+File.exists?(RAILS_ROOT + "/config/database.yml")
     '}
     let(:constant_rewritten_content) {'
 Rails.root
@@ -20,6 +21,7 @@ Rails.root
 Rails.root.join("config", "database.yml")
 Rails.root.join("config/database.yml")
 Rails.root.join("config/database.yml")
+Rails.root.join("config/database.yml").exist?
     '}
 
     it 'converts' do

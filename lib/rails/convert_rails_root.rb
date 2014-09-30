@@ -3,16 +3,24 @@ Synvert::Rewriter.new 'rails', 'convert_rails_root' do
 It converts RAILS_ROOT to Rails.root.
 
   RAILS_ROOT
-  => Rails.root
+  =>
+  Rails.root
 
   File.join(RAILS_ROOT, 'config/database.yml')
-  => Rails.root.join('config/database.yml')
+  =>
+  Rails.root.join('config/database.yml')
 
   RAILS_ROOT + 'config/database.yml')
-  => Rails.root.join('config/database.yml')
+  =>
+  Rails.root.join('config/database.yml')
 
   "\#{RAILS_ROOT}/config/database.yml"
-  => Rails.root.join('config/database.yml')
+  =>
+  Rails.root.join('config/database.yml')
+
+  File.exists?(Rails.root.join('config/database.yml'))
+  =>
+  Rails.root.join('config/database.yml').exist?
   EOF
 
   if_gem 'rails', {gte: '2.3.0'}
@@ -52,6 +60,15 @@ It converts RAILS_ROOT to Rails.root.
       source = node.to_source
       source[1..14] = ''
       replace_with "Rails.root.join(#{source})"
+    end
+  end
+
+  within_files "**/*.{rb,rake}" do
+    # File.exists?(Rails.root.join('config/database.yml'))
+    # =>
+    # Rails.root.join('config/database.yml').exist?
+    with_node type:'send', receiver: 'File', message: 'exists?', arguments: {size: 1, first: {type: 'send', receiver: 'Rails.root', message: 'join'}} do
+      replace_with "{{arguments.first}}.exist?"
     end
   end
 end
