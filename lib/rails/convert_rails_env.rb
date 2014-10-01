@@ -3,19 +3,28 @@ Synvert::Rewriter.new 'rails', 'convert_rails_env' do
 It converts RAILS_ENV to Rails.env.
 
   RAILS_ENV
-  => Rails.env
+  =>
+  Rails.env
+
+  \"\#{RAILS_ENV}\"
+  =>
+  \"\#{Rails.env}\"
 
   RAILS_ENV == 'development'
-  => Rails.env.development?
+  =>
+  Rails.env.development?
 
   'development' == RAILS_ENV
-  => Rails.env.development?
+  =>
+  Rails.env.development?
 
   RAILS_ENV != 'development'
-  => !Rails.env.development?
+  =>
+  !Rails.env.development?
 
   'development' != RAILS_ENV
-  => !Rails.env.development?
+  =>
+  !Rails.env.development?
   EOF
 
   if_gem 'rails', {gte: '2.3.0'}
@@ -36,11 +45,9 @@ It converts RAILS_ENV to Rails.env.
     # Rails.env == 'test'
     # =>
     # Rails.env.test?
-    with_node type: 'send', receiver: 'Rails.env', message: '==' do
-      if node.arguments.size == 1
-        env = node.arguments.first.to_value
-        replace_with "Rails.env.#{env}?"
-      end
+    with_node type: 'send', receiver: 'Rails.env', message: '==', arguments: {size: 1} do
+      env = node.arguments.first.to_value
+      replace_with "Rails.env.#{env}?"
     end
 
     # 'development' == Rails.env
@@ -54,11 +61,9 @@ It converts RAILS_ENV to Rails.env.
     # Rails.env != 'test'
     # =>
     # !Rails.env.test?
-    with_node type: 'send', receiver: 'Rails.env', message: '!=' do
-      if node.arguments.size == 1
-        env = node.arguments.first.to_value
-        replace_with "!Rails.env.#{env}?"
-      end
+    with_node type: 'send', receiver: 'Rails.env', message: '!=', arguments: {size: 1} do
+      env = node.arguments.first.to_value
+      replace_with "!Rails.env.#{env}?"
     end
 
     # 'development' != Rails.env
