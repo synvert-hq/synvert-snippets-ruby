@@ -15,6 +15,7 @@ class Notifier < ActionMailer::Base
     recipients      recipient.email_address_with_name
     subject         "New account information"
     from            "system@example.com"
+    sent_on         Time.now
     content_type    "multipart/alternative"
     body            :account => recipient
   end
@@ -24,7 +25,7 @@ end
 class Notifier < ActionMailer::Base
   def signup_notification(recipient)
     @account = recipient
-    mail(:to => recipient.email_address_with_name, :subject => "New account information", :from => "system@example.com")
+    mail(:to => recipient.email_address_with_name, :subject => "New account information", :from => "system@example.com", :date => Time.now)
   end
 end
     '}

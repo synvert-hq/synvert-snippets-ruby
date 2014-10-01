@@ -7,6 +7,7 @@ It converts rails mailers from 2.3 to 3.0.
       recipients      recipient.email_address_with_name
       subject         "New account information"
       from            "system@example.com"
+      sent_on         Time.now
       content_type    "multipart/alternative"
       body            :account => recipient
     end
@@ -15,7 +16,7 @@ It converts rails mailers from 2.3 to 3.0.
   class Notifier < ActionMailer::Base
     def signup_notification(recipient)
       @account = recipient
-      mail(:to => recipient.email_address_with_name, :subject => "New account information", :from => "system@example.com")
+      mail(:to => recipient.email_address_with_name, :subject => "New account information", :from => "system@example.com", :date => Time.now)
     end
   end
 
@@ -40,6 +41,7 @@ It converts rails mailers from 2.3 to 3.0.
     #     recipients      recipient.email_address_with_name
     #     subject         "New account information"
     #     from            "system@example.com"
+    #     sent_on         Time.now
     #     content_type    "multipart/alternative"
     #     body            :account => recipient
     #   end
@@ -48,7 +50,7 @@ It converts rails mailers from 2.3 to 3.0.
     # class Notifier < ActionMailer::Base
     #   def signup_notification(recipient)
     #     @account = recipient
-    #     mail(:to => recipient.email_address_with_name, :subject => "New account information", :from => "system@example.com")
+    #     mail(:to => recipient.email_address_with_name, :subject => "New account information", :from => "system@example.com", :date => Time.now)
     #   end
     # end
     within_node type: 'class', parent_class: 'ActionMailer::Base' do
@@ -64,6 +66,10 @@ It converts rails mailers from 2.3 to 3.0.
             args[message.to_sym] = node.arguments.first.to_source
             remove
           end
+        end
+        with_node type: 'send', receiver: nil, message: 'sent_on' do
+          args[:date] = node.arguments.first.to_source
+          remove
         end
         with_node type: 'send', receiver: nil, message: 'content_type' do
           remove
