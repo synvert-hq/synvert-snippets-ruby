@@ -31,7 +31,9 @@ snippets.
 
   within_file 'config/application.rb' do
     with_node type: 'class', parent_class: 'Rails::Application' do
-      append "config.filter_parameters += [#{filter_parameters.join(', ')}]"
+      unless_exist_node type: 'send', receiver: 'config', message: 'filter_parameters' do
+        append "config.filter_parameters += [#{filter_parameters.join(', ')}]"
+      end
     end
   end
 end
