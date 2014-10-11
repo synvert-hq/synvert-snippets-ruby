@@ -23,7 +23,7 @@ But it keeps custom methods like dynamic finders intact.
 
   helper_method :dynamic_finder_to_hash do |prefix|
     fields = fields_of_dynamic_finder(prefix)
-    return nil if (fields & attributes) != fields
+    return nil if (fields - attributes).present?
 
     if fields.length == node.arguments.length && :hash != node.arguments.first.type
       fields.length.times.map { |i|

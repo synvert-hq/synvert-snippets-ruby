@@ -14,6 +14,7 @@ describe 'Upgrade rails from 3.2 to 4.0' do
   end
 
   describe 'with fakefs', fakefs: true do
+
     let(:application_content) {'
 if defined?(Bundler)
   Bundler.require(*Rails.groups(:assets => %w(development test)))
@@ -129,6 +130,20 @@ class RenamePeopleToUsers < ActiveRecord::Migration
   end
 end
     "}
+    let(:schema_content) {'
+ActiveRecord::Schema.define(version: 20140211112752) do
+  create_table "users", force: true do |t|
+    t.integer  "account_id",               index: true
+    t.string   "login"
+    t.string   "email"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.integer  "role",                      default: 0,     null: false
+    t.boolean  "admin",                     default: false, null: false
+    t.boolean  "active",                    default: false, null: false
+  end
+end
+    '}
     let(:post_model_content) {'
 class Post < ActiveRecord::Base
   has_many :comments, dependent: :restrict
@@ -145,16 +160,32 @@ class Post < ActiveRecord::Base
     User.find_all_by_email_and_active(email, true)
   end
 
+  def active_users_by_label(label)
+    User.find_all_by_label_and_active(label, true)
+  end
+
   def first_active_user_by_email(email)
     User.find_by_email_and_active(email, true)
+  end
+
+  def first_active_user_by_label(label)
+    User.find_by_label_and_active(label, true)
   end
 
   def last_active_user_by_email(email)
     User.find_last_by_email_and_active(email, true)
   end
 
+  def last_active_user_by_label(label)
+    User.find_last_by_label_and_active(label, true)
+  end
+
   def scoped_active_user_by_email(email)
     User.scoped_by_email_and_active(email, true)
+  end
+
+  def scoped_active_user_by_label(label)
+    User.scoped_by_label_and_active(email, true)
   end
 end
     '}
@@ -172,16 +203,32 @@ class Post < ActiveRecord::Base
     User.where(email: email, active: true)
   end
 
+  def active_users_by_label(label)
+    User.find_all_by_label_and_active(label, true)
+  end
+
   def first_active_user_by_email(email)
     User.where(email: email, active: true).first
+  end
+
+  def first_active_user_by_label(label)
+    User.find_by_label_and_active(label, true)
   end
 
   def last_active_user_by_email(email)
     User.where(email: email, active: true).last
   end
 
+  def last_active_user_by_label(label)
+    User.find_last_by_label_and_active(label, true)
+  end
+
   def scoped_active_user_by_email(email)
     User.where(email: email, active: true)
+  end
+
+  def scoped_active_user_by_label(label)
+    User.scoped_by_label_and_active(email, true)
   end
 end
     '}
@@ -191,8 +238,16 @@ class UsersController < ApplicationController
     @user = User.find_or_initialize_by_login_and_email(params[:user][:login], params[:user][:email])
   end
 
+  def new
+    @user = User.find_or_initialize_by_label_and_email(params[:user][:label], params[:user][:email])
+  end
+
   def create
     @user = User.find_or_create_by_login_and_email(params[:user][:login], params[:user][:email])
+  end
+
+  def create
+    @user = User.find_or_create_by_label_and_email(params[:user][:label], params[:user][:email])
   end
 end
     '}
@@ -202,8 +257,16 @@ class UsersController < ApplicationController
     @user = User.find_or_initialize_by(login: params[:user][:login], email: params[:user][:email])
   end
 
+  def new
+    @user = User.find_or_initialize_by_label_and_email(params[:user][:label], params[:user][:email])
+  end
+
   def create
     @user = User.find_or_create_by(login: params[:user][:login], email: params[:user][:email])
+  end
+
+  def create
+    @user = User.find_or_create_by_label_and_email(params[:user][:label], params[:user][:email])
   end
 end
     '}
@@ -300,6 +363,8 @@ end
       File.write 'config/initializers/secret_token.rb', secret_token_content
       File.write 'config/routes.rb', routes_content
       File.write 'db/migrate/20140101000000_change_posts.rb', migration_content
+      File.write 'db/schema.rb', schema_content
+      File.write 'app/models/post.rb', post_model_content
       File.write 'app/models/post.rb', post_model_content
       File.write 'app/controllers/users_controller.rb', users_controller_content
       File.write 'app/controllers/posts_controller.rb', posts_controller_content
