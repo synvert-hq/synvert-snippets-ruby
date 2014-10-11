@@ -26,12 +26,14 @@ end
 class Post < ActiveRecord::Base
   def active_users
     User.find_all_by_email_and_active(email, true)
+    User.includes(:posts).select(:email).order("created_at DESC").limit(2).find_all_by_active(true)
     User.find_all_by_label_and_active(label, true)
     User.find_by_email_and_active(email, true)
     User.find_by_label_and_active(label, true)
     User.find_last_by_email_and_active(email, true)
     User.find_last_by_label_and_active(label, true)
     User.scoped_by_email_and_active(email, true)
+    User.includes(:posts).select(:email).order("created_at DESC").limit(2).scoped_by_active(true)
     User.scoped_by_label_and_active(label, true)
     User.find_by_sql(["select * from  users where email = ?", email])
     User.find_by_id(id)
@@ -52,12 +54,14 @@ end
 class Post < ActiveRecord::Base
   def active_users
     User.where(email: email, active: true)
+    User.includes(:posts).select(:email).order("created_at DESC").limit(2).where(active: true)
     User.find_all_by_label_and_active(label, true)
     User.where(email: email, active: true).first
     User.find_by_label_and_active(label, true)
     User.where(email: email, active: true).last
     User.find_last_by_label_and_active(label, true)
     User.where(email: email, active: true)
+    User.includes(:posts).select(:email).order("created_at DESC").limit(2).where(active: true)
     User.scoped_by_label_and_active(label, true)
     User.find_by_sql(["select * from  users where email = ?", email])
     User.where(id: id).first

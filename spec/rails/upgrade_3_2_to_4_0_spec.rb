@@ -160,6 +160,10 @@ class Post < ActiveRecord::Base
     User.find_all_by_email_and_active(email, true)
   end
 
+  def active_user_emails
+    User.includes(:posts).select(:email).order("created_at DESC").limit(2).find_all_by_active(true)
+  end
+
   def active_users_by_label(label)
     User.find_all_by_label_and_active(label, true)
   end
@@ -184,6 +188,10 @@ class Post < ActiveRecord::Base
     User.scoped_by_email_and_active(email, true)
   end
 
+  def scoped_active_user_emails
+    User.includes(:posts).select(:email).order("created_at DESC").limit(2).scoped_by_active(true)
+  end
+
   def scoped_active_user_by_label(label)
     User.scoped_by_label_and_active(email, true)
   end
@@ -201,6 +209,10 @@ class Post < ActiveRecord::Base
 
   def active_users_by_email(email)
     User.where(email: email, active: true)
+  end
+
+  def active_user_emails
+    User.includes(:posts).select(:email).order("created_at DESC").limit(2).where(active: true)
   end
 
   def active_users_by_label(label)
@@ -225,6 +237,10 @@ class Post < ActiveRecord::Base
 
   def scoped_active_user_by_email(email)
     User.where(email: email, active: true)
+  end
+
+  def scoped_active_user_emails
+    User.includes(:posts).select(:email).order("created_at DESC").limit(2).where(active: true)
   end
 
   def scoped_active_user_by_label(label)
