@@ -5,3 +5,6 @@ gem 'coveralls', require: false
 gem 'rake'
 gem 'rspec'
 gem 'fakefs'
+
+gem 'guard'
+gem 'guard-rspec'
