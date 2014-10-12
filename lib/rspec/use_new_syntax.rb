@@ -18,6 +18,7 @@ It also removes `config.treat_symbols_as_metadata_keys_with_true_values = true` 
   add_snippet 'rspec', 'message_expectation'
   add_snippet 'rspec', 'method_stub'
 
+  add_snippet 'rspec', 'remove_monkey_patches'
 
   if_gem 'rspec', {gte: '2.99.0'}
 
