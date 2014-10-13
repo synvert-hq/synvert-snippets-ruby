@@ -20,7 +20,8 @@ end
 
 enum.each_with_object({}) { |e, h| h.merge!(e => e) }
 
-params.merge!(e => e)
+params.merge!(:a => 'b')
+params.merge!(a: 'b')
     "}
     let(:test_rewritten_content) {"
 enum.inject({}) do |h, e|
@@ -36,7 +37,8 @@ end
 
 enum.each_with_object({}) { |e, h| h[e] = e }
 
-params[e] = e
+params[:a] = 'b'
+params[:a] = 'b'
     "}
 
     it 'converts' do
