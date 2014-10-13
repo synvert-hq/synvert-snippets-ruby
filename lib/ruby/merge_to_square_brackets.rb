@@ -86,7 +86,10 @@ It converts Hash#merge and Hash#merge! methods to Hash#[]=
   end
 
   within_files '**/*.rb' do
-    with_node type: 'send', message: 'merge!', arguments: {size: 1, first: {type: 'hash'}} do
+    # hash.merge!(e => e)
+    # =>
+    # hash[e] = e
+    with_node type: 'send', receiver: {not: nil}, message: 'merge!', arguments: {size: 1, first: {type: 'hash'}} do
       new_code = hash_node_to_square_brackets_code(node.arguments.first, "\n")
       replace_with new_code
     end
