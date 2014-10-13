@@ -10,7 +10,7 @@ describe 'Ruby converts map_and_flatten_to_flat_map' do
     let(:test_content) {"
 enum.map do
   # do something
-end.flatten(1)
+end.flatten
     "}
     let(:test_rewritten_content) {"
 enum.flat_map do
