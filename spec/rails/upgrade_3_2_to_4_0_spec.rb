@@ -14,7 +14,6 @@ describe 'Upgrade rails from 3.2 to 4.0' do
   end
 
   describe 'with fakefs', fakefs: true do
-
     let(:application_content) {'
 if defined?(Bundler)
   Bundler.require(*Rails.groups(:assets => %w(development test)))
@@ -260,9 +259,6 @@ class UsersController < ApplicationController
 
   def create
     @user = User.find_or_create_by_login_and_email(params[:user][:login], params[:user][:email])
-  end
-
-  def create
     @user = User.find_or_create_by_label_and_email(params[:user][:label], params[:user][:email])
   end
 end
@@ -279,9 +275,6 @@ class UsersController < ApplicationController
 
   def create
     @user = User.find_or_create_by(login: params[:user][:login], email: params[:user][:email])
-  end
-
-  def create
     @user = User.find_or_create_by_label_and_email(params[:user][:label], params[:user][:email])
   end
 end

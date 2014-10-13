@@ -8,8 +8,6 @@ It converts rails dynamic finders to arel syntax.
     scoped_by_... => where(...)
     find_or_initialize_by_... => find_or_initialize_by(...)
     find_or_create_by_... => find_or_create_by(...)
-
-But it keeps custom methods like dynamic finders intact.
   EOF
 
   attributes = ["id"]
@@ -22,7 +20,7 @@ But it keeps custom methods like dynamic finders intact.
   end
 
   helper_method :dynamic_finder_to_hash do |prefix|
-    fields = fields_of_dynamic_finder(prefix)
+    fields = node.message.to_s[prefix.length..-1].split("_and_")
     return nil if (fields - attributes).present?
 
     if fields.length == node.arguments.length && :hash != node.arguments.first.type
@@ -34,17 +32,13 @@ But it keeps custom methods like dynamic finders intact.
     end
   end
 
-  helper_method :fields_of_dynamic_finder do |prefix|
-    node.message.to_s[prefix.length..-1].split("_and_")
-  end
-
   if_gem 'rails', {gte: '3.0.0'}
 
   within_files '**/*.rb' do
     # find_all_by_... => where(...)
     with_node type: 'send', message: /^find_all_by_/ do
       hash_params = dynamic_finder_to_hash("find_all_by_")
-      replace_with(add_receiver_if_necessary("where(#{hash_params})")) if hash_params
+      replace_with add_receiver_if_necessary("where(#{hash_params})") if hash_params
     end
 
     # find_by_... => where(...).first
@@ -53,20 +47,20 @@ But it keeps custom methods like dynamic finders intact.
         replace_with add_receiver_if_necessary("where(id: {{arguments}}).first")
       elsif :find_by_sql != node.message
         hash_params = dynamic_finder_to_hash("find_by_")
-        replace_with(add_receiver_if_necessary("where(#{hash_params}).first")) if hash_params
+        replace_with add_receiver_if_necessary("where(#{hash_params}).first") if hash_params
       end
     end
 
     # find_last_by_... => where(...).last
     with_node type: 'send', message: /^find_last_by_/ do
       hash_params = dynamic_finder_to_hash("find_last_by_")
-      replace_with(add_receiver_if_necessary("where(#{hash_params}).last")) if hash_params
+      replace_with add_receiver_if_necessary("where(#{hash_params}).last") if hash_params
     end
 
     # scoped_by_... => where(...)
     with_node type: 'send', message: /^scoped_by_/ do
       hash_params = dynamic_finder_to_hash("scoped_by_")
-      replace_with(add_receiver_if_necessary("where(#{hash_params})")) if hash_params
+      replace_with add_receiver_if_necessary("where(#{hash_params})") if hash_params
     end
   end
 
@@ -76,13 +70,13 @@ But it keeps custom methods like dynamic finders intact.
     # find_or_initialize_by_... => find_or_initialize_by(...)
     with_node type: 'send', message: /^find_or_initialize_by_/ do
       hash_params = dynamic_finder_to_hash("find_or_initialize_by_")
-      replace_with(add_receiver_if_necessary("find_or_initialize_by(#{hash_params})")) if hash_params
+      replace_with add_receiver_if_necessary("find_or_initialize_by(#{hash_params})") if hash_params
     end
 
     # find_or_create_by_... => find_or_create_by(...)
     with_node type: 'send', message: /^find_or_create_by_/ do
       hash_params = dynamic_finder_to_hash("find_or_create_by_")
-      replace_with(add_receiver_if_necessary("find_or_create_by(#{hash_params})")) if hash_params
+      replace_with add_receiver_if_necessary("find_or_create_by(#{hash_params})") if hash_params
     end
   end
 end

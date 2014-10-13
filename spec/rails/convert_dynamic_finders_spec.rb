@@ -37,7 +37,7 @@ class Post < ActiveRecord::Base
     User.scoped_by_label_and_active(label, true)
     User.find_by_sql(["select * from  users where email = ?", email])
     User.find_by_id(id)
-    User.find_by_label
+    User.find_by_label(label)
     User.find_by_account_id(Account.find_by_email(account_email).id)
     User.find_or_create_by_email_and_login(parmas)
     User.find_or_create_by_label(label)
@@ -46,7 +46,7 @@ class Post < ActiveRecord::Base
   end
 
   def self.active_admins
-    User.find_all_by_role_and_active("admin", true)
+    find_all_by_role_and_active("admin", true)
   end
 end
     '}
@@ -65,7 +65,7 @@ class Post < ActiveRecord::Base
     User.scoped_by_label_and_active(label, true)
     User.find_by_sql(["select * from  users where email = ?", email])
     User.where(id: id).first
-    User.find_by_label
+    User.find_by_label(label)
     User.where(account_id: Account.where(email: account_email).first.id).first
     User.find_or_create_by(parmas)
     User.find_or_create_by_label(label)
@@ -74,7 +74,7 @@ class Post < ActiveRecord::Base
   end
 
   def self.active_admins
-    User.where(role: "admin", active: true)
+    where(role: "admin", active: true)
   end
 end
     '}
