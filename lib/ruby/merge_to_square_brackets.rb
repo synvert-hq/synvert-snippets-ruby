@@ -24,6 +24,12 @@ It converts Hash#merge and Hash#merge! methods to Hash#[]=
     end
   EOF
 
+  helper_method :hash_node_to_square_brackets_code do |hash_node, splitter|
+    hash_node.children.map { |pair_node|
+      "{{receiver}}[#{pair_node.key.to_source}] = #{pair_node.value.to_source}"
+    }.join(splitter)
+  end
+
   within_files '**/*.rb' do
     # enum.inject({}) do |h, e|
     #   h.merge(e => e)
@@ -41,13 +47,10 @@ It converts Hash#merge and Hash#merge! methods to Hash#[]=
       hash_name = node.arguments.first.name.to_s
       block_start_line = node.line
       %w(merge merge!).each do |message|
-        with_node type: 'send', receiver: hash_name, message: message, arguments: {size: 1} do
+        with_node type: 'send', receiver: hash_name, message: message, arguments: {size: 1, first: {type: 'hash'}} do
           merge_line = node.line
           splitter = block_start_line == merge_line ? '; ' : "\n"
-          hash_pairs = node.arguments.first.children
-          new_code = hash_pairs.map { |pair_node|
-            "#{hash_name}[#{pair_node.key.to_source}] = #{pair_node.value.to_source}"
-          }.join(splitter)
+          new_code = hash_node_to_square_brackets_code(node.arguments.first, splitter)
           replace_with "#{new_code}#{splitter}#{hash_name}"
         end
       end
@@ -68,16 +71,20 @@ It converts Hash#merge and Hash#merge! methods to Hash#[]=
       hash_name = node.arguments.last.name.to_s
       block_start_line = node.line
       %w(merge merge!).each do |message|
-        with_node type: 'send', receiver: hash_name, message: message, arguments: {first: {type: 'hash'}} do
+        with_node type: 'send', receiver: hash_name, message: message, arguments: {size: 1, first: {type: 'hash'}} do
           merge_line = node.line
           splitter = block_start_line == merge_line ? '; ' : "\n"
-          hash_pairs = node.arguments.first.children
-          new_code = hash_pairs.map { |pair|
-            "{{receiver}}[#{pair.key.to_source}] = #{pair.value.to_source}"
-          }.join(splitter)
+          new_code = hash_node_to_square_brackets_code(node.arguments.first, splitter)
           replace_with new_code
         end
       end
+    end
+  end
+
+  within_files '**/*.rb' do
+    with_node type: 'send', message: 'merge!', arguments: {size: 1, first: {type: 'hash'}} do
+      new_code = hash_node_to_square_brackets_code(node.arguments.first, "\n")
+      replace_with new_code
     end
   end
 end
