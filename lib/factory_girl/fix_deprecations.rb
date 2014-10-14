@@ -69,11 +69,7 @@ end"""
       argument = node.arguments.first.to_source
       with_node type: 'block', caller: {type: 'send', receiver: argument} do
         goto_node :caller do
-          if node.arguments.size > 0
-            replace_with "{{message}}({{arguments}})"
-          else
-            replace_with "{{message}}"
-          end
+          replace_with "{{message}}#{add_arguments_with_parenthesis_if_necessary}"
         end
       end
     end

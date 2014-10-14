@@ -22,7 +22,7 @@ def test
 end
 
 def test(foo, bar)
-  yield foo, bar
+  yield(foo, bar)
 end
     "}
 

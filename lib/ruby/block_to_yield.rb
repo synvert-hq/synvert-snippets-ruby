@@ -24,11 +24,11 @@ It converts block to yield.
       block_called = false
       with_node type: 'send', receiver: block_arg_name, message: 'call' do
         block_called = true
-        replace_with "yield {{arguments}}"
+        replace_with "yield#{add_arguments_with_parenthesis_if_necessary}"
       end
       if block_called
         goto_node :arguments do
-          if node.size > 1
+          if node.children.size > 1
             replace_with "({{children[0..-2]}})"
           else
             replace_with ""
