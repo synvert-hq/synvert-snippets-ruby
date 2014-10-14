@@ -1,6 +1,6 @@
-Synvert::Rewriter.new 'ruby', 'avoid_parallel_assignment' do
+Synvert::Rewriter.new 'ruby', 'parallel_assignment_to_sequential_assignment' do
   description <<-EOF
-It avoids parallel assignment
+It converts parallel assignment to sequential assignment.
 
     a, b = 1, 2
     =>
