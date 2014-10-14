@@ -9,10 +9,14 @@ describe 'Ruby avoids parallel_assignment' do
   describe 'with fakefs', fakefs: true do
     let(:test_content) {"
 a, b = 1, 2
+
+a, b = params
     "}
     let(:test_rewritten_content) {"
 a = 1
 b = 2
+
+a, b = params
     "}
 
     it 'converts' do
