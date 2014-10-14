@@ -14,7 +14,6 @@ Use ruby fast syntax, it calls snippets
 
   add_snippet 'ruby', 'avoid_parallel_assignment'
   add_snippet 'ruby', 'block_to_yield'
-  add_snippet 'ruby', 'fetch_use_block_default'
   add_snippet 'ruby', 'gsub_to_tr'
   add_snippet 'ruby', 'merge_to_square_brackets'
   add_snippet 'ruby', 'use_symbol_to_proc'
