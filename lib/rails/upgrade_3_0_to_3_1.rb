@@ -140,10 +140,9 @@ It upgrade rails from 3.0 to 3.1.
     # def self.down => def down
     %w(up down).each do |name|
       with_node type: 'defs', name: name do
-        body = node.body.map { |child_node| child_node.to_source.gsub("\n  ", "\n") }.join("\n  ")
-        replace_with """def #{name}
-  #{body}
-end"""
+        replace_with "def #{name}
+  {{body}}
+end"
       end
     end
   end
