@@ -89,7 +89,7 @@ It converts rspec pending to skip.
       # it 'is skipped', :skip => true do
       #   do_something_possibly_fail
       # end
-      with_node type: 'send', receiver: nil, message: message, arguments: {size: 2, last: {type: 'hash'}} do
+      with_node type: 'send', message: message, arguments: {size: 2, last: {type: 'hash'}} do
         goto_node 'arguments' do
           goto_node 'last' do
             replace_with node.to_source.sub('pending', 'skip')
