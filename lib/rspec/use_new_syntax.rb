@@ -20,6 +20,8 @@ It also removes `config.treat_symbols_as_metadata_keys_with_true_values = true` 
 
   add_snippet 'rspec', 'remove_monkey_patches'
 
+  add_snippet 'rspec', 'custom_matcher_new_syntax'
+
   if_gem 'rspec', {gte: '2.99.0'}
 
   within_file 'spec/spec_helper.rb' do
