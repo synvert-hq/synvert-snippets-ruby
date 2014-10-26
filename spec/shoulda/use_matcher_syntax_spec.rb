@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe 'Use shoulda matcher syntax' do
+RSpec.describe 'Use shoulda matcher syntax' do
   before do
     rewriter_path = File.join(File.dirname(__FILE__), '../../lib/shoulda/use_matcher_syntax.rb')
     @rewriter = eval(File.read(rewriter_path))

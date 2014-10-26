@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe 'rails strong_parameters snippet' do
+RSpec.describe 'rails strong_parameters snippet' do
   before do
     rewriter_path = File.join(File.dirname(__FILE__), '../../lib/rails/strong_parameters.rb')
     @rewriter = eval(File.read(rewriter_path))

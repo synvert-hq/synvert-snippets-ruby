@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'Convert rails mailers from 2.3 to 3.0' do
+RSpec.describe 'Convert rails mailers from 2.3 to 3.0' do
   before do
     rewriter_path = File.join(File.dirname(__FILE__), '../../lib/rails/convert_mailers_2_3_to_3_0.rb')
     @rewriter = eval(File.read(rewriter_path))

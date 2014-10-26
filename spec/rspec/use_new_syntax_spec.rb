@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe 'Use RSpec new syntax' do
+RSpec.describe 'Use RSpec new syntax' do
   before do
     Dir.glob File.join(File.dirname(__FILE__), '../../lib/rspec/*') do |file|
       if file =~ /use_new_syntax.rb$/

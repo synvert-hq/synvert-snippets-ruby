@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe 'Fix factory_girl deprecations' do
+RSpec.describe 'Fix factory_girl deprecations' do
   before do
     rewriter_path = File.join(File.dirname(__FILE__), '../../lib/factory_girl/fix_deprecations.rb')
     @rewriter = eval(File.read(rewriter_path))

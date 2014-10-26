@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe 'FactoryGirl uses short synax' do
+RSpec.describe 'FactoryGirl uses short synax' do
   before do
     rewriter_path = File.join(File.dirname(__FILE__), '../../lib/factory_girl/use_short_syntax.rb')
     @rewriter = eval(File.read(rewriter_path))

@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe 'Fix shoulda deprecations' do
+RSpec.describe 'Fix shoulda deprecations' do
   before do
     rewriter_path = File.join(File.dirname(__FILE__), '../../lib/shoulda/fix_deprecations.rb')
     @rewriter = eval(File.read(rewriter_path))

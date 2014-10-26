@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe 'Explicity spec type in rspec-rails' do
+RSpec.describe 'Explicity spec type in rspec-rails' do
   let!(:rewriter_path) { File.join(File.dirname(__FILE__), '../../lib/rspec/explicit_spec_type.rb') }
   let!(:rewriter) { eval(File.read(rewriter_path)) }
 

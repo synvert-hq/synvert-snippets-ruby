@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe 'Convert RAILS_ROOT to Rails.root' do
+RSpec.describe 'Convert RAILS_ROOT to Rails.root' do
   before do
     rewriter_path = File.join(File.dirname(__FILE__), '../../lib/rails/convert_rails_root.rb')
     @rewriter = eval(File.read(rewriter_path))

@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe 'Ruby uses new hash synax' do
+RSpec.describe 'Ruby uses new hash synax' do
   before do
     rewriter_path = File.join(File.dirname(__FILE__), '../../lib/ruby/new_hash_syntax.rb')
     @rewriter = eval(File.read(rewriter_path))

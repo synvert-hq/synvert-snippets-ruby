@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe 'Ruby uses new -> synax' do
+RSpec.describe 'Ruby uses new -> synax' do
   before do
     rewriter_path = File.join(File.dirname(__FILE__), '../../lib/ruby/new_lambda_syntax.rb')
     @rewriter = eval(File.read(rewriter_path))

@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe 'Ruby converts gsub to tr' do
+RSpec.describe 'Ruby converts gsub to tr' do
   before do
     rewriter_path = File.join(File.dirname(__FILE__), '../../lib/ruby/gsub_to_tr.rb')
     @rewriter = eval(File.read(rewriter_path))

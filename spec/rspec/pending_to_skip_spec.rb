@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe 'RSpec converts pending to skip' do
+RSpec.describe 'RSpec converts pending to skip' do
   before do
     rewriter_path = File.join(File.dirname(__FILE__), '../../lib/rspec/pending_to_skip.rb')
     @rewriter = eval(File.read(rewriter_path))

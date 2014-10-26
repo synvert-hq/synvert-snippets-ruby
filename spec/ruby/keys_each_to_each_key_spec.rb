@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe 'Ruby .keys.each to .each_key' do
+RSpec.describe 'Ruby .keys.each to .each_key' do
   before do
     rewriter_path = File.join(File.dirname(__FILE__), '../../lib/ruby/keys_each_to_each_key.rb')
     @rewriter = eval(File.read(rewriter_path))

@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe 'Upgrade RAILS_DEFAULT_LOGGER to Rails.logger' do
+RSpec.describe 'Upgrade RAILS_DEFAULT_LOGGER to Rails.logger' do
   before do
     rewriter_path = File.join(File.dirname(__FILE__), '../../lib/rails/convert_rails_logger.rb')
     @rewriter = eval(File.read(rewriter_path))

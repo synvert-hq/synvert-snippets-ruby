@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe 'Use RSpec custom matcher new syntax' do
+RSpec.describe 'Use RSpec custom matcher new syntax' do
   let!(:rewriter_path) { File.join(File.dirname(__FILE__), '../../lib/rspec/custom_matcher_new_syntax.rb') }
   let!(:rewriter) { eval(File.read(rewriter_path)) }
 

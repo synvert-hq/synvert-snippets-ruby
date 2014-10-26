@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe 'Convert RAILS_ENV to Rails.env' do
+RSpec.describe 'Convert RAILS_ENV to Rails.env' do
   before do
     rewriter_path = File.join(File.dirname(__FILE__), '../../lib/rails/convert_rails_env.rb')
     @rewriter = eval(File.read(rewriter_path))

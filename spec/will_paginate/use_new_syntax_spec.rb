@@ -1,7 +1,7 @@
 # encoding: utf-8
 require 'spec_helper'
 
-describe 'Use will_paginate new syntax' do
+RSpec.describe 'Use will_paginate new syntax' do
   before do
     rewriter_path = File.join(File.dirname(__FILE__), '../../lib/will_paginate/use_new_syntax.rb')
     @rewriter = eval(File.read(rewriter_path))

@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe 'Upgrade rails from 2.3 to 3.0' do
+RSpec.describe 'Upgrade rails from 2.3 to 3.0' do
   before do
     rewriter_path = File.join(File.dirname(__FILE__), '../../lib/rails/upgrade_2_3_to_3_0.rb')
     @rewriter = eval(File.read(rewriter_path))

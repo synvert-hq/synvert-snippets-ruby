@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe 'Ruby converts map_and_flatten_to_flat_map' do
+RSpec.describe 'Ruby converts map_and_flatten_to_flat_map' do
   before do
     rewriter_path = File.join(File.dirname(__FILE__), '../../lib/ruby/map_and_flatten_to_flat_map.rb')
     @rewriter = eval(File.read(rewriter_path))

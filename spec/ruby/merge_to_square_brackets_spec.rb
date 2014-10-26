@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe 'Ruby converts merge or merge! to []' do
+RSpec.describe 'Ruby converts merge or merge! to []' do
   before do
     rewriter_path = File.join(File.dirname(__FILE__), '../../lib/ruby/merge_to_square_brackets.rb')
     @rewriter = eval(File.read(rewriter_path))

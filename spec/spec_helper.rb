@@ -20,4 +20,5 @@ RSpec.configure do |config|
     Synvert::Core::Rewriter::Instance.reset
     allow_any_instance_of(Synvert::Core::Rewriter::GemSpec).to receive(:match?).and_return(true)
   end
+  config.expose_dsl_globally = false
 end

@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe 'Ruby uses symbol to proc' do
+RSpec.describe 'Ruby uses symbol to proc' do
   before do
     rewriter_path = File.join(File.dirname(__FILE__), '../../lib/ruby/use_symbol_to_proc.rb')
     @rewriter = eval(File.read(rewriter_path))

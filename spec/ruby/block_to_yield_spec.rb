@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe 'Ruby converts block to yield' do
+RSpec.describe 'Ruby converts block to yield' do
   before do
     rewriter_path = File.join(File.dirname(__FILE__), '../../lib/ruby/block_to_yield.rb')
     @rewriter = eval(File.read(rewriter_path))
