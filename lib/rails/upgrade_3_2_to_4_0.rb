@@ -207,6 +207,14 @@ It upgrades rails from 3.2 to 4.0.
   within_files 'app/models/**/*.rb' do
     # scope :active, where(active: true) => scope :active, -> { where(active: true) }
     with_node type: 'send', receiver: nil, message: 'scope' do
+      with_node type: 'send', receiver: nil, message: 'proc' do
+        replace_with '->'
+      end
+
+      with_node type: 'send', receiver: {type: 'const', to_source: 'Proc'}, message: 'new' do
+        replace_with '->'
+      end
+
       unless_exist_node type: 'block', caller: {type: 'send', message: 'lambda'} do
         replace_with 'scope {{arguments.first}}, -> { {{arguments.last}} }'
       end

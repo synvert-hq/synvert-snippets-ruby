@@ -147,6 +147,9 @@ end
 class Post < ActiveRecord::Base
   has_many :comments, dependent: :restrict
   scope :active, where(active: true)
+  scope :published, Proc.new { where(published: true) }
+  scope :trashed, proc { where(trashed: false) }
+
   default_scope order("updated_at DESC")
 
   attr_accessible :title, :description
@@ -200,6 +203,9 @@ end
 class Post < ActiveRecord::Base
   has_many :comments, dependent: :restrict_with_exception
   scope :active, -> { where(active: true) }
+  scope :published, -> { where(published: true) }
+  scope :trashed, -> { where(trashed: false) }
+
   default_scope -> { order("updated_at DESC") }
 
   def serialized_attrs
