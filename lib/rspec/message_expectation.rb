@@ -7,8 +7,6 @@ It convert rspec message expectation.
 
     expect(obj).to receive(:message).and_return { 1 } => expect(obj).to receive(:message) { 1 }
 
-    expect(obj).to receive(:message).and_return { 1 } => expect(obj).to receive(:message) { 1 }
-
     expect(obj).to receive(:message).and_return => expect(obj).to receive(:message)
   EOF
 

@@ -1,6 +1,6 @@
 source 'https://rubygems.org'
 
-gem 'synvert-core', '~> 0.7.5'
+gem 'synvert-core', '~> 0.8.0'
 gem 'coveralls', require: false
 gem 'rake'
 gem 'rspec'
