@@ -50,7 +50,9 @@ It explicits spec type.
     within_files "spec/#{directory}/*.rb" do
       top_level = true
       with_node type: 'send', message: 'describe' do
-        replace_with add_receiver_if_necessary("describe {{arguments}}, type: :#{type}") if top_level
+        unless_exist_node type: 'pair', key: 'type' do
+          replace_with add_receiver_if_necessary("describe {{arguments}}, type: :#{type}") if top_level
+        end
         top_level = false
       end
     end

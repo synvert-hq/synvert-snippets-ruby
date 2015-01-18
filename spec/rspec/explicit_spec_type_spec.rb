@@ -17,6 +17,18 @@ describe Post, type: :model do
   end
 end
     "}
+    let(:comment_model_spec_content) {"
+describe Comment, type: :model do
+  describe '#save' do
+  end
+end
+    "}
+    let(:comment_model_spec_rewritten_content) {"
+describe Comment, type: :model do
+  describe '#save' do
+  end
+end
+    "}
     let(:posts_controller_spec_content) {"
 describe PostsController do
 end
@@ -58,12 +70,14 @@ end
       FileUtils.mkdir_p 'spec/mailers'
       File.write 'spec/rails_helper.rb', rails_spec_content
       File.write 'spec/models/post_spec.rb', post_model_spec_content
+      File.write 'spec/models/comment_spec.rb', comment_model_spec_content
       File.write 'spec/controllers/posts_controller_spec.rb', posts_controller_spec_content
       File.write 'spec/helpers/posts_helper_spec.rb', posts_helper_spec_content
       File.write 'spec/mailers/post_mailer_spec.rb', post_mailer_spec_content
       rewriter.process
       expect(File.read 'spec/rails_helper.rb').to eq rails_spec_rewritten_content
       expect(File.read 'spec/models/post_spec.rb').to eq post_model_spec_rewritten_content
+      expect(File.read 'spec/models/comment_spec.rb').to eq comment_model_spec_rewritten_content
       expect(File.read 'spec/controllers/posts_controller_spec.rb').to eq posts_controller_spec_rewritten_content
       expect(File.read 'spec/helpers/posts_helper_spec.rb').to eq posts_helper_spec_rewritten_content
       expect(File.read 'spec/mailers/post_mailer_spec.rb').to eq post_mailer_spec_rewritten_content
