@@ -17,6 +17,18 @@ RSpec.describe Post do
   end
 end
     "}
+    let(:comment_spec_content) {"
+RSpec.describe Comment do
+  describe '.active' do
+  end
+end
+    "}
+    let(:comment_spec_rewritten_content) {"
+RSpec.describe Comment do
+  describe '.active' do
+  end
+end
+    "}
     let(:post_support_content) {"
 shared_examples 'shared examples' do
 end
@@ -39,10 +51,12 @@ end
       FileUtils.mkdir_p 'spec/models'
       FileUtils.mkdir_p 'spec/supports'
       File.write 'spec/models/post_spec.rb', post_spec_content
+      File.write 'spec/models/comment_spec.rb', comment_spec_content
       File.write 'spec/supports/post.rb', post_support_content
       File.write 'spec/spec_helper.rb', spec_helper_content
       rewriter.process
       expect(File.read 'spec/models/post_spec.rb').to eq post_spec_rewritten_content
+      expect(File.read 'spec/models/comment_spec.rb').to eq comment_spec_rewritten_content
       expect(File.read 'spec/supports/post.rb').to eq post_support_rewritten_content
       expect(File.read 'spec/spec_helper.rb').to eq spec_helper_rewritten_content
     end
