@@ -18,13 +18,13 @@ describe Post, type: :model do
 end
     "}
     let(:comment_model_spec_content) {"
-describe Comment, type: :model do
+RSpec.describe Comment, :type => :model do
   describe '#save' do
   end
 end
     "}
     let(:comment_model_spec_rewritten_content) {"
-describe Comment, type: :model do
+RSpec.describe Comment, :type => :model do
   describe '#save' do
   end
 end
