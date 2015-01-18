@@ -1,4 +1,4 @@
-Synvert::Rewriter.new 'rspec', 'stub_and_mock_to_double' do
+Synvert::Rewriter.new 'rspec', 'new_hook_scope' do
   description <<-EOF
 It converts new hook scope.
 

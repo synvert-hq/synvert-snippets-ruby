@@ -1,7 +1,7 @@
 require 'spec_helper'
 
-RSpec.describe 'RSpec uses new before and after scope' do
-  let!(:rewriter_path) { File.join(File.dirname(__FILE__), '../../lib/rspec/new_before_after_scope.rb') }
+RSpec.describe 'RSpec uses new hook scope' do
+  let!(:rewriter_path) { File.join(File.dirname(__FILE__), '../../lib/rspec/new_hook_scope.rb') }
   let!(:rewriter) { eval(File.read(rewriter_path)) }
 
   describe 'with fakefs', fakefs: true do
