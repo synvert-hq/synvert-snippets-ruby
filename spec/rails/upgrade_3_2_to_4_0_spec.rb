@@ -288,6 +288,7 @@ end
     let(:posts_controller_content) {'
 class PostsController < ApplicationController
   before_filter :load_post
+  skip_filter :load_post
 
   def update
     if @post.update_attributes params[:post]
@@ -305,6 +306,7 @@ end
     let(:posts_controller_rewritten_content) {'
 class PostsController < ApplicationController
   before_action :load_post
+  skip_action_callback :load_post
 
   def update
     if @post.update_attributes post_params
