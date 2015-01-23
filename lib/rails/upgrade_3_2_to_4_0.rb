@@ -71,7 +71,8 @@ It upgrades rails from 3.2 to 4.0.
 
 19. it calls another snippet strong_parameters.
 
-20. it replaces before_filter/after_filter with before_action/after_action in controllers.
+20. it replaces skip_filter with skip_action_callback in controllers.
+       replaces before_filter/after_filter with before_action/after_action in controllers.
 
 21. it replaces dependent: :restrict to dependent: :restrict_with_exception.
 
@@ -240,10 +241,15 @@ It upgrades rails from 3.2 to 4.0.
   end
 
   within_files 'app/controllers/**/*.rb' do
+    # skip_filter :load_post => skip_action_callback :load_post
     # before_filter :load_post => before_action :load_post
     # after_filter :increment_view_count => after_filter :increment_view_count
     with_node type: 'send', receiver: nil, message: /_filter$/ do
-      new_message = node.message.to_s.sub('filter', 'action')
+      new_message = if node.message == :skip_filter
+                      'skip_action_callback'
+                    else
+                      node.message.to_s.sub('filter', 'action')
+                    end
       replace_with "#{new_message} {{arguments}}"
     end
   end
