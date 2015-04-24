@@ -148,7 +148,7 @@ class Post < ActiveRecord::Base
   has_many :comments, dependent: :restrict
   scope :active, where(active: true)
   scope :published, Proc.new { where(published: true) }
-  scope :trashed, proc { where(trashed: false) }
+  scope :by_user, proc { |user_id| where(user_id: user_id) }
 
   default_scope order("updated_at DESC")
   default_scope { order("created_at DESC") }
@@ -205,7 +205,7 @@ class Post < ActiveRecord::Base
   has_many :comments, dependent: :restrict_with_exception
   scope :active, -> { where(active: true) }
   scope :published, -> { where(published: true) }
-  scope :trashed, -> { where(trashed: false) }
+  scope :by_user, ->(user_id) { where(user_id: user_id) }
 
   default_scope -> { order("updated_at DESC") }
   default_scope -> { order("created_at DESC") }
