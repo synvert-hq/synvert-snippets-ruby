@@ -151,6 +151,7 @@ class Post < ActiveRecord::Base
   scope :trashed, proc { where(trashed: false) }
 
   default_scope order("updated_at DESC")
+  default_scope { order("created_at DESC") }
 
   attr_accessible :title, :description
 
@@ -207,6 +208,7 @@ class Post < ActiveRecord::Base
   scope :trashed, -> { where(trashed: false) }
 
   default_scope -> { order("updated_at DESC") }
+  default_scope -> { order("created_at DESC") }
 
   def serialized_attrs
     self.class.serialized_attributes
