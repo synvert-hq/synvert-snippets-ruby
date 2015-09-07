@@ -23,6 +23,17 @@ It convert rspec message expectation.
         replace_with "expect({{receiver}}).to receive({{arguments}})"
       end
     end
+
+    # obj.should_not_receive(:message) => expect(obj).to receive(:message)
+    # Klass.any_instance.should_not_receive(:message) => expect_any_instance_of(Klass).to receive(:message)
+    with_node type: 'send', message: 'should_not_receive' do
+      if_exist_node type: 'send', message: 'any_instance' do
+        replace_with "expect_any_instance_of({{receiver.receiver}}).not_to receive({{arguments}})"
+      end
+      unless_exist_node type: 'send', message: 'any_instance' do
+        replace_with "expect({{receiver}}).not_to receive({{arguments}})"
+      end
+    end
   end
 
   within_files 'spec/**/*.rb' do
