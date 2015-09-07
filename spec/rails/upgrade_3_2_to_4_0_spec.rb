@@ -227,7 +227,7 @@ class Post < ActiveRecord::Base
   end
 
   def first_active_user_by_email(email)
-    User.where(email: email, active: true).first
+    User.find_by(email: email, active: true)
   end
 
   def first_active_user_by_label(label)

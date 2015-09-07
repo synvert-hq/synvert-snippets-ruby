@@ -56,7 +56,7 @@ class Post < ActiveRecord::Base
     User.where(email: email, active: true)
     User.includes(:posts).select(:email).order("created_at DESC").limit(2).where(active: true)
     User.find_all_by_label_and_active(label, true)
-    User.where(email: email, active: true).first
+    User.find_by(email: email, active: true)
     User.find_by_label_and_active(label, true)
     User.where(email: email, active: true).last
     User.find_last_by_label_and_active(label, true)
@@ -64,9 +64,9 @@ class Post < ActiveRecord::Base
     User.includes(:posts).select(:email).order("created_at DESC").limit(2).where(active: true)
     User.scoped_by_label_and_active(label, true)
     User.find_by_sql(["select * from  users where email = ?", email])
-    User.where(id: id).first
+    User.find_by(id: id)
     User.find_by_label(label)
-    User.where(account_id: Account.where(email: account_email).first.id).first
+    User.find_by(account_id: Account.find_by(email: account_email).id)
     User.find_or_create_by(parmas)
     User.find_or_create_by_label(label)
     User.find_or_initialize_by(:account_id => account_id)

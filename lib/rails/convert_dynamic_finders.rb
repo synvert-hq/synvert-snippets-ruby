@@ -44,10 +44,10 @@ It converts rails dynamic finders to arel syntax.
     # find_by_... => where(...).first
     with_node type: 'send', message: /^find_by_/ do
       if :find_by_id == node.message
-        replace_with add_receiver_if_necessary("where(id: {{arguments}}).first")
+        replace_with add_receiver_if_necessary("find_by(id: {{arguments}})")
       elsif :find_by_sql != node.message
         hash_params = dynamic_finder_to_hash("find_by_")
-        replace_with add_receiver_if_necessary("where(#{hash_params}).first") if hash_params
+        replace_with add_receiver_if_necessary("find_by(#{hash_params})") if hash_params
       end
     end
 
