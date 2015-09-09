@@ -273,9 +273,20 @@ It upgrades rails from 3.2 to 4.0.
     # link_to 'delete', post_path(post), data: {confirm: 'Are you sure to delete post?'}
     within_node type: 'send', message: 'link_to', arguments: {last: {type: 'hash'}} do
       if node.arguments.last.has_key?(:confirm)
+        hash = node.arguments.last
         other_arguments_str = node.arguments[0...-1].map(&:to_source).join(", ")
-        confirm = node.arguments.last.hash_value(:confirm).to_source
-        replace_with "link_to #{other_arguments_str}, data: {confirm: #{confirm}}"
+        confirm = hash.hash_value(:confirm).to_source
+        other_options = hash.children.map{|pair|
+          unless [:confirm, :data].include?(pair.key.to_value)
+            if pair.key.type == :sym
+              "#{pair.key.to_value}: #{pair.value.to_source}"
+            else
+              "#{pair.key.to_source} => #{pair.value.to_source}"
+            end
+          end
+        }.compact.join(', ')
+        data_options = "data: {confirm: #{confirm}}"
+        replace_with "link_to #{other_arguments_str}, #{other_options}, #{data_options}"
       end
     end
   end
