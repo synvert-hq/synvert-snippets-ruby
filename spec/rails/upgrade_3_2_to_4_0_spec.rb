@@ -329,12 +329,12 @@ end
     '}
     let(:posts_index_content) {'
 <% @posts.each do |post| %>
-  <%= link_to "delete", post_url(post), confirm: "Are you sure to delete a post" %>
+  <%= link_to "delete", post_url(post), remote: true, confirm: "Are you sure to delete a post" %>
 <% end %>
     '}
     let(:posts_index_rewritten_content) {'
 <% @posts.each do |post| %>
-  <%= link_to "delete", post_url(post), data: {confirm: "Are you sure to delete a post"} %>
+  <%= link_to "delete", post_url(post), remote: true, data: {confirm: "Are you sure to delete a post"} %>
 <% end %>
     '}
     let(:post_test_content) {'
