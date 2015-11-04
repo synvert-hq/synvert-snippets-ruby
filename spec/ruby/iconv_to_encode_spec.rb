@@ -1,0 +1,24 @@
+require 'spec_helper'
+
+RSpec.describe 'Ruby Iconv#iconv to String#encode' do
+
+  before do
+    rewriter_path = File.join(File.dirname(__FILE__), '../../lib/ruby/iconv_to_encode.rb')
+    @rewriter = eval(File.read(rewriter_path))
+  end
+
+  describe 'with fakefs', fakefs: true do
+    let(:test_content) {"
+      Iconv.new('Windows-1252','utf-8').iconv('some string')
+    "}
+    let(:test_rewritten_content) {"
+      'some string'.force_encoding('Windows-1252').encode('utf-8')
+    "}
+
+    it 'converts' do
+      File.write 'test.rb', test_content
+      @rewriter.process
+      expect(File.read 'test.rb').to eq test_rewritten_content
+    end
+  end
+end
