@@ -8,17 +8,35 @@ RSpec.describe 'Ruby Iconv#iconv to String#encode' do
   end
 
   describe 'with fakefs', fakefs: true do
-    let(:test_content) {"
-      Iconv.new('Windows-1252','utf-8').iconv('some string')
-    "}
-    let(:test_rewritten_content) {"
-      'some string'.force_encoding('Windows-1252').encode('utf-8')
-    "}
+    describe 'basic case' do    
+      let(:test_content) {"
+        Iconv.new('Windows-1252','utf-8').iconv('some string')
+      "}
+      let(:test_rewritten_content) {"
+        'some string'.force_encoding('Windows-1252').encode('utf-8')
+      "}
 
-    it 'converts' do
-      File.write 'test.rb', test_content
-      @rewriter.process
-      expect(File.read 'test.rb').to eq test_rewritten_content
+      it 'converts' do
+        File.write 'test.rb', test_content
+        @rewriter.process
+        expect(File.read 'test.rb').to eq test_rewritten_content
+      end
     end
+    
+    describe 'with iconv ignored option' do
+      let(:test_content) {"
+        Iconv.new('Windows-1252//IGNORE','utf-8//IGNORE').iconv('some string')
+      "}
+      let(:test_rewritten_content) {"
+        'some string'.force_encoding('Windows-1252').encode('utf-8', invalid: :replace, undef: :replace)
+      "}
+
+      it 'converts' do
+        File.write 'test.rb', test_content
+        @rewriter.process
+        expect(File.read 'test.rb').to eq test_rewritten_content
+      end
+    end
+    
   end
 end
