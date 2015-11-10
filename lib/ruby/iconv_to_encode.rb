@@ -15,14 +15,19 @@ It convert Iconv#iconv to String#encode
       replace_with "{{arguments}}.{{receiver}}"
     end
     with_node type: 'send', receiver: 'Iconv', message: 'new', arguments: {size: 2} do
-      must_silently_ignore_bad_chars = node.arguments[0].to_value.split("//").include?("IGNORE")
-      cleaned_arg0 = node.arguments[0].to_source.gsub(/\/{2}[^\/']+/,'')
-      cleaned_arg1 = node.arguments[1].to_source.gsub(/\/{2}[^\/']+/,'')
+      to_charset = node.arguments[0]
+      from_charset = node.arguments[1]
+      must_silently_ignore_bad_chars = from_charset.type == :str &&
+        from_charset.to_value.split("//").include?("IGNORE")
       encode_options = ""
       if(must_silently_ignore_bad_chars)
         encode_options = ", invalid: :replace, undef: :replace"
       end
-      replace_with "force_encoding(#{cleaned_arg0}).encode(#{cleaned_arg1}#{encode_options})"
+      cleaned_from_charset = from_charset.to_source.gsub(/\/{2}[^\/']+/,'')
+      cleaned_to_charset = to_charset.to_source.gsub(/\/{2}[^\/']+/,'')
+      replace_with(
+        "force_encoding(#{cleaned_from_charset}).encode(#{cleaned_to_charset}#{encode_options})"
+      )
     end
   end
 end

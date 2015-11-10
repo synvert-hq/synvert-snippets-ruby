@@ -13,7 +13,7 @@ RSpec.describe 'Ruby Iconv#iconv to String#encode' do
         Iconv.new('Windows-1252','utf-8').iconv('some string')
       "}
       let(:test_rewritten_content) {"
-        'some string'.force_encoding('Windows-1252').encode('utf-8')
+        'some string'.force_encoding('utf-8').encode('Windows-1252')
       "}
 
       it 'converts' do
@@ -28,7 +28,7 @@ RSpec.describe 'Ruby Iconv#iconv to String#encode' do
         Iconv.new('Windows-1252//IGNORE','utf-8//IGNORE').iconv('some string')
       "}
       let(:test_rewritten_content) {"
-        'some string'.force_encoding('Windows-1252').encode('utf-8', invalid: :replace, undef: :replace)
+        'some string'.force_encoding('utf-8').encode('Windows-1252', invalid: :replace, undef: :replace)
       "}
 
       it 'converts' do
@@ -37,6 +37,16 @@ RSpec.describe 'Ruby Iconv#iconv to String#encode' do
         expect(File.read 'test.rb').to eq test_rewritten_content
       end
     end
-    
+
+    describe 'case with encodings set in vars' do
+      let(:test_content) { "Iconv.new(to_charset, from_charset).iconv(line)" }
+      let(:test_rewritten_content) { "line.force_encoding(from_charset).encode(to_charset)" }
+
+      it 'converts' do
+        File.write 'test.rb', test_content
+        @rewriter.process
+        expect(File.read 'test.rb').to eq test_rewritten_content
+      end
+    end
   end
 end
