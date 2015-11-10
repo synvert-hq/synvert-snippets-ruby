@@ -4,7 +4,7 @@ It convert Iconv#iconv to String#encode
 
     Iconv.new('cp1252', 'utf-8').iconv(string)
     =>
-    string.force_encoding('cp1252').encode('utf-8')
+    string.force_encoding('utf-8').encode('cp1252')
   EOF
 
   within_files '**/*.rb' do
