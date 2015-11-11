@@ -11,6 +11,14 @@ It convert Iconv#iconv to String#encode
     #Iconv.new('cp1252', 'utf-8').iconv(string)
     #=>
     #string.force_encoding('cp1252').encode('utf-8')
+    #
+    #require 'iconv'
+    #=>
+    #
+    with_node type: 'send', message: 'require', arguments: {size: 1} do
+      remove
+    end
+
     with_node type: 'send', message: 'iconv', arguments: {size: 1} do
       replace_with "{{arguments}}.{{receiver}}"
     end
