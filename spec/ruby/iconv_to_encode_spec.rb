@@ -50,14 +50,20 @@ RSpec.describe 'Ruby Iconv#iconv to String#encode' do
     end
 
     describe 'remove iconv requires' do
-      let(:test_content) { "require 'iconv'" }
-      let(:test_rewritten_content) { }
+      let(:test_content) { "
+        require 'iconv'
+        require 'foo'
+      " }
+      let(:test_rewritten_content) { "
+        require 'foo'
+      " }
 
       it 'converts' do
         File.write 'test.rb', test_content
         @rewriter.process 
-        expect(File.read 'test.rb').to eq ''  
+        expect(File.read 'test.rb').to eq test_rewritten_content
       end
     end
+
   end
 end

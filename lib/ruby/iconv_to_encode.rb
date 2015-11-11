@@ -15,7 +15,7 @@ It convert Iconv#iconv to String#encode
     #require 'iconv'
     #=>
     #
-    with_node type: 'send', message: 'require', arguments: {size: 1} do
+    with_node type: 'send', message: 'require', arguments:['iconv'] do
       remove
     end
 
