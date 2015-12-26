@@ -2,10 +2,6 @@ Synvert::Rewriter.new 'ruby', 'new_safe_navigation_operator' do
   description <<-EOF
 Use ruby new safe navigation operator.
 
-    u && u.profile && u.profile.thumbnails && u.profiles.thumbnails.large
-    =>
-    u&.profile&.thumbnails&.large
-
     u.try!(:profile).try!(:thumbnails).try!(:large)
     =>
     u&.profile&.thumbnails&.large
