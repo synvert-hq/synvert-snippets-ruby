@@ -4,11 +4,11 @@ Use ruby new safe navigation operator.
 
     u && u.profile && u.profile.thumbnails && u.profiles.thumbnails.large
     =>
-    u.?profile.?thumbnails.?large
+    u&.profile&.thumbnails&.large
 
     u.try!(:profile).try!(:thumbnails).try!(:large)
     =>
-    u.?profile.?thumbnails.?large
+    u&.profile&.thumbnails&.large
   EOF
 
   # Gem::Version initialize will strip RUBY_VERSION directly in ruby 1.9,
@@ -18,8 +18,8 @@ Use ruby new safe navigation operator.
       # u.try!(:profile).try!(:thumbnails).try!(:large)
       # u.try(:profile).try(:thumbnails).try(:large)
       # =>
-      # u.?profile.?thumbnails.?large
-      # u.?profile.?thumbnails.?large
+      # u&.profile&.thumbnails&.large
+      # u&.profile&.thumbnails&.large
       %w(try! try).each do |message|
         within_node type: 'send', message: message do
           replace_with "{{receiver}}&.{{arguments.first.to_value}}"
