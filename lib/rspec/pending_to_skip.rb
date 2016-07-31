@@ -42,7 +42,7 @@ It converts rspec pending to skip.
 
   if_gem 'rspec', {gte: '3.0.0'}
 
-  within_files 'spec/**/*.rb' do
+  within_files 'spec/**/*.rb', sort_by: 'end_pos' do
     # it 'is run and expected to fail' do
     #   pending do
     #     do_something_surely_fail

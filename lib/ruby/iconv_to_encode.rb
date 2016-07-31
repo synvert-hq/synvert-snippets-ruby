@@ -22,6 +22,7 @@ It convert Iconv#iconv to String#encode
     with_node type: 'send', message: 'iconv', arguments: {size: 1} do
       replace_with "{{arguments}}.{{receiver}}"
     end
+
     with_node type: 'send', receiver: 'Iconv', message: 'new', arguments: {size: 2} do
       to_charset = node.arguments[0]
       from_charset = node.arguments[1]

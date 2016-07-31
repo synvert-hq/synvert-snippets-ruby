@@ -141,8 +141,8 @@ It upgrade rails from 3.0 to 3.1.
     %w(up down).each do |name|
       with_node type: 'defs', name: name do
         replace_with "def #{name}
-  {{body}}
-end"
+    {{body}}
+  end", autoindent: false
       end
     end
   end

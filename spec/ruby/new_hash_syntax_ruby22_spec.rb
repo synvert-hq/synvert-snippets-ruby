@@ -14,7 +14,7 @@ RSpec.describe 'Ruby uses new hash synax in ruby 2.2' do
 {:key1 => 'value1', :key2 => 'value2'}
 {foo_key: 'foo_value', bar_key: 42, "baz-key" => true}
 {:"foo-#{key}" => 'foo_value', :"bar-key" => 42, :"a\tb" => false, :"c'd" => nil}
-{"foo-#{key}": 'foo_value', 'bar-key': 42, "a\tb": false, "c'd": nil, %Q"baz-#{key}": true}
+{"foo-#{key}": 'foo_value', 'bar-key': 42, "a\tb": false, "c'd": nil}
 EOF
       }
 
@@ -24,7 +24,7 @@ EOF
 {key1: 'value1', key2: 'value2'}
 {foo_key: 'foo_value', bar_key: 42, "baz-key" => true}
 {"foo-#{key}": 'foo_value', 'bar-key': 42, "a\tb": false, "c'd": nil}
-{"foo-#{key}": 'foo_value', 'bar-key': 42, "a\tb": false, "c'd": nil, %Q"baz-#{key}": true}
+{"foo-#{key}": 'foo_value', 'bar-key': 42, "a\tb": false, "c'd": nil}
 EOF
       }
 
