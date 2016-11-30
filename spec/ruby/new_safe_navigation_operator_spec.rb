@@ -7,25 +7,37 @@ RSpec.describe 'Ruby uses new safe navigation operator', skip: Gem::Version.new(
   end
 
   describe 'with fakefs', fakefs: true do
-    let(:test_content) {"
+    context 'with arguments' do
+      let(:test_content) {"
 u = User.find(id)
 u.try!(:profile).try!(:thumbnails).try!(:large, 100, format: 'jpg')
 u.try!('profile').try!('thumbnails').try!('large', 100, format: 'jpg')
 u.try(:profile).try(:thumbnails).try(:large, 100, format: 'jpg')
 u.try('profile').try('thumbnails').try('large', 100, format: 'jpg')
-    "}
-    let(:test_rewritten_content) {"
+      "}
+      let(:test_rewritten_content) {"
 u = User.find(id)
 u&.profile&.thumbnails&.large(100, format: 'jpg')
 u&.profile&.thumbnails&.large(100, format: 'jpg')
 u&.profile&.thumbnails&.large(100, format: 'jpg')
 u&.profile&.thumbnails&.large(100, format: 'jpg')
-    "}
+      "}
 
-    it 'converts' do
-      File.write 'test.rb', test_content
-      @rewriter.process
-      expect(File.read 'test.rb').to eq test_rewritten_content
+      it 'converts' do
+        File.write 'test.rb', test_content
+        @rewriter.process
+        expect(File.read 'test.rb').to eq test_rewritten_content
+      end
+    end
+
+    context 'without arguments' do
+      let(:test_content) { "u.try! {|u| do_something(u.profile) }" }
+
+      it 'makes no changes' do
+        File.write 'test.rb', test_content
+        @rewriter.process
+        expect(File.read 'test.rb').to eq test_content
+      end
     end
   end
 end

@@ -19,7 +19,9 @@ Use ruby new safe navigation operator.
       # u.?profile.?thumbnails.?large(100, format: 'jpg')
       %w(try! try).each do |message|
         within_node type: 'send', message: message do
-          if node.arguments.size == 1
+          if node.arguments.size == 0
+            # Do nothing
+          elsif node.arguments.size == 1
             replace_with "{{receiver}}&.{{arguments.first.to_value}}"
           else
             replace_with "{{receiver}}&.{{arguments.first.to_value}}({{arguments[1..-1]}})"
