@@ -8,6 +8,10 @@ RSpec.describe 'Upgrade rails from 4.2 to 5.0' do
     @rewriter = eval(File.read(rewriter_path))
   end
 
+  def indent_content(content, count: 2)
+    content.strip.split("\n").map { |line| line.empty? ? line : "#{' ' * count}#{line}" }.join("\n")
+  end
+
   describe 'with fakefs', fakefs: true do
     let(:production_content) {'
 module Synvert
@@ -59,6 +63,16 @@ class PostsController < ApplicationController
   end
 end
     '}
+    let(:nested_controller_content) {"
+module Namespace
+#{indent_content(posts_controller_content)}
+end
+    "}
+    let(:nested_controller_rewritten_content) {"
+module Namespace
+#{indent_content(posts_controller_rewritten_content)}
+end
+    "}
     let(:post_model_content) {'
 class Post < ActiveRecord::Base
   after_commit :add_to_index_later, on: :create
@@ -86,6 +100,17 @@ class Post < ApplicationRecord
   end
 end
     '}
+    let(:nested_model_content) {"
+module Namespace
+#{indent_content(post_model_content)}
+end
+    "}
+    let(:nested_model_rewritten_content) {"
+module Namespace
+#{indent_content(post_model_rewritten_content)}
+end
+    "}
+
     let(:post_job_content) {'
 class PostJob < ActiveJob::Base
 end
@@ -99,23 +124,42 @@ end
 class PostJob < ApplicationJob
 end
     '}
+    let(:nested_job_content) {"
+module Namespace
+#{indent_content(post_job_content)}
+end
+    "}
+    let(:nested_job_rewritten_content) {"
+module Namespace
+#{indent_content(post_job_rewritten_content)}
+end
+    "}
 
-    it 'converts' do
+    it 'converts', aggregate_failures: true do
       FileUtils.mkdir_p 'config/environments'
       FileUtils.mkdir_p 'app/controllers'
+      FileUtils.mkdir_p 'app/controllers/namespace'
       FileUtils.mkdir_p 'app/models'
+      FileUtils.mkdir_p 'app/models/namespace'
       FileUtils.mkdir_p 'app/jobs'
+      FileUtils.mkdir_p 'app/jobs/namespace'
       File.write 'config/environments/production.rb', production_content
       File.write 'app/controllers/posts_controller.rb', posts_controller_content
+      File.write 'app/controllers/namespace/posts_controller.rb', nested_controller_content
       File.write 'app/models/post.rb', post_model_content
+      File.write 'app/models/namespace/post.rb', nested_model_content
       File.write 'app/jobs/post_job.rb', post_job_content
+      File.write 'app/jobs/namespace/post_job.rb', nested_job_content
       @rewriter.process
       expect(File.read 'config/environments/production.rb').to eq production_rewritten_content
       expect(File.read 'app/controllers/posts_controller.rb').to eq posts_controller_rewritten_content
+      expect(File.read 'app/controllers/namespace/posts_controller.rb').to eq nested_controller_rewritten_content
       expect(File.read 'app/models/application_record.rb').to eq application_record_rewritten_content
       expect(File.read 'app/models/post.rb').to eq post_model_rewritten_content
+      expect(File.read 'app/models/namespace/post.rb').to eq nested_model_rewritten_content
       expect(File.read 'app/jobs/application_job.rb').to eq application_job_rewritten_content
       expect(File.read 'app/jobs/post_job.rb').to eq post_job_rewritten_content
+      expect(File.read 'app/jobs/namespace/post_job.rb').to eq nested_job_rewritten_content
     end
   end
 end

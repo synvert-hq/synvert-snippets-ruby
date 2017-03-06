@@ -50,7 +50,7 @@ Synvert::Rewriter.new 'rails', 'upgrade_4_2_to_5_0' do
     end
   end
 
-  within_file 'app/controllers/*.rb' do
+  within_file 'app/controllers/**/*.rb' do
     # render nothing: true
     # =>
     # head :ok
@@ -85,7 +85,7 @@ Synvert::Rewriter.new 'rails', 'upgrade_4_2_to_5_0' do
   new_code << "end"
   add_file 'app/models/application_record.rb', new_code
 
-  within_files 'app/models/*.rb' do
+  within_files 'app/models/**/*.rb' do
     # after_commit :add_to_index_later, on: :create
     # after_commit :update_in_index_later, on: :update
     # after_commit :remove_from_index_later, on: :destroy
@@ -114,7 +114,7 @@ Synvert::Rewriter.new 'rails', 'upgrade_4_2_to_5_0' do
   new_code = "class ApplicationJob < ActiveJob::Base\n\nend"
   add_file 'app/jobs/application_job.rb', new_code
 
-  within_files 'app/jobs/*.rb' do
+  within_files 'app/jobs/**/*.rb' do
     # class PostJob < ActiveJob::Base
     # end
     # =>
