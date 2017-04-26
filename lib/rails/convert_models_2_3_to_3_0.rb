@@ -165,7 +165,7 @@ It converts rails models from 2.3 to 3.0.
     within_node type: 'send', message: 'scoped' do
       if node.arguments.length == 1
         argument_node = node.arguments.first
-        if keys.any? { |key| argument_node.has_key? key }
+        if :hash == argument_node.type && keys.any? { |key| argument_node.has_key? key }
           replace_with add_receiver_if_necessary(generate_new_queries(argument_node))
         end
       end
