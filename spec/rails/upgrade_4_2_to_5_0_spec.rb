@@ -134,9 +134,36 @@ module Namespace
 #{indent_content(post_job_rewritten_content)}
 end
     "}
+    let(:new_framework_defaults_rewritten_content) {'
+# Be sure to restart your server when you modify this file.
+#
+# This file contains migration options to ease your Rails 5.0 upgrade.
+#
+# Read the Guide for Upgrading Ruby on Rails for more info on each option.
+
+# Enable per-form CSRF tokens. Previous versions had false.
+Rails.application.config.action_controller.per_form_csrf_tokens = true
+
+# Enable origin-checking CSRF mitigation. Previous versions had false.
+Rails.application.config.action_controller.forgery_protection_origin_check = true
+
+# Make Ruby 2.4 preserve the timezone of the receiver when calling `to_time`.
+# Previous versions had false.
+ActiveSupport.to_time_preserves_timezone = true
+
+# Require `belongs_to` associations by default. Previous versions had false.
+Rails.application.config.active_record.belongs_to_required_by_default = true
+
+# Do not halt callback chains when a callback returns false. Previous versions had true.
+ActiveSupport.halt_callback_chains_on_return_false = false
+
+# Configure SSL options to enable HSTS with subdomains. Previous versions had false.
+Rails.application.config.ssl_options = { hsts: { subdomains: true } }
+    '.strip}
 
     it 'converts', aggregate_failures: true do
       FileUtils.mkdir_p 'config/environments'
+      FileUtils.mkdir_p 'config/initializers'
       FileUtils.mkdir_p 'app/controllers'
       FileUtils.mkdir_p 'app/controllers/namespace'
       FileUtils.mkdir_p 'app/models'
@@ -152,6 +179,7 @@ end
       File.write 'app/jobs/namespace/post_job.rb', nested_job_content
       @rewriter.process
       expect(File.read 'config/environments/production.rb').to eq production_rewritten_content
+      expect(File.read 'config/initializers/new_framework_defaults.rb').to eq new_framework_defaults_rewritten_content
       expect(File.read 'app/controllers/posts_controller.rb').to eq posts_controller_rewritten_content
       expect(File.read 'app/controllers/namespace/posts_controller.rb').to eq nested_controller_rewritten_content
       expect(File.read 'app/models/application_record.rb').to eq application_record_rewritten_content
