@@ -75,7 +75,7 @@ end
     "}
     let(:post_model_content) {'
 class Post < ActiveRecord::Base
-  after_commit :add_to_index_later, on: :create
+  after_commit :add_to_index_later, on: :create, if: :can_add?
   after_commit :update_in_index_later, on: :update
   after_commit :remove_from_index_later, on: :destroy
 
@@ -91,7 +91,7 @@ end
     '.strip}
     let(:post_model_rewritten_content) {'
 class Post < ApplicationRecord
-  after_create_commit :add_to_index_later
+  after_create_commit :add_to_index_later, if: :can_add?
   after_update_commit :update_in_index_later
   after_destroy_commit :remove_from_index_later
 

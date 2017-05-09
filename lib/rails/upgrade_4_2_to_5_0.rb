@@ -96,8 +96,15 @@ Synvert::Rewriter.new 'rails', 'upgrade_4_2_to_5_0' do
     # after_update_commit :update_in_index_later
     # after_detroy_commit :remove_from_index_later
     with_node type: 'send', receiver: nil, message: 'after_commit', arguments: {size: 2} do
-      action = node.arguments.last.values.first.to_value
-      replace_with "after_#{action}_commit {{arguments.first}}"
+      options = node.arguments.last
+      if options.has_key?(:on)
+        other_options = options.children.reject { |pair_node| pair_node.key.to_value == :on }
+        if other_options.empty?
+          replace_with "after_#{options.hash_value(:on).to_value}_commit {{arguments.first.to_source}}"
+        else
+          replace_with "after_#{options.hash_value(:on).to_value}_commit {{arguments.first.to_source}}, #{other_options.map(&:to_source).join(', ')}"
+        end
+      end
     end
 
     # class Post < ActiveRecord::Base
