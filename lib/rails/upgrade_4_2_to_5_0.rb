@@ -206,7 +206,7 @@ Rails.application.config.ssl_options = { hsts: { subdomains: true } }
             end
           end
         end
-        if node.arguments.size > 1
+        if node.arguments.size > 1 && node.arguments[1].type == :hash && !node.arguments[1].has_key?(:params)
           options = []
           options << make_up_hash_pair('params', node.arguments[1])
           options << make_up_hash_pair('flash', node.arguments[2]) if node.arguments.size > 2

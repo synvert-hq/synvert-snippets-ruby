@@ -176,6 +176,10 @@ class PostsControllerTest < ActionController::TestCase
     get :show, { id: user.id }, { notice: "Welcome" }, { admin: user.admin? }
   end
 
+  def test_index
+    get :index, params: { query: "test" }
+  end
+
   def test_create
     post :create, name: "user"
   end
@@ -189,6 +193,10 @@ end
 class PostsControllerTest < ActionController::TestCase
   def test_show
     get :show, params: { id: user.id }, flash: { notice: "Welcome" }, session: { admin: user.admin? }
+  end
+
+  def test_index
+    get :index, params: { query: "test" }
   end
 
   def test_create
