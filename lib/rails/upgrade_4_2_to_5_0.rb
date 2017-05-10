@@ -26,7 +26,9 @@ Synvert::Rewriter.new 'rails', 'upgrade_4_2_to_5_0' do
 
 13. it replaces MissingSourceFile with LoadError.
 
-14. it adds config/initializers/new_framework_defaults.rb
+14. it adds config/initializers/new_framework_defaults.rb.
+
+15. it replaces get :show, { id: user.id }, { notice: 'Welcome' }, { admin: user.admin? } with get :show, params: { id: user.id }, flash: { notice: 'Welcome' }, session: { admin: user.admin? } in test files.
   EOF
 
   within_files 'config/environments/*.rb' do
@@ -188,4 +190,20 @@ ActiveSupport.halt_callback_chains_on_return_false = false
 Rails.application.config.ssl_options = { hsts: { subdomains: true } }
   """.strip
   add_file 'config/initializers/new_framework_defaults.rb', new_code
+
+  # get :show, { id: user.id }, { notice: 'Welcome' }, { admin: user.admin? }
+  # =>
+  # get :show, params: { id: user.id }, flash: { notice: 'Welcome' }, session: { admin: user.admin? }.
+  within_files '{test,spec}/{functional,controllers}/*.rb' do
+    %w(get post patch delete).each do |message|
+      with_node type: 'send', message: message do
+        if node.arguments.size > 1
+          options = "params: #{add_curly_brackets_if_necessary(node.arguments[1].to_source)}"
+          options << ", flash: #{add_curly_brackets_if_necessary(node.arguments[2].to_source)}" if node.arguments.size > 2 && node.arguments[2].to_source != 'nil'
+          options << ", session: #{add_curly_brackets_if_necessary(node.arguments[3].to_source)}" if node.arguments.size > 3
+          replace_with "#{message} {{arguments.first}}, #{options}"
+        end
+      end
+    end
+  end
 end

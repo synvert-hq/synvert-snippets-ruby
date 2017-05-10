@@ -170,6 +170,36 @@ ActiveSupport.halt_callback_chains_on_return_false = false
 # Configure SSL options to enable HSTS with subdomains. Previous versions had false.
 Rails.application.config.ssl_options = { hsts: { subdomains: true } }
     '.strip}
+    let(:posts_controller_test_content) {'
+class PostsControllerTest < ActionController::TestCase
+  def test_show
+    get :show, { id: user.id }, { notice: "Welcome" }, { admin: user.admin? }
+  end
+
+  def test_create
+    post :create, name: "user"
+  end
+
+  def test_destroy
+    delete :destroy, { id: user.id }, nil, { admin: user.admin? }
+  end
+end
+    '.strip}
+    let(:posts_controller_test_rewritten_content) {'
+class PostsControllerTest < ActionController::TestCase
+  def test_show
+    get :show, params: { id: user.id }, flash: { notice: "Welcome" }, session: { admin: user.admin? }
+  end
+
+  def test_create
+    post :create, params: { name: "user" }
+  end
+
+  def test_destroy
+    delete :destroy, params: { id: user.id }, session: { admin: user.admin? }
+  end
+end
+    '.strip}
 
     it 'converts', aggregate_failures: true do
       FileUtils.mkdir_p 'config/environments'
@@ -180,6 +210,7 @@ Rails.application.config.ssl_options = { hsts: { subdomains: true } }
       FileUtils.mkdir_p 'app/models/namespace'
       FileUtils.mkdir_p 'app/jobs'
       FileUtils.mkdir_p 'app/jobs/namespace'
+      FileUtils.mkdir_p 'test/functional'
       File.write 'config/environments/production.rb', production_content
       File.write 'app/controllers/posts_controller.rb', posts_controller_content
       File.write 'app/controllers/namespace/posts_controller.rb', nested_controller_content
@@ -187,6 +218,7 @@ Rails.application.config.ssl_options = { hsts: { subdomains: true } }
       File.write 'app/models/namespace/post.rb', nested_model_content
       File.write 'app/jobs/post_job.rb', post_job_content
       File.write 'app/jobs/namespace/post_job.rb', nested_job_content
+      File.write 'test/functional/posts_controller_test.rb', posts_controller_test_content
       @rewriter.process
       expect(File.read 'config/environments/production.rb').to eq production_rewritten_content
       expect(File.read 'config/initializers/new_framework_defaults.rb').to eq new_framework_defaults_rewritten_content
@@ -198,6 +230,7 @@ Rails.application.config.ssl_options = { hsts: { subdomains: true } }
       expect(File.read 'app/jobs/application_job.rb').to eq application_job_rewritten_content
       expect(File.read 'app/jobs/post_job.rb').to eq post_job_rewritten_content
       expect(File.read 'app/jobs/namespace/post_job.rb').to eq nested_job_rewritten_content
+      expect(File.read 'test/functional/posts_controller_test.rb').to eq posts_controller_test_rewritten_content
     end
   end
 end
