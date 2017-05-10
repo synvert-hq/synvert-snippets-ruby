@@ -197,11 +197,21 @@ Rails.application.config.ssl_options = { hsts: { subdomains: true } }
   within_files '{test,spec}/{functional,controllers}/*.rb' do
     %w(get post patch delete).each do |message|
       with_node type: 'send', message: message do
+        def make_up_hash_pair(key, argument_node)
+          if argument_node.to_source != 'nil'
+            if argument_node.type == :hash
+              "#{key}: #{add_curly_brackets_if_necessary(argument_node.to_source)}"
+            else
+              "#{key}: #{argument_node.to_source}"
+            end
+          end
+        end
         if node.arguments.size > 1
-          options = "params: #{add_curly_brackets_if_necessary(node.arguments[1].to_source)}"
-          options << ", flash: #{add_curly_brackets_if_necessary(node.arguments[2].to_source)}" if node.arguments.size > 2 && node.arguments[2].to_source != 'nil'
-          options << ", session: #{add_curly_brackets_if_necessary(node.arguments[3].to_source)}" if node.arguments.size > 3
-          replace_with "#{message} {{arguments.first}}, #{options}"
+          options = []
+          options << make_up_hash_pair('params', node.arguments[1])
+          options << make_up_hash_pair('flash', node.arguments[2]) if node.arguments.size > 2
+          options << make_up_hash_pair('session', node.arguments[3]) if node.arguments.size > 3
+          replace_with "#{message} {{arguments.first}}, #{options.compact.join(', ')}"
         end
       end
     end
