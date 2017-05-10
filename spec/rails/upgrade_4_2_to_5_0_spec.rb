@@ -80,7 +80,12 @@ class Post < ActiveRecord::Base
   after_commit :remove_from_index_later, on: :destroy
 
   def test_load_error
-  rescue MissingSourceFile
+    rescue MissingSourceFile
+  end
+
+  def validate_author
+    errors[:base] = "author not present" unless author
+    self.errors[:base] = "author not present" unless author
   end
 end
     '}
@@ -96,7 +101,12 @@ class Post < ApplicationRecord
   after_destroy_commit :remove_from_index_later
 
   def test_load_error
-  rescue LoadError
+    rescue LoadError
+  end
+
+  def validate_author
+    errors.add(:base, "author not present") unless author
+    self.errors.add(:base, "author not present") unless author
   end
 end
     '}

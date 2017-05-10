@@ -14,17 +14,19 @@ Synvert::Rewriter.new 'rails', 'upgrade_4_2_to_5_0' do
 
 7. it replaces after_commit :xxx, on: :yyy with after_yyy_commit :xxx in model files.
 
-8. it adds app/models/application_record.rb file.
+8. it replaces errors[]= to errors.add in model files.
 
-9. it replaces ActiveRecord::Base with ApplicationRecord in model files.
+9. it adds app/models/application_record.rb file.
 
-10. it adds app/jobs/application_job.rb file.
+10. it replaces ActiveRecord::Base with ApplicationRecord in model files.
 
-11. it replaces ActiveJob::Base with ApplicationJob in job files.
+11. it adds app/jobs/application_job.rb file.
 
-12. it replaces MissingSourceFile with LoadError.
+12. it replaces ActiveJob::Base with ApplicationJob in job files.
 
-13. it adds config/initializers/new_framework_defaults.rb
+13. it replaces MissingSourceFile with LoadError.
+
+14. it adds config/initializers/new_framework_defaults.rb
   EOF
 
   within_files 'config/environments/*.rb' do
@@ -105,6 +107,20 @@ Synvert::Rewriter.new 'rails', 'upgrade_4_2_to_5_0' do
           replace_with "after_#{options.hash_value(:on).to_value}_commit {{arguments.first.to_source}}, #{other_options.map(&:to_source).join(', ')}"
         end
       end
+    end
+
+    # errors[] =
+    # =>
+    # errors.add
+    with_node type: 'send', receiver: 'errors', message: '[]=' do
+      replace_with "errors.add({{arguments.first}}, {{arguments.last}})"
+    end
+
+    # self.errors[] =
+    # =>
+    # self.errors.add
+    with_node type: 'send', receiver: { type: 'send', message: 'errors' }, message: '[]=' do
+      replace_with "{{receiver}}.add({{arguments.first}}, {{arguments.last}})"
     end
 
     # class Post < ActiveRecord::Base
