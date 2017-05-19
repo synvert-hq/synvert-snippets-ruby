@@ -25,7 +25,7 @@ end
     let(:production_rewritten_content) {'
 module Synvert
   class Application < Rails::Application
-    config.public_file_server.headers = "public, max-age=31536000"
+    config.public_file_server.headers = { "Cache-Control" => "public, max-age=31536000" }
     config.public_file_server.enabled = true
     config.middleware.use Foo::Bar, foo: "bar"
   end

@@ -34,9 +34,9 @@ Synvert::Rewriter.new 'rails', 'upgrade_4_2_to_5_0' do
   within_files 'config/environments/*.rb' do
     # config.static_cache_control = 'public, max-age=31536000'
     # =>
-    # config.public_file_server.headers = 'public, max-age=31536000'
+    # config.public_file_server.headers = { "Cache-Control" => 'public, max-age=31536000' }
     with_node type: 'send', message: 'static_cache_control=' do
-      replace_with "{{receiver}}.public_file_server.headers = {{arguments}}"
+      replace_with "{{receiver}}.public_file_server.headers = { \"Cache-Control\" => {{arguments}} }"
     end
 
     # config.serve_static_files = true
