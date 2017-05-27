@@ -13,6 +13,19 @@ RSpec.describe 'Upgrade rails from 4.2 to 5.0' do
   end
 
   describe 'with fakefs', fakefs: true do
+    let(:application_content) {'
+module Synvert
+  class Application < Rails::Application
+    config.raise_in_transactional_callbacks = true
+  end
+end
+    '}
+    let(:application_rewritten_content) {'
+module Synvert
+  class Application < Rails::Application
+  end
+end
+    '}
     let(:production_content) {'
 module Synvert
   class Application < Rails::Application
@@ -219,6 +232,7 @@ end
       FileUtils.mkdir_p 'app/jobs'
       FileUtils.mkdir_p 'app/jobs/namespace'
       FileUtils.mkdir_p 'test/functional'
+      File.write 'config/application.rb', application_content
       File.write 'config/environments/production.rb', production_content
       File.write 'app/controllers/posts_controller.rb', posts_controller_content
       File.write 'app/controllers/namespace/posts_controller.rb', nested_controller_content
@@ -228,6 +242,7 @@ end
       File.write 'app/jobs/namespace/post_job.rb', nested_job_content
       File.write 'test/functional/posts_controller_test.rb', posts_controller_test_content
       @rewriter.process
+      expect(File.read 'config/application.rb').to eq application_rewritten_content
       expect(File.read 'config/environments/production.rb').to eq production_rewritten_content
       expect(File.read 'config/initializers/new_framework_defaults.rb').to eq new_framework_defaults_rewritten_content
       expect(File.read 'app/controllers/posts_controller.rb').to eq posts_controller_rewritten_content

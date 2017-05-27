@@ -29,7 +29,16 @@ Synvert::Rewriter.new 'rails', 'upgrade_4_2_to_5_0' do
 14. it adds config/initializers/new_framework_defaults.rb.
 
 15. it replaces get :show, { id: user.id }, { notice: 'Welcome' }, { admin: user.admin? } with get :show, params: { id: user.id }, flash: { notice: 'Welcome' }, session: { admin: user.admin? } in test files.
+
+16. it removes raise_in_transactional_callbacks= in config/application.rb.
   EOF
+
+  within_file 'config/application.rb' do
+    # remove config.raise_in_transactional_callbacks = true
+    with_node type: 'send', message: 'raise_in_transactional_callbacks=' do
+      remove
+    end
+  end
 
   within_files 'config/environments/*.rb' do
     # config.static_cache_control = 'public, max-age=31536000'
