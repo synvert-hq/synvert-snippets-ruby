@@ -105,7 +105,7 @@ It converts rails routes from 2.3 to 3.0.
 
   helper_method :reject_keys do |hash_node, *keys|
     hash_node.children.reject { |pair_node| keys.include? pair_node.key.to_value }
-      .map { |pair_node| pair_node.to_source }
+      .map(&:to_source)
   end
 
   helper_method :generate_new_child_routes do |parent_node, parent_argument|

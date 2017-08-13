@@ -51,13 +51,13 @@ It uses string_parameters to replace attr_accessible.
 
       # assign and remove attr_accessible ...
       with_node type: 'send', message: 'attr_accessible' do
-        parameters[object_name] = node.arguments.map { |key| key.to_source }
+        parameters[object_name] = node.arguments.map(&:to_source)
         remove
       end
 
       # assign and remove attr_protected ...
       with_node type: 'send', message: 'attr_protected' do
-        parameters[object_name] = attributes[object_name] - node.arguments.map { |key| key.to_source }
+        parameters[object_name] = attributes[object_name] - node.arguments.map(&:to_source)
         remove
       end
     end
