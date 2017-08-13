@@ -9,10 +9,10 @@ RSpec.describe 'Ruby Iconv#iconv to String#encode' do
 
   describe 'with fakefs', fakefs: true do
     describe 'basic case' do    
-      let(:test_content) {"
+      let(:test_content) { "
         Iconv.new('Windows-1252','utf-8').iconv('some string')
       "}
-      let(:test_rewritten_content) {"
+      let(:test_rewritten_content) { "
         'some string'.force_encoding('utf-8').encode('Windows-1252')
       "}
 
@@ -24,10 +24,10 @@ RSpec.describe 'Ruby Iconv#iconv to String#encode' do
     end
     
     describe 'with iconv ignored option' do
-      let(:test_content) {"
+      let(:test_content) { "
         Iconv.new('Windows-1252//IGNORE','utf-8//IGNORE').iconv('some string')
       "}
-      let(:test_rewritten_content) {"
+      let(:test_rewritten_content) { "
         'some string'.force_encoding('utf-8').encode('Windows-1252', invalid: :replace, undef: :replace)
       "}
 

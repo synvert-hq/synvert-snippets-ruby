@@ -7,12 +7,12 @@ RSpec.describe 'Ruby converts map_and_flatten_to_flat_map' do
   end
 
   describe 'with fakefs', fakefs: true do
-    let(:test_content) {"
+    let(:test_content) { "
 enum.map do
   # do something
 end.flatten
     "}
-    let(:test_rewritten_content) {"
+    let(:test_rewritten_content) { "
 enum.flat_map do
   # do something
 end

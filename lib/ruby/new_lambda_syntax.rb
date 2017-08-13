@@ -9,7 +9,7 @@ Use ruby new lambda syntax
 
   within_files '**/*.rb' do
     # lambda { |a, b, c| a + b + c } => ->(a, b, c) { a + b + c }
-    within_node type: 'block', caller: {type: 'send', message: 'lambda'} do
+    within_node type: 'block', caller: { type: 'send', message: 'lambda' } do
       if node.arguments.empty?
         replace_with "-> { {{body}} }"
       else

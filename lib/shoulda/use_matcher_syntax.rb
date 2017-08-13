@@ -112,12 +112,12 @@ controllers:
   should redirect_to("the user profile") { user_url(@user) }
   EOF
 
-  if_gem 'shoulda', {gte: '2.11.0'}
+  if_gem 'shoulda', { gte: '2.11.0' }
 
   helper_method :hash_to_calls do |hash_node|
     new_calls = []
-    message_converts = {message: 'with_message', short_message: 'with_short_message', long_message: 'with_long_message',
-                        high_message: 'with_high_message', low_message: 'with_low_message'}
+    message_converts = { message: 'with_message', short_message: 'with_short_message', long_message: 'with_long_message',
+                        high_message: 'with_high_message', low_message: 'with_low_message' }
     hash_node.children.each do |pair_node|
       method = pair_node.key.to_value
       if method == :case_sensitive
@@ -231,21 +231,21 @@ controllers:
   functional_test_file_patterns.each do |file_pattern|
     within_files file_pattern do
       # should_assign_to(:user) { @user } => should assign_to(:user).with(@user)
-      with_node type: 'block', caller: {type: 'send', message: 'should_assign_to'} do
+      with_node type: 'block', caller: { type: 'send', message: 'should_assign_to' } do
         replace_with "should assign_to({{caller.arguments}}).with({{body}})"
       end
 
       # should_set_session(:user_id) { @user.id }
       # =>
       # should set_session(:user_id).to(@user.id)
-      with_node type: 'block', caller: {type: 'send', message: 'should_set_session'} do
+      with_node type: 'block', caller: { type: 'send', message: 'should_set_session' } do
         replace_with "should set_session({{caller.arguments}}).to({{body}})"
       end
 
       # should_redirect_to("the user profile") { user_url(@user) }
       # =>
       # should redirect_to("the user profile") { user_url(@user) }
-      with_node type: 'block', caller: {type: 'send', message: 'should_redirect_to'} do
+      with_node type: 'block', caller: { type: 'send', message: 'should_redirect_to' } do
         replace_with "should redirect_to({{caller.arguments}}) { {{body}} }"
       end
     end

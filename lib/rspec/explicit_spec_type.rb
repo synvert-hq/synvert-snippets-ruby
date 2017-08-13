@@ -16,7 +16,7 @@ It explicits spec type.
     end
   eos
 
-  if_gem 'rspec-rails', {gte: '2.99.0'}
+  if_gem 'rspec-rails', { gte: '2.99.0' }
 
   within_file 'spec/rails_helper.rb' do
     # RSpec.configure do |rspec|
@@ -25,7 +25,7 @@ It explicits spec type.
     # RSpec.configure do |rspec|
     #   rspec.infer_spec_type_from_file_location!
     # end
-    within_node type: 'block', caller: {type: 'send', receiver: 'RSpec', message: 'configure'} do
+    within_node type: 'block', caller: { type: 'send', receiver: 'RSpec', message: 'configure' } do
       unless_exist_node type: 'send', message: 'infer_spec_type_from_file_location!' do
         append '{{arguments}}.infer_spec_type_from_file_location!'
       end
@@ -37,7 +37,7 @@ It explicits spec type.
   # =>
   # describe SomeModel, :type => :model do
   # end
-  {models: 'model',
+  { models: 'model',
    controllers: 'controller',
    helpers: 'helper',
    mailers: 'mailer',
@@ -46,7 +46,7 @@ It explicits spec type.
    api: 'request',
    routing: 'routing',
    views: 'view',
-   features: 'feature'}.each do |directory,type|
+   features: 'feature' }.each do |directory, type|
     within_files "spec/#{directory}/*.rb" do
       top_level = true
       with_node type: 'send', message: 'describe' do

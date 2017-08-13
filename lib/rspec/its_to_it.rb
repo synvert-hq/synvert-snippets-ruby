@@ -32,7 +32,7 @@ It converts rspec its to it.
     end
   EOF
 
-  if_gem 'rspec', {gte: '2.99.0'}
+  if_gem 'rspec', { gte: '2.99.0' }
 
   within_files 'spec/**/*.rb' do
     # describe 'example' do
@@ -64,7 +64,7 @@ It converts rspec its to it.
     #   end
     # end
     [:should, :should_not].each do |message|
-      with_node type: 'block', caller: {message: 'its'} do
+      with_node type: 'block', caller: { message: 'its' } do
         if node.body.length == 1
           its_arg = node.caller.arguments.first.to_source
           its_arg = its_arg[1...-1] if its_arg =~ /^['"].*['"]$/
