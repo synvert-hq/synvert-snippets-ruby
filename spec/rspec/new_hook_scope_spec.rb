@@ -5,26 +5,26 @@ RSpec.describe 'RSpec uses new hook scope' do
   let!(:rewriter) { eval(File.read(rewriter_path)) }
 
   describe 'with fakefs', fakefs: true do
-    let(:post_spec_content) {"
+    let(:post_spec_content) { "
 describe 'example' do
   before { do_something }
   before(:each) { do_something }
   before(:all) { do_something }
 end
     "}
-    let(:post_spec_rewritten_content) {"
+    let(:post_spec_rewritten_content) { "
 describe 'example' do
   before { do_something }
   before(:example) { do_something }
   before(:context) { do_something }
 end
     "}
-    let(:spec_helper_content) {"
+    let(:spec_helper_content) { "
 RSpec.configure do |config|
   config.before(:suite) { do_something }
 end
     "}
-    let(:spec_helper_rewritten_content) {"
+    let(:spec_helper_rewritten_content) { "
 RSpec.configure do |config|
   config.before(:suite) { do_something }
 end

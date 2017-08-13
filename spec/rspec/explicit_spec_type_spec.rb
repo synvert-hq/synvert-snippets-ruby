@@ -5,59 +5,59 @@ RSpec.describe 'Explicity spec type in rspec-rails' do
   let!(:rewriter) { eval(File.read(rewriter_path)) }
 
   describe 'with fakefs', fakefs: true do
-    let(:post_model_spec_content) {"
+    let(:post_model_spec_content) { "
 describe Post do
   describe '#save' do
   end
 end
     "}
-    let(:post_model_spec_rewritten_content) {"
+    let(:post_model_spec_rewritten_content) { "
 describe Post, type: :model do
   describe '#save' do
   end
 end
     "}
-    let(:comment_model_spec_content) {"
+    let(:comment_model_spec_content) { "
 RSpec.describe Comment, :type => :model do
   describe '#save' do
   end
 end
     "}
-    let(:comment_model_spec_rewritten_content) {"
+    let(:comment_model_spec_rewritten_content) { "
 RSpec.describe Comment, :type => :model do
   describe '#save' do
   end
 end
     "}
-    let(:posts_controller_spec_content) {"
+    let(:posts_controller_spec_content) { "
 describe PostsController do
 end
     "}
-    let(:posts_controller_spec_rewritten_content) {"
+    let(:posts_controller_spec_rewritten_content) { "
 describe PostsController, type: :controller do
 end
     "}
-    let(:posts_helper_spec_content) {"
+    let(:posts_helper_spec_content) { "
 describe PostsHelper do
 end
     "}
-    let(:posts_helper_spec_rewritten_content) {"
+    let(:posts_helper_spec_rewritten_content) { "
 describe PostsHelper, type: :helper do
 end
     "}
-    let(:post_mailer_spec_content) {"
+    let(:post_mailer_spec_content) { "
 describe PostMailer do
 end
     "}
-    let(:post_mailer_spec_rewritten_content) {"
+    let(:post_mailer_spec_rewritten_content) { "
 describe PostMailer, type: :mailer do
 end
     "}
-    let(:rails_spec_content) {"
+    let(:rails_spec_content) { "
 RSpec.configure do |rspec|
 end
     "}
-    let(:rails_spec_rewritten_content) {"
+    let(:rails_spec_rewritten_content) { "
 RSpec.configure do |rspec|
   rspec.infer_spec_type_from_file_location!
 end

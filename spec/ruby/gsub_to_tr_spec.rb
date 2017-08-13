@@ -7,10 +7,10 @@ RSpec.describe 'Ruby converts gsub to tr' do
   end
 
   describe 'with fakefs', fakefs: true do
-    let(:test_content) {"
+    let(:test_content) { "
 'slug from title'.gsub(' ', '_')
     "}
-    let(:test_rewritten_content) {"
+    let(:test_rewritten_content) { "
 'slug from title'.tr(' ', '_')
     "}
 

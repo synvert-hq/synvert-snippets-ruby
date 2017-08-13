@@ -5,7 +5,7 @@ RSpec.describe 'RSpec converts its to it' do
   let!(:rewriter) { eval(File.read(rewriter_path)) }
 
   describe 'with fakefs', fakefs: true do
-    let(:post_spec_content) {"
+    let(:post_spec_content) { "
 describe Post do
   describe 'example' do
     subject { { foo: 1, bar: 2 } }
@@ -15,7 +15,7 @@ describe Post do
   end
 end
     "}
-    let(:post_spec_rewritten_content) {"
+    let(:post_spec_rewritten_content) { "
 describe Post do
   describe 'example' do
     subject { { foo: 1, bar: 2 } }

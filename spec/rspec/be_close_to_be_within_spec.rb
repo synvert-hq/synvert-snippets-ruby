@@ -5,14 +5,14 @@ RSpec.describe 'RSpec converts be_close to be_within' do
   let!(:rewriter) { eval(File.read(rewriter_path)) }
 
   describe 'with fakefs', fakefs: true do
-    let(:post_spec_content) {"
+    let(:post_spec_content) { "
 describe Post do
   it 'test' do
     expect(1.0 / 3.0).to be_close(0.333, 0.001)
   end
 end
     "}
-    let(:post_spec_rewritten_content) {"
+    let(:post_spec_rewritten_content) { "
 describe Post do
   it 'test' do
     expect(1.0 / 3.0).to be_within(0.001).of(0.333)

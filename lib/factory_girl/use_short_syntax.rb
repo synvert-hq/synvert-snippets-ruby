@@ -49,11 +49,11 @@ Uses FactoryGirl short syntax.
     FactoryGirl.build_pair(...) => build_pair(...)
   EOF
 
-  if_gem 'factory_girl', {gte: '2.0.0'}
+  if_gem 'factory_girl', { gte: '2.0.0' }
 
   # insert include FactoryGirl::Syntax::Methods
   within_file 'spec/spec_helper.rb' do
-    within_node type: 'block', caller: {receiver: 'RSpec', message: 'configure'} do
+    within_node type: 'block', caller: { receiver: 'RSpec', message: 'configure' } do
       unless_exist_node type: 'send', message: 'include', arguments: ['FactoryGirl::Syntax::Methods'] do
         insert '{{arguments.first}}.include FactoryGirl::Syntax::Methods'
       end

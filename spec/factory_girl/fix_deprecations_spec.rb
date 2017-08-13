@@ -7,7 +7,7 @@ RSpec.describe 'Fix factory_girl deprecations' do
   end
 
   describe 'with fakefs', fakefs: true do
-    let(:user_factory_content) {'
+    let(:user_factory_content) { '
 Factory.sequence :login do |n|
   "new_user_#{n}"
 end
@@ -23,7 +23,7 @@ Factory.define(:admin, :parent => :user) do |admin|
   end
 end
     '}
-    let(:user_factory_rewritten_content) {'
+    let(:user_factory_rewritten_content) { '
 FactoryGirl.define do
   sequence :login do |n|
     "new_user_#{n}"
@@ -41,7 +41,7 @@ FactoryGirl.define do
   end
 end
     '}
-    let(:post_test_content) {"
+    let(:post_test_content) { "
 class PostTest < ActiveSupport::TestCase
   def test_post
     Factory(:comment)
@@ -53,7 +53,7 @@ class PostTest < ActiveSupport::TestCase
   end
 end
     "}
-    let(:post_test_rewritten_content) {"
+    let(:post_test_rewritten_content) { "
 class PostTest < ActiveSupport::TestCase
   def test_post
     create(:comment)
