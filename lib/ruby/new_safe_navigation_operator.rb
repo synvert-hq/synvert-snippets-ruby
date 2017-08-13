@@ -10,7 +10,7 @@ Use ruby new safe navigation operator.
 
   # Gem::Version initialize will strip RUBY_VERSION directly in ruby 1.9,
   # which is solved from ruby 2.0.0, which calls dup internally.
-  if Gem::Version.new(RUBY_VERSION.dup) >= Gem::Version.new("2.3.0")
+  if Gem::Version.new(RUBY_VERSION.dup) >= Gem::Version.new('2.3.0')
     within_files '**/*.rb' do
       # u.try!(:profile).try!(:thumbnails).try!(:large, 100, format: 'jpg')
       # u.try(:profile).try(:thumbnails).try(:large, 100, format: 'jpg')
@@ -22,9 +22,9 @@ Use ruby new safe navigation operator.
           if node.arguments.size == 0
             # Do nothing
           elsif node.arguments.size == 1
-            replace_with "{{receiver}}&.{{arguments.first.to_value}}"
+            replace_with '{{receiver}}&.{{arguments.first.to_value}}'
           else
-            replace_with "{{receiver}}&.{{arguments.first.to_value}}({{arguments[1..-1]}})"
+            replace_with '{{receiver}}&.{{arguments.first.to_value}}({{arguments[1..-1]}})'
           end
         end
       end

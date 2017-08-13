@@ -29,9 +29,9 @@ It converts block to yield.
       if block_called
         goto_node :arguments do
           if node.children.size > 1
-            replace_with "({{children[0..-2]}})"
+            replace_with '({{children[0..-2]}})'
           else
-            replace_with ""
+            replace_with ''
           end
         end
       end

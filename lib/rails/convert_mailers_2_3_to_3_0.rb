@@ -35,7 +35,7 @@ It converts rails mailers from 2.3 to 3.0.
 
   mailer_methods = {}
 
-  within_files "app/{models,mailers}/**/*.rb" do
+  within_files 'app/{models,mailers}/**/*.rb' do
     # class Notifier < ActionMailer::Base
     #   def signup_notification(recipient)
     #     recipients      recipient.email_address_with_name
@@ -90,7 +90,7 @@ It converts rails mailers from 2.3 to 3.0.
     end
   end
 
-  within_files "{app,lib}/**/*.rb" do
+  within_files '{app,lib}/**/*.rb' do
     # Notifier.deliver_signup_notification(recipient)
     # =>
     # Notifier.signup_notification(recipient).deliver
@@ -116,7 +116,7 @@ It converts rails mailers from 2.3 to 3.0.
     # message.deliver
     with_node type: 'send', message: 'deliver' do
       if mailer_methods[node.receiver]
-        replace_with "{{arguments}}.{{message}}"
+        replace_with '{{arguments}}.{{message}}'
       end
     end
   end

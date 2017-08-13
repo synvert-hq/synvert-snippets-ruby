@@ -49,12 +49,12 @@ production:
   within_files '**/*.rb' do
     # MultiJson.dump(obj) => obj.to_json
     with_node type: 'send', receiver: 'MultiJson', message: 'dump' do
-      replace_with "{{arguments}}.to_json"
+      replace_with '{{arguments}}.to_json'
     end
 
     # MultiJson.load(str) => JSON.parse(str)
     with_node type: 'send', receiver: 'MultiJson', message: 'load' do
-      replace_with "JSON.parse {{arguments}}"
+      replace_with 'JSON.parse {{arguments}}'
     end
   end
 

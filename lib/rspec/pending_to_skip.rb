@@ -67,7 +67,7 @@ It converts rspec pending to skip.
     #   do_something_possibly_fail
     # end
     with_node type: 'send', receiver: nil, message: 'pending', arguments: {size: 0} do
-      replace_with "skip"
+      replace_with 'skip'
     end
 
     # pending 'is skipped' do
@@ -78,7 +78,7 @@ It converts rspec pending to skip.
     #   do_something_possibly_fail
     # end
     with_node type: 'send', receiver: nil, message: 'pending', arguments: {size: 1, first: {type: 'str'}} do
-      replace_with "skip {{arguments}}"
+      replace_with 'skip {{arguments}}'
     end
 
     %w(it describe context).each do |message|

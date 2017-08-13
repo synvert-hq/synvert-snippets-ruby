@@ -38,7 +38,7 @@ It removes monkey patching of the top level methods like describe
     monkey_patches_methods.each do |message|
       with_node type: 'send', message: message do
         if !node.receiver && top_level
-          replace_with "RSpec.{{message}} {{arguments}}"
+          replace_with 'RSpec.{{message}} {{arguments}}'
         end
         top_level = false
       end

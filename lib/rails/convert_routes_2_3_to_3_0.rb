@@ -64,7 +64,7 @@ It converts rails routes from 2.3 to 3.0.
     if !method && hash_node.has_key?(:conditions) && hash_node.hash_value(:conditions).has_key?(:method)
       method = hash_node.hash_value(:conditions).hash_value(:method).to_value
     end
-    method ||= "match"
+    method ||= 'match'
   end
 
   helper_method :generate_new_member_routes do |member_routes|
@@ -72,7 +72,7 @@ It converts rails routes from 2.3 to 3.0.
     if member_routes.type == :hash
       member_routes.children.each do |pair_node|
         Array(pair_node.value.to_value).each do |method|
-          method = "match" if method == :any
+          method = 'match' if method == :any
           new_member_routes << "    #{method} :#{pair_node.key.to_value}\n"
         end
       end
@@ -90,7 +90,7 @@ It converts rails routes from 2.3 to 3.0.
     if collection_routes.type == :hash
       collection_routes.children.each do |pair_node|
         Array(pair_node.value.to_value).each do |method|
-          method = "match" if method == :any
+          method = 'match' if method == :any
           new_collection_routes << "    #{method} :#{pair_node.key.to_value}\n"
         end
       end
@@ -109,7 +109,7 @@ It converts rails routes from 2.3 to 3.0.
   end
 
   helper_method :generate_new_child_routes do |parent_node, parent_argument|
-    parent_node.body.map { |child_node| "  #{child_node.to_source.sub(parent_argument, 'map')}\n" }.join("")
+    parent_node.body.map { |child_node| "  #{child_node.to_source.sub(parent_argument, 'map')}\n" }.join('')
   end
 
   within_file 'config/routes.rb' do
@@ -125,7 +125,7 @@ It converts rails routes from 2.3 to 3.0.
         block_argument = node.arguments.first.to_source
         new_routes = "namespace {{caller.arguments}} do\n"
         new_routes << generate_new_child_routes(node, block_argument)
-        new_routes << "end"
+        new_routes << 'end'
         replace_with new_routes
       end
     end
@@ -139,9 +139,9 @@ It converts rails routes from 2.3 to 3.0.
     # =>
     # manage.manage_index "manage_index", :action => "index", :controller => "manage"
     # manage.manage_intro "manage_intro", :action => "intro", :controller => "manage"
-    with_node type: "block", caller: {type: 'send', message: 'with_options'} do
+    with_node type: 'block', caller: {type: 'send', message: 'with_options'} do
       block_argument = node.arguments.first.to_source
-      new_routes = ""
+      new_routes = ''
       node.body.each do |child_node|
         new_route = child_node.to_source.sub(block_argument, 'map')
         new_routes << "#{new_route}, {{caller.arguments}}\n"
@@ -168,7 +168,7 @@ It converts rails routes from 2.3 to 3.0.
       within_node type: 'block', caller: {type: 'send', receiver: {not: nil}, message: message} do
         block_argument = node.arguments.first.to_source
         hash_argument = node.caller.arguments.last
-        new_routes = ""
+        new_routes = ''
         if hash_argument.type == :hash && (hash_argument.has_key?(:collection) || hash_argument.has_key?(:member))
           collection_routes = hash_argument.hash_value(:collection)
           member_routes = hash_argument.hash_value(:member)
@@ -184,7 +184,7 @@ It converts rails routes from 2.3 to 3.0.
           new_routes << "#{message} {{caller.arguments}} do\n"
         end
         new_routes << generate_new_child_routes(node, block_argument)
-        new_routes << "end"
+        new_routes << 'end'
         replace_with new_routes
       end
     end
@@ -198,7 +198,7 @@ It converts rails routes from 2.3 to 3.0.
         hash_node = node.arguments.last
         if hash_node.has_key?(:action) && hash_node.has_key?(:controller)
           controller_action_name = extract_controller_action_name(hash_node)
-          method = hash_node.has_key?(:method) ? hash_node.hash_value(:method).to_value : "match"
+          method = hash_node.has_key?(:method) ? hash_node.hash_value(:method).to_value : 'match'
           other_options = reject_keys(hash_node, :controller, :action, :method)
           if other_options.length > 0
             replace_with "#{method} {{arguments.first}}, :to => \"#{controller_action_name}\", #{other_options.join(', ')}"
@@ -246,7 +246,7 @@ It converts rails routes from 2.3 to 3.0.
                        end
           new_routes << generate_new_collection_routes(collection_routes) if collection_routes
           new_routes << generate_new_member_routes(member_routes) if member_routes
-          new_routes << "end"
+          new_routes << 'end'
           replace_with new_routes
         else
           replace_with "#{message} {{arguments}}"
@@ -257,7 +257,7 @@ It converts rails routes from 2.3 to 3.0.
     # map.connect "/:controller/:action/:id"
     # => match "/:controller(/:action(/:id))(.:format)"
     with_node type: 'send', receiver: 'map', message: 'connect', arguments: {first: %r|:controller/:action/:id|} do
-      replace_with "match \"/:controller(/:action(/:id))(.:format)\""
+      replace_with 'match "/:controller(/:action(/:id))(.:format)"'
     end
 
     # map.connect "audio/:action/:id", :controller => "audio"
@@ -302,7 +302,7 @@ It converts rails routes from 2.3 to 3.0.
                 replace_with "#{method} {{arguments.first}}, :to => \"#{controller_action_name}\", :as => \"#{message}\""
               end
             else
-              replace_with "match {{arguments}}"
+              replace_with 'match {{arguments}}'
             end
           end
         end

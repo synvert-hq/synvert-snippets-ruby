@@ -104,7 +104,7 @@ It converts rails models from 2.3 to 3.0.
         new_queries << "#{method}(#{strip_brackets(pair_node.value.to_source)})"
       end
     end
-    new_queries.join(".")
+    new_queries.join('.')
   end
 
   helper_method :generate_batch_options do |hash_node|
@@ -114,10 +114,10 @@ It converts rails models from 2.3 to 3.0.
         options << pair_node.to_source
       end
     end
-    options.join(", ")
+    options.join(', ')
   end
 
-  within_files "{app,lib}/**/*.rb" do
+  within_files '{app,lib}/**/*.rb' do
     # named_scope :active, :conditions => {:active => true}
     # =>
     # named_scope :active, where(:active => true)
@@ -156,7 +156,7 @@ It converts rails models from 2.3 to 3.0.
     # =>
     # scope :active, where(:active => true)
     with_node type: 'send', message: 'named_scope' do
-      replace_with add_receiver_if_necessary("scope {{arguments}}")
+      replace_with add_receiver_if_necessary('scope {{arguments}}')
     end
 
     # scoped(:conditions => {:active => true})
@@ -227,7 +227,7 @@ It converts rails models from 2.3 to 3.0.
     # =>
     # Post.all
     with_node type: 'send', message: 'find', arguments: {size: 1, first: :all} do
-      replace_with add_receiver_if_necessary("all")
+      replace_with add_receiver_if_necessary('all')
     end
 
     [:first, :last].each do |message|
@@ -329,26 +329,26 @@ It converts rails models from 2.3 to 3.0.
     end
   end
 
-  within_files "{app,lib,test}/**/*.rb" do
+  within_files '{app,lib,test}/**/*.rb' do
     # self.errors.on(:email).present?
     # =>
     # self.errors[:email].present?
     with_node type: 'send', message: 'on', receiver: /errors$/ do
-      replace_with "{{receiver}}[{{arguments}}]"
+      replace_with '{{receiver}}[{{arguments}}]'
     end
 
     # self.errors.add_to_base("error message")
     # =>
     # self.errors.add(:base, "error message")
     with_node type: 'send', message: 'add_to_base', receiver: {type: 'send', message: 'errors'} do
-      replace_with "{{receiver}}.add(:base, {{arguments}})"
+      replace_with '{{receiver}}.add(:base, {{arguments}})'
     end
 
     # self.save(false)
     # =>
     # self.save(:validate => false)
     with_node type: 'send', message: 'save', arguments: [false] do
-      replace_with add_receiver_if_necessary("save(:validate => false)")
+      replace_with add_receiver_if_necessary('save(:validate => false)')
     end
   end
 end

@@ -110,7 +110,7 @@ It upgrades rails from 3.2 to 4.0.
 
     # config.assets.compress = ... => config.assets.js_compressor = ...
     with_node type: 'send', receiver: {type: 'send', receiver: {type: 'send', message: 'config'}, message: 'assets'}, message: 'compress=' do
-      replace_with "config.assets.js_compressor = {{arguments}}"
+      replace_with 'config.assets.js_compressor = {{arguments}}'
     end
 
     # remove config.action_dispatch.best_standards_support = ...
@@ -274,7 +274,7 @@ It upgrades rails from 3.2 to 4.0.
     within_node type: 'send', message: 'link_to', arguments: {last: {type: 'hash'}} do
       if node.arguments.last.has_key?(:confirm)
         hash = node.arguments.last
-        other_arguments_str = node.arguments[0...-1].map(&:to_source).join(", ")
+        other_arguments_str = node.arguments[0...-1].map(&:to_source).join(', ')
         confirm = hash.hash_value(:confirm).to_source
         other_options = hash.children.map{|pair|
           unless [:confirm, :data].include?(pair.key.to_value)

@@ -17,7 +17,7 @@ Synvert::Rewriter.new 'rails', 'convert_views_2_3_to_3_0' do
     # <%= h user.login %> => <%= user.login %>
     within_files file_pattern do
       with_node type: 'send', receiver: nil, message: 'h' do
-        replace_with "{{arguments}}"
+        replace_with '{{arguments}}'
       end
     end
 

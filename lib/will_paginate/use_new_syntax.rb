@@ -1,4 +1,4 @@
-Synvert::Rewriter.new "will_paginate",  "use_new_syntax" do
+Synvert::Rewriter.new 'will_paginate',  'use_new_syntax' do
   description <<-EOF
 It uses will_paginate new syntax.
 
@@ -30,7 +30,7 @@ It uses will_paginate new syntax.
         new_queries << "#{method}(#{strip_brackets(pair_node.value.to_source)})"
       end
     end
-    new_queries.join(".")
+    new_queries.join('.')
   end
 
   helper_method :generate_will_paginate_query do |hash_node|
@@ -43,11 +43,11 @@ It uses will_paginate new syntax.
     if wp_params.length > 0
       "paginate(#{wp_params.join(', ')})"
     else
-      "paginate"
+      'paginate'
     end
   end
 
-  within_files "{app,lib}/**/*.rb" do
+  within_files '{app,lib}/**/*.rb' do
     # Post.paginate(:conditions => {:active => true}, :order => "created_at DESC", :per_page => 10, :page => 1)
     # =>
     # Post.where(:active => true).order("created_at DESC").paginate(:per_page => 10, :page => 1)
@@ -73,7 +73,7 @@ It uses will_paginate new syntax.
         if argument_node.has_key? :per_page
           new_code << "find_each(:batch_size => #{argument_node.hash_value(:per_page).to_source})"
         else
-          new_code << "find_each"
+          new_code << 'find_each'
         end
         replace_with add_receiver_if_necessary(new_code.join('.'))
       end

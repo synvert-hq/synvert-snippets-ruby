@@ -39,8 +39,8 @@ RSpec.describe 'Ruby Iconv#iconv to String#encode' do
     end
 
     describe 'case with encodings set in vars' do
-      let(:test_content) { "Iconv.new(to_charset, from_charset).iconv(line)" }
-      let(:test_rewritten_content) { "line.force_encoding(from_charset).encode(to_charset)" }
+      let(:test_content) { 'Iconv.new(to_charset, from_charset).iconv(line)' }
+      let(:test_rewritten_content) { 'line.force_encoding(from_charset).encode(to_charset)' }
 
       it 'converts' do
         File.write 'test.rb', test_content

@@ -29,19 +29,19 @@ It converts RAILS_ENV to Rails.env.
 
   if_gem 'rails', {gte: '2.3.0'}
 
-  within_files "**/*.{rb,rake}" do
+  within_files '**/*.{rb,rake}' do
     # RAILS_ENV == 'test'
     # =>
     # Rails.env == 'test'
     with_node type: 'const', to_source: 'RAILS_ENV' do
-      replace_with "Rails.env"
+      replace_with 'Rails.env'
     end
     with_node type: 'const', to_source: '::RAILS_ENV' do
-      replace_with "Rails.env"
+      replace_with 'Rails.env'
     end
   end
 
-  within_files "**/*.{rb,rake}" do
+  within_files '**/*.{rb,rake}' do
     # Rails.env == 'test'
     # =>
     # Rails.env.test?

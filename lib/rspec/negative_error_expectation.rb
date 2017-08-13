@@ -14,7 +14,7 @@ It converts rspec negative error expectation.
     # expect { do_something }.not_to raise_error(SomeErrorClass, 'message') => expect { do_something }.not_to raise_error
     within_node type: 'send', receiver: {type: 'block'}, message: 'not_to' do
       with_node type: 'send', message: 'raise_error' do
-        replace_with "raise_error"
+        replace_with 'raise_error'
       end
     end
   end

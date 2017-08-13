@@ -41,19 +41,19 @@ Test
 
   if_gem 'factory_girl', {gte: '2.0.0'}
 
-  within_files "{test,spec}/factories/**/*.rb" do
+  within_files '{test,spec}/factories/**/*.rb' do
     # add
     # FactoryGirl.define do
     # end
     unless_exist_node type: 'send', receiver: 'FactoryGirl', message: 'define' do
       body = node.to_source.gsub("\n", "\n  ")
-      replace_with """FactoryGirl.define do
+      replace_with ''"FactoryGirl.define do
   #{body}
-end"""
+end"''
     end
   end
 
-  within_files "{test,spec}/factories/**/*.rb" do
+  within_files '{test,spec}/factories/**/*.rb' do
     # Factory.define :user do |user|
     #   user.login { Factory.next(:login) }
     #   user.sequence(:email) { |n| "user#{n}@gmail.com" }
@@ -84,14 +84,14 @@ end"""
     %w(after_build after_create).each do |message|
       within_node type: 'block', caller: {type: 'send', message: message} do
         goto_node :caller do
-          new_message = message.sub("after_", "")
+          new_message = message.sub('after_', '')
           replace_with "after(:#{new_message})"
         end
       end
     end
   end
 
-  within_files "{test,spec}/factories/**/*.rb" do
+  within_files '{test,spec}/factories/**/*.rb' do
     # Factory.define :user do |user|
     #   user.admin true
     # end
@@ -102,12 +102,12 @@ end"""
     within_node type: 'block', caller: {type: 'send', receiver: 'Factory', message: 'define'}, arguments: {size: 1} do
       argument = node.arguments.first.to_source
       with_node type: 'send', receiver: argument do
-        replace_with "{{message}} {{arguments}}"
+        replace_with '{{message}} {{arguments}}'
       end
     end
   end
 
-  within_files "{test,spec}/factories/**/*.rb" do
+  within_files '{test,spec}/factories/**/*.rb' do
     # Factory.define :user do |user|
     # end
     # =>
@@ -115,11 +115,11 @@ end"""
     # end
     within_node type: 'block', caller: {type: 'send', receiver: 'Factory', message: 'define'}, arguments: {size: 1} do
       goto_node :caller do
-        replace_with "factory {{arguments}}"
+        replace_with 'factory {{arguments}}'
       end
 
       goto_node :arguments do
-        replace_with ""
+        replace_with ''
       end
     end
 
@@ -132,25 +132,25 @@ end"""
     # end
     within_node type: 'block', caller: {type: 'send', receiver: 'Factory', message: 'sequence'}, arguments: {size: 1} do
       goto_node :caller do
-        replace_with "sequence {{arguments}}"
+        replace_with 'sequence {{arguments}}'
       end
     end
   end
 
-  within_files "{test,spec}/**/*.rb" do
+  within_files '{test,spec}/**/*.rb' do
     # Factory(:user) => create(:user)
     with_node type: 'send', receiver: nil, message: 'Factory' do
-      replace_with "create({{arguments}})"
+      replace_with 'create({{arguments}})'
     end
 
     # Factory.next(:email) => generate(:email)
     with_node type: 'send', receiver: 'Factory', message: 'next' do
-      replace_with "generate({{arguments}})"
+      replace_with 'generate({{arguments}})'
     end
 
     # Factory.stub(:comment) => build_stubbed(:comment)
     with_node type: 'send', receiver: 'Factory', message: 'stub' do
-      replace_with "build_stubbed({{arguments}})"
+      replace_with 'build_stubbed({{arguments}})'
     end
 
     # Factory.create(:user) => create(:user)

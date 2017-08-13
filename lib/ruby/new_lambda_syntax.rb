@@ -11,9 +11,9 @@ Use ruby new lambda syntax
     # lambda { |a, b, c| a + b + c } => ->(a, b, c) { a + b + c }
     within_node type: 'block', caller: {type: 'send', message: 'lambda'} do
       if node.arguments.empty?
-        replace_with "-> { {{body}} }"
+        replace_with '-> { {{body}} }'
       else
-        replace_with "->({{arguments}}) { {{body}} }"
+        replace_with '->({{arguments}}) { {{body}} }'
       end
     end
   end

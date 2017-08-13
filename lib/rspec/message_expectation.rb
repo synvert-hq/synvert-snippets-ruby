@@ -17,10 +17,10 @@ It convert rspec message expectation.
     # Klass.any_instance.should_receive(:message) => expect_any_instance_of(Klass).to receive(:message)
     with_node type: 'send', message: 'should_receive' do
       if_exist_node type: 'send', message: 'any_instance' do
-        replace_with "expect_any_instance_of({{receiver.receiver}}).to receive({{arguments}})"
+        replace_with 'expect_any_instance_of({{receiver.receiver}}).to receive({{arguments}})'
       end
       unless_exist_node type: 'send', message: 'any_instance' do
-        replace_with "expect({{receiver}}).to receive({{arguments}})"
+        replace_with 'expect({{receiver}}).to receive({{arguments}})'
       end
     end
 
@@ -28,10 +28,10 @@ It convert rspec message expectation.
     # Klass.any_instance.should_not_receive(:message) => expect_any_instance_of(Klass).to receive(:message)
     with_node type: 'send', message: 'should_not_receive' do
       if_exist_node type: 'send', message: 'any_instance' do
-        replace_with "expect_any_instance_of({{receiver.receiver}}).not_to receive({{arguments}})"
+        replace_with 'expect_any_instance_of({{receiver.receiver}}).not_to receive({{arguments}})'
       end
       unless_exist_node type: 'send', message: 'any_instance' do
-        replace_with "expect({{receiver}}).not_to receive({{arguments}})"
+        replace_with 'expect({{receiver}}).not_to receive({{arguments}})'
       end
     end
   end
@@ -39,12 +39,12 @@ It convert rspec message expectation.
   within_files 'spec/**/*.rb' do
     # expect(obj).to receive(:message).and_return { 1 } => expect(obj).to receive(:message) { 1 }
     with_node type: 'send', receiver: {type: 'send', message: 'expect'}, arguments: {first: {type: 'block', caller: {type: 'send', message: 'and_return', arguments: []}}} do
-      replace_with "{{receiver}}.to {{arguments.first.caller.receiver}} { {{arguments.first.body}} }"
+      replace_with '{{receiver}}.to {{arguments.first.caller.receiver}} { {{arguments.first.body}} }'
     end
 
     # expect(obj).to receive(:message).and_return => expect(obj).to receive(:message)
     with_node type: 'send', receiver: {type: 'send', message: 'expect'}, arguments: {first: {type: 'send', message: 'and_return', arguments: []}} do
-      replace_with "{{receiver}}.to {{arguments.first.receiver}}"
+      replace_with '{{receiver}}.to {{arguments.first.receiver}}'
     end
   end
 end

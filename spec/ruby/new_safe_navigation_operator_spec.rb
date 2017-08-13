@@ -31,7 +31,7 @@ u&.profile&.thumbnails&.large(100, format: 'jpg')
     end
 
     context 'without arguments' do
-      let(:test_content) { "u.try! {|u| do_something(u.profile) }" }
+      let(:test_content) { 'u.try! {|u| do_something(u.profile) }' }
 
       it 'makes no changes' do
         File.write 'test.rb', test_content

@@ -121,12 +121,12 @@ controllers:
     hash_node.children.each do |pair_node|
       method = pair_node.key.to_value
       if method == :case_sensitive
-        new_calls << (pair_node.value.to_value ? "case_sensitive" : "case_insensitive")
+        new_calls << (pair_node.value.to_value ? 'case_sensitive' : 'case_insensitive')
       else
         new_calls << "#{message_converts.has_key?(method) ? message_converts[method] : method}(#{pair_node.value.to_source})"
       end
     end
-    new_calls.join(".")
+    new_calls.join('.')
   end
 
   helper_method :with_other_calls do |node, new_code|
@@ -159,7 +159,7 @@ controllers:
          should_allow_mass_assignment_of should_not_allow_mass_assignment_of
          should_have_readonly_attributes should_not_have_readonly_attributes).each do |message|
         with_node type: 'send', message: message do
-          new_message = message.start_with?("should_not") ? message.sub('should_not_', 'should_not ') : message.sub('_', ' ')
+          new_message = message.start_with?('should_not') ? message.sub('should_not_', 'should_not ') : message.sub('_', ' ')
           if node.arguments.size == 1
             replace_with "#{new_message}({{arguments}})"
           elsif node.arguments.last.type == :hash
@@ -187,21 +187,21 @@ controllers:
       # =>
       # should ensure_length_of(:name).is_at_least(3)
       with_node type: 'send', message: 'should_ensure_length_at_least' do
-        with_other_calls(node, "should ensure_length_of({{arguments.first}}).is_at_least({{arguments[1]}})")
+        with_other_calls(node, 'should ensure_length_of({{arguments.first}}).is_at_least({{arguments[1]}})')
       end
 
       # should_ensure_length_at_most :name, 30
       # =>
       # should ensure_length_of(:name).is_at_most(30)
       with_node type: 'send', message: 'should_ensure_length_at_most' do
-        with_other_calls(node, "should ensure_length_of({{arguments.first}}).is_at_most({{arguments[1]}})")
+        with_other_calls(node, 'should ensure_length_of({{arguments.first}}).is_at_most({{arguments[1]}})')
       end
 
       # should_ensure_length_is :ssn, 9
       # =>
       # should ensure_length_of(:ssn).is_equal_to(9)
       with_node type: 'send', message: 'should_ensure_length_is' do
-        with_other_calls(node, "should ensure_length_of({{arguments.first}}).is_equal_to({{arguments[1]}})")
+        with_other_calls(node, 'should ensure_length_of({{arguments.first}}).is_equal_to({{arguments[1]}})')
       end
 
       # should_ensure_value_in_range :age, (0..100)
@@ -232,21 +232,21 @@ controllers:
     within_files file_pattern do
       # should_assign_to(:user) { @user } => should assign_to(:user).with(@user)
       with_node type: 'block', caller: {type: 'send', message: 'should_assign_to'} do
-        replace_with "should assign_to({{caller.arguments}}).with({{body}})"
+        replace_with 'should assign_to({{caller.arguments}}).with({{body}})'
       end
 
       # should_set_session(:user_id) { @user.id }
       # =>
       # should set_session(:user_id).to(@user.id)
       with_node type: 'block', caller: {type: 'send', message: 'should_set_session'} do
-        replace_with "should set_session({{caller.arguments}}).to({{body}})"
+        replace_with 'should set_session({{caller.arguments}}).to({{body}})'
       end
 
       # should_redirect_to("the user profile") { user_url(@user) }
       # =>
       # should redirect_to("the user profile") { user_url(@user) }
       with_node type: 'block', caller: {type: 'send', message: 'should_redirect_to'} do
-        replace_with "should redirect_to({{caller.arguments}}) { {{body}} }"
+        replace_with 'should redirect_to({{caller.arguments}}) { {{body}} }'
       end
     end
   end
@@ -257,12 +257,12 @@ controllers:
       # =>
       # should set_the_flash.to("Thank you for placing this order.")
       with_node type: 'send', message: 'should_set_the_flash_to' do
-        replace_with "should set_the_flash.to({{arguments}})"
+        replace_with 'should set_the_flash.to({{arguments}})'
       end
 
       # should_not_set_the_flash => should_not set_the_flash
       with_node type: 'send', message: 'should_not_set_the_flash' do
-        replace_with "should_not set_the_flash"
+        replace_with 'should_not set_the_flash'
       end
 
       # should_filter_params :password, :ssn
@@ -320,14 +320,14 @@ controllers:
 
       # should_render_without_layout => should_not render_layout
       with_node type: 'send', message: 'should_render_without_layout' do
-        replace_with "should_not render_with_layout"
+        replace_with 'should_not render_with_layout'
       end
 
       # should_route :get, "/posts", :controller => :posts, :action => :index
       # =>
       # should route(:get, "/posts").to(:controller => :posts, :action => :index)
       with_node type: 'send', message: 'should_route' do
-        replace_with "should route({{arguments.first}}, {{arguments[1]}}).to({{arguments.last}})"
+        replace_with 'should route({{arguments.first}}, {{arguments[1]}}).to({{arguments.last}})'
       end
     end
   end

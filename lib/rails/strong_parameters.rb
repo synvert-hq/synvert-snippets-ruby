@@ -73,7 +73,7 @@ It uses string_parameters to replace attr_accessible.
           unless_exist_node type: 'def', name: "#{object_name}_params" do
             new_code =  "def #{object_name}_params\n"
             new_code << "  params.require(:#{object_name}).permit(#{permit_params})\n"
-            new_code << "end"
+            new_code << 'end'
             append new_code
           end
 

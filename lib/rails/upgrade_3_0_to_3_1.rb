@@ -77,29 +77,29 @@ It upgrade rails from 3.0 to 3.1.
 
     # insert config.assets.debug = true
     unless_exist_node type: 'send', receiver: {type: 'send', receiver: {type: 'send', message: 'config'}, message: 'assets'}, message: 'debug=' do
-      insert "config.assets.debug = true"
+      insert 'config.assets.debug = true'
     end
 
     # insert config.assets.compress = false
     unless_exist_node type: 'send', receiver: {type: 'send', receiver: {type: 'send', message: 'config'}, message: 'assets'}, message: 'compress=' do
-      insert "config.assets.compress = false"
+      insert 'config.assets.compress = false'
     end
   end
 
   within_file 'config/environments/production.rb' do
     # insert config.assets.digest = true
     unless_exist_node type: 'send', receiver: {type: 'send', receiver: {type: 'send', message: 'config'}, message: 'assets'}, message: 'digest=' do
-      insert "config.assets.digest = true"
+      insert 'config.assets.digest = true'
     end
 
     # insert config.assets.compile = false
     unless_exist_node type: 'send', receiver: {type: 'send', receiver: {type: 'send', message: 'config'}, message: 'assets'}, message: 'compile=' do
-      insert "config.assets.compile = false"
+      insert 'config.assets.compile = false'
     end
 
     # insert config.assets.compress = true
     unless_exist_node type: 'send', receiver: {type: 'send', receiver: {type: 'send', message: 'config'}, message: 'assets'}, message: 'compress=' do
-      insert "config.assets.compress = true"
+      insert 'config.assets.compress = true'
     end
   end
 
@@ -111,7 +111,7 @@ It upgrade rails from 3.0 to 3.1.
 
     # insert config.serve_static_assets = true
     unless_exist_node type: 'send', receiver: {type: 'send', message: 'config'}, message: 'serve_static_assets=' do
-      insert "config.serve_static_assets = true"
+      insert 'config.serve_static_assets = true'
     end
   end
 
@@ -124,13 +124,13 @@ It upgrade rails from 3.0 to 3.1.
   new_code << "# Disable root element in JSON by default.\n"
   new_code << "ActiveSupport.on_load(:active_record) do\n"
   new_code << "  self.include_root_in_json = false\n"
-  new_code << "end"
+  new_code << 'end'
   add_file 'config/initializers/wrap_parameters.rb', new_code
 
   within_file 'config/initializers/session_store.rb' do
     # add Application.session_store :cookie_store, key: '_xxx-session'
     with_node type: 'send', receiver: {type: 'send', message: 'config'}, message: 'session_store', arguments: {first: :cookie_store} do
-      session_store_key = node.receiver.receiver.to_source.split(":").first.underscore
+      session_store_key = node.receiver.receiver.to_source.split(':').first.underscore
       replace_with "{{receiver}}.session_store :cookie_store, key: '_#{session_store_key}-session'"
     end
   end

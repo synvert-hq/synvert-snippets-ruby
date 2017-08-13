@@ -34,21 +34,21 @@ It converts rspec method stub.
     # obj.stub(:message).any_number_of_times => allow(obj).to receive(:message)
     # obj.stub(:message).at_least(0) => allow(obj).to receive(:message)
     with_node type: 'send', message: 'any_number_of_times' do
-      replace_with "{{receiver}}"
+      replace_with '{{receiver}}'
     end
 
     with_node type: 'send', message: 'at_least', arguments: [0] do
-      replace_with "{{receiver}}"
+      replace_with '{{receiver}}'
     end
 
     # obj.stub(:message) => allow(obj).to receive(:message)
     # Klass.any_instance.stub(:message) => allow_any_instance_of(Klass).to receive(:message)
     with_node type: 'send', message: 'stub', arguments: {first: {type: {not: 'hash'}}} do
       if_exist_node type: 'send', message: 'any_instance' do
-        replace_with "allow_any_instance_of({{receiver.receiver}}).to receive({{arguments}})"
+        replace_with 'allow_any_instance_of({{receiver.receiver}}).to receive({{arguments}})'
       end
       unless_exist_node type: 'send', message: 'any_instance' do
-        replace_with "allow({{receiver}}).to receive({{arguments}})"
+        replace_with 'allow({{receiver}}).to receive({{arguments}})'
       end
     end
   end
@@ -59,26 +59,26 @@ It converts rspec method stub.
     # obj.stub_chain(:foo, :bar, :baz) => allow(obj).to receive_message_chain(:foo, :bar, :baz)
     with_node type: 'send', message: 'stub_chain' do
       if_exist_node type: 'send', message: 'any_instance' do
-        replace_with "allow_any_instance_of({{receiver.receiver}}).to receive_message_chain({{arguments}})"
+        replace_with 'allow_any_instance_of({{receiver.receiver}}).to receive_message_chain({{arguments}})'
       end
       unless_exist_node type: 'send', message: 'any_instance' do
-        replace_with "allow({{receiver}}).to receive_message_chain({{arguments}})"
+        replace_with 'allow({{receiver}}).to receive_message_chain({{arguments}})'
       end
     end
 
     # obj.stub(:foo => 1, :bar => 2) => allow(obj).to receive_messages(:foo => 1, :bar => 2)
     with_node type: 'send', message: 'stub', arguments: {first: {type: 'hash'}} do
-      replace_with "allow({{receiver}}).to receive_messages({{arguments}})"
+      replace_with 'allow({{receiver}}).to receive_messages({{arguments}})'
     end
 
     # allow(obj).to receive(:message).and_return { 1 } => allow(obj).to receive(:message) { 1 }
     with_node type: 'send', receiver: {type: 'send', message: 'allow'}, arguments: {first: {type: 'block', caller: {type: 'send', message: 'and_return', arguments: []}}} do
-      replace_with "{{receiver}}.to {{arguments.first.caller.receiver}} { {{arguments.first.body}} }"
+      replace_with '{{receiver}}.to {{arguments.first.caller.receiver}} { {{arguments.first.body}} }'
     end
 
     # allow(obj).to receive(:message).and_return => allow(obj).to receive(:message)
     with_node type: 'send', receiver: {type: 'send', message: 'allow'}, arguments: {first: {type: 'send', message: 'and_return', arguments: []}} do
-      replace_with "{{receiver}}.to {{arguments.first.receiver}}"
+      replace_with '{{receiver}}.to {{arguments.first.receiver}}'
     end
   end
 end

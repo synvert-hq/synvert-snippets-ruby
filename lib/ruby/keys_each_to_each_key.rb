@@ -12,7 +12,7 @@ It convert Hash#keys.each to Hash#each_key
     # =>
     # params.each_key {}
     with_node type: 'send', message: 'each', receiver: {type: 'send', message: 'keys'} do
-      replace_with "{{receiver.receiver}}.each_key"
+      replace_with '{{receiver.receiver}}.each_key'
     end
   end
 end

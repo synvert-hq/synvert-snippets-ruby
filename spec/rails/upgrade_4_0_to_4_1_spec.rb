@@ -6,8 +6,8 @@ RSpec.describe 'Upgrade rails from 4.0 to 4.1' do
   before do
     rewriter_path = File.join(File.dirname(__FILE__), '../../lib/rails/upgrade_4_0_to_4_1.rb')
     @rewriter = eval(File.read(rewriter_path))
-    expect(SecureRandom).to receive(:hex).with(64).and_return("f88a4878602b2294a6b82be380544a04ec7385cdb784e4f32ea5c7ba21bc225c5b2a71d9519368007f309da7e0c09a78101c74b906f705f488e51d4914f021c7")
-    expect(SecureRandom).to receive(:hex).with(64).and_return("91577fa95d46814424b75a8ea5a0af560644bc1fd38bdbd0f6d2a05acb143548cc3c0722c5e3362f3df9b72c2f88e8c66f6b60eacf609073b4c5b11af74e37f5")
+    expect(SecureRandom).to receive(:hex).with(64).and_return('f88a4878602b2294a6b82be380544a04ec7385cdb784e4f32ea5c7ba21bc225c5b2a71d9519368007f309da7e0c09a78101c74b906f705f488e51d4914f021c7')
+    expect(SecureRandom).to receive(:hex).with(64).and_return('91577fa95d46814424b75a8ea5a0af560644bc1fd38bdbd0f6d2a05acb143548cc3c0722c5e3362f3df9b72c2f88e8c66f6b60eacf609073b4c5b11af74e37f5')
   end
 
   describe 'with fakefs', fakefs: true do

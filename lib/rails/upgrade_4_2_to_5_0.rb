@@ -45,20 +45,20 @@ Synvert::Rewriter.new 'rails', 'upgrade_4_2_to_5_0' do
     # =>
     # config.public_file_server.headers = { "Cache-Control" => 'public, max-age=31536000' }
     with_node type: 'send', message: 'static_cache_control=' do
-      replace_with "{{receiver}}.public_file_server.headers = { \"Cache-Control\" => {{arguments}} }"
+      replace_with '{{receiver}}.public_file_server.headers = { "Cache-Control" => {{arguments}} }'
     end
 
     # config.serve_static_files = true
     # =>
     # config.public_file_server.enabled = true
     with_node type: 'send', message: 'serve_static_files=' do
-      replace_with "{{receiver}}.public_file_server.enabled = {{arguments}}"
+      replace_with '{{receiver}}.public_file_server.enabled = {{arguments}}'
     end
 
     # config.middleware.use "Foo::Bar"
     # =>
     # config.middleware.use Foo::Bar
-    with_node type: 'send', receiver: {type: 'send', receiver: 'config', message: 'middleware'}, message: 'use', arguments: {first: {type: "str"}} do
+    with_node type: 'send', receiver: {type: 'send', receiver: 'config', message: 'middleware'}, message: 'use', arguments: {first: {type: 'str'}} do
       arguments_source = node.arguments.map(&:to_source)
       arguments_source[0] = node.arguments.first.to_value
       replace_with "{{receiver}}.{{message}} #{arguments_source.join(', ')}"
@@ -70,7 +70,7 @@ Synvert::Rewriter.new 'rails', 'upgrade_4_2_to_5_0' do
     # =>
     # head :ok
     with_node type: 'send', receiver: nil, message: 'render', arguments: { size: 1, first: { type: 'hash', keys: ['nothing'], values: [true] } } do
-      replace_with "head :ok"
+      replace_with 'head :ok'
     end
 
     # head status: 406
@@ -80,9 +80,9 @@ Synvert::Rewriter.new 'rails', 'upgrade_4_2_to_5_0' do
     # head :ok, location: '/foo'
     with_node type: 'send', receiver: nil, message: 'head', arguments: { size: 1, first: { type: 'hash' } } do
       if node.arguments.first.has_key? :status
-        replace_with "head {{arguments.first.values.first}}"
+        replace_with 'head {{arguments.first.values.first}}'
       else
-        replace_with "head :ok, {{arguments}}"
+        replace_with 'head :ok, {{arguments}}'
       end
     end
 
@@ -90,14 +90,14 @@ Synvert::Rewriter.new 'rails', 'upgrade_4_2_to_5_0' do
     # =>
     # redirect_back
     with_node type: 'send', receiver: nil, message: 'redirect_to', arguments: [:back] do
-      replace_with "redirect_back"
+      replace_with 'redirect_back'
     end
   end
 
   # adds file app/models/application_record.rb
   new_code = "class ApplicationRecord < ActiveRecord::Base\n"
   new_code << "  self.abstract_class = true\n"
-  new_code << "end"
+  new_code << 'end'
   add_file 'app/models/application_record.rb', new_code
 
   within_files 'app/models/**/*.rb' do
@@ -124,14 +124,14 @@ Synvert::Rewriter.new 'rails', 'upgrade_4_2_to_5_0' do
     # =>
     # errors.add
     with_node type: 'send', receiver: 'errors', message: '[]=' do
-      replace_with "errors.add({{arguments.first}}, {{arguments.last}})"
+      replace_with 'errors.add({{arguments.first}}, {{arguments.last}})'
     end
 
     # self.errors[] =
     # =>
     # self.errors.add
     with_node type: 'send', receiver: { type: 'send', message: 'errors' }, message: '[]=' do
-      replace_with "{{receiver}}.add({{arguments.first}}, {{arguments.last}})"
+      replace_with '{{receiver}}.add({{arguments.first}}, {{arguments.last}})'
     end
 
     # class Post < ActiveRecord::Base
@@ -141,7 +141,7 @@ Synvert::Rewriter.new 'rails', 'upgrade_4_2_to_5_0' do
     # end
     with_node type: 'class', name: {not: 'ApplicationRecord'}, parent_class: 'ActiveRecord::Base' do
       goto_node :parent_class do
-        replace_with "ApplicationRecord"
+        replace_with 'ApplicationRecord'
       end
     end
   end
@@ -158,7 +158,7 @@ Synvert::Rewriter.new 'rails', 'upgrade_4_2_to_5_0' do
     # end
     with_node type: 'class', name: {not: 'ApplicationJob'}, parent_class: 'ActiveJob::Base' do
       goto_node :parent_class do
-        replace_with "ApplicationJob"
+        replace_with 'ApplicationJob'
       end
     end
   end
@@ -172,7 +172,7 @@ Synvert::Rewriter.new 'rails', 'upgrade_4_2_to_5_0' do
     end
   end
 
-  new_code = """
+  new_code = ''"
 # Be sure to restart your server when you modify this file.
 #
 # This file contains migration options to ease your Rails 5.0 upgrade.
@@ -197,7 +197,7 @@ ActiveSupport.halt_callback_chains_on_return_false = false
 
 # Configure SSL options to enable HSTS with subdomains. Previous versions had false.
 Rails.application.config.ssl_options = { hsts: { subdomains: true } }
-  """.strip
+  "''.strip
   add_file 'config/initializers/new_framework_defaults.rb', new_code
 
   # get :show, { id: user.id }, { notice: 'Welcome' }, { admin: user.admin? }

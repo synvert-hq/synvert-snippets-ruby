@@ -69,9 +69,9 @@ After version 2.6.2
       # end
       with_node type: 'send', message: 'should', arguments: {first: {type: 'send', message: 'assign_to'}} do
         assign_to_param = node.arguments.first.arguments.first.to_value
-        replace_with """should \"assigns #{assign_to_param}\" do
+        replace_with ''"should \"assigns #{assign_to_param}\" do
   assert_not_nil assigns(:#{assign_to_param})
-end"""
+end"''
       end
 
       # should_not assign_to(:user)
@@ -81,9 +81,9 @@ end"""
       # end
       with_node type: 'send', message: 'should_not', arguments: {first: {type: 'send', message: 'assign_to'}} do
         assign_to_param = node.arguments.first.arguments.first.to_value
-        replace_with """should \"no assigns #{assign_to_param}\" do
+        replace_with ''"should \"no assigns #{assign_to_param}\" do
   assert_nil assigns(:#{assign_to_param})
-end"""
+end"''
       end
 
       # should assign_to(:user) { @user }
@@ -94,9 +94,9 @@ end"""
       with_node type: 'send', message: 'should', arguments: {first: {type: 'block', caller: {type: 'send', message: 'assign_to'}}} do
         assign_to_param = node.arguments.first.caller.arguments.first.to_value
         assign_to_value = node.arguments.first.body.first.to_source
-        replace_with """should \"assigns #{assign_to_param}\" do
+        replace_with ''"should \"assigns #{assign_to_param}\" do
   assert_equal #{assign_to_value}, assigns(:#{assign_to_param})
-end"""
+end"''
       end
 
       # should_not assign_to(:user) { @user }
@@ -107,9 +107,9 @@ end"""
       with_node type: 'send', message: 'should_not', arguments: {first: {type: 'block', caller: {type: 'send', message: 'assign_to'}}} do
         assign_to_param = node.arguments.first.caller.arguments.first.to_value
         assign_to_value = node.arguments.first.body.first.to_source
-        replace_with """should \"no assigns #{assign_to_param}\" do
+        replace_with ''"should \"no assigns #{assign_to_param}\" do
   assert_not_equal #{assign_to_value}, assigns(:#{assign_to_param})
-end"""
+end"''
       end
 
       # should respond_with_content_type "application/json"
@@ -119,9 +119,9 @@ end"""
       # end
       within_node type: 'send', message: 'should', arguments: {first: {type: 'send', message: 'respond_with_content_type'}} do
         content_type = node.arguments.first.arguments.first.to_value
-        replace_with """should \"responds with #{content_type}\" do
+        replace_with ''"should \"responds with #{content_type}\" do
   assert_equal \"#{content_type}\", response.content_type
-end"""
+end"''
       end
     end
   end
@@ -134,14 +134,14 @@ end"""
       # =>
       # should validate_inclusion_of(:age).in_range(0..100)
       with_node type: 'send', message: 'ensure_inclusion_of' do
-        replace_with "validate_inclusion_of({{arguments}})"
+        replace_with 'validate_inclusion_of({{arguments}})'
       end
 
       # should ensure_exclusion_of(:age).in_range(0..100)
       # =>
       # should validate_exclusion_of(:age).in_range(0..100)
       with_node type: 'send', message: 'ensure_exclusion_of' do
-        replace_with "validate_exclusion_of({{arguments}})"
+        replace_with 'validate_exclusion_of({{arguments}})'
       end
     end
   end
