@@ -9,7 +9,7 @@ RSpec.describe 'Convert rails mailers from 2.3 to 3.0' do
   end
 
   describe 'with fakefs', fakefs: true do
-    let(:notifier_content) {'
+    let(:notifier_content) { '
 class Notifier < ActionMailer::Base
   def signup_notification(recipient)
     recipients      recipient.email_address_with_name
@@ -21,7 +21,7 @@ class Notifier < ActionMailer::Base
   end
 end
     '}
-    let(:notifier_rewritten_content) {'
+    let(:notifier_rewritten_content) { '
 class Notifier < ActionMailer::Base
   def signup_notification(recipient)
     @account = recipient
@@ -29,7 +29,7 @@ class Notifier < ActionMailer::Base
   end
 end
     '}
-    let(:notifiers_content) {'
+    let(:notifiers_content) { '
 class NotifiersController < ApplicationController
   def notify
     Notifier.deliver_signup_notification(recipient)
@@ -39,7 +39,7 @@ class NotifiersController < ApplicationController
   end
 end
     '}
-    let(:notifiers_rewritten_content) {'
+    let(:notifiers_rewritten_content) { '
 class NotifiersController < ApplicationController
   def notify
     Notifier.signup_notification(recipient).deliver

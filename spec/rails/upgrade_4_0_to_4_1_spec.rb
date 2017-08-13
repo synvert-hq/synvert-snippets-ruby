@@ -11,10 +11,10 @@ RSpec.describe 'Upgrade rails from 4.0 to 4.1' do
   end
 
   describe 'with fakefs', fakefs: true do
-    let(:secret_token_content) {"
+    let(:secret_token_content) { "
 Synvert::Application.config.secret_key_base = '47047aa27cf4549abec82ffd43abf47b114db8dab43bb482808a752cb10aae33af8df49f0a20c5876f707ef44fbec068c5607ddb47726565e7f7ec263bd3f799'
     "}
-    let(:secrets_yml_content) {'
+    let(:secrets_yml_content) { '
 development:
   secret_key_base: f88a4878602b2294a6b82be380544a04ec7385cdb784e4f32ea5c7ba21bc225c5b2a71d9519368007f309da7e0c09a78101c74b906f705f488e51d4914f021c7
 
@@ -26,7 +26,7 @@ test:
 production:
   secret_key_base: <%= ENV["SECRET_KEY_BASE"] %>
     '.strip}
-    let(:post_content) {'
+    let(:post_content) { '
 class Post < ActiveRecord::Base
   before_save { return false }
 
@@ -36,7 +36,7 @@ class Post < ActiveRecord::Base
   end
 end
     '}
-    let(:post_rewritten_content) {'
+    let(:post_rewritten_content) { '
 class Post < ActiveRecord::Base
   before_save { return false }
 
@@ -46,10 +46,10 @@ class Post < ActiveRecord::Base
   end
 end
     '}
-    let(:test_helper_content) {'
+    let(:test_helper_content) { '
       ActiveRecord::Migration.check_pending!
     '}
-    let(:test_helper_rewritten_content) {"
+    let(:test_helper_rewritten_content) { "
       require 'test_help'
     "}
 

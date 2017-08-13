@@ -7,7 +7,7 @@ RSpec.describe 'Convert dynamic finders' do
   end
 
   describe 'with fakefs', fakefs: true do
-    let(:schema_content) {'
+    let(:schema_content) { '
 ActiveRecord::Schema.define(version: 20140211112752) do
   create_table "users", force: true do |t|
     t.integer  "account_id",               index: true
@@ -22,7 +22,7 @@ ActiveRecord::Schema.define(version: 20140211112752) do
 end
     '}
 
-    let(:post_model_content) {'
+    let(:post_model_content) { '
 class Post < ActiveRecord::Base
   def active_users
     User.find_all_by_email_and_active(email, true)
@@ -50,7 +50,7 @@ class Post < ActiveRecord::Base
   end
 end
     '}
-    let(:post_model_rewritten_content) {'
+    let(:post_model_rewritten_content) { '
 class Post < ActiveRecord::Base
   def active_users
     User.where(email: email, active: true)
@@ -78,7 +78,7 @@ class Post < ActiveRecord::Base
   end
 end
     '}
-    let(:users_controller_content) {'
+    let(:users_controller_content) { '
 class UsersController < ApplicationController
   def new
     @user = User.find_or_initialize_by_login_and_email(params[:user][:login], params[:user][:email])
@@ -91,7 +91,7 @@ class UsersController < ApplicationController
   end
 end
     '}
-    let(:users_controller_rewritten_content) {'
+    let(:users_controller_rewritten_content) { '
 class UsersController < ApplicationController
   def new
     @user = User.find_or_initialize_by(login: params[:user][:login], email: params[:user][:email])

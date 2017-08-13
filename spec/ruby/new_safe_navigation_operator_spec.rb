@@ -8,14 +8,14 @@ RSpec.describe 'Ruby uses new safe navigation operator', skip: Gem::Version.new(
 
   describe 'with fakefs', fakefs: true do
     context 'with arguments' do
-      let(:test_content) {"
+      let(:test_content) { "
 u = User.find(id)
 u.try!(:profile).try!(:thumbnails).try!(:large, 100, format: 'jpg')
 u.try!('profile').try!('thumbnails').try!('large', 100, format: 'jpg')
 u.try(:profile).try(:thumbnails).try(:large, 100, format: 'jpg')
 u.try('profile').try('thumbnails').try('large', 100, format: 'jpg')
       "}
-      let(:test_rewritten_content) {"
+      let(:test_rewritten_content) { "
 u = User.find(id)
 u&.profile&.thumbnails&.large(100, format: 'jpg')
 u&.profile&.thumbnails&.large(100, format: 'jpg')

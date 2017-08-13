@@ -61,7 +61,7 @@ production:
   within_files '**/*.rb' do
     [/before_/, /after_/].each do |message_regex|
       # Warn if finding return in before_* or after_* callbacks
-      within_node type: 'block', caller: {type: 'send', message: message_regex} do
+      within_node type: 'block', caller: { type: 'send', message: message_regex } do
         with_node type: 'return' do
           warn 'Using a return statement in an inline callback block causes a LocalJumpError to be raised when the callback is executed.'
         end

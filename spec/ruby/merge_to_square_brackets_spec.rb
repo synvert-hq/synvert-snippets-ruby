@@ -7,7 +7,7 @@ RSpec.describe 'Ruby converts merge or merge! to []' do
   end
 
   describe 'with fakefs', fakefs: true do
-    let(:test_content) {"
+    let(:test_content) { "
 enum.inject({}) do |h, e|
   h.merge(e => e)
 end
@@ -23,7 +23,7 @@ enum.each_with_object({}) { |e, h| h.merge!(e => e) }
 params.merge!(:a => 'b')
 params.merge!(a: 'b')
     "}
-    let(:test_rewritten_content) {"
+    let(:test_rewritten_content) { "
 enum.inject({}) do |h, e|
   h[e] = e
   h

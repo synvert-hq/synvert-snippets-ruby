@@ -19,7 +19,7 @@ It converts block to yield.
     # def slow
     #   yield
     # end
-    within_node type: 'def', arguments: {last: {type: 'blockarg'}} do
+    within_node type: 'def', arguments: { last: { type: 'blockarg' } } do
       block_arg_name = node.arguments.last.name.to_s
       block_called = false
       with_node type: 'send', receiver: block_arg_name, message: 'call' do

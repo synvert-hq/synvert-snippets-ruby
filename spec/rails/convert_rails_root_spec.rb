@@ -7,7 +7,7 @@ RSpec.describe 'Convert RAILS_ROOT to Rails.root' do
   end
 
   describe 'with fakefs', fakefs: true do
-    let(:constant_content) {'
+    let(:constant_content) { '
 RAILS_ROOT
 ::RAILS_ROOT
 File.join(RAILS_ROOT, "config", "database.yml")
@@ -15,7 +15,7 @@ RAILS_ROOT + "/config/database.yml"
 "#{RAILS_ROOT}/config/database.yml"
 File.exists?(RAILS_ROOT + "/config/database.yml")
     '}
-    let(:constant_rewritten_content) {'
+    let(:constant_rewritten_content) { '
 Rails.root
 Rails.root
 Rails.root.join("config", "database.yml")

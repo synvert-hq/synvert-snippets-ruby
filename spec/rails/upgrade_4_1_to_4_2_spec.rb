@@ -9,27 +9,27 @@ RSpec.describe 'Upgrade rails from 4.1 to 4.2' do
   end
 
   describe 'with fakefs', fakefs: true do
-    let(:application_content) {'
+    let(:application_content) { '
 module Synvert
   class Application < Rails::Application
   end
 end
     '}
-    let(:application_rewritten_content) {'
+    let(:application_rewritten_content) { '
 module Synvert
   class Application < Rails::Application
     config.active_record.raise_in_transactional_callbacks = true
   end
 end
     '}
-    let(:production_content) {'
+    let(:production_content) { '
 module Synvert
   class Application < Rails::Application
     config.serve_static_assets = false
   end
 end
     '}
-    let(:production_rewritten_content) {'
+    let(:production_rewritten_content) { '
 module Synvert
   class Application < Rails::Application
     config.serve_static_files = false

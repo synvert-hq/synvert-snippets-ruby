@@ -18,14 +18,14 @@ It convers rspec one liner expectation.
     end
   EOF
 
-  if_gem 'rspec', {gte: '2.99.0'}
+  if_gem 'rspec', { gte: '2.99.0' }
 
-  matcher_converters = {have: 'eq', have_exactly: 'eq', have_at_least: 'be >=', have_at_most: 'be <='}
+  matcher_converters = { have: 'eq', have_exactly: 'eq', have_at_least: 'be >=', have_at_most: 'be <=' }
   within_files 'spec/**/*.rb' do
-    {should: 'to', should_not: 'not_to'}.each do |old_message, new_message|
+    { should: 'to', should_not: 'not_to' }.each do |old_message, new_message|
       # it { should matcher } => it { is_expected.to matcher }
       # it { should_not matcher } => it { is_expected.not_to matcher }
-      with_node type: 'block', caller: {message: 'it'} do
+      with_node type: 'block', caller: { message: 'it' } do
         if_only_exist_node type: 'send', receiver: nil, message: old_message do
           receiver = node.body.first.arguments.first.receiver
           unless receiver && matcher_converters.include?(receiver.message)
@@ -47,8 +47,8 @@ It convers rspec one liner expectation.
       #   expect(subject.players.size).to be >= 3
       # end
       matcher_converters.each do |old_matcher, new_matcher|
-        with_node type: 'block', caller: {message: 'it'} do
-          if_only_exist_node type: 'send', receiver: nil, message: old_message, arguments: {first: {type: 'send', receiver: {type: 'send', message: old_matcher}}} do
+        with_node type: 'block', caller: { message: 'it' } do
+          if_only_exist_node type: 'send', receiver: nil, message: old_message, arguments: { first: { type: 'send', receiver: { type: 'send', message: old_matcher } } } do
             times = node.body.first.arguments.first.receiver.arguments.first.to_source
             items_name = node.body.first.arguments.first.message
             new_code = ""

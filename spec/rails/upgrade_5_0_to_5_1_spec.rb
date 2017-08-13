@@ -9,7 +9,7 @@ RSpec.describe 'Upgrade rails from 5.0 to 5.1' do
   end
 
   describe 'with fakefs', fakefs: true do
-    let(:post_model_content) {'
+    let(:post_model_content) { '
 class Post < ApplicationRecord
   def configs
     rgb = HashWithIndifferentAccess.new
@@ -21,7 +21,7 @@ class Post < ApplicationRecord
   end
 end
     '}
-    let(:post_model_rewritten_content) {'
+    let(:post_model_rewritten_content) { '
 class Post < ApplicationRecord
   def configs
     rgb = ActiveSupport::HashWithIndifferentAccess.new

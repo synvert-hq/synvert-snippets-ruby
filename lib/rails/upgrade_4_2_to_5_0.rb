@@ -58,7 +58,7 @@ Synvert::Rewriter.new 'rails', 'upgrade_4_2_to_5_0' do
     # config.middleware.use "Foo::Bar"
     # =>
     # config.middleware.use Foo::Bar
-    with_node type: 'send', receiver: {type: 'send', receiver: 'config', message: 'middleware'}, message: 'use', arguments: {first: {type: "str"}} do
+    with_node type: 'send', receiver: { type: 'send', receiver: 'config', message: 'middleware' }, message: 'use', arguments: { first: { type: "str" } } do
       arguments_source = node.arguments.map(&:to_source)
       arguments_source[0] = node.arguments.first.to_value
       replace_with "{{receiver}}.{{message}} #{arguments_source.join(', ')}"
@@ -108,7 +108,7 @@ Synvert::Rewriter.new 'rails', 'upgrade_4_2_to_5_0' do
     # after_create_commit :add_to_index_later
     # after_update_commit :update_in_index_later
     # after_detroy_commit :remove_from_index_later
-    with_node type: 'send', receiver: nil, message: 'after_commit', arguments: {size: 2} do
+    with_node type: 'send', receiver: nil, message: 'after_commit', arguments: { size: 2 } do
       options = node.arguments.last
       if options.has_key?(:on)
         other_options = options.children.reject { |pair_node| pair_node.key.to_value == :on }
@@ -139,7 +139,7 @@ Synvert::Rewriter.new 'rails', 'upgrade_4_2_to_5_0' do
     # =>
     # class Post < ApplicationRecord
     # end
-    with_node type: 'class', name: {not: 'ApplicationRecord'}, parent_class: 'ActiveRecord::Base' do
+    with_node type: 'class', name: { not: 'ApplicationRecord' }, parent_class: 'ActiveRecord::Base' do
       goto_node :parent_class do
         replace_with "ApplicationRecord"
       end
@@ -156,7 +156,7 @@ Synvert::Rewriter.new 'rails', 'upgrade_4_2_to_5_0' do
     # =>
     # class PostJob < ApplicationJob
     # end
-    with_node type: 'class', name: {not: 'ApplicationJob'}, parent_class: 'ActiveJob::Base' do
+    with_node type: 'class', name: { not: 'ApplicationJob' }, parent_class: 'ActiveJob::Base' do
       goto_node :parent_class do
         replace_with "ApplicationJob"
       end

@@ -11,7 +11,7 @@ It converts new hook scope.
     before(:context) { do_something }
   EOF
 
-  if_gem 'rspec', {gte: '3.0.0'}
+  if_gem 'rspec', { gte: '3.0.0' }
 
   within_files 'spec/**/*.rb' do
     # before(:each) { do_something }

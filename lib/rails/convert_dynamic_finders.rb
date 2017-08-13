@@ -12,7 +12,7 @@ It converts rails dynamic finders to arel syntax.
 
   attributes = ["id"]
   within_file 'db/schema.rb' do
-    within_node type: 'block', caller: {type: 'send', message: 'create_table'} do
+    within_node type: 'block', caller: { type: 'send', message: 'create_table' } do
       with_node type: 'send', receiver: 't' do
         attributes << node.arguments.first.to_value
       end
@@ -32,7 +32,7 @@ It converts rails dynamic finders to arel syntax.
     end
   end
 
-  if_gem 'rails', {gte: '3.0.0'}
+  if_gem 'rails', { gte: '3.0.0' }
 
   within_files '**/*.rb' do
     # find_all_by_... => where(...)
@@ -64,7 +64,7 @@ It converts rails dynamic finders to arel syntax.
     end
   end
 
-  if_gem 'rails', {gte: '4.0.0'}
+  if_gem 'rails', { gte: '4.0.0' }
 
   within_files '**/*.rb' do
     # find_or_initialize_by_... => find_or_initialize_by(...)
