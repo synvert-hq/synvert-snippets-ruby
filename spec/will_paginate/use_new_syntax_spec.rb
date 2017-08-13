@@ -9,7 +9,7 @@ RSpec.describe 'Use will_paginate new syntax' do
   end
 
   describe 'with fakefs', fakefs: true do
-    let(:post_content) {'
+    let(:post_content) { '
 class Post
   def queries
     Post.paginate(:conditions => {:active => true}, :order => "created_at DESC", :per_page => 10, :page => 1)
@@ -25,7 +25,7 @@ class Post
   end
 end
     '}
-    let(:post_rewritten_content) {'
+    let(:post_rewritten_content) { '
 class Post
   def queries
     Post.where(:active => true).order("created_at DESC").paginate(:per_page => 10, :page => 1)

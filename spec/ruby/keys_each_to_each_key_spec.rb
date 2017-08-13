@@ -7,11 +7,11 @@ RSpec.describe 'Ruby .keys.each to .each_key' do
   end
 
   describe 'with fakefs', fakefs: true do
-    let(:test_content) {"
+    let(:test_content) { "
 params.keys.each do |param|
 end
     "}
-    let(:test_rewritten_content) {"
+    let(:test_rewritten_content) { "
 params.each_key do |param|
 end
     "}

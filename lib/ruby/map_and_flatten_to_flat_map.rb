@@ -19,7 +19,7 @@ It converts map and flatten to flat_map
     # enum.flat_map do
     #   # do something
     # end
-    with_node type: 'send', receiver: {type: 'block', caller: {type: 'send', message: 'map'}}, message: 'flatten' do
+    with_node type: 'send', receiver: { type: 'block', caller: { type: 'send', message: 'map' } }, message: 'flatten' do
       replace_with "{{receiver.to_source.sub('.map', '.flat_map')}}"
     end
   end

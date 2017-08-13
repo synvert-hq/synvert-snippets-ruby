@@ -5,7 +5,7 @@ RSpec.describe 'Use RSpec custom matcher new syntax' do
   let!(:rewriter) { eval(File.read(rewriter_path)) }
 
   describe 'with fakefs', fakefs: true do
-    let(:post_spec_content) {"
+    let(:post_spec_content) { "
 RSpec::Matchers.define :be_awesome do
   match_for_should { }
   match_for_should_not { }
@@ -13,7 +13,7 @@ RSpec::Matchers.define :be_awesome do
   failure_message_for_should_not { }
 end
     "}
-    let(:post_spec_rewritten_content) {"
+    let(:post_spec_rewritten_content) { "
 RSpec::Matchers.define :be_awesome do
   match { }
   match_when_negated { }

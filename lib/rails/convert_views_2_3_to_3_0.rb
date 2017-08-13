@@ -28,7 +28,7 @@ Synvert::Rewriter.new 'rails', 'convert_views_2_3_to_3_0' do
       # <%= form_for post do |f| %>
       # <% end %>
       within_files file_pattern do
-        with_node type: 'block', caller: {type: 'send', receiver: nil, message: message} do
+        with_node type: 'block', caller: { type: 'send', receiver: nil, message: message } do
           replace_erb_stmt_with_expr
         end
       end

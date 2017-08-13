@@ -13,20 +13,20 @@ RSpec.describe 'Upgrade rails from 4.2 to 5.0' do
   end
 
   describe 'with fakefs', fakefs: true do
-    let(:application_content) {'
+    let(:application_content) { '
 module Synvert
   class Application < Rails::Application
     config.raise_in_transactional_callbacks = true
   end
 end
     '}
-    let(:application_rewritten_content) {'
+    let(:application_rewritten_content) { '
 module Synvert
   class Application < Rails::Application
   end
 end
     '}
-    let(:production_content) {'
+    let(:production_content) { '
 module Synvert
   class Application < Rails::Application
     config.static_cache_control = "public, max-age=31536000"
@@ -35,7 +35,7 @@ module Synvert
   end
 end
     '}
-    let(:production_rewritten_content) {'
+    let(:production_rewritten_content) { '
 module Synvert
   class Application < Rails::Application
     config.public_file_server.headers = { "Cache-Control" => "public, max-age=31536000" }
@@ -44,7 +44,7 @@ module Synvert
   end
 end
     '}
-    let(:posts_controller_content) {'
+    let(:posts_controller_content) { '
 class PostsController < ApplicationController
   rescue_from BadGateway do
     head status: 502
@@ -60,7 +60,7 @@ class PostsController < ApplicationController
   end
 end
     '}
-    let(:posts_controller_rewritten_content) {'
+    let(:posts_controller_rewritten_content) { '
 class PostsController < ApplicationController
   rescue_from BadGateway do
     head 502
@@ -76,17 +76,17 @@ class PostsController < ApplicationController
   end
 end
     '}
-    let(:nested_controller_content) {"
+    let(:nested_controller_content) { "
 module Namespace
 #{indent_content(posts_controller_content)}
 end
     "}
-    let(:nested_controller_rewritten_content) {"
+    let(:nested_controller_rewritten_content) { "
 module Namespace
 #{indent_content(posts_controller_rewritten_content)}
 end
     "}
-    let(:post_model_content) {'
+    let(:post_model_content) { '
 class Post < ActiveRecord::Base
   after_commit :add_to_index_later, on: :create, if: :can_add?
   after_commit :update_in_index_later, on: :update
@@ -102,12 +102,12 @@ class Post < ActiveRecord::Base
   end
 end
     '}
-    let(:application_record_rewritten_content) {'
+    let(:application_record_rewritten_content) { '
 class ApplicationRecord < ActiveRecord::Base
   self.abstract_class = true
 end
     '.strip}
-    let(:post_model_rewritten_content) {'
+    let(:post_model_rewritten_content) { '
 class Post < ApplicationRecord
   after_create_commit :add_to_index_later, if: :can_add?
   after_update_commit :update_in_index_later
@@ -123,41 +123,41 @@ class Post < ApplicationRecord
   end
 end
     '}
-    let(:nested_model_content) {"
+    let(:nested_model_content) { "
 module Namespace
 #{indent_content(post_model_content)}
 end
     "}
-    let(:nested_model_rewritten_content) {"
+    let(:nested_model_rewritten_content) { "
 module Namespace
 #{indent_content(post_model_rewritten_content)}
 end
     "}
 
-    let(:post_job_content) {'
+    let(:post_job_content) { '
 class PostJob < ActiveJob::Base
 end
     '}
-    let(:application_job_rewritten_content) {'
+    let(:application_job_rewritten_content) { '
 class ApplicationJob < ActiveJob::Base
 
 end
     '.strip}
-    let(:post_job_rewritten_content) {'
+    let(:post_job_rewritten_content) { '
 class PostJob < ApplicationJob
 end
     '}
-    let(:nested_job_content) {"
+    let(:nested_job_content) { "
 module Namespace
 #{indent_content(post_job_content)}
 end
     "}
-    let(:nested_job_rewritten_content) {"
+    let(:nested_job_rewritten_content) { "
 module Namespace
 #{indent_content(post_job_rewritten_content)}
 end
     "}
-    let(:new_framework_defaults_rewritten_content) {'
+    let(:new_framework_defaults_rewritten_content) { '
 # Be sure to restart your server when you modify this file.
 #
 # This file contains migration options to ease your Rails 5.0 upgrade.
@@ -183,7 +183,7 @@ ActiveSupport.halt_callback_chains_on_return_false = false
 # Configure SSL options to enable HSTS with subdomains. Previous versions had false.
 Rails.application.config.ssl_options = { hsts: { subdomains: true } }
     '.strip}
-    let(:posts_controller_test_content) {'
+    let(:posts_controller_test_content) { '
 class PostsControllerTest < ActionController::TestCase
   def test_show
     get :show, { id: user.id }, { notice: "Welcome" }, { admin: user.admin? }
@@ -202,7 +202,7 @@ class PostsControllerTest < ActionController::TestCase
   end
 end
     '.strip}
-    let(:posts_controller_test_rewritten_content) {'
+    let(:posts_controller_test_rewritten_content) { '
 class PostsControllerTest < ActionController::TestCase
   def test_show
     get :show, params: { id: user.id }, flash: { notice: "Welcome" }, session: { admin: user.admin? }

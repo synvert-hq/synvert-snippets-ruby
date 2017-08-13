@@ -13,22 +13,22 @@ RSpec.describe 'Upgrade rails from 2.3 to 3.0' do
   end
 
   describe 'with fakefs', fakefs: true do
-    let(:application_controller_content) {'
+    let(:application_controller_content) { '
 class ApplicationController < ActionController::Base
   filter_parameter_logging :password, :password_confirmation
 end
     '}
-    let(:application_content) {'
+    let(:application_content) { '
 module Synvert
   class Application < Rails::Application
   end
 end
     '}
-    let(:application_controller_rewritten_content) {'
+    let(:application_controller_rewritten_content) { '
 class ApplicationController < ActionController::Base
 end
     '}
-    let(:application_rewritten_content) {'
+    let(:application_rewritten_content) { '
 module Synvert
   class Application < Rails::Application
     config.filter_parameters += [:password, :password_confirmation]

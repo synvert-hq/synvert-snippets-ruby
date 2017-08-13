@@ -7,7 +7,7 @@ RSpec.describe 'Use shoulda matcher syntax' do
   end
 
   describe 'with fakefs', fakefs: true do
-    let(:post_test_content) {"
+    let(:post_test_content) { "
 class PostTest < ActiveSupport::TestCase
   should_belong_to :user
   should_have_one :category, :location
@@ -41,7 +41,7 @@ class PostTest < ActiveSupport::TestCase
   should_have_readonly_attributes :password, :admin_flag
 end
     "}
-    let(:post_test_rewritten_content) {"
+    let(:post_test_rewritten_content) { "
 class PostTest < ActiveSupport::TestCase
   should belong_to(:user)
   should have_one(:category)
@@ -83,7 +83,7 @@ class PostTest < ActiveSupport::TestCase
   should have_readonly_attributes(:admin_flag)
 end
     "}
-    let(:posts_controller_test_content) {'
+    let(:posts_controller_test_content) { '
 class UsersControllerTest < ActionController::TestCase
   should "test" do
     should_set_the_flash_to "Thank you for placing this order."
@@ -112,7 +112,7 @@ class UsersControllerTest < ActionController::TestCase
   end
 end
     '}
-    let(:posts_controller_test_rewritten_content) {'
+    let(:posts_controller_test_rewritten_content) { '
 class UsersControllerTest < ActionController::TestCase
   should "test" do
     should set_the_flash.to("Thank you for placing this order.")

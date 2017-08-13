@@ -7,12 +7,12 @@ RSpec.describe 'Ruby uses symbol to proc' do
   end
 
   describe 'with fakefs', fakefs: true do
-    let(:test_content) {"
+    let(:test_content) { "
 (1..100).map { |i| i.to_s }
 enum.map { |e| e[:object_id] }
 (1..100).each { |i| i.to_s }
     "}
-    let(:test_rewritten_content) {"
+    let(:test_rewritten_content) { "
 (1..100).map(&:to_s)
 enum.map { |e| e[:object_id] }
 (1..100).each(&:to_s)

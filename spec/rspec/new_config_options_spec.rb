@@ -5,7 +5,7 @@ RSpec.describe 'RSpec use new config options' do
   let!(:rewriter) { eval(File.read(rewriter_path)) }
 
   describe 'with fakefs', fakefs: true do
-    let(:spec_helper_content) {'
+    let(:spec_helper_content) { '
 RSpec.configure do |config|
   config.treat_symbols_as_metadata_keys_with_true_values = true
 
@@ -25,7 +25,7 @@ RSpec.configure do |config|
   config.warnings
 end
     '}
-    let(:spec_helper_rewritten_content) {'
+    let(:spec_helper_rewritten_content) { '
 RSpec.configure do |config|
 
   config.backtrace_exclusion_patterns
