@@ -7,12 +7,12 @@ RSpec.describe 'Ruby converts parallel assignment to sequential assignment' do
   end
 
   describe 'with fakefs', fakefs: true do
-    let(:test_content) {"
+    let(:test_content) { "
 a, b = 1, 2
 
 a, b = params
     "}
-    let(:test_rewritten_content) {"
+    let(:test_rewritten_content) { "
 a = 1
 b = 2
 

@@ -5,43 +5,43 @@ RSpec.describe 'RSpec removes monkey patches' do
   let!(:rewriter) { eval(File.read(rewriter_path)) }
 
   describe 'with fakefs', fakefs: true do
-    let(:post_spec_content) {"
+    let(:post_spec_content) { "
 describe Post do
   describe '.active' do
   end
 end
     "}
-    let(:post_spec_rewritten_content) {"
+    let(:post_spec_rewritten_content) { "
 RSpec.describe Post do
   describe '.active' do
   end
 end
     "}
-    let(:comment_spec_content) {"
+    let(:comment_spec_content) { "
 RSpec.describe Comment do
   describe '.active' do
   end
 end
     "}
-    let(:comment_spec_rewritten_content) {"
+    let(:comment_spec_rewritten_content) { "
 RSpec.describe Comment do
   describe '.active' do
   end
 end
     "}
-    let(:post_support_content) {"
+    let(:post_support_content) { "
 shared_examples 'shared examples' do
 end
     "}
-    let(:post_support_rewritten_content) {"
+    let(:post_support_rewritten_content) { "
 RSpec.shared_examples 'shared examples' do
 end
     "}
-    let(:spec_helper_content) {"
+    let(:spec_helper_content) { "
 RSpec.configure do |config|
 end
     "}
-    let(:spec_helper_rewritten_content) {"
+    let(:spec_helper_rewritten_content) { "
 RSpec.configure do |config|
   config.expose_dsl_globally = false
 end

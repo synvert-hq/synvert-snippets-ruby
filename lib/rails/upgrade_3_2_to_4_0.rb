@@ -85,41 +85,41 @@ It upgrades rails from 3.2 to 4.0.
     link_to 'delete', post_path(post), data: {confirm: 'Are you sure to delete post?'}
   EOF
 
-  if_gem 'rails', {gte: '3.2.0'}
+  if_gem 'rails', { gte: '3.2.0' }
 
   within_file 'config/application.rb' do
     # if defined?(Bundler)
     #   Bundler.require(*Rails.groups(:assets => %w(development test)))
     # end
     # => Bundler.require(:default, Rails.env)
-    with_node type: 'if', condition: {type: 'defined?', arguments: ['Bundler']} do
+    with_node type: 'if', condition: { type: 'defined?', arguments: ['Bundler'] } do
       replace_with 'Bundler.require(:default, Rails.env)'
     end
   end
 
   within_file 'config/**/*.rb' do
     # remove config.active_record.identity_map = true
-    with_node type: 'send', receiver: {type: 'send', receiver: {type: 'send', message: 'config'}, message: 'active_record'}, message: 'identity_map=' do
+    with_node type: 'send', receiver: { type: 'send', receiver: { type: 'send', message: 'config' }, message: 'active_record' }, message: 'identity_map=' do
       remove
     end
 
     # remove config.whiny_nils = true
-    with_node type: 'send', receiver: {type: 'send', message: 'config'}, message: 'whiny_nils=' do
+    with_node type: 'send', receiver: { type: 'send', message: 'config' }, message: 'whiny_nils=' do
       remove
     end
 
     # config.assets.compress = ... => config.assets.js_compressor = ...
-    with_node type: 'send', receiver: {type: 'send', receiver: {type: 'send', message: 'config'}, message: 'assets'}, message: 'compress=' do
+    with_node type: 'send', receiver: { type: 'send', receiver: { type: 'send', message: 'config' }, message: 'assets' }, message: 'compress=' do
       replace_with 'config.assets.js_compressor = {{arguments}}'
     end
 
     # remove config.action_dispatch.best_standards_support = ...
-    with_node type: 'send', receiver: {type: 'send', receiver: {type: 'send', message: 'config'}, message: 'action_dispatch'}, message: 'best_standards_support=' do
+    with_node type: 'send', receiver: { type: 'send', receiver: { type: 'send', message: 'config' }, message: 'action_dispatch' }, message: 'best_standards_support=' do
       remove
     end
 
     # remove config.middleware.xxx(..., ActionDispatch::BestStandardsSupport)
-    with_node type: 'send', arguments: {any: 'ActionDispatch::BestStandardsSupport'} do
+    with_node type: 'send', arguments: { any: 'ActionDispatch::BestStandardsSupport' } do
       remove
     end
 
@@ -143,7 +143,7 @@ It upgrades rails from 3.2 to 4.0.
     end
 
     # remove config.active_record.auto_explain_threshold_in_seconds = x
-    with_node type: 'send', message: 'auto_explain_threshold_in_seconds=', receiver: {type: 'send', receiver: 'config', message: 'active_record'} do
+    with_node type: 'send', message: 'auto_explain_threshold_in_seconds=', receiver: { type: 'send', receiver: 'config', message: 'active_record' } do
       remove
     end
   end
@@ -160,7 +160,7 @@ It upgrades rails from 3.2 to 4.0.
     # ActiveSupport.on_load(:active_record) do
     #   self.include_root_in_json = false
     # end
-    with_node type: 'block', caller: {receiver: 'ActiveSupport', message: 'on_load', arguments: [:active_record]} do
+    with_node type: 'block', caller: { receiver: 'ActiveSupport', message: 'on_load', arguments: [:active_record] } do
       if_only_exist_node type: 'send', receiver: 'self', message: 'include_root_in_json=', arguments: [false] do
         remove
       end
@@ -224,14 +224,14 @@ It upgrades rails from 3.2 to 4.0.
         end
       end
 
-      unless_exist_node type: 'block', caller: {type: 'send', message: 'lambda'} do
+      unless_exist_node type: 'block', caller: { type: 'send', message: 'lambda' } do
         replace_with 'scope {{arguments.first}}, -> { {{arguments.last}} }'
       end
     end
 
     # default_scope order("updated_at DESC") => default_scope -> { order("updated_at DESC") }
     with_node type: 'send', receiver: nil, message: 'default_scope' do
-      unless_exist_node type: 'block', caller: {type: 'send', message: 'lambda'} do
+      unless_exist_node type: 'block', caller: { type: 'send', message: 'lambda' } do
         replace_with 'default_scope -> { {{arguments.last}} }'
       end
     end
@@ -271,12 +271,12 @@ It upgrades rails from 3.2 to 4.0.
     # link_to 'delete', post_path(post), confirm: 'Are you sure to delete post?'
     # =>
     # link_to 'delete', post_path(post), data: {confirm: 'Are you sure to delete post?'}
-    within_node type: 'send', message: 'link_to', arguments: {last: {type: 'hash'}} do
+    within_node type: 'send', message: 'link_to', arguments: { last: { type: 'hash' } } do
       if node.arguments.last.has_key?(:confirm)
         hash = node.arguments.last
         other_arguments_str = node.arguments[0...-1].map(&:to_source).join(', ')
         confirm = hash.hash_value(:confirm).to_source
-        other_options = hash.children.map{|pair|
+        other_options = hash.children.map { |pair|
           unless [:confirm, :data].include?(pair.key.to_value)
             if pair.key.type == :sym
               "#{pair.key.to_value}: #{pair.value.to_source}"
@@ -292,7 +292,7 @@ It upgrades rails from 3.2 to 4.0.
   end
 
   within_files '**/*.rb' do
-    {'ActiveRecord::Fixtures' => 'ActiveRecord::FixtureSet',
+    { 'ActiveRecord::Fixtures' => 'ActiveRecord::FixtureSet',
      'ActiveRecord::TestCase' => 'ActiveSupport::TestCase',
      'ActionController::Integration' => 'ActionDispatch::Integration',
      'ActionController::IntegrationTest' => 'ActionDispatch::IntegrationTest',
@@ -301,7 +301,7 @@ It upgrades rails from 3.2 to 4.0.
      'ActionController::Request' => 'ActionDispatch::Request',
      'ActionController::AbstractResponse' => 'ActionDispatch::Response',
      'ActionController::Response' => 'ActionDispatch::Response',
-     'ActionController::Routing' => 'ActionDispatch::Routing'}.each do |deprecated, favor|
+     'ActionController::Routing' => 'ActionDispatch::Routing' }.each do |deprecated, favor|
       with_node to_source: deprecated do
         replace_with favor
       end

@@ -1,4 +1,4 @@
-Synvert::Rewriter.new 'will_paginate',  'use_new_syntax' do
+Synvert::Rewriter.new 'will_paginate', 'use_new_syntax' do
   description <<-EOF
 It uses will_paginate new syntax.
 
@@ -13,7 +13,7 @@ It uses will_paginate new syntax.
     end
   EOF
 
-  if_gem 'will_paginate', {gte: '3.0.0'}
+  if_gem 'will_paginate', { gte: '3.0.0' }
 
   ar_keys = [:conditions, :order, :joins, :select, :from, :having, :group, :include, :limit, :offset, :lock, :readonly]
   wp_keys = [:page, :per_page]
@@ -51,7 +51,7 @@ It uses will_paginate new syntax.
     # Post.paginate(:conditions => {:active => true}, :order => "created_at DESC", :per_page => 10, :page => 1)
     # =>
     # Post.where(:active => true).order("created_at DESC").paginate(:per_page => 10, :page => 1)
-    within_node type: 'send', message: 'paginate', arguments: {size: 1} do
+    within_node type: 'send', message: 'paginate', arguments: { size: 1 } do
       argument_node = node.arguments.last
       if :hash == argument_node.type && (ar_keys & argument_node.keys.map(&:to_value)).length > 0
         replace_with add_receiver_if_necessary("#{generate_new_queries(argument_node)}.#{generate_will_paginate_query(argument_node)}")
@@ -63,7 +63,7 @@ It uses will_paginate new syntax.
     # =>
     # Post.where(:active => true).order("created_at DESC").find_each(:batch_size => 10) do |post|
     # end
-    within_node type: 'send', message: 'paginated_each', arguments: {size: 1} do
+    within_node type: 'send', message: 'paginated_each', arguments: { size: 1 } do
       argument_node = node.arguments.last
       if :hash == argument_node.type
         new_code = []
@@ -84,7 +84,7 @@ It uses will_paginate new syntax.
     # =>
     # Post.find_each do |post|
     # end
-    within_node type: 'send', message: 'paginated_each', arguments: {size: 0} do
+    within_node type: 'send', message: 'paginated_each', arguments: { size: 0 } do
       replace_with add_receiver_if_necessary('find_each')
     end
   end

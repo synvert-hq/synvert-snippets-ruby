@@ -45,7 +45,7 @@ It converts rails routes from 2.3 to 3.0.
     end
   EOF
 
-  if_gem 'rails', {gte: '2.3.0'}
+  if_gem 'rails', { gte: '2.3.0' }
 
   helper_method :extract_controller_action_name do |hash_node|
     controller_name = hash_node.hash_value(:controller).to_value
@@ -120,7 +120,7 @@ It converts rails routes from 2.3 to 3.0.
     # namespace :admin do
     #   map.resources :users
     # end
-    with_node type: 'block', caller: {type: 'send', receiver: {not: nil}, message: 'namespace'} do
+    with_node type: 'block', caller: { type: 'send', receiver: { not: nil }, message: 'namespace' } do
       if node.arguments.length > 0
         block_argument = node.arguments.first.to_source
         new_routes = "namespace {{caller.arguments}} do\n"
@@ -139,7 +139,7 @@ It converts rails routes from 2.3 to 3.0.
     # =>
     # manage.manage_index "manage_index", :action => "index", :controller => "manage"
     # manage.manage_intro "manage_intro", :action => "intro", :controller => "manage"
-    with_node type: 'block', caller: {type: 'send', message: 'with_options'} do
+    with_node type: 'block', caller: { type: 'send', message: 'with_options' } do
       block_argument = node.arguments.first.to_source
       new_routes = ''
       node.body.each do |child_node|
@@ -165,7 +165,7 @@ It converts rails routes from 2.3 to 3.0.
     #   map.resources :comments
     # end
     %w(resource resources).each do |message|
-      within_node type: 'block', caller: {type: 'send', receiver: {not: nil}, message: message} do
+      within_node type: 'block', caller: { type: 'send', receiver: { not: nil }, message: message } do
         block_argument = node.arguments.first.to_source
         hash_argument = node.caller.arguments.last
         new_routes = ''
@@ -256,13 +256,13 @@ It converts rails routes from 2.3 to 3.0.
 
     # map.connect "/:controller/:action/:id"
     # => match "/:controller(/:action(/:id))(.:format)"
-    with_node type: 'send', receiver: 'map', message: 'connect', arguments: {first: %r|:controller/:action/:id|} do
+    with_node type: 'send', receiver: 'map', message: 'connect', arguments: { first: %r|:controller/:action/:id| } do
       replace_with 'match "/:controller(/:action(/:id))(.:format)"'
     end
 
     # map.connect "audio/:action/:id", :controller => "audio"
     # => match "audio(/:action(/:id))(.:format)", :controller => "audio"
-    with_node type: 'send', receiver: 'map', message: 'connect', arguments: {first: %r|(.*?)/:action/:id|} do
+    with_node type: 'send', receiver: 'map', message: 'connect', arguments: { first: %r|(.*?)/:action/:id| } do
       options_node = node.arguments.last
       if options_node.type == :hash && options_node.has_key?(:controller)
         controller_name = options_node.hash_value(:controller).to_value
@@ -272,7 +272,7 @@ It converts rails routes from 2.3 to 3.0.
 
     # map.connect "video/:action", :controller => "video"
     # => match "video(/:action)(.:format)", :controller => "video"
-    with_node type: 'send', receiver: 'map', message: 'connect', arguments: {first: %r|(.*?)/:action['"]$|} do
+    with_node type: 'send', receiver: 'map', message: 'connect', arguments: { first: %r|(.*?)/:action['"]$| } do
       options_node = node.arguments.last
       if options_node.type == :hash && options_node.has_key?(:controller)
         controller_name = options_node.hash_value(:controller).children.last

@@ -39,10 +39,10 @@ It converts rspec configuration options.
     end
   EOF
 
-  if_gem 'rspec', {gte: '2.99.0'}
+  if_gem 'rspec', { gte: '2.99.0' }
 
   within_file 'spec/spec_helper.rb' do
-    within_node type: 'block', caller: {type: 'send', receiver: 'RSpec', message: 'configure'} do
+    within_node type: 'block', caller: { type: 'send', receiver: 'RSpec', message: 'configure' } do
       config_name = node.arguments.first.to_source
 
       # remove config.treat_symbols_as_metadata_keys_with_true_values = true
@@ -67,12 +67,12 @@ It converts rspec configuration options.
       #   c.pattern
       #   c.warnings?
       # end
-      {'backtrace_clean_patterns' => 'backtrace_exclusion_patterns',
+      { 'backtrace_clean_patterns' => 'backtrace_exclusion_patterns',
        'out' => 'output_stream',
        'output' => 'output_stream',
        'backtrace_cleaner' => 'backtrace_formatter',
        'filename_pattern' => 'pattern',
-       'warnings' => 'warnings?'}.each do |old_message, new_message|
+       'warnings' => 'warnings?' }.each do |old_message, new_message|
         with_node type: 'send', receiver: config_name, message: old_message do
           replace_with "#{config_name}.#{new_message}"
         end
@@ -93,11 +93,11 @@ It converts rspec configuration options.
       #   c.output_stream = File.open('output.txt', 'w')
       #   c.pattern = '**/*_test.rb'
       # end
-      {'backtrace_clean_patterns=' => 'backtrace_exclusion_patterns = ',
+      { 'backtrace_clean_patterns=' => 'backtrace_exclusion_patterns = ',
        'color_enabled=' => 'color = ',
        'out=' => 'output_stream = ',
        'output=' => 'output_stream = ',
-       'filename_pattern=' => 'pattern = '}.each do |old_message, new_message|
+       'filename_pattern=' => 'pattern = ' }.each do |old_message, new_message|
         with_node type: 'send', receiver: config_name, message: old_message do
           replace_with "#{config_name}.#{new_message}{{arguments}}"
         end

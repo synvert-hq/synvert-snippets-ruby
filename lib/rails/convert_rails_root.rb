@@ -23,7 +23,7 @@ It converts RAILS_ROOT to Rails.root.
   Rails.root.join('config/database.yml').exist?
   EOF
 
-  if_gem 'rails', {gte: '2.3.0'}
+  if_gem 'rails', { gte: '2.3.0' }
 
   within_files '**/*.{rb,rake}' do
     # RAILS_ROOT => Rails.root
@@ -39,7 +39,7 @@ It converts RAILS_ROOT to Rails.root.
     # File.join(Rails.root, 'config/database.yml')
     # =>
     # Rails.root.join('config/database.yml')
-    with_node type: 'send', receiver: 'File', message: 'join', arguments: {first: 'Rails.root'} do
+    with_node type: 'send', receiver: 'File', message: 'join', arguments: { first: 'Rails.root' } do
       other_arguments = node.arguments[1..-1].map(&:to_source).join(', ')
       replace_with "Rails.root.join(#{other_arguments})"
     end
@@ -56,7 +56,7 @@ It converts RAILS_ROOT to Rails.root.
     # "#{Rails.root}/config/database.yml"
     # =>
     # Rails.root.join('config/database.yml')
-    with_node type: 'dstr', children: {first: {type: 'begin', children: {first: 'Rails.root'}}} do
+    with_node type: 'dstr', children: { first: { type: 'begin', children: { first: 'Rails.root' } } } do
       source = node.to_source
       source[1..14] = ''
       replace_with "Rails.root.join(#{source})"
@@ -67,7 +67,7 @@ It converts RAILS_ROOT to Rails.root.
     # File.exists?(Rails.root.join('config/database.yml'))
     # =>
     # Rails.root.join('config/database.yml').exist?
-    with_node type:'send', receiver: 'File', message: 'exists?', arguments: {size: 1, first: {type: 'send', receiver: 'Rails.root', message: 'join'}} do
+    with_node type: 'send', receiver: 'File', message: 'exists?', arguments: { size: 1, first: { type: 'send', receiver: 'Rails.root', message: 'join' } } do
       replace_with '{{arguments.first}}.exist?'
     end
   end

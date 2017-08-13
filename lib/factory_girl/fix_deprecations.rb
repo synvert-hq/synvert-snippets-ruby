@@ -39,7 +39,7 @@ Test
 
   EOF
 
-  if_gem 'factory_girl', {gte: '2.0.0'}
+  if_gem 'factory_girl', { gte: '2.0.0' }
 
   within_files '{test,spec}/factories/**/*.rb' do
     # add
@@ -65,9 +65,9 @@ end"''
     #   sequence(:email) { |n| "user#{n}@gmail.com" }
     #   after_create { |instance| create_list(:post, 5, user: instance) }
     # end
-    within_node type: 'block', caller: {type: 'send', receiver: 'Factory', message: 'define'}, arguments: {size: 1} do
+    within_node type: 'block', caller: { type: 'send', receiver: 'Factory', message: 'define' }, arguments: { size: 1 } do
       argument = node.arguments.first.to_source
-      with_node type: 'block', caller: {type: 'send', receiver: argument} do
+      with_node type: 'block', caller: { type: 'send', receiver: argument } do
         goto_node :caller do
           replace_with "{{message}}#{add_arguments_with_parenthesis_if_necessary}"
         end
@@ -82,7 +82,7 @@ end"''
     #   after(:create) { |instance| create_list(:post, 5, user: instance) }
     # end
     %w(after_build after_create).each do |message|
-      within_node type: 'block', caller: {type: 'send', message: message} do
+      within_node type: 'block', caller: { type: 'send', message: message } do
         goto_node :caller do
           new_message = message.sub('after_', '')
           replace_with "after(:#{new_message})"
@@ -99,7 +99,7 @@ end"''
     # Factory.define :user do |user|
     #   admin true
     # end
-    within_node type: 'block', caller: {type: 'send', receiver: 'Factory', message: 'define'}, arguments: {size: 1} do
+    within_node type: 'block', caller: { type: 'send', receiver: 'Factory', message: 'define' }, arguments: { size: 1 } do
       argument = node.arguments.first.to_source
       with_node type: 'send', receiver: argument do
         replace_with '{{message}} {{arguments}}'
@@ -113,7 +113,7 @@ end"''
     # =>
     # factory :user do
     # end
-    within_node type: 'block', caller: {type: 'send', receiver: 'Factory', message: 'define'}, arguments: {size: 1} do
+    within_node type: 'block', caller: { type: 'send', receiver: 'Factory', message: 'define' }, arguments: { size: 1 } do
       goto_node :caller do
         replace_with 'factory {{arguments}}'
       end
@@ -130,7 +130,7 @@ end"''
     # sequence :user do |n|
     #   "new_user_#{n}"
     # end
-    within_node type: 'block', caller: {type: 'send', receiver: 'Factory', message: 'sequence'}, arguments: {size: 1} do
+    within_node type: 'block', caller: { type: 'send', receiver: 'Factory', message: 'sequence' }, arguments: { size: 1 } do
       goto_node :caller do
         replace_with 'sequence {{arguments}}'
       end
@@ -157,7 +157,7 @@ end"''
     # Factory.build(:use) => build(:user)
     # Factory.attributes_for(:user) => attributes_for(:user)
     %w(create build attributes_for).each do |message|
-      with_node type:'send', receiver: 'Factory', message: message do
+      with_node type: 'send', receiver: 'Factory', message: message do
         replace_with "#{message}({{arguments}})"
       end
     end

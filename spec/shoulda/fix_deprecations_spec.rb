@@ -7,7 +7,7 @@ RSpec.describe 'Fix shoulda deprecations' do
   end
 
   describe 'with fakefs', fakefs: true do
-    let(:post_test_content) {"
+    let(:post_test_content) { "
 class PostTest < ActiveSupport::TestCase
   should validate_format_of(:email).with('user@example.com')
 
@@ -16,7 +16,7 @@ class PostTest < ActiveSupport::TestCase
   should ensure_exclusion_of(:age).in_range(30..60)
 end
     "}
-    let(:post_test_rewritten_content) {"
+    let(:post_test_rewritten_content) { "
 class PostTest < ActiveSupport::TestCase
   should allow_value('user@example.com').for(:email)
 
@@ -25,7 +25,7 @@ class PostTest < ActiveSupport::TestCase
   should validate_exclusion_of(:age).in_range(30..60)
 end
     "}
-    let(:posts_controller_test_content) {'
+    let(:posts_controller_test_content) { '
 class UsersControllerTest < ActionController::TestCase
   context "GET /show" do
     should assign_to(:user)
@@ -37,7 +37,7 @@ class UsersControllerTest < ActionController::TestCase
   end
 end
     '}
-    let(:posts_controller_test_rewritten_content) {'
+    let(:posts_controller_test_rewritten_content) { '
 class UsersControllerTest < ActionController::TestCase
   context "GET /show" do
     should "assigns user" do

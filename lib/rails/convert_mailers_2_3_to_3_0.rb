@@ -31,7 +31,7 @@ It converts rails mailers from 2.3 to 3.0.
   message.deliver
   EOF
 
-  if_gem 'rails', {gte: '2.3.0'}
+  if_gem 'rails', { gte: '2.3.0' }
 
   mailer_methods = {}
 
@@ -74,7 +74,7 @@ It converts rails mailers from 2.3 to 3.0.
         with_node type: 'send', receiver: nil, message: 'content_type' do
           remove
         end
-        with_node type: 'send', receiver: nil, message: 'body', arguments: {size: 1} do
+        with_node type: 'send', receiver: nil, message: 'body', arguments: { size: 1 } do
           body_argument = node.arguments.first
           if :hash == body_argument.type
             replace_with body_argument.children.map { |pair_node| "@#{pair_node.key.to_value} = #{pair_node.value.to_source}" }.join("\n")

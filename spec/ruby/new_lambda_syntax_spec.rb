@@ -7,11 +7,11 @@ RSpec.describe 'Ruby uses new -> synax' do
   end
 
   describe 'with fakefs', fakefs: true do
-    let(:test_content) {"
+    let(:test_content) { "
 lambda { test }
 lambda { |a, b, c| a + b + c }
     "}
-    let(:test_rewritten_content) {"
+    let(:test_rewritten_content) { "
 -> { test }
 ->(a, b, c) { a + b + c }
     "}

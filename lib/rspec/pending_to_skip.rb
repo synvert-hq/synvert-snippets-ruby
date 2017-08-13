@@ -40,7 +40,7 @@ It converts rspec pending to skip.
     end
   EOF
 
-  if_gem 'rspec', {gte: '3.0.0'}
+  if_gem 'rspec', { gte: '3.0.0' }
 
   within_files 'spec/**/*.rb', sort_by: 'end_pos' do
     # it 'is run and expected to fail' do
@@ -53,7 +53,7 @@ It converts rspec pending to skip.
     #   skip
     #   do_something_surely_fail
     # end
-    with_node type: 'block', caller: {type: 'send', receiver: nil, message: 'pending', arguments: {size: 0}} do
+    with_node type: 'block', caller: { type: 'send', receiver: nil, message: 'pending', arguments: { size: 0 } } do
       replace_with "skip\n{{body}}"
     end
 
@@ -66,7 +66,7 @@ It converts rspec pending to skip.
     #   skip
     #   do_something_possibly_fail
     # end
-    with_node type: 'send', receiver: nil, message: 'pending', arguments: {size: 0} do
+    with_node type: 'send', receiver: nil, message: 'pending', arguments: { size: 0 } do
       replace_with 'skip'
     end
 
@@ -77,7 +77,7 @@ It converts rspec pending to skip.
     # skip 'is skipped' do
     #   do_something_possibly_fail
     # end
-    with_node type: 'send', receiver: nil, message: 'pending', arguments: {size: 1, first: {type: 'str'}} do
+    with_node type: 'send', receiver: nil, message: 'pending', arguments: { size: 1, first: { type: 'str' } } do
       replace_with 'skip {{arguments}}'
     end
 
@@ -89,7 +89,7 @@ It converts rspec pending to skip.
       # it 'is skipped', :skip => true do
       #   do_something_possibly_fail
       # end
-      with_node type: 'send', message: message, arguments: {size: 2, last: {type: 'hash'}} do
+      with_node type: 'send', message: message, arguments: { size: 2, last: { type: 'hash' } } do
         goto_node 'arguments' do
           goto_node 'last' do
             replace_with node.to_source.sub('pending', 'skip')

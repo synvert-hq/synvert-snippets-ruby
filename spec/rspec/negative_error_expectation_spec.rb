@@ -5,7 +5,7 @@ RSpec.describe 'RSpec converts negative error expectation' do
   let!(:rewriter) { eval(File.read(rewriter_path)) }
 
   describe 'with fakefs', fakefs: true do
-    let(:post_spec_content) {"
+    let(:post_spec_content) { "
 describe Post do
   it 'test' do
     expect { do_something }.not_to raise_error(SomeErrorClass)
@@ -14,7 +14,7 @@ describe Post do
   end
 end
     "}
-    let(:post_spec_rewritten_content) {"
+    let(:post_spec_rewritten_content) { "
 describe Post do
   it 'test' do
     expect { do_something }.not_to raise_error
