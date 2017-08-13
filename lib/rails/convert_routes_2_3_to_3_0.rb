@@ -108,7 +108,7 @@ It converts rails routes from 2.3 to 3.0.
       .map { |pair_node| pair_node.to_source }
   end
 
-  helper_method :generaete_new_child_routes do |parent_node, parent_argument|
+  helper_method :generate_new_child_routes do |parent_node, parent_argument|
     parent_node.body.map { |child_node| "  #{child_node.to_source.sub(parent_argument, 'map')}\n" }.join("")
   end
 
@@ -124,7 +124,7 @@ It converts rails routes from 2.3 to 3.0.
       if node.arguments.length > 0
         block_argument = node.arguments.first.to_source
         new_routes = "namespace {{caller.arguments}} do\n"
-        new_routes << generaete_new_child_routes(node, block_argument)
+        new_routes << generate_new_child_routes(node, block_argument)
         new_routes << "end"
         replace_with new_routes
       end
@@ -183,7 +183,7 @@ It converts rails routes from 2.3 to 3.0.
         else
           new_routes << "#{message} {{caller.arguments}} do\n"
         end
-        new_routes << generaete_new_child_routes(node, block_argument)
+        new_routes << generate_new_child_routes(node, block_argument)
         new_routes << "end"
         replace_with new_routes
       end
