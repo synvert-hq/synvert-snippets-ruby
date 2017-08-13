@@ -7,7 +7,6 @@ Use ruby new safe navigation operator.
     u&.profile&.thumbnails&.large(100, format: 'jpg')
   EOF
 
-
   # Gem::Version initialize will strip RUBY_VERSION directly in ruby 1.9,
   # which is solved from ruby 2.0.0, which calls dup internally.
   if Gem::Version.new(RUBY_VERSION.dup) >= Gem::Version.new("2.3.0")

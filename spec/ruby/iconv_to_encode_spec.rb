@@ -1,7 +1,6 @@
 require 'spec_helper'
 
 RSpec.describe 'Ruby Iconv#iconv to String#encode' do
-
   before do
     rewriter_path = File.join(File.dirname(__FILE__), '../../lib/ruby/iconv_to_encode.rb')
     @rewriter = eval(File.read(rewriter_path))
@@ -64,6 +63,5 @@ RSpec.describe 'Ruby Iconv#iconv to String#encode' do
         expect(File.read 'test.rb').to eq test_rewritten_content
       end
     end
-
   end
 end
