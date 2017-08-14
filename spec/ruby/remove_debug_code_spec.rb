@@ -7,13 +7,13 @@ RSpec.describe 'Ruby removes debug code' do
   end
 
   describe 'with fakefs', fakefs: true do
-    let(:test_content) {"
+    let(:test_content) { "
 def test
   puts 'hello world'
   p 'debug'
 end
     "}
-    let(:test_rewritten_content) {"
+    let(:test_rewritten_content) { "
 def test
 end
     "}

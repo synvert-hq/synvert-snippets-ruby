@@ -9,7 +9,7 @@ RSpec.describe 'Convert rails models from 2.3 to 3.0' do
   end
 
   describe 'with fakefs', fakefs: true do
-    let(:post_content) {'
+    let(:post_content) { '
 class Post
   named_scope :active, :conditions => {:active => true}, :order => "created_at desc"
   named_scope :my_active, lambda { |user| {:conditions => ["user_id = ? and active = ?", user.id, true], :order => "created_at desc"} }
@@ -68,7 +68,7 @@ class Post
   end
 end
     '}
-    let(:post_rewritten_content) {'
+    let(:post_rewritten_content) { '
 class Post
   scope :active, where(:active => true).order("created_at desc")
   scope :my_active, lambda { |user| where("user_id = ? and active = ?", user.id, true).order("created_at desc") }

@@ -20,7 +20,7 @@ It removes monkey patching of the top level methods like describe
     end
   EOF
 
-  if_gem 'rspec', {gte: '3.0.0'}
+  if_gem 'rspec', { gte: '3.0.0' }
 
   monkey_patches_methods = %w(describe shared_examples shared_examples_for shared_context)
 
@@ -52,7 +52,7 @@ It removes monkey patching of the top level methods like describe
     # RSpec.configure do |rspec|
     #   rspec.expose_dsl_globally = false
     # end
-    within_node type: 'block', caller: {type: 'send', receiver: 'RSpec', message: 'configure'} do
+    within_node type: 'block', caller: { type: 'send', receiver: 'RSpec', message: 'configure' } do
       unless_exist_node type: 'send', message: 'expose_dsl_globally=' do
         append '{{arguments}}.expose_dsl_globally = false'
       end

@@ -27,7 +27,7 @@ It converts RAILS_ENV to Rails.env.
   !Rails.env.development?
   EOF
 
-  if_gem 'rails', {gte: '2.3.0'}
+  if_gem 'rails', { gte: '2.3.0' }
 
   within_files '**/*.{rb,rake}' do
     # RAILS_ENV == 'test'
@@ -45,7 +45,7 @@ It converts RAILS_ENV to Rails.env.
     # Rails.env == 'test'
     # =>
     # Rails.env.test?
-    with_node type: 'send', receiver: 'Rails.env', message: '==', arguments: {size: 1} do
+    with_node type: 'send', receiver: 'Rails.env', message: '==', arguments: { size: 1 } do
       env = node.arguments.first.to_value
       replace_with "Rails.env.#{env}?"
     end
@@ -53,7 +53,7 @@ It converts RAILS_ENV to Rails.env.
     # 'development' == Rails.env
     # =>
     # Rails.env.development?
-    with_node type: 'send', arguments: {first: 'Rails.env'}, message: '==' do
+    with_node type: 'send', arguments: { first: 'Rails.env' }, message: '==' do
       env = node.receiver.to_value
       replace_with "Rails.env.#{env}?"
     end
@@ -61,7 +61,7 @@ It converts RAILS_ENV to Rails.env.
     # Rails.env != 'test'
     # =>
     # !Rails.env.test?
-    with_node type: 'send', receiver: 'Rails.env', message: '!=', arguments: {size: 1} do
+    with_node type: 'send', receiver: 'Rails.env', message: '!=', arguments: { size: 1 } do
       env = node.arguments.first.to_value
       replace_with "!Rails.env.#{env}?"
     end
@@ -69,7 +69,7 @@ It converts RAILS_ENV to Rails.env.
     # 'development' != Rails.env
     # =>
     # !Rails.env.development?
-    with_node type: 'send', arguments: {first: 'Rails.env'}, message: '!=' do
+    with_node type: 'send', arguments: { first: 'Rails.env' }, message: '!=' do
       env = node.receiver.to_value
       replace_with "!Rails.env.#{env}?"
     end

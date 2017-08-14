@@ -22,22 +22,22 @@ It uses string_parameters to replace attr_accessible.
 
   within_files 'config/**/*.rb' do
     # remove config.active_record.whitelist_attributes = ...
-    with_node type: 'send', receiver: {type: 'send', receiver: {type: 'send', message: 'config'}, message: 'active_record'}, message: 'whitelist_attributes=' do
+    with_node type: 'send', receiver: { type: 'send', receiver: { type: 'send', message: 'config' }, message: 'active_record' }, message: 'whitelist_attributes=' do
       remove
     end
 
     # remove config.active_record.mass_assignment_sanitizer = ...
-    with_node type: 'send', receiver: {type: 'send', receiver: {type: 'send', message: 'config'}, message: 'active_record'}, message: 'mass_assignment_sanitizer=' do
+    with_node type: 'send', receiver: { type: 'send', receiver: { type: 'send', message: 'config' }, message: 'active_record' }, message: 'mass_assignment_sanitizer=' do
       remove
     end
   end
 
   attributes = {}
   within_file 'db/schema.rb' do
-    within_node type: 'block', caller: {type: 'send', message: 'create_table'} do
+    within_node type: 'block', caller: { type: 'send', message: 'create_table' } do
       object_name = node.caller.arguments.first.to_value.singularize
       attributes[object_name] = []
-      with_node type: 'send', receiver: 't', message: {not: 'index'} do
+      with_node type: 'send', receiver: 't', message: { not: 'index' } do
         attribute_name = ':' + node.arguments.first.to_value
         attributes[object_name] << attribute_name
       end

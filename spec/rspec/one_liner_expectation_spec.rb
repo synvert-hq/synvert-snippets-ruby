@@ -5,7 +5,7 @@ RSpec.describe 'RSpec converts one liner expectation' do
   let!(:rewriter) { eval(File.read(rewriter_path)) }
 
   describe 'with fakefs', fakefs: true do
-    let(:post_spec_content) {"
+    let(:post_spec_content) { "
 describe Post do
   it { should matcher }
   it { should_not matcher }
@@ -14,7 +14,7 @@ describe Post do
   it { should have_at_least(3).players }
 end
     "}
-    let(:post_spec_rewritten_content) {"
+    let(:post_spec_rewritten_content) { "
 describe Post do
   it { is_expected.to matcher }
   it { is_expected.not_to matcher }
