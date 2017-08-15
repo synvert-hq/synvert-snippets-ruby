@@ -1,0 +1,43 @@
+Synvert::Rewriter.new 'rails', 'redirect_with_flash' do
+  description <<-EOS
+
+  Fold flash setting into redirect_to.
+
+  flash[:notice] = "huzzah"
+  redirect_to root_path
+  =>
+  redirect_to root_path, notice: "huzzah"
+
+  and
+
+  flash[:error] = "booo"
+  redirect_to root_path
+  =>
+  redirect_to root_path, flash: {error: "huzzah"}
+
+  EOS
+  within_file 'app/controllers/**/*rb' do
+    within_node type: 'def' do
+      line = nil
+      msg = nil
+      remover_action = nil
+      flash_type = nil
+      with_node type: 'send', receiver: 'flash', arguments: {size: 2, last: {type: :str}} do
+        line = node.line
+        flash_type = node.arguments.first.to_source
+        msg = node.arguments.last.to_source
+        remover_action = Synvert::Rewriter::RemoveAction.new(self)
+      end
+      with_node type: 'send', receiver: nil, message: :redirect_to do
+        if line.present? && node.line == line+1
+          @actions << remover_action
+          if flash_type == ':error'
+            replace_with "{{message}} {{arguments}}, flash: {error: #{msg}}"
+          else
+            replace_with "{{message}} {{arguments}}, #{flash_type[1..-1]}: #{msg}"
+          end
+        end
+      end
+    end
+  end
+end
