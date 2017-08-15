@@ -31,10 +31,10 @@ Synvert::Rewriter.new 'rails', 'redirect_with_flash' do
       with_node type: 'send', receiver: nil, message: :redirect_to do
         if line.present? && node.line == line+1
           @actions << remover_action
-          if flash_type == ':error'
-            replace_with "{{message}} {{arguments}}, flash: {error: #{msg}}"
-          else
+          if [':notice', ':alert'].include?(flash_type)
             replace_with "{{message}} {{arguments}}, #{flash_type[1..-1]}: #{msg}"
+          else
+            replace_with "{{message}} {{arguments}}, flash: {#{flash_type[1..-1]}: #{msg}}"
           end
         end
       end
