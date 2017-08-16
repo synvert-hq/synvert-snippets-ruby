@@ -1,7 +1,6 @@
 require 'spec_helper'
 
 RSpec.describe 'rails redirect with flash snippet' do
-
   before do
     rewriter_path = File.join(File.dirname(__FILE__), '../../lib/rails/redirect_with_flash.rb')
     @rewriter = eval(File.read(rewriter_path))
