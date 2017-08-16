@@ -91,19 +91,34 @@ class AdminsController < ApplicationController
   end
 end'}
 
-    it 'process' do
-      FileUtils.mkdir_p 'app/controllers'
-      File.write 'app/controllers/posts_controller.rb', posts_controller_content
-      File.write 'app/controllers/comments_controller.rb', comments_controller_content
-      File.write 'app/controllers/unfixable_posts_controller.rb', unfixable_posts_controller_content
-      File.write 'app/controllers/users_controller.rb', users_controller_content
-      File.write 'app/controllers/admins_controller.rb', admins_controller_content
-      @rewriter.process
-      expect(File.read('app/controllers/posts_controller.rb')).to eq posts_controller_rewritten_content
-      expect(File.read('app/controllers/comments_controller.rb')).to eq comments_controller_rewritten_content
-      expect(File.read('app/controllers/unfixable_posts_controller.rb')).to eq unfixable_posts_controller_content
-      expect(File.read('app/controllers/users_controller.rb')).to eq users_controller_rewritten_content
-      expect(File.read('app/controllers/admins_controller.rb')).to eq admins_controller_rewritten_content
+    it 'uses shorter syntax for :notice' do
+      verifying_content_change('app/controllers/posts_controller.rb', posts_controller_content, posts_controller_rewritten_content) do
+        @rewriter.process
+      end
+    end
+
+    it 'uses shorter syntax for :alert' do
+      verifying_content_change('app/controllers/admins_controller.rb', admins_controller_content, admins_controller_rewritten_content) do
+        @rewriter.process
+      end
+    end
+
+    it 'uses longer syntax for :error' do
+      verifying_content_change('app/controllers/comments_controller.rb', comments_controller_content, comments_controller_rewritten_content) do
+        @rewriter.process
+      end
+    end
+
+    it 'does not rewrite if flash and redirect are not adjacent' do
+      verifying_content_change('app/controllers/unfixable_posts_controller.rb', unfixable_posts_controller_content, unfixable_posts_controller_content) do
+        @rewriter.process
+      end
+    end
+
+    it 'uses longer syntax for :message' do
+      verifying_content_change('app/controllers/users_controller.rb', users_controller_content, users_controller_rewritten_content) do
+        @rewriter.process
+      end
     end
   end
 end
