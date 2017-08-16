@@ -22,14 +22,14 @@ Synvert::Rewriter.new 'rails', 'redirect_with_flash' do
       msg = nil
       remover_action = nil
       flash_type = nil
-      with_node type: 'send', receiver: 'flash', arguments: {size: 2, last: {type: :str}} do
+      with_node type: 'send', receiver: 'flash', arguments: { size: 2, last: { type: :str } } do
         line = node.line
         flash_type = node.arguments.first.to_source
         msg = node.arguments.last.to_source
         remover_action = Synvert::Rewriter::RemoveAction.new(self)
       end
       with_node type: 'send', receiver: nil, message: :redirect_to do
-        if line.present? && node.line == line+1
+        if line.present? && node.line == line + 1
           @actions << remover_action
           if [':notice', ':alert'].include?(flash_type)
             replace_with "{{message}} {{arguments}}, #{flash_type[1..-1]}: #{msg}"

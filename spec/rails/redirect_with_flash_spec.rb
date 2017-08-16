@@ -8,7 +8,7 @@ RSpec.describe 'rails redirect with flash snippet' do
   end
 
   describe 'with fakefs', fakefs: true do
-    let(:posts_controller_content) {'
+    let(:posts_controller_content) { '
 class PostsController < ApplicationController
   def publish
     Post.find(params[:id]).publish!
@@ -17,7 +17,7 @@ class PostsController < ApplicationController
   end
 end'}
 
-    let(:posts_controller_rewritten_content) {'
+    let(:posts_controller_rewritten_content) { '
 class PostsController < ApplicationController
   def publish
     Post.find(params[:id]).publish!
@@ -25,7 +25,7 @@ class PostsController < ApplicationController
   end
 end'}
 
-    let(:comments_controller_content) {'
+    let(:comments_controller_content) { '
 class CommentsController < ApplicationController
   def approve
     begin
@@ -37,7 +37,7 @@ class CommentsController < ApplicationController
   end
 end'}
 
-    let(:comments_controller_rewritten_content) {'
+    let(:comments_controller_rewritten_content) { '
 class CommentsController < ApplicationController
   def approve
     begin
@@ -48,7 +48,7 @@ class CommentsController < ApplicationController
   end
 end'}
 
-    let(:unfixable_posts_controller_content) {'
+    let(:unfixable_posts_controller_content) { '
 class UnfixablePostsController < ApplicationController
   def publish
     Post.find(params[:id]).publish!
@@ -58,7 +58,7 @@ class UnfixablePostsController < ApplicationController
   end
 end'}
 
-    let(:users_controller_content) {'
+    let(:users_controller_content) { '
 class UsersController < ApplicationController
   def activate
     User.find(params[:id]).activate!
@@ -67,7 +67,7 @@ class UsersController < ApplicationController
   end
 end'}
 
-    let(:users_controller_rewritten_content) {'
+    let(:users_controller_rewritten_content) { '
 class UsersController < ApplicationController
   def activate
     User.find(params[:id]).activate!
@@ -75,7 +75,7 @@ class UsersController < ApplicationController
   end
 end'}
 
-    let(:admins_controller_content) {'
+    let(:admins_controller_content) { '
 class AdminsController < ApplicationController
   def list
     Admin.find(params[:id]).list!
@@ -84,7 +84,7 @@ class AdminsController < ApplicationController
   end
 end'}
 
-    let(:admins_controller_rewritten_content) {'
+    let(:admins_controller_rewritten_content) { '
 class AdminsController < ApplicationController
   def list
     Admin.find(params[:id]).list!
