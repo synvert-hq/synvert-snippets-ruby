@@ -203,7 +203,7 @@ Rails.application.config.ssl_options = { hsts: { subdomains: true } }
   # get :show, { id: user.id }, { notice: 'Welcome' }, { admin: user.admin? }
   # =>
   # get :show, params: { id: user.id }, flash: { notice: 'Welcome' }, session: { admin: user.admin? }.
-  within_files '{test,spec}/{functional,controllers}/*.rb' do
+  within_files '{test,spec}/{functional,controllers}/**/*.rb' do
     %w(get post put patch delete).each do |message|
       with_node type: 'send', message: message do
         def make_up_hash_pair(key, argument_node)
