@@ -1,3 +1,4 @@
+FORMAT_PATTERN = /format\:\s\W\w+\W/
 Synvert::Rewriter.new 'rspec', 'controller_keyword_argument' do
   actions = %w(get post put delete)
   within_files 'spec/controllers/**/**.rb' do
@@ -5,19 +6,28 @@ Synvert::Rewriter.new 'rspec', 'controller_keyword_argument' do
       if node.caller.message == :it || node.caller.message == :expect
         node.body.each do |method|
           begin
-            if method.message.to_s.in?(actions) && method.receiver == nil
-              request_params = method.arguments.last.to_source
-              request_action = method.arguments.first.to_source
-              unless request_params.include?("params:")
-                process_with_other_node(method) do
-                  if request_params != request_action
-                    if request_params.include?(":")
-                      replace_with "#{method.message.to_s} #{request_action}, params: { #{request_params} }"
-                    else
-                      replace_with "#{method.message.to_s} #{request_action}, params: #{request_params}"
-                    end
-                  end
+            if method.message.to_s.in?(actions) && method.receiver == nil && method.arguments.size > 1
+              request_params = method.arguments[1].to_source
+              request_action = method.arguments[0].to_source
+              # binding.pry
+              process_with_other_node(method) do
+                request_params.gsub!("params:", "")
+                pairs = request_params.gsub(/{|}/, "").split(",")
+                format = pairs.select {|p| p.include?("format:")}.first
+                pairs = pairs.reject {|p| p.include?("format:")}
+
+                # For example:
+                # ```ruby
+                # get :index, params: params
+                # ```
+                #
+                if !pairs[0].include?(":")
+                  params = "params: #{pairs.join(", ")}"
+                else
+                  params = "params: {#{pairs.join(", ")}}"
                 end
+                new_params = [request_action, params, format].compact.join(", ")
+                replace_with "#{method.message} #{new_params}"
               end
             end
           rescue Synvert::Core::MethodNotSupported

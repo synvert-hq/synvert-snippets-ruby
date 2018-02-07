@@ -16,6 +16,9 @@ RSpec.describe TestController, type: :controller do
       get :show, id: 1
       expect(response).to be_ok
     end
+    it "doesnt have any params" do
+      get :show
+    end
     it "with multiple params" do
       get :show, id: 1, user_id: user.id
       expect(response).to be_ok
@@ -70,6 +73,9 @@ RSpec.describe TestController, type: :controller do
       create(:post, user: user)
       get :show, params: { id: 1 }
       expect(response).to be_ok
+    end
+    it "doesnt have any params" do
+      get :show
     end
     it "with multiple params" do
       get :show, params: { id: 1, user_id: user.id }

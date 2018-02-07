@@ -12,3 +12,4 @@ gem 'guard'
 gem 'guard-rspec'
 
 gem "byebug"
+gem "pry"

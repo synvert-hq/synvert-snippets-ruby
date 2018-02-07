@@ -2,10 +2,11 @@ $LOAD_PATH.unshift(File.join(File.dirname(__FILE__), "..", "lib"))
 
 require 'synvert/core'
 require 'fakefs/spec_helpers'
+require 'pry'
 
 require 'coveralls'
 Coveralls.wear!
-
+Pry.config.history.file = "./.pry_history"
 RSpec.configure do |config|
   config.include FakeFS::SpecHelpers, fakefs: true
 
