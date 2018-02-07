@@ -49,8 +49,8 @@ Synvert::Rewriter.new 'rspec', 'controller_keyword_argument' do
               end
             end
           rescue Synvert::Core::MethodNotSupported => e
-            require "pry"
-            binding.pry
+            # require "pry"
+            # binding.pry
           end
         end
       end

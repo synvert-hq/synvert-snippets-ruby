@@ -11,14 +11,14 @@ RSpec.describe 'Use keyword argument to pass request params in controller spec' 
 RSpec.describe TestController, type: :controller do
   describe "#show" do
     let(:user) { create(:user, name: name) }
-    # it "returns status 200" do
-    #   create(:post, user: user)
-    #   get :show, param
-    #   expect(response).to be_ok
-    # end
-    # it "doesnt have any params" do
-    #   get :show
-    # end
+    it "returns status 200" do
+      create(:post, user: user)
+      get :show, param
+      expect(response).to be_ok
+    end
+    it "doesnt have any params" do
+      get :show
+    end
     it "with multiple params" do
       get :show, id: 1, user_id: user.id
       expect(response).to be_ok
@@ -81,7 +81,7 @@ RSpec.describe TestController, type: :controller do
       get :show
     end
     it "with multiple params" do
-      get :show, params: { id: 1, user_id: user.id }
+      get :show, params: {id: 1, user_id: user.id}
       expect(response).to be_ok
     end
     it "with keyword params already" do
@@ -89,24 +89,27 @@ RSpec.describe TestController, type: :controller do
       expect(response).to be_ok
     end
     it "has format inside without brackets" do
-      get :index, params: { foo: bar }, format: "xml"
+      get :index, params: {foo: bar}, format: "xml"
     end
     it "has format inside with brackets" do
-      get :index, params: { foo: bar }, format: "xml"
+      get :index, params: {foo: bar}, format: "xml"
     end
     it "is already modified" do
       get :index, params: { foo: bar }
     end
     it "is already modified with format inside" do
-      get :index, params: { foo: bar }, format: "xml"
+      get :index, params: {foo: bar}, format: "xml"
     end
     it "is already modified with format outside" do
-      get :index, params: { foo: bar }, format: "xml"
+      get :index, params: {foo: bar}, format: "xml"
+    end
+    it "is nested" do
+      get :index, params: {foo: { bar: "baz" }}
     end
   end
   describe "#create" do
     it "returns status 200" do
-      post :create, params: { title: "test" }
+      post :create, params: {title: "test"}
       expect(response).to be_ok
     end
   end
@@ -114,7 +117,7 @@ RSpec.describe TestController, type: :controller do
     it "changes post\'s title" do
       post = create(:post)
       expect {
-        put :update, params: { id: post.id, title: "test2" }
+        put :update, params: {id: post.id, title: "test2"}
       }.to change(post.title)
     end
     it "updates post" do
