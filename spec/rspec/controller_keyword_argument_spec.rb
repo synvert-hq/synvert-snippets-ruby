@@ -24,6 +24,21 @@ RSpec.describe TestController, type: :controller do
       get :show, params: { id: 1, user_id: 1}
       expect(response).to be_ok
     end
+    it "has format inside without brackets" do
+      get :index, foo: bar, format: "xml"
+    end
+    it "has format inside with brackets" do
+      get :index, { foo: bar, format: "xml" }
+    end
+    it "is already modified" do
+      get :index, params: { foo: bar }
+    end
+    it "is already modified with format inside" do
+      get :index, params: { foo: bar, format: "xml" }
+    end
+    it "is already modified with format outside" do
+      get :index, params: { foo: bar }, format: "xml"
+    end
   end
   describe "#create" do
     it "returns status 200" do
@@ -63,6 +78,21 @@ RSpec.describe TestController, type: :controller do
     it "with keyword params already" do
       get :show, params: { id: 1, user_id: 1}
       expect(response).to be_ok
+    end
+    it "has format inside without brackets" do
+      get :index, params: { foo: bar }, format: "xml"
+    end
+    it "has format inside with brackets" do
+      get :index, params: { foo: bar }, format: "xml"
+    end
+    it "is already modified" do
+      get :index, params: { foo: bar }
+    end
+    it "is already modified with format inside" do
+      get :index, params: { foo: bar }, format: "xml"
+    end
+    it "is already modified with format outside" do
+      get :index, params: { foo: bar }, format: "xml"
     end
   end
   describe "#create" do
