@@ -4,33 +4,53 @@ Synvert::Rewriter.new 'rspec', 'controller_keyword_argument' do
   within_files 'spec/controllers/**/**.rb' do
     with_node type: :block do
       if node.caller.message == :it || node.caller.message == :expect
-        node.body.each do |method|
+        node.body.each do |method_call|
           begin
-            if method.message.to_s.in?(actions) && method.receiver == nil && method.arguments.size > 1
-              request_params = method.arguments[1].to_source
-              request_action = method.arguments[0].to_source
-              # binding.pry
-              process_with_other_node(method) do
-                request_params.gsub!("params:", "")
-                pairs = request_params.gsub(/{|}/, "").split(",")
-                format = pairs.select {|p| p.include?("format:")}.first
-                pairs = pairs.reject {|p| p.include?("format:")}
+            if method_call.message.to_s.in?(actions) && method_call.arguments.size > 1
+              request_options = method_call.arguments[1]
+              request_action = method_call.arguments[0].to_source
+              pairs = {}
+              param_string = ""
 
-                # For example:
-                # ```ruby
-                # get :index, params: params
-                # ```
-                #
-                if !pairs[0].include?(":")
-                  params = "params: #{pairs.join(", ")}"
+              request_options.keys.each_with_index do |key, index|
+
+                case key.to_source
+                when "format"
+                  value = request_options.values[index].to_source
+                  pairs["format"] = value
+                when "params"
+                  param_value_keys = request_options.values[index].keys
+                  param_value_values = request_options.values[index].values
+                  param_value_keys.each_with_index do |key, i|
+                    if key.to_source == "format"
+                      pairs["format"] = param_value_values[i].to_source
+                    end
+                  end
+                  param_string = "params: #{request_options.values[index].to_source}"
+                when "session"
+                  break
                 else
-                  params = "params: {#{pairs.join(", ")}}"
+                  pairs["params"] ||= {}
+                  value = request_options.values[index].to_source
+                  pairs["params"][key.to_source] = value
                 end
-                new_params = [request_action, params, format].compact.join(", ")
-                replace_with "#{method.message} #{new_params}"
+              end
+
+              if pairs["params"].present?
+                params = []
+                pairs["params"].each do |k, v|
+                  params.push([k, v].join(": "))
+                end
+                param_string = "params: {#{params.join(", ")}}"
+              end
+              param_string += ", format: #{pairs["format"]}" if pairs["format"].present?
+              process_with_other_node(method_call) do
+                replace_with "#{method_call.message} #{request_action}, #{param_string}"
               end
             end
-          rescue Synvert::Core::MethodNotSupported
+          rescue Synvert::Core::MethodNotSupported => e
+            require "pry"
+            binding.pry
           end
         end
       end

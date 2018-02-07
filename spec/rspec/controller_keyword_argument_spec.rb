@@ -11,14 +11,14 @@ RSpec.describe 'Use keyword argument to pass request params in controller spec' 
 RSpec.describe TestController, type: :controller do
   describe "#show" do
     let(:user) { create(:user, name: name) }
-    it "returns status 200" do
-      create(:post, user: user)
-      get :show, id: 1
-      expect(response).to be_ok
-    end
-    it "doesnt have any params" do
-      get :show
-    end
+    # it "returns status 200" do
+    #   create(:post, user: user)
+    #   get :show, param
+    #   expect(response).to be_ok
+    # end
+    # it "doesnt have any params" do
+    #   get :show
+    # end
     it "with multiple params" do
       get :show, id: 1, user_id: user.id
       expect(response).to be_ok
@@ -41,6 +41,9 @@ RSpec.describe TestController, type: :controller do
     end
     it "is already modified with format outside" do
       get :index, params: { foo: bar }, format: "xml"
+    end
+    it "is nested" do
+      get :index, { foo: { bar: "baz" } }
     end
   end
   describe "#create" do
