@@ -28,6 +28,7 @@ Synvert::Rewriter.new 'rspec', 'controller_keyword_argument' do
                   end
                   param_string = "params: #{request_options.values[index].to_source}"
                 when "session"
+                  # only few specs pass session, so we'll skip that case to make things easier
                   break
                 else
                   pairs["params"] ||= {}
