@@ -20,32 +20,25 @@ Synvert::Rewriter.new 'rspec', 'controller_keyword_argument' do
               request_action = method_call.arguments[0].to_source
               pairs = {}
               param_string = ""
+              session_string = ""
 
-              if request_options.type == :send
+              case request_options.type
+              when :send
                 param_string = request_options.to_source
-              elsif request_options.type == :lvar
+              when :lvar
                 param_string = "params: #{request_options.to_source}"
               else
                 request_options.keys.each_with_index do |key, index|
+                  value = request_options.values[index].to_source
                   case key.to_source
                   when "format"
-                    value = request_options.values[index].to_source
                     pairs["format"] = value
                   when "params"
-                    param_value_keys = request_options.values[index].keys
-                    param_value_values = request_options.values[index].values
-                    param_value_keys.each_with_index do |key, i|
-                      if key.to_source == "format"
-                        pairs["format"] = param_value_values[i].to_source
-                      end
-                    end
-                    param_string = "params: #{request_options.values[index].to_source}"
+                    param_string = "params: #{value}"
                   when "session"
-                    # only few specs pass session, so we'll skip that case to make things easier
-                    break
+                    session_string = "session: #{value}"
                   else
                     pairs["params"] ||= {}
-                    value = request_options.values[index].to_source
                     pairs["params"][key.to_source] = value
                   end
                 end
