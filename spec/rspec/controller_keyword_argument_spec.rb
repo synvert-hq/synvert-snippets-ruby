@@ -85,7 +85,7 @@ RSpec.describe TestController, type: :controller do
       expect(response).to be_ok
     end
     it "with keyword params already" do
-      get :show, params: { id: 1, user_id: 1}
+      get :show, params: {id: 1, user_id: 1}
       expect(response).to be_ok
     end
     it "has format inside without brackets" do
@@ -95,7 +95,7 @@ RSpec.describe TestController, type: :controller do
       get :index, params: {foo: bar}, format: "xml"
     end
     it "is already modified" do
-      get :index, params: { foo: bar }
+      get :index, params: {foo: bar}
     end
     it "is already modified with format inside" do
       get :index, params: {foo: bar}, format: "xml"

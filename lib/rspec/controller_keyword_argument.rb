@@ -3,8 +3,17 @@ Synvert::Rewriter.new 'rspec', 'controller_keyword_argument' do
   actions = %w(get post put delete)
   within_files 'spec/controllers/**/**.rb' do
     with_node type: :block do
-      if node.caller.message == :it || node.caller.message == :expect
+      in_it_block =
+        begin
+          node.caller.message == :it || node.caller.message == :expect
+        rescue Synvert::Core::MethodNotSupported
+          false
+        end
+
+      if in_it_block
         node.body.each do |method_call|
+          next if method_call.type != :send
+
           begin
             if method_call.message.to_s.in?(actions) && method_call.arguments.size > 1
               request_options = method_call.arguments[1]
@@ -12,46 +21,53 @@ Synvert::Rewriter.new 'rspec', 'controller_keyword_argument' do
               pairs = {}
               param_string = ""
 
-              request_options.keys.each_with_index do |key, index|
-
-                case key.to_source
-                when "format"
-                  value = request_options.values[index].to_source
-                  pairs["format"] = value
-                when "params"
-                  param_value_keys = request_options.values[index].keys
-                  param_value_values = request_options.values[index].values
-                  param_value_keys.each_with_index do |key, i|
-                    if key.to_source == "format"
-                      pairs["format"] = param_value_values[i].to_source
+              if request_options.type == :send
+                param_string = request_options.to_source
+              elsif request_options.type == :lvar
+                param_string = "params: #{request_options.to_source}"
+              else
+                request_options.keys.each_with_index do |key, index|
+                  case key.to_source
+                  when "format"
+                    value = request_options.values[index].to_source
+                    pairs["format"] = value
+                  when "params"
+                    param_value_keys = request_options.values[index].keys
+                    param_value_values = request_options.values[index].values
+                    param_value_keys.each_with_index do |key, i|
+                      if key.to_source == "format"
+                        pairs["format"] = param_value_values[i].to_source
+                      end
                     end
+                    param_string = "params: #{request_options.values[index].to_source}"
+                  when "session"
+                    # only few specs pass session, so we'll skip that case to make things easier
+                    break
+                  else
+                    pairs["params"] ||= {}
+                    value = request_options.values[index].to_source
+                    pairs["params"][key.to_source] = value
                   end
-                  param_string = "params: #{request_options.values[index].to_source}"
-                when "session"
-                  # only few specs pass session, so we'll skip that case to make things easier
-                  break
-                else
-                  pairs["params"] ||= {}
-                  value = request_options.values[index].to_source
-                  pairs["params"][key.to_source] = value
+                end
+
+                if pairs["params"].present?
+                  params = []
+                  pairs["params"].each do |k, v|
+                    params.push([k, v].join(": "))
+                  end
+                  param_string = "params: {#{params.join(", ")}}"
                 end
               end
 
-              if pairs["params"].present?
-                params = []
-                pairs["params"].each do |k, v|
-                  params.push([k, v].join(": "))
-                end
-                param_string = "params: {#{params.join(", ")}}"
-              end
+
               param_string += ", format: #{pairs["format"]}" if pairs["format"].present?
               process_with_other_node(method_call) do
                 replace_with "#{method_call.message} #{request_action}, #{param_string}"
               end
             end
           rescue Synvert::Core::MethodNotSupported => e
-            # require "pry"
-            # binding.pry
+            require "pry"
+            binding.pry
           end
         end
       end
