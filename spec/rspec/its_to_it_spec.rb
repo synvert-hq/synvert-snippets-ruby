@@ -1,11 +1,9 @@
 require 'spec_helper'
 
 RSpec.describe 'RSpec converts its to it' do
-  let!(:rewriter_path) { File.join(File.dirname(__FILE__), '../../lib/rspec/its_to_it.rb') }
-  let!(:rewriter) { eval(File.read(rewriter_path)) }
-
-  describe 'with fakefs', fakefs: true do
-    let(:post_spec_content) { "
+  let(:rewriter_name) { 'rspec/its_to_it' }
+  let(:fake_file_path) { 'spec/models/post_spec.rb' }
+  let(:test_content) { "
 describe Post do
   describe 'example' do
     subject { { foo: 1, bar: 2 } }
@@ -14,8 +12,8 @@ describe Post do
     its('keys.first') { should == :foo }
   end
 end
-    "}
-    let(:post_spec_rewritten_content) { "
+  "}
+  let(:test_rewritten_content) { "
 describe Post do
   describe 'example' do
     subject { { foo: 1, bar: 2 } }
@@ -36,13 +34,7 @@ describe Post do
     end
   end
 end
-    "}
+  "}
 
-    it 'converts' do
-      FileUtils.mkdir_p 'spec/models'
-      File.write 'spec/models/post_spec.rb', post_spec_content
-      rewriter.process
-      expect(File.read 'spec/models/post_spec.rb').to eq post_spec_rewritten_content
-    end
-  end
+  include_examples 'convertable'
 end

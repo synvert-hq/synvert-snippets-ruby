@@ -1,43 +1,31 @@
 require 'spec_helper'
 
 RSpec.describe 'Ruby uses new safe navigation operator', skip: Gem::Version.new(RUBY_VERSION.dup) < Gem::Version.new('2.3.0') do
-  before do
-    rewriter_path = File.join(File.dirname(__FILE__), '../../lib/ruby/new_safe_navigation_operator.rb')
-    @rewriter = eval(File.read(rewriter_path))
-  end
+  let(:rewriter_name) { 'ruby/new_safe_navigation_operator' }
 
-  describe 'with fakefs', fakefs: true do
-    context 'with arguments' do
-      let(:test_content) { "
+  context 'with arguments' do
+    let(:test_content) { "
 u = User.find(id)
 u.try!(:profile).try!(:thumbnails).try!(:large, 100, format: 'jpg')
 u.try!('profile').try!('thumbnails').try!('large', 100, format: 'jpg')
 u.try(:profile).try(:thumbnails).try(:large, 100, format: 'jpg')
 u.try('profile').try('thumbnails').try('large', 100, format: 'jpg')
-      "}
-      let(:test_rewritten_content) { "
+    "}
+    let(:test_rewritten_content) { "
 u = User.find(id)
 u&.profile&.thumbnails&.large(100, format: 'jpg')
 u&.profile&.thumbnails&.large(100, format: 'jpg')
 u&.profile&.thumbnails&.large(100, format: 'jpg')
 u&.profile&.thumbnails&.large(100, format: 'jpg')
-      "}
+    "}
 
-      it 'converts' do
-        File.write 'test.rb', test_content
-        @rewriter.process
-        expect(File.read 'test.rb').to eq test_rewritten_content
-      end
-    end
+    include_examples 'convertable'
+  end
 
-    context 'without arguments' do
-      let(:test_content) { 'u.try! {|u| do_something(u.profile) }' }
+  context 'without arguments' do
+    let(:test_content) { 'u.try! {|u| do_something(u.profile) }' }
+    let(:test_rewritten_content) { 'u.try! {|u| do_something(u.profile) }' }
 
-      it 'makes no changes' do
-        File.write 'test.rb', test_content
-        @rewriter.process
-        expect(File.read 'test.rb').to eq test_content
-      end
-    end
+    include_examples 'convertable'
   end
 end

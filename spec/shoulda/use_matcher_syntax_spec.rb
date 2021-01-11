@@ -1,13 +1,11 @@
 require 'spec_helper'
 
 RSpec.describe 'Use shoulda matcher syntax' do
-  before do
-    rewriter_path = File.join(File.dirname(__FILE__), '../../lib/shoulda/use_matcher_syntax.rb')
-    @rewriter = eval(File.read(rewriter_path))
-  end
+  let(:rewriter_name) { 'shoulda/use_matcher_syntax' }
 
-  describe 'with fakefs', fakefs: true do
-    let(:post_test_content) { "
+  context 'unit test methods' do
+    let(:fake_file_path) { 'test/unit/post_test.rb' }
+    let(:test_content) { "
 class PostTest < ActiveSupport::TestCase
   should_belong_to :user
   should_have_one :category, :location
@@ -41,7 +39,7 @@ class PostTest < ActiveSupport::TestCase
   should_have_readonly_attributes :password, :admin_flag
 end
     "}
-    let(:post_test_rewritten_content) { "
+    let(:test_rewritten_content) { "
 class PostTest < ActiveSupport::TestCase
   should belong_to(:user)
   should have_one(:category)
@@ -83,7 +81,13 @@ class PostTest < ActiveSupport::TestCase
   should have_readonly_attributes(:admin_flag)
 end
     "}
-    let(:posts_controller_test_content) { '
+
+    include_examples 'convertable'
+  end
+
+  context 'functional test methods' do
+    let(:fake_file_path) { 'test/functional/posts_controller_test.rb' }
+    let(:test_content) { '
 class UsersControllerTest < ActionController::TestCase
   should "test" do
     should_set_the_flash_to "Thank you for placing this order."
@@ -112,7 +116,7 @@ class UsersControllerTest < ActionController::TestCase
   end
 end
     '}
-    let(:posts_controller_test_rewritten_content) { '
+    let(:test_rewritten_content) { '
 class UsersControllerTest < ActionController::TestCase
   should "test" do
     should set_the_flash.to("Thank you for placing this order.")
@@ -145,14 +149,6 @@ class UsersControllerTest < ActionController::TestCase
 end
     '}
 
-    it 'converts' do
-      FileUtils.mkdir_p 'test/unit'
-      FileUtils.mkdir_p 'test/functional'
-      File.write 'test/unit/post_test.rb', post_test_content
-      File.write 'test/functional/posts_controller_test.rb', posts_controller_test_content
-      @rewriter.process
-      expect(File.read 'test/unit/post_test.rb').to eq post_test_rewritten_content
-      expect(File.read 'test/functional/posts_controller_test.rb').to eq posts_controller_test_rewritten_content
-    end
+    include_examples 'convertable'
   end
 end

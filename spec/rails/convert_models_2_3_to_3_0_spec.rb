@@ -3,13 +3,9 @@
 require 'spec_helper'
 
 RSpec.describe 'Convert rails models from 2.3 to 3.0' do
-  before do
-    rewriter_path = File.join(File.dirname(__FILE__), '../../lib/rails/convert_models_2_3_to_3_0.rb')
-    @rewriter = eval(File.read(rewriter_path))
-  end
-
-  describe 'with fakefs', fakefs: true do
-    let(:post_content) { '
+  let(:rewriter_name) { 'rails/convert_models_2_3_to_3_0' }
+  let(:fake_file_path) { 'app/models/post.rb' }
+  let(:test_content) { '
 class Post
   named_scope :active, :conditions => {:active => true}, :order => "created_at desc"
   named_scope :my_active, lambda { |user| {:conditions => ["user_id = ? and active = ?", user.id, true], :order => "created_at desc"} }
@@ -67,8 +63,8 @@ class Post
     self.save(false)
   end
 end
-    '}
-    let(:post_rewritten_content) { '
+  '}
+  let(:test_rewritten_content) { '
 class Post
   scope :active, where(:active => true).order("created_at desc")
   scope :my_active, lambda { |user| where("user_id = ? and active = ?", user.id, true).order("created_at desc") }
@@ -126,13 +122,7 @@ class Post
     self.save(:validate => false)
   end
 end
-    '}
+  '}
 
-    it 'converts' do
-      FileUtils.mkdir_p 'app/models'
-      File.write 'app/models/post.rb', post_content
-      @rewriter.process
-      expect(File.read 'app/models/post.rb').to eq post_rewritten_content
-    end
-  end
+  include_examples 'convertable'
 end

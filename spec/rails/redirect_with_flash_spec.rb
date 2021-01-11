@@ -1,13 +1,11 @@
 require 'spec_helper'
 
 RSpec.describe 'rails redirect with flash snippet' do
-  before do
-    rewriter_path = File.join(File.dirname(__FILE__), '../../lib/rails/redirect_with_flash.rb')
-    @rewriter = eval(File.read(rewriter_path))
-  end
+  let(:rewriter_name) { 'rails/redirect_with_flash' }
 
-  describe 'with fakefs', fakefs: true do
-    let(:posts_controller_content) { '
+  context 'uses shorter syntax for :notice' do
+    let(:fake_file_path) { 'app/controllers/posts_controller.rb' }
+    let(:test_content) { '
 class PostsController < ApplicationController
   def publish
     Post.find(params[:id]).publish!
@@ -15,8 +13,7 @@ class PostsController < ApplicationController
     redirect_to root_path
   end
 end'}
-
-    let(:posts_controller_rewritten_content) { '
+    let(:test_rewritten_content) { '
 class PostsController < ApplicationController
   def publish
     Post.find(params[:id]).publish!
@@ -24,7 +21,12 @@ class PostsController < ApplicationController
   end
 end'}
 
-    let(:comments_controller_content) { '
+    include_examples 'convertable'
+  end
+
+  context 'uses longer syntax for :error' do
+    let(:fake_file_path) { 'app/controllers/comments_controller.rb' }
+    let(:test_content) { '
 class CommentsController < ApplicationController
   def approve
     begin
@@ -35,8 +37,7 @@ class CommentsController < ApplicationController
     end
   end
 end'}
-
-    let(:comments_controller_rewritten_content) { '
+    let(:test_rewritten_content) { '
 class CommentsController < ApplicationController
   def approve
     begin
@@ -47,7 +48,12 @@ class CommentsController < ApplicationController
   end
 end'}
 
-    let(:unfixable_posts_controller_content) { '
+    include_examples 'convertable'
+  end
+
+  context 'does not rewrite if flash and redirect are not adjacent' do
+    let(:fake_file_path) { 'app/controllers/unfixable_posts_controller.rb' }
+    let(:test_content) { '
 class UnfixablePostsController < ApplicationController
   def publish
     Post.find(params[:id]).publish!
@@ -56,8 +62,14 @@ class UnfixablePostsController < ApplicationController
     redirect_to root_path
   end
 end'}
+    let(:test_rewritten_content) { test_content }
 
-    let(:users_controller_content) { '
+    include_examples 'convertable'
+  end
+
+  context 'uses longer syntax for :message' do
+    let(:fake_file_path) { 'app/controllers/users_controller.rb' }
+    let(:test_content) { '
 class UsersController < ApplicationController
   def activate
     User.find(params[:id]).activate!
@@ -65,16 +77,19 @@ class UsersController < ApplicationController
     redirect_to root_path
   end
 end'}
-
-    let(:users_controller_rewritten_content) { '
+    let(:test_rewritten_content) { '
 class UsersController < ApplicationController
   def activate
     User.find(params[:id]).activate!
     redirect_to root_path, flash: {message: "User activated!"}
   end
 end'}
+    include_examples 'convertable'
+  end
 
-    let(:admins_controller_content) { '
+  context 'uses shorter syntax for :alert' do
+    let(:fake_file_path) { 'app/controllers/admins_controller.rb' }
+    let(:test_content) { '
 class AdminsController < ApplicationController
   def list
     Admin.find(params[:id]).list!
@@ -82,8 +97,7 @@ class AdminsController < ApplicationController
     redirect_to root_path
   end
 end'}
-
-    let(:admins_controller_rewritten_content) { '
+    let(:test_rewritten_content) { '
 class AdminsController < ApplicationController
   def list
     Admin.find(params[:id]).list!
@@ -91,34 +105,6 @@ class AdminsController < ApplicationController
   end
 end'}
 
-    it 'uses shorter syntax for :notice' do
-      verifying_content_change('app/controllers/posts_controller.rb', posts_controller_content, posts_controller_rewritten_content) do
-        @rewriter.process
-      end
-    end
-
-    it 'uses shorter syntax for :alert' do
-      verifying_content_change('app/controllers/admins_controller.rb', admins_controller_content, admins_controller_rewritten_content) do
-        @rewriter.process
-      end
-    end
-
-    it 'uses longer syntax for :error' do
-      verifying_content_change('app/controllers/comments_controller.rb', comments_controller_content, comments_controller_rewritten_content) do
-        @rewriter.process
-      end
-    end
-
-    it 'does not rewrite if flash and redirect are not adjacent' do
-      verifying_content_change('app/controllers/unfixable_posts_controller.rb', unfixable_posts_controller_content, unfixable_posts_controller_content) do
-        @rewriter.process
-      end
-    end
-
-    it 'uses longer syntax for :message' do
-      verifying_content_change('app/controllers/users_controller.rb', users_controller_content, users_controller_rewritten_content) do
-        @rewriter.process
-      end
-    end
+    include_examples 'convertable'
   end
 end

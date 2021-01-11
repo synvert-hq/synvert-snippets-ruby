@@ -1,13 +1,9 @@
 require 'spec_helper'
 
 RSpec.describe 'Convert rails routes from 2.3 to 3.0' do
-  before do
-    rewriter_path = File.join(File.dirname(__FILE__), '../../lib/rails/convert_routes_2_3_to_3_0.rb')
-    @rewriter = eval(File.read(rewriter_path))
-  end
-
-  describe 'with fakefs', fakefs: true do
-    let(:routes_content) { '
+  let(:rewriter_name) { 'rails/convert_routes_2_3_to_3_0' }
+  let(:fake_file_path) { 'config/routes.rb' }
+  let(:test_content) { '
 ActionController::Routing::Routes.draw do |map|
   map.connect "/main/:id", :controller => "main", :action => "home"
 
@@ -37,8 +33,8 @@ ActionController::Routing::Routes.draw do |map|
 
   map.root :controller => "home", :action => "index"
 end
-    '}
-    let(:routes_rewritten_content) { '
+  '}
+  let(:test_rewritten_content) { '
 ActionController::Routing::Routes.draw do |map|
   match "/main/:id", :to => "main#home"
 
@@ -81,13 +77,7 @@ ActionController::Routing::Routes.draw do |map|
 
   root :to => "home#index"
 end
-    '}
+  '}
 
-    it 'converts' do
-      FileUtils.mkdir_p 'config'
-      File.write 'config/routes.rb', routes_content
-      @rewriter.process
-      expect(File.read 'config/routes.rb').to eq routes_rewritten_content
-    end
-  end
+  include_examples 'convertable'
 end

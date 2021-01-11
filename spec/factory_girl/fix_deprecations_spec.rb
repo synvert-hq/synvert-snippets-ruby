@@ -1,13 +1,11 @@
 require 'spec_helper'
 
 RSpec.describe 'Fix factory_girl deprecations' do
-  before do
-    rewriter_path = File.join(File.dirname(__FILE__), '../../lib/factory_girl/fix_deprecations.rb')
-    @rewriter = eval(File.read(rewriter_path))
-  end
+  let(:rewriter_name) { 'factory_girl/fix_deprecations' }
 
-  describe 'with fakefs', fakefs: true do
-    let(:user_factory_content) { '
+  context 'factory methods' do
+    let(:fake_file_path) { 'test/factories/post.rb' }
+    let(:test_content) { '
 Factory.sequence :login do |n|
   "new_user_#{n}"
 end
@@ -23,7 +21,7 @@ Factory.define(:admin, :parent => :user) do |admin|
   end
 end
     '}
-    let(:user_factory_rewritten_content) { '
+    let(:test_rewritten_content) { '
 FactoryGirl.define do
   sequence :login do |n|
     "new_user_#{n}"
@@ -41,7 +39,13 @@ FactoryGirl.define do
   end
 end
     '}
-    let(:post_test_content) { "
+
+    include_examples 'convertable'
+  end
+
+  context 'unit test methods' do
+    let(:fake_file_path) { 'test/unit/post_test.rb' }
+    let(:test_content) { "
 class PostTest < ActiveSupport::TestCase
   def test_post
     Factory(:comment)
@@ -53,7 +57,7 @@ class PostTest < ActiveSupport::TestCase
   end
 end
     "}
-    let(:post_test_rewritten_content) { "
+    let(:test_rewritten_content) { "
 class PostTest < ActiveSupport::TestCase
   def test_post
     create(:comment)
@@ -66,14 +70,6 @@ class PostTest < ActiveSupport::TestCase
 end
     "}
 
-    it 'converts' do
-      FileUtils.mkdir_p 'test/factories'
-      FileUtils.mkdir_p 'test/unit'
-      File.write 'test/factories/user.rb', user_factory_content
-      File.write 'test/unit/post_test.rb', post_test_content
-      @rewriter.process
-      expect(File.read 'test/factories/user.rb').to eq user_factory_rewritten_content
-      expect(File.read 'test/unit/post_test.rb').to eq post_test_rewritten_content
-    end
+    include_examples 'convertable'
   end
 end

@@ -1,27 +1,31 @@
 require 'spec_helper'
 
 RSpec.describe 'FactoryGirl uses short synax' do
-  before do
-    rewriter_path = File.join(File.dirname(__FILE__), '../../lib/factory_girl/use_short_syntax.rb')
-    @rewriter = eval(File.read(rewriter_path))
-  end
+  let(:rewriter_name) { 'factory_girl/use_short_syntax' }
 
-  describe 'with fakefs', fakefs: true do
-    describe 'rspec' do
-      let(:spec_helper_content) { '
+  context 'rspec' do
+    context 'spec_helper' do
+      let(:fake_file_path) { 'spec/spec_helper.rb' }
+      let(:test_content) { '
   RSpec.configure do |config|
     config.treat_symbols_as_metadata_keys_with_true_values = true
     config.run_all_when_everything_filtered = true
   end
       '}
-      let(:spec_helper_rewritten_content) { '
+      let(:test_rewritten_content) { '
   RSpec.configure do |config|
     config.include FactoryGirl::Syntax::Methods
     config.treat_symbols_as_metadata_keys_with_true_values = true
     config.run_all_when_everything_filtered = true
   end
       '}
-      let(:post_spec_content) { '
+
+      include_examples 'convertable'
+    end
+
+    context 'unit test' do
+      let(:fake_file_path) { 'spec/models/post_spec.rb' }
+      let(:test_content) { '
   describe Post do
     it "tests post" do
       post1 = FactoryGirl.create(:post)
@@ -35,7 +39,7 @@ RSpec.describe 'FactoryGirl uses short synax' do
     end
   end
       '}
-      let(:post_spec_rewritten_content) { '
+      let(:test_rewritten_content) { '
   describe Post do
     it "tests post" do
       post1 = create(:post)
@@ -50,28 +54,29 @@ RSpec.describe 'FactoryGirl uses short synax' do
   end
       '}
 
-      it 'converts' do
-        FileUtils.mkdir 'spec'
-        FileUtils.mkdir 'spec/models'
-        File.write 'spec/spec_helper.rb', spec_helper_content
-        File.write 'spec/models/post_spec.rb', post_spec_content
-        @rewriter.process
-        expect(File.read 'spec/spec_helper.rb').to eq spec_helper_rewritten_content
-        expect(File.read 'spec/models/post_spec.rb').to eq post_spec_rewritten_content
-      end
+      include_examples 'convertable'
+    end
+  end
+
+  context 'test/unit' do
+    context 'test_helper' do
+      let(:fake_file_path) { 'test/test_helper.rb' }
+      let(:test_content) { '
+    class ActiveSupport::TestCase
+    end
+      '}
+      let(:test_rewritten_content) { '
+    class ActiveSupport::TestCase
+      include FactoryGirl::Syntax::Methods
+    end
+      '}
+
+      include_examples 'convertable'
     end
 
-    describe 'test/unit' do
-      let(:test_helper_content) { '
-  class ActiveSupport::TestCase
-  end
-      '}
-      let(:test_helper_rewritten_content) { '
-  class ActiveSupport::TestCase
-    include FactoryGirl::Syntax::Methods
-  end
-      '}
-      let(:post_test_content) { '
+    context 'unit test' do
+      let(:fake_file_path) { 'test/unit/post_test.rb' }
+      let(:test_content) { '
   test "post" do
     post1 = FactoryGirl.create(:post)
     post2 = FactoryGirl.build(:post)
@@ -83,7 +88,7 @@ RSpec.describe 'FactoryGirl uses short synax' do
     posts4 = FactoryGirl.build_pair(:post)
   end
       '}
-      let(:post_test_rewritten_content) { '
+      let(:test_rewritten_content) { '
   test "post" do
     post1 = create(:post)
     post2 = build(:post)
@@ -96,26 +101,27 @@ RSpec.describe 'FactoryGirl uses short synax' do
   end
       '}
 
-      it 'converts' do
-        FileUtils.mkdir 'test'
-        FileUtils.mkdir 'test/unit'
-        File.write 'test/test_helper.rb', test_helper_content
-        File.write 'test/unit/post_test.rb', post_test_content
-        @rewriter.process
-        expect(File.read 'test/test_helper.rb').to eq test_helper_rewritten_content
-        expect(File.read 'test/unit/post_test.rb').to eq post_test_rewritten_content
-      end
+      include_examples 'convertable'
     end
+  end
 
-    describe 'cucumber' do
-      let(:env_content) { '
+  context 'cucumber' do
+    context 'features/support/env' do
+      let(:fake_file_path) { 'features/support/env.rb' }
+      let(:test_content) { '
   require "cucumber/rails"
       '}
-      let(:env_rewritten_content) { '
+      let(:test_rewritten_content) { '
   require "cucumber/rails"
   World(FactoryGirl::Syntax::Methods)
       '}
-      let(:post_steps_content) { '
+
+      include_examples 'convertable'
+    end
+
+    context 'step definition' do
+      let(:fake_file_path) { 'features/step_definitions/post_steps.rb' }
+      let(:test_content) { '
   test "post" do
     post1 = FactoryGirl.create(:post)
     post2 = FactoryGirl.build(:post)
@@ -127,7 +133,7 @@ RSpec.describe 'FactoryGirl uses short synax' do
     posts4 = FactoryGirl.build_pair(:post)
   end
       '}
-      let(:post_steps_rewritten_content) { '
+      let(:test_rewritten_content) { '
   test "post" do
     post1 = create(:post)
     post2 = build(:post)
@@ -140,15 +146,7 @@ RSpec.describe 'FactoryGirl uses short synax' do
   end
       '}
 
-      it 'converts' do
-        FileUtils.mkdir_p 'features/support'
-        FileUtils.mkdir_p 'features/step_definitions'
-        File.write 'features/support/env.rb', env_content
-        File.write 'features/step_definitions/post_steps.rb', post_steps_content
-        @rewriter.process
-        expect(File.read 'features/support/env.rb').to eq env_rewritten_content
-        expect(File.read 'features/step_definitions/post_steps.rb').to eq post_steps_rewritten_content
-      end
+      include_examples 'convertable'
     end
   end
 end

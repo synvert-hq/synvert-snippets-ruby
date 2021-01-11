@@ -1,28 +1,32 @@
 require 'spec_helper'
 
 RSpec.describe 'Convert dynamic finders' do
+  let(:rewriter_name) { 'rails/convert_dynamic_finders' }
+
   before do
-    rewriter_path = File.join(File.dirname(__FILE__), '../../lib/rails/convert_dynamic_finders.rb')
-    @rewriter = eval(File.read(rewriter_path))
-  end
-
-  describe 'with fakefs', fakefs: true do
-    let(:schema_content) { '
+    schema_content = '
 ActiveRecord::Schema.define(version: 20140211112752) do
-  create_table "users", force: true do |t|
-    t.integer  "account_id",               index: true
-    t.string   "login"
-    t.string   "email"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-    t.integer  "role",                      default: 0,     null: false
-    t.boolean  "admin",                     default: false, null: false
-    t.boolean  "active",                    default: false, null: false
-  end
+create_table "users", force: true do |t|
+  t.integer  "account_id",               index: true
+  t.string   "login"
+  t.string   "email"
+  t.datetime "created_at"
+  t.datetime "updated_at"
+  t.integer  "role",                      default: 0,     null: false
+  t.boolean  "admin",                     default: false, null: false
+  t.boolean  "active",                    default: false, null: false
 end
-    '}
+end
+    '
+    FakeFS do
+      FileUtils.mkdir_p 'db'
+      File.write('db/schema.rb', schema_content)
+    end
+  end
 
-    let(:post_model_content) { '
+  context 'model' do
+    let(:fake_file_path) { 'app/models/post.rb' }
+    let(:test_content) { '
 class Post < ActiveRecord::Base
   def active_users
     User.find_all_by_email_and_active(email, true)
@@ -50,7 +54,7 @@ class Post < ActiveRecord::Base
   end
 end
     '}
-    let(:post_model_rewritten_content) { '
+    let(:test_rewritten_content) { '
 class Post < ActiveRecord::Base
   def active_users
     User.where(email: email, active: true)
@@ -78,7 +82,13 @@ class Post < ActiveRecord::Base
   end
 end
     '}
-    let(:users_controller_content) { '
+
+    include_examples 'convertable'
+  end
+
+  context 'controller' do
+    let(:fake_file_path) { 'app/controllers/users_controller.rb' }
+    let(:test_content) { '
 class UsersController < ApplicationController
   def new
     @user = User.find_or_initialize_by_login_and_email(params[:user][:login], params[:user][:email])
@@ -91,7 +101,7 @@ class UsersController < ApplicationController
   end
 end
     '}
-    let(:users_controller_rewritten_content) { '
+    let(:test_rewritten_content) { '
 class UsersController < ApplicationController
   def new
     @user = User.find_or_initialize_by(login: params[:user][:login], email: params[:user][:email])
@@ -105,16 +115,6 @@ class UsersController < ApplicationController
 end
     '}
 
-    it 'converts' do
-      FileUtils.mkdir_p 'db'
-      FileUtils.mkdir_p 'app/models'
-      FileUtils.mkdir_p 'app/controllers'
-      File.write 'db/schema.rb', schema_content
-      File.write 'app/models/post.rb', post_model_content
-      File.write 'app/controllers/users_controller.rb', users_controller_content
-      @rewriter.process
-      expect(File.read 'app/models/post.rb').to eq post_model_rewritten_content
-      expect(File.read 'app/controllers/users_controller.rb').to eq users_controller_rewritten_content
-    end
+    include_examples 'convertable'
   end
 end

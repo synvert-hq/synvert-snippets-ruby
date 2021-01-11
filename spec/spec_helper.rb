@@ -6,6 +6,8 @@ require 'fakefs/spec_helpers'
 require 'coveralls'
 Coveralls.wear!
 
+Dir[File.expand_path(File.join(File.dirname(__FILE__), 'support/*.rb'))].each { |f| require f }
+
 RSpec.configure do |config|
   config.include FakeFS::SpecHelpers, fakefs: true
 
@@ -21,11 +23,4 @@ RSpec.configure do |config|
     allow_any_instance_of(Synvert::Core::Rewriter::GemSpec).to receive(:match?).and_return(true)
   end
   config.expose_dsl_globally = false
-
-  def verifying_content_change(filename, before_content, after_content)
-    FileUtils.mkdir_p(File.dirname(filename))
-    File.write filename, before_content
-    yield
-    expect(File.read(filename)).to eq after_content
-  end
 end

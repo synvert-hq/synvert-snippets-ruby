@@ -16,13 +16,13 @@ It upgrades rails from 3.2 to 4.0.
 
 3. it changes config.assets.compress = ... to config.assets.js_compressor = ...
 
-4. it removes include_root_in_json from config/initializers/secret_token.rb.
+4. it removes include_root_in_json from config/initializers/wrap_parameters.rb.
 
     ActiveSupport.on_load(:active_record) do
       self.include_root_in_json = false
     end
 
-5. it inserts secret_key_base to config/initializers/session_store.rb.
+5. it inserts secret_key_base to config/initializers/secret_token.rb.
 
     Application.config.secret_key_base = '...'
 
@@ -285,7 +285,7 @@ It upgrades rails from 3.2 to 4.0.
             end
           end
         }.compact.join(', ')
-        data_options = "data: {confirm: #{confirm}}"
+        data_options = "data: { confirm: #{confirm} }"
         replace_with "link_to #{other_arguments_str}, #{other_options}, #{data_options}"
       end
     end

@@ -3,13 +3,9 @@
 require 'spec_helper'
 
 RSpec.describe 'Convert rails views from 2.3 to 3.0' do
-  before do
-    rewriter_path = File.join(File.dirname(__FILE__), '../../lib/rails/convert_views_2_3_to_3_0.rb')
-    @rewriter = eval(File.read(rewriter_path))
-  end
-
-  describe 'with fakefs', fakefs: true do
-    let(:posts_show_content) { "
+  let(:rewriter_name) { 'rails/convert_views_2_3_to_3_0' }
+  let(:fake_file_path) { 'app/views/posts/_form.html.erb' }
+  let(:test_content) { "
   <%= h user.login %>
   <%= post.title %>
 
@@ -19,8 +15,8 @@ RSpec.describe 'Convert rails views from 2.3 to 3.0' do
   <% end %>
   <%= form_for post do |f| %>
   <% end %>
-    "}
-    let(:posts_show_rewritten_content) { "
+  "}
+  let(:test_rewritten_content) { "
   <%= user.login %>
   <%= post.title %>
 
@@ -30,13 +26,7 @@ RSpec.describe 'Convert rails views from 2.3 to 3.0' do
   <% end %>
   <%= form_for post do |f| %>
   <% end %>
-    "}
+  "}
 
-    it 'converts' do
-      FileUtils.mkdir_p 'app/views/posts'
-      File.write 'app/views/posts/show.html.erb', posts_show_content
-      @rewriter.process
-      expect(File.read 'app/views/posts/show.html.erb').to eq posts_show_rewritten_content
-    end
-  end
+  include_examples 'convertable'
 end

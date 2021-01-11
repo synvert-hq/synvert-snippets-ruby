@@ -3,13 +3,9 @@
 require 'spec_helper'
 
 RSpec.describe 'Use will_paginate new syntax' do
-  before do
-    rewriter_path = File.join(File.dirname(__FILE__), '../../lib/will_paginate/use_new_syntax.rb')
-    @rewriter = eval(File.read(rewriter_path))
-  end
-
-  describe 'with fakefs', fakefs: true do
-    let(:post_content) { '
+  let(:rewriter_name) { 'will_paginate/use_new_syntax' }
+  let(:fake_file_path) { 'app/models/post.rb' }
+  let(:test_content) { '
 class Post
   def queries
     Post.paginate(:conditions => {:active => true}, :order => "created_at DESC", :per_page => 10, :page => 1)
@@ -24,8 +20,8 @@ class Post
     end
   end
 end
-    '}
-    let(:post_rewritten_content) { '
+  '}
+  let(:test_rewritten_content) { '
 class Post
   def queries
     Post.where(:active => true).order("created_at DESC").paginate(:per_page => 10, :page => 1)
@@ -40,13 +36,7 @@ class Post
     end
   end
 end
-    '}
+  '}
 
-    it 'converts' do
-      FileUtils.mkdir_p 'app/models'
-      File.write 'app/models/post.rb', post_content
-      @rewriter.process
-      expect(File.read 'app/models/post.rb').to eq post_rewritten_content
-    end
-  end
+  include_examples 'convertable'
 end
