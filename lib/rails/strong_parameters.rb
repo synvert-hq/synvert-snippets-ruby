@@ -1,4 +1,6 @@
 Synvert::Rewriter.new 'rails', 'strong_parameters' do
+  default_columns = %w[id created_at updated_at deleted_at]
+
   description <<-EOF
 It uses string_parameters to replace attr_accessible.
 
@@ -38,8 +40,10 @@ It uses string_parameters to replace attr_accessible.
       object_name = node.caller.arguments.first.to_value.singularize
       attributes[object_name] = []
       with_node type: 'send', receiver: 't', message: { not: 'index' } do
-        attribute_name = ':' + node.arguments.first.to_value
-        attributes[object_name] << attribute_name
+        attribute_name = node.arguments.first.to_value
+        unless default_columns.include?(attribute_name)
+          attributes[object_name] << ":#{attribute_name}"
+        end
       end
     end
   end
