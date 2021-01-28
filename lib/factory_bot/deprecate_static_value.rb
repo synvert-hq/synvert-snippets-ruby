@@ -44,27 +44,19 @@ It deprecates factory_bot static value
   EOF
 
   within_files '{test,spec}/factories/**/*.rb' do
-    def convert_to_new_value(node)
-      return if node.arguments.size == 0 || node.message == :association
+    %w[factory transient trait].each do |message|
+      within_node type: 'block', caller: { type: 'send', message: message } do
+        goto_node :body do
+          within_direct_node type: 'send', receiver: nil do
+            next if node.arguments.size == 0 || node.message == :association
 
-      if node.arguments.size == 1 && node.arguments.first.type == :hash
-        new_arguments = add_curly_brackets_if_necessary(node.arguments.first.to_source)
-        replace_with "{{message}} { #{new_arguments} }"
-      else
-        replace_with "{{message}} { {{arguments}} }"
-      end
-    end
-    within_node type: 'block', caller: { type: 'send', message: 'factory' } do
-      goto_node :body do
-        within_direct_node type: 'send', receiver: nil do
-          convert_to_new_value(node)
-        end
-      end
-    end
-    within_node type: 'block', caller: { type: 'send', message: 'trait' } do
-      goto_node :body do
-        within_direct_node type: 'send', receiver: nil do
-          convert_to_new_value(node)
+            if node.arguments.size == 1 && node.arguments.first.type == :hash
+              new_arguments = add_curly_brackets_if_necessary(node.arguments.first.to_source)
+              replace_with "{{message}} { #{new_arguments} }"
+            else
+              replace_with "{{message}} { {{arguments}} }"
+            end
+          end
         end
       end
     end

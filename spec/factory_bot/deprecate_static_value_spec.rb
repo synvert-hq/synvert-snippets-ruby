@@ -23,6 +23,9 @@ FactoryBot.define do
     trait :old do
       published_at 1.week.ago
     end
+    transient do
+      rockstar true
+    end
   end
 end
   '}
@@ -45,6 +48,9 @@ FactoryBot.define do
     options { { color: :blue } }
     trait :old do
       published_at { 1.week.ago }
+    end
+    transient do
+      rockstar { true }
     end
   end
 end
