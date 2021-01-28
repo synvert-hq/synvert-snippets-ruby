@@ -52,4 +52,18 @@ end
 
     include_examples 'convertable'
   end
+
+  context 'require factory' do
+    let(:fake_file_path) { 'spec/rails_helper.rb' }
+    let(:test_content) {"
+      require 'factory_girl'
+      require 'factory_girl_rails'
+    "}
+    let(:test_rewritten_content) {"
+      require 'factory_bot'
+      require 'factory_bot_rails'
+    "}
+
+    include_examples 'convertable'
+  end
 end

@@ -4,6 +4,8 @@ It deprecates factory_bot static value
 
   FactoryBot.define do
     factory :post do
+      user
+      association :user
       title "Something"
       comments_count 0
       tag Tag::MAGIC
@@ -24,6 +26,8 @@ It deprecates factory_bot static value
   =>
   FactoryBot.define do
     factory :post do
+      user
+      association :user
       title { "Something" }
       comments_count { 0 }
       tag { Tag::MAGIC }
