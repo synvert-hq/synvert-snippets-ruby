@@ -226,5 +226,11 @@ end
     post_model_rewritten_content, nested_model_rewritten_content, application_job_rewritten_content, post_job_rewritten_content,
     nested_job_rewritten_content, posts_controller_test_rewritten_content] }
 
+  before do
+    load_sub_snippets(%w[
+      rails/add_active_record_migration_rails_version
+    ])
+  end
+
   include_examples 'convertable with multiple files'
 end

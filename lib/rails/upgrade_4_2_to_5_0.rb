@@ -33,6 +33,8 @@ Synvert::Rewriter.new 'rails', 'upgrade_4_2_to_5_0' do
 16. it removes raise_in_transactional_callbacks= in config/application.rb.
   EOF
 
+  add_snippet 'rails', 'add_active_record_migration_rails_version'
+
   within_file 'config/application.rb' do
     # remove config.raise_in_transactional_callbacks = true
     with_node type: 'send', message: 'raise_in_transactional_callbacks=' do
