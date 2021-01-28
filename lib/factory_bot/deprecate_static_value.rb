@@ -45,6 +45,8 @@ It deprecates factory_bot static value
 
   within_files '{test,spec}/factories/**/*.rb' do
     def convert_to_new_value(node)
+      return if node.arguments.size == 0 || node.message == :association
+
       if node.arguments.size == 1 && node.arguments.first.type == :hash
         new_arguments = add_curly_brackets_if_necessary(node.arguments.first.to_source)
         replace_with "{{message}} { #{new_arguments} }"

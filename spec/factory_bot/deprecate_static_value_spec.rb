@@ -6,6 +6,8 @@ RSpec.describe 'Deprecate factory_bot static value' do
   let(:test_content) { '
 FactoryBot.define do
   factory :post do
+    user
+    association :user
     title "Something"
     comments_count 0
     tag Tag::MAGIC
@@ -27,6 +29,8 @@ end
   let(:test_rewritten_content) { '
 FactoryBot.define do
   factory :post do
+    user
+    association :user
     title { "Something" }
     comments_count { 0 }
     tag { Tag::MAGIC }
