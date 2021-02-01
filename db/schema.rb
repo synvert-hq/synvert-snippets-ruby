@@ -7,7 +7,7 @@
       t.datetime "updated_at"
       t.integer  "role",                      default: 0,     null: false
       t.boolean  "admin",                     default: false, null: false
-      t.index    [:email, :role]
+      t.index    %i[email role]
     end
   end
     
