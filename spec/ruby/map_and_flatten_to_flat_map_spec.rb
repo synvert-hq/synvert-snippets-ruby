@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 require 'spec_helper'
 
 RSpec.describe 'Ruby converts map_and_flatten_to_flat_map' do

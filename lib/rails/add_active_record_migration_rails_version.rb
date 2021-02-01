@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 Synvert::Rewriter.new 'rails', 'add_active_record_migration_rails_version' do
   description <<-EOF
 It adds default ActiveRecord::Migration rails version.

@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 Synvert::Rewriter.new 'rails', 'convert_rails_logger' do
   description 'It converts RAILS_DEFAULT_LOGGER to Rails.logger.'
 

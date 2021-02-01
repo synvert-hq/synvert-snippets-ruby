@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 Synvert::Rewriter.new 'rails', 'upgrade_4_1_to_4_2' do
   description <<-EOF
 1. it replaces config.serve_static_assets = ... with config.serve_static_files = ... in config files.

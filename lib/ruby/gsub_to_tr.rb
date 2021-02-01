@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 Synvert::Rewriter.new 'ruby', 'gsub_to_tr' do
   description <<-EOF
 It converts String#gsub to String#tr

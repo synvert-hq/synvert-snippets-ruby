@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 Synvert::Rewriter.new 'rspec', 'block_to_expect' do
   description <<-EOF
 It converts rspec block to expect.

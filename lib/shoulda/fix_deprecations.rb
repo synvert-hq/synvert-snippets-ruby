@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 Synvert::Rewriter.new 'shoulda', 'fix_deprecations' do
   description <<-EOF
 It converts deprecations
