@@ -1,8 +1,8 @@
 Synvert::Rewriter.new 'ruby', 'new_hash_syntax' do
-  description <<-EOF
-Use ruby new hash syntax.
-
-    {:foo => 'bar'} => {foo: 'bar'}
+  description <<~EOF
+    Use ruby new hash syntax.
+    
+        {:foo => 'bar'} => {foo: 'bar'}
   EOF
 
   if_ruby '1.9.0'

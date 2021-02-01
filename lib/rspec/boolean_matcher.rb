@@ -1,9 +1,9 @@
 Synvert::Rewriter.new 'rspec', 'boolean_matcher' do
-  description <<-EOF
-It converts rspec boolean matcher.
-
-    be_true => be_truthy
-    be_false => be_falsey
+  description <<~EOF
+    It converts rspec boolean matcher.
+    
+        be_true => be_truthy
+        be_false => be_falsey
   EOF
 
   if_gem 'rspec', { gte: '2.99.0' }

@@ -1,16 +1,16 @@
 Synvert::Rewriter.new 'rails', 'convert_views_2_3_to_3_0' do
-  description <<-EOF
-1. remove h helper, rails 3 uses it by default.
-
-    <%= h user.login %> => <%= user.login %>
-
-2. use erb expression instead of erb statement for view helpers.
-
-    <% form_for post do |f| %>
-    <% end %>
-    =>
-    <%= form_for post do |f| %>
-    <% end %>
+  description <<~EOF
+    1. remove h helper, rails 3 uses it by default.
+    
+        <%= h user.login %> => <%= user.login %>
+    
+    2. use erb expression instead of erb statement for view helpers.
+    
+        <% form_for post do |f| %>
+        <% end %>
+        =>
+        <%= form_for post do |f| %>
+        <% end %>
   EOF
 
   %w(app/views/**/*.html.erb app/helpers/**/*.rb).each do |file_pattern|

@@ -1,11 +1,11 @@
 Synvert::Rewriter.new 'ruby', 'parallel_assignment_to_sequential_assignment' do
-  description <<-EOF
-It converts parallel assignment to sequential assignment.
-
-    a, b = 1, 2
-    =>
-    a = 1
-    b = 2
+  description <<~EOF
+    It converts parallel assignment to sequential assignment.
+    
+        a, b = 1, 2
+        =>
+        a = 1
+        b = 2
   EOF
 
   within_files '**/*.rb' do

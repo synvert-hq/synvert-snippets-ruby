@@ -1,42 +1,42 @@
 Synvert::Rewriter.new 'factory_girl', 'fix_deprecations' do
-  description <<-EOF
-It converts deprecations
-
-Factory
-
-  Factory.sequence :login do |n|
-    "new_user_\#{n}"
-  end
-  Factory.define :user do |user|
-    user.admin true
-    user.login { Factory.next(:login) }
-    user.sequence(:email) { |n| "user\#{n}@gmail.com" }
-    user.after_create { |instance| create_list(:post, 5, user: instance) }
-  end
-
-  =>
-
-  FactoryGirl.define do
-    sequence :user do |n|
-      "new_user_\#{n}"
-    end
-    factory :user do |user|
-      admin true
-      login { generate(:login) }
-      sequence(:email) { |n| "user\#{n}@gmail.com" }
-      after(:create) { |instance| create_list(:post, 5, user: instance) }
-    end
-  end
-
-Test
-
-  Factory(:user) => create(:user)
-  Factory.next(:email) => generate(:email)
-  Factory.stub(:comment) => build_stubbed(:comment)
-  Factory.create(:user) => create(:user)
-  Factory.build(:use) => build(:user)
-  Factory.attributes_for(:user) => attributes_for(:user)
-
+  description <<~EOF
+    It converts deprecations
+    
+    Factory
+    
+      Factory.sequence :login do |n|
+        "new_user_\#{n}"
+      end
+      Factory.define :user do |user|
+        user.admin true
+        user.login { Factory.next(:login) }
+        user.sequence(:email) { |n| "user\#{n}@gmail.com" }
+        user.after_create { |instance| create_list(:post, 5, user: instance) }
+      end
+    
+      =>
+    
+      FactoryGirl.define do
+        sequence :user do |n|
+          "new_user_\#{n}"
+        end
+        factory :user do |user|
+          admin true
+          login { generate(:login) }
+          sequence(:email) { |n| "user\#{n}@gmail.com" }
+          after(:create) { |instance| create_list(:post, 5, user: instance) }
+        end
+      end
+    
+    Test
+    
+      Factory(:user) => create(:user)
+      Factory.next(:email) => generate(:email)
+      Factory.stub(:comment) => build_stubbed(:comment)
+      Factory.create(:user) => create(:user)
+      Factory.build(:use) => build(:user)
+      Factory.attributes_for(:user) => attributes_for(:user)
+    
   EOF
 
   if_gem 'factory_girl', { gte: '2.0.0' }

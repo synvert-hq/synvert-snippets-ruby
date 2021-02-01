@@ -1,9 +1,9 @@
 Synvert::Rewriter.new 'rspec', 'stub_and_mock_to_double' do
-  description <<-EOF
-It converts stub and mock to double.
-
-    stub('something') => double('something')
-    mock('something') => double('something')
+  description <<~EOF
+    It converts stub and mock to double.
+    
+        stub('something') => double('something')
+        mock('something') => double('something')
   EOF
 
   if_gem 'rspec', { gte: '2.14.0' }

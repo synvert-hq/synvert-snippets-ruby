@@ -1,10 +1,10 @@
 Synvert::Rewriter.new 'ruby', 'new_safe_navigation_operator' do
-  description <<-EOF
-Use ruby new safe navigation operator.
-
-    u.try!(:profile).try(:thumbnails).try(:large, 100, format: 'jpg')
-    =>
-    u&.profile&.thumbnails&.large(100, format: 'jpg')
+  description <<~EOF
+    Use ruby new safe navigation operator.
+    
+        u.try!(:profile).try(:thumbnails).try(:large, 100, format: 'jpg')
+        =>
+        u&.profile&.thumbnails&.large(100, format: 'jpg')
   EOF
 
   # Gem::Version initialize will strip RUBY_VERSION directly in ruby 1.9,
