@@ -138,7 +138,7 @@ It upgrade rails from 3.0 to 3.1.
   within_files 'db/migrate/*.rb' do
     # def self.up => def up
     # def self.down => def down
-    %w(up down).each do |name|
+    %w[up down].each do |name|
       with_node type: 'defs', name: name do
         replace_with "def #{name}
     {{body}}
