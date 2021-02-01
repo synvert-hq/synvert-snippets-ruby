@@ -90,7 +90,7 @@ It converts rails models from 2.3 to 3.0.
     Post.where("title = ?", title).destroy_all
   EOF
 
-  keys = [:conditions, :order, :joins, :select, :from, :having, :group, :include, :limit, :offset, :lock, :readonly]
+  keys = %i[conditions order joins select from having group include limit offset lock readonly]
   keys_converters = {
     :conditions => :where,
     :include => :includes
@@ -110,7 +110,7 @@ It converts rails models from 2.3 to 3.0.
   helper_method :generate_batch_options do |hash_node|
     options = []
     hash_node.children.each do |pair_node|
-      if [:start, :batch_size].include? pair_node.key.to_value
+      if %i[start batch_size].include? pair_node.key.to_value
         options << pair_node.to_source
       end
     end
@@ -230,7 +230,7 @@ It converts rails models from 2.3 to 3.0.
       replace_with add_receiver_if_necessary('all')
     end
 
-    [:first, :last].each do |message|
+    %i[first last].each do |message|
       # Post.find(:last, :conditions => {:title => "test"})
       # =>
       # Post.where(:title => "title").last

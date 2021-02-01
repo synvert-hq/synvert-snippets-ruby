@@ -63,7 +63,7 @@ It converts rspec its to it.
     #     end
     #   end
     # end
-    [:should, :should_not].each do |message|
+    %i[should should_not].each do |message|
       with_node type: 'block', caller: { message: 'its' } do
         if node.body.length == 1
           its_arg = node.caller.arguments.first.to_source
