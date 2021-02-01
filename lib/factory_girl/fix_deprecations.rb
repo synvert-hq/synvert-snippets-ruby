@@ -47,9 +47,9 @@ Test
     # end
     unless_exist_node type: 'send', receiver: 'FactoryGirl', message: 'define' do
       body = node.to_source.gsub("\n", "\n  ")
-      replace_with ''"FactoryGirl.define do
+      replace_with "FactoryGirl.define do
   #{body}
-end"''
+end"
     end
   end
 
