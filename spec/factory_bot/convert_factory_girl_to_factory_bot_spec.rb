@@ -5,23 +5,28 @@ RSpec.describe 'Convert factory_girl to factory_bot' do
 
   context 'spec_helper' do
     let(:fake_file_path) { 'spec/spec_helepr.rb' }
-    let(:test_content) { '
+    let(:test_content) {
+      '
 RSpec.configure do |config|
   config.include FactoryGirl::Syntax::Methods
 end
-    '}
-    let(:test_rewritten_content) { '
+    '
+    }
+    let(:test_rewritten_content) {
+      '
 RSpec.configure do |config|
   config.include FactoryBot::Syntax::Methods
 end
-    '}
+    '
+    }
 
     include_examples 'convertable'
   end
 
   context 'factory definition' do
     let(:fake_file_path) { 'spec/factories/user.rb' }
-    let(:test_content) { '
+    let(:test_content) {
+      '
 FactoryGirl.define do
   factory :user do
     email { Faker::Internet.email }
@@ -30,8 +35,10 @@ FactoryGirl.define do
     password_confirmation "Sample:1"
   end
 end
-    '}
-    let(:test_rewritten_content) { '
+    '
+    }
+    let(:test_rewritten_content) {
+      '
 FactoryBot.define do
   factory :user do
     email { Faker::Internet.email }
@@ -40,7 +47,8 @@ FactoryBot.define do
     password_confirmation "Sample:1"
   end
 end
-    '}
+    '
+    }
 
     include_examples 'convertable'
   end
@@ -55,14 +63,18 @@ end
 
   context 'require factory' do
     let(:fake_file_path) { 'spec/rails_helper.rb' }
-    let(:test_content) {"
+    let(:test_content) {
+      "
       require 'factory_girl'
       require 'factory_girl_rails'
-    "}
-    let(:test_rewritten_content) {"
+    "
+    }
+    let(:test_rewritten_content) {
+      "
       require 'factory_bot'
       require 'factory_bot_rails'
-    "}
+    "
+    }
 
     include_examples 'convertable'
   end

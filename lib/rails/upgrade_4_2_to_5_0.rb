@@ -62,7 +62,18 @@ Synvert::Rewriter.new 'rails', 'upgrade_4_2_to_5_0' do
     # config.middleware.use "Foo::Bar"
     # =>
     # config.middleware.use Foo::Bar
-    with_node type: 'send', receiver: { type: 'send', receiver: 'config', message: 'middleware' }, message: 'use', arguments: { first: { type: 'str' } } do
+    with_node type: 'send',
+              receiver: {
+                type: 'send',
+                receiver: 'config',
+                message: 'middleware'
+              },
+              message: 'use',
+              arguments: {
+                first: {
+                  type: 'str'
+                }
+              } do
       arguments_source = node.arguments.map(&:to_source)
       arguments_source[0] = node.arguments.first.to_value
       replace_with "{{receiver}}.{{message}} #{arguments_source.join(', ')}"
@@ -169,7 +180,9 @@ Synvert::Rewriter.new 'rails', 'upgrade_4_2_to_5_0' do
     end
   end
 
-  new_code = ''"
+  new_code =
+    '' \
+      '
 # Be sure to restart your server when you modify this file.
 #
 # This file contains migration options to ease your Rails 5.0 upgrade.
@@ -194,6 +207,7 @@ ActiveSupport.halt_callback_chains_on_return_false = false
 
 # Configure SSL options to enable HSTS with subdomains. Previous versions had false.
 Rails.application.config.ssl_options = { hsts: { subdomains: true } }
-  "''.strip
+  ' \
+      ''.strip
   add_file 'config/initializers/new_framework_defaults.rb', new_code
 end
