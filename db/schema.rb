@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 
   ActiveRecord::Schema.define(version: 20140211112752) do
     create_table "users", force: true do |t|

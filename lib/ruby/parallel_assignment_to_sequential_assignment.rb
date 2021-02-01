@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 Synvert::Rewriter.new 'ruby', 'parallel_assignment_to_sequential_assignment' do
   description <<-EOF
 It converts parallel assignment to sequential assignment.

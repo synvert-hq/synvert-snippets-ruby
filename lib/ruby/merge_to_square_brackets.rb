@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 Synvert::Rewriter.new 'ruby', 'merge_to_square_brackets' do
   description <<-EOF
 It converts Hash#merge and Hash#merge! methods to Hash#[]=
