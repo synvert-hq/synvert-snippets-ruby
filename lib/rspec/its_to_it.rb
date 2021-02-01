@@ -67,13 +67,13 @@ It converts rspec its to it.
       with_node type: 'block', caller: { message: 'its' } do
         if node.body.length == 1
           its_arg = node.caller.arguments.first.to_source
-          its_arg = its_arg[1...-1] if its_arg =~ /^['"].*['"]$/
+          its_arg = its_arg[1...-1] if /^['"].*['"]$/.match?(its_arg)
           its_arg = its_arg[1..-1] if its_arg[0] == ':'
           rewritten_code = ''
           args = its_arg.split('.')
           args.each_with_index do |arg, index|
-            describe_name = arg[0] =~ /^[a-z]/ ? '#' + arg : arg
-            message_name = arg[0] =~ /^[a-z]/ ? '.' + arg : arg
+            describe_name = /^[a-z]/.match?(arg[0]) ? '#' + arg : arg
+            message_name = /^[a-z]/.match?(arg[0]) ? '.' + arg : arg
             rewritten_code << "#{'  ' * index}describe '#{describe_name}' do\n"
             rewritten_code << "#{'  ' * (index + 1)}subject { super()#{message_name} }\n"
             rewritten_code << "#{'  ' * (index + 1)}it { {{body}} }\n" if index + 1 == args.length
