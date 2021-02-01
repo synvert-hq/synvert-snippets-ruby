@@ -229,6 +229,7 @@ end
   before do
     load_sub_snippets(%w[
       rails/add_active_record_migration_rails_version
+      rails/convert_render_nothing_true_to_head_ok
     ])
   end
 

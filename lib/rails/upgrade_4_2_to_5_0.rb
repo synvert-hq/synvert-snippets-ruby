@@ -34,6 +34,7 @@ Synvert::Rewriter.new 'rails', 'upgrade_4_2_to_5_0' do
   EOF
 
   add_snippet 'rails', 'add_active_record_migration_rails_version'
+  add_snippet 'rails', 'convert_render_nothing_true_to_head_ok'
 
   within_file 'config/application.rb' do
     # remove config.raise_in_transactional_callbacks = true
@@ -68,13 +69,6 @@ Synvert::Rewriter.new 'rails', 'upgrade_4_2_to_5_0' do
   end
 
   within_file 'app/controllers/**/*.rb' do
-    # render nothing: true
-    # =>
-    # head :ok
-    with_node type: 'send', receiver: nil, message: 'render', arguments: { size: 1, first: { type: 'hash', keys: ['nothing'], values: [true] } } do
-      replace_with 'head :ok'
-    end
-
     # head status: 406
     # head location: '/foo'
     # =>
