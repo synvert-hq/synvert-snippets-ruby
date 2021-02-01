@@ -3,7 +3,8 @@ require 'spec_helper'
 RSpec.describe 'Convert rails routes from 2.3 to 3.0' do
   let(:rewriter_name) { 'rails/convert_routes_2_3_to_3_0' }
   let(:fake_file_path) { 'config/routes.rb' }
-  let(:test_content) { '
+  let(:test_content) {
+    '
 ActionController::Routing::Routes.draw do |map|
   map.connect "/main/:id", :controller => "main", :action => "home"
 
@@ -33,8 +34,10 @@ ActionController::Routing::Routes.draw do |map|
 
   map.root :controller => "home", :action => "index"
 end
-  '}
-  let(:test_rewritten_content) { '
+  '
+  }
+  let(:test_rewritten_content) {
+    '
 ActionController::Routing::Routes.draw do |map|
   match "/main/:id", :to => "main#home"
 
@@ -77,7 +80,8 @@ ActionController::Routing::Routes.draw do |map|
 
   root :to => "home#index"
 end
-  '}
+  '
+  }
 
   include_examples 'convertable'
 end

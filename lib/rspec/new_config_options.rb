@@ -67,12 +67,14 @@ It converts rspec configuration options.
       #   c.pattern
       #   c.warnings?
       # end
-      { 'backtrace_clean_patterns' => 'backtrace_exclusion_patterns',
-       'out' => 'output_stream',
-       'output' => 'output_stream',
-       'backtrace_cleaner' => 'backtrace_formatter',
-       'filename_pattern' => 'pattern',
-       'warnings' => 'warnings?' }.each do |old_message, new_message|
+      {
+        'backtrace_clean_patterns' => 'backtrace_exclusion_patterns',
+        'out' => 'output_stream',
+        'output' => 'output_stream',
+        'backtrace_cleaner' => 'backtrace_formatter',
+        'filename_pattern' => 'pattern',
+        'warnings' => 'warnings?'
+      }.each do |old_message, new_message|
         with_node type: 'send', receiver: config_name, message: old_message do
           replace_with "#{config_name}.#{new_message}"
         end
@@ -93,11 +95,13 @@ It converts rspec configuration options.
       #   c.output_stream = File.open('output.txt', 'w')
       #   c.pattern = '**/*_test.rb'
       # end
-      { 'backtrace_clean_patterns=' => 'backtrace_exclusion_patterns = ',
-       'color_enabled=' => 'color = ',
-       'out=' => 'output_stream = ',
-       'output=' => 'output_stream = ',
-       'filename_pattern=' => 'pattern = ' }.each do |old_message, new_message|
+      {
+        'backtrace_clean_patterns=' => 'backtrace_exclusion_patterns = ',
+        'color_enabled=' => 'color = ',
+        'out=' => 'output_stream = ',
+        'output=' => 'output_stream = ',
+        'filename_pattern=' => 'pattern = '
+      }.each do |old_message, new_message|
         with_node type: 'send', receiver: config_name, message: old_message do
           replace_with "#{config_name}.#{new_message}{{arguments}}"
         end
