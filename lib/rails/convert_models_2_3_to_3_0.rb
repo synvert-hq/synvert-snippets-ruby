@@ -91,10 +91,7 @@ It converts rails models from 2.3 to 3.0.
   EOF
 
   keys = [:conditions, :order, :joins, :select, :from, :having, :group, :include, :limit, :offset, :lock, :readonly]
-  keys_converters = {
-    :conditions => :where,
-    :include => :includes
-  }
+  keys_converters = { conditions: :where, include: :includes }
 
   helper_method :generate_new_queries do |hash_node|
     new_queries = []
@@ -125,7 +122,7 @@ It converts rails models from 2.3 to 3.0.
     # default_scope :conditions => {:active => true}
     # =>
     # default_scope where(:active => true)
-    %w(named_scope default_scope).each do |message|
+    %w[named_scope default_scope].each do |message|
       within_node type: 'send', message: message, arguments: { last: { type: 'hash' } } do
         with_node type: 'hash' do
           if keys.any? { |key| node.has_key? key }
@@ -181,7 +178,7 @@ It converts rails models from 2.3 to 3.0.
       end
     end
 
-    %w(first last).each do |message|
+    %w[first last].each do |message|
       # Post.first(:conditions => {:title => "test"})
       # =>
       # Post.where(:title => "test").first
@@ -193,7 +190,7 @@ It converts rails models from 2.3 to 3.0.
       end
     end
 
-    %w(count average min max sum).each do |message|
+    %w[count average min max sum].each do |message|
       # Client.count("age", :conditions => {:active => true})
       # Client.average("orders_count", :conditions => {:active => true})
       # Client.min("age", :conditions => {:active => true})
@@ -208,7 +205,9 @@ It converts rails models from 2.3 to 3.0.
       within_node type: 'send', message: message, arguments: { size: 2 } do
         argument_node = node.arguments.last
         if :hash == argument_node.type && keys.any? { |key| argument_node.has_key? key }
-          replace_with add_receiver_if_necessary("#{generate_new_queries(argument_node)}.#{message}({{arguments.first}})")
+          replace_with add_receiver_if_necessary(
+                         "#{generate_new_queries(argument_node)}.#{message}({{arguments.first}})"
+                       )
         end
       end
     end
@@ -258,7 +257,9 @@ It converts rails models from 2.3 to 3.0.
     # Post.where("title = ?", title).update_all("title = \'title\'")
     within_node type: 'send', message: :update_all, arguments: { size: 2 } do
       updates_node, conditions_node = node.arguments
-      replace_with add_receiver_if_necessary("where(#{(strip_brackets(conditions_node.to_source))}).update_all(#{strip_brackets(updates_node.to_source)})")
+      replace_with add_receiver_if_necessary(
+                     "where(#{(strip_brackets(conditions_node.to_source))}).update_all(#{strip_brackets(updates_node.to_source)})"
+                   )
     end
 
     # Post.update_all({:title => "title"}, {:title => "test"}, {:limit => 2})
@@ -266,7 +267,9 @@ It converts rails models from 2.3 to 3.0.
     # Post.where(:title => "test").limit(2).update_all(:title => "title")
     within_node type: 'send', message: :update_all, arguments: { size: 3 } do
       updates_node, conditions_node, options_node = node.arguments
-      replace_with add_receiver_if_necessary("where(#{strip_brackets(conditions_node.to_source)}).#{generate_new_queries(options_node)}.update_all(#{strip_brackets(updates_node.to_source)})")
+      replace_with add_receiver_if_necessary(
+                     "where(#{strip_brackets(conditions_node.to_source)}).#{generate_new_queries(options_node)}.update_all(#{strip_brackets(updates_node.to_source)})"
+                   )
     end
 
     # Post.delete_all("title = \'test\'")
@@ -280,14 +283,14 @@ It converts rails models from 2.3 to 3.0.
     # =>
     # Post.where("title = \'test\'").destroy_all
     # Post.where("title = ?", title).destroy_all
-    %w(delete_all destroy_all).each do |message|
+    %w[delete_all destroy_all].each do |message|
       within_node type: 'send', message: message, arguments: { size: 1 } do
         conditions_node = node.arguments.first
         replace_with add_receiver_if_necessary("where(#{strip_brackets(conditions_node.to_source)}).#{message}")
       end
     end
 
-    %w(find_each find_in_batches).each do |message|
+    %w[find_each find_in_batches].each do |message|
       # Post.find_each(:conditions => {:title => "test"}, :batch_size => 100) do |post|
       # end
       # =>
@@ -304,7 +307,9 @@ It converts rails models from 2.3 to 3.0.
         if :hash == argument_node.type && keys.any? { |key| argument_node.has_key? key }
           batch_options = generate_batch_options(argument_node)
           if batch_options.length > 0
-            replace_with add_receiver_if_necessary("#{generate_new_queries(argument_node)}.#{message}(#{batch_options})")
+            replace_with add_receiver_if_necessary(
+                           "#{generate_new_queries(argument_node)}.#{message}(#{batch_options})"
+                         )
           else
             replace_with add_receiver_if_necessary("#{generate_new_queries(argument_node)}.#{message}")
           end
@@ -312,7 +317,7 @@ It converts rails models from 2.3 to 3.0.
       end
     end
 
-    %w(with_scope with_exclusive_scope).each do |message|
+    %w[with_scope with_exclusive_scope].each do |message|
       # with_scope(:find => {:conditions => {:active => true}}) { Post.first }
       # =>
       # with_scope(where(:active => true)) { Post.first }

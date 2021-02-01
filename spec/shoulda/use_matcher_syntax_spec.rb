@@ -5,7 +5,8 @@ RSpec.describe 'Use shoulda matcher syntax' do
 
   context 'unit test methods' do
     let(:fake_file_path) { 'test/unit/post_test.rb' }
-    let(:test_content) { "
+    let(:test_content) {
+      "
 class PostTest < ActiveSupport::TestCase
   should_belong_to :user
   should_have_one :category, :location
@@ -38,8 +39,10 @@ class PostTest < ActiveSupport::TestCase
 
   should_have_readonly_attributes :password, :admin_flag
 end
-    "}
-    let(:test_rewritten_content) { "
+    "
+    }
+    let(:test_rewritten_content) {
+      "
 class PostTest < ActiveSupport::TestCase
   should belong_to(:user)
   should have_one(:category)
@@ -80,14 +83,16 @@ class PostTest < ActiveSupport::TestCase
   should have_readonly_attributes(:password)
   should have_readonly_attributes(:admin_flag)
 end
-    "}
+    "
+    }
 
     include_examples 'convertable'
   end
 
   context 'functional test methods' do
     let(:fake_file_path) { 'test/functional/posts_controller_test.rb' }
-    let(:test_content) { '
+    let(:test_content) {
+      '
 class UsersControllerTest < ActionController::TestCase
   should "test" do
     should_set_the_flash_to "Thank you for placing this order."
@@ -115,8 +120,10 @@ class UsersControllerTest < ActionController::TestCase
     should_route :get, "/posts", :controller => :posts, :action => :index
   end
 end
-    '}
-    let(:test_rewritten_content) { '
+    '
+    }
+    let(:test_rewritten_content) {
+      '
 class UsersControllerTest < ActionController::TestCase
   should "test" do
     should set_the_flash.to("Thank you for placing this order.")
@@ -147,7 +154,8 @@ class UsersControllerTest < ActionController::TestCase
     should route(:get, "/posts").to(:controller => :posts, :action => :index)
   end
 end
-    '}
+    '
+    }
 
     include_examples 'convertable'
   end
