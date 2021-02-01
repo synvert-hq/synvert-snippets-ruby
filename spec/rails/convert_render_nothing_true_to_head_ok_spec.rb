@@ -5,15 +5,23 @@ RSpec.describe 'Convert render nothing: true to head :ok' do
   let(:fake_file_path) { 'app/controllers/posts_controller.rb' }
   let(:test_content) { '
 class PostsController < ApplicationController
-  def test
+  def ok
     render nothing: true
+  end
+
+  def created
+    render nothing: true, status: :created
   end
 end
   '}
   let(:test_rewritten_content) { '
 class PostsController < ApplicationController
-  def test
+  def ok
     head :ok
+  end
+
+  def created
+    head :created
   end
 end
   '}
