@@ -178,58 +178,21 @@ ActiveSupport.halt_callback_chains_on_return_false = false
 # Configure SSL options to enable HSTS with subdomains. Previous versions had false.
 Rails.application.config.ssl_options = { hsts: { subdomains: true } }
   '.strip}
-  let(:posts_controller_test_content) { '
-class PostsControllerTest < ActionController::TestCase
-  def test_show
-    get :show, { id: user.id }, { notice: "Welcome" }, { admin: user.admin? }
-  end
-
-  def test_index
-    get :index, params: { query: "test" }
-  end
-
-  def test_create
-    post :create, name: "user"
-  end
-
-  def test_destroy
-    delete :destroy, { id: user.id }, nil, { admin: user.admin? }
-  end
-end
-  '.strip}
-  let(:posts_controller_test_rewritten_content) { '
-class PostsControllerTest < ActionController::TestCase
-  def test_show
-    get :show, params: { id: user.id }, flash: { notice: "Welcome" }, session: { admin: user.admin? }
-  end
-
-  def test_index
-    get :index, params: { query: "test" }
-  end
-
-  def test_create
-    post :create, params: { name: "user" }
-  end
-
-  def test_destroy
-    delete :destroy, params: { id: user.id }, session: { admin: user.admin? }
-  end
-end
-  '.strip}
   let(:fake_file_paths) { %w[config/application.rb config/environments/production.rb config/initializers/new_framework_defaults.rb
     app/controllers/posts_controller.rb app/controllers/namespace/posts_controller.rb app/models/application_record.rb app/models/post.rb
-    app/models/namespace/post.rb app/jobs/application_job.rb app/jobs/post_job.rb app/jobs/namespace/post_job.rb test/functional/posts_controller_test.rb] }
+    app/models/namespace/post.rb app/jobs/application_job.rb app/jobs/post_job.rb app/jobs/namespace/post_job.rb] }
   let(:test_contents) { [application_content, production_content, nil, posts_controller_content, nested_controller_content, nil,
-    post_model_content, nested_model_content, nil, post_job_content, nested_job_content, posts_controller_test_content] }
+    post_model_content, nested_model_content, nil, post_job_content, nested_job_content] }
   let(:test_rewritten_contents) { [application_rewritten_content, production_rewritten_content, new_framework_defaults_rewritten_content,
     posts_controller_rewritten_content, nested_controller_rewritten_content, application_record_rewritten_content,
     post_model_rewritten_content, nested_model_rewritten_content, application_job_rewritten_content, post_job_rewritten_content,
-    nested_job_rewritten_content, posts_controller_test_rewritten_content] }
+    nested_job_rewritten_content] }
 
   before do
     load_sub_snippets(%w[
       rails/add_active_record_migration_rails_version
       rails/convert_render_nothing_true_to_head_ok
+      rails/convert_rails_test_request_methods_4_2_to_5_0
     ])
   end
 

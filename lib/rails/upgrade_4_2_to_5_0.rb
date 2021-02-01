@@ -35,6 +35,7 @@ Synvert::Rewriter.new 'rails', 'upgrade_4_2_to_5_0' do
 
   add_snippet 'rails', 'add_active_record_migration_rails_version'
   add_snippet 'rails', 'convert_render_nothing_true_to_head_ok'
+  add_snippet 'rails', 'convert_rails_test_request_methods_4_2_to_5_0'
 
   within_file 'config/application.rb' do
     # remove config.raise_in_transactional_callbacks = true
@@ -195,30 +196,4 @@ ActiveSupport.halt_callback_chains_on_return_false = false
 Rails.application.config.ssl_options = { hsts: { subdomains: true } }
   "''.strip
   add_file 'config/initializers/new_framework_defaults.rb', new_code
-
-  # get :show, { id: user.id }, { notice: 'Welcome' }, { admin: user.admin? }
-  # =>
-  # get :show, params: { id: user.id }, flash: { notice: 'Welcome' }, session: { admin: user.admin? }.
-  within_files '{test,spec}/{functional,controllers}/**/*.rb' do
-    %w(get post put patch delete).each do |message|
-      with_node type: 'send', message: message do
-        def make_up_hash_pair(key, argument_node)
-          if argument_node.to_source != 'nil'
-            if argument_node.type == :hash
-              "#{key}: #{add_curly_brackets_if_necessary(argument_node.to_source)}"
-            else
-              "#{key}: #{argument_node.to_source}"
-            end
-          end
-        end
-        if node.arguments.size > 1 && node.arguments[1].type == :hash && !node.arguments[1].has_key?(:params)
-          options = []
-          options << make_up_hash_pair('params', node.arguments[1])
-          options << make_up_hash_pair('flash', node.arguments[2]) if node.arguments.size > 2
-          options << make_up_hash_pair('session', node.arguments[3]) if node.arguments.size > 3
-          replace_with "#{message} {{arguments.first}}, #{options.compact.join(', ')}"
-        end
-      end
-    end
-  end
 end
