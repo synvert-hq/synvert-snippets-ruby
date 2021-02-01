@@ -57,7 +57,7 @@ It convers rspec one liner expectation.
               new_code << "  expect(subject.size).#{new_message} #{new_matcher}(#{times})\n"
               new_code << 'end'
             else
-              it_message = "#{old_matcher.to_s.sub('have', 'has').gsub('_', ' ')} #{times} #{items_name}"
+              it_message = "#{old_matcher.to_s.sub('have', 'has').tr('_', ' ')} #{times} #{items_name}"
               new_code << "it '#{it_message}' do\n"
               new_code << "  expect(subject.#{items_name}.size).#{new_message} #{new_matcher} #{times}\n"
               new_code << 'end'
