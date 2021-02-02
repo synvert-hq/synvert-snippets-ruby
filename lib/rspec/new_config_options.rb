@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 Synvert::Rewriter.new 'rspec', 'new_config_options' do
   description <<-EOF
 It converts rspec configuration options.

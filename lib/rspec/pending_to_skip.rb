@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 Synvert::Rewriter.new 'rspec', 'pending_to_skip' do
   description <<-EOF
 It converts rspec pending to skip.

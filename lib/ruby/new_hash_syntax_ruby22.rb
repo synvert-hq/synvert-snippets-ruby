@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 Synvert::Rewriter.new 'ruby', 'new_hash_syntax' do
   description <<-'EOF'
 Use ruby new hash syntax extended in ruby 2.2.

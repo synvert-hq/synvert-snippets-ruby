@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 Synvert::Rewriter.new 'factory_bot', 'convert_factory_girl_to_factory_bot' do
   description <<-EOF
 It converts factory_girl to factory_bot
