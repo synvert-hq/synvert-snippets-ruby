@@ -164,7 +164,7 @@ It converts rails routes from 2.3 to 3.0.
     #   end
     #   map.resources :comments
     # end
-    %w(resource resources).each do |message|
+    %w[resource resources].each do |message|
       within_node type: 'block', caller: { type: 'send', receiver: { not: nil }, message: message } do
         block_argument = node.arguments.first.to_source
         hash_argument = node.caller.arguments.last
@@ -232,7 +232,7 @@ It converts rails routes from 2.3 to 3.0.
     #     post :activate
     #   edn
     # end
-    %w(resource resources).each do |message|
+    %w[resource resources].each do |message|
       with_node type: 'send', receiver: 'map', message: message do
         hash_argument = node.arguments.last
         if hash_argument.type == :hash && (hash_argument.has_key?(:collection) || hash_argument.has_key?(:member))
@@ -256,13 +256,13 @@ It converts rails routes from 2.3 to 3.0.
 
     # map.connect "/:controller/:action/:id"
     # => match "/:controller(/:action(/:id))(.:format)"
-    with_node type: 'send', receiver: 'map', message: 'connect', arguments: { first: %r|:controller/:action/:id| } do
+    with_node type: 'send', receiver: 'map', message: 'connect', arguments: { first: %r{:controller/:action/:id} } do
       replace_with 'match "/:controller(/:action(/:id))(.:format)"'
     end
 
     # map.connect "audio/:action/:id", :controller => "audio"
     # => match "audio(/:action(/:id))(.:format)", :controller => "audio"
-    with_node type: 'send', receiver: 'map', message: 'connect', arguments: { first: %r|(.*?)/:action/:id| } do
+    with_node type: 'send', receiver: 'map', message: 'connect', arguments: { first: %r{(.*?)/:action/:id} } do
       options_node = node.arguments.last
       if options_node.type == :hash && options_node.has_key?(:controller)
         controller_name = options_node.hash_value(:controller).to_value
@@ -272,7 +272,7 @@ It converts rails routes from 2.3 to 3.0.
 
     # map.connect "video/:action", :controller => "video"
     # => match "video(/:action)(.:format)", :controller => "video"
-    with_node type: 'send', receiver: 'map', message: 'connect', arguments: { first: %r|(.*?)/:action['"]$| } do
+    with_node type: 'send', receiver: 'map', message: 'connect', arguments: { first: %r{(.*?)/:action['"]$} } do
       options_node = node.arguments.last
       if options_node.type == :hash && options_node.has_key?(:controller)
         controller_name = options_node.hash_value(:controller).children.last
