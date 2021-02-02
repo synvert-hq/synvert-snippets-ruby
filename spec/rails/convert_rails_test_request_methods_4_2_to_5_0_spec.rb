@@ -56,7 +56,7 @@ RSpec.describe 'Convert rails request methods from 4.2 to 5.0' do
         end
 
         it 'tests index' do
-          get '/posts', nil, { 'HTTP_AUTHORIZATION' => 'fake' }
+          get '/posts', headers: { 'HTTP_AUTHORIZATION' => 'fake' }
         end
 
         it 'tests create' do
