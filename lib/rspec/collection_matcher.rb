@@ -19,8 +19,23 @@ It converts rspec collection matcher.
     # expect(collection).to have_at_most(3).items => expect(collection.size).to be <= 3
     #
     # expect(team).to have(3).players => expect(team.players.size).to eq 3
-    { have: 'eq', have_exactly: 'eq', have_at_least: 'be >=', have_at_most: 'be <=' }.each do |old_matcher, new_matcher|
-      with_node type: 'send', message: 'to', arguments: { first: { type: 'send', receiver: { type: 'send', message: old_matcher } } } do
+    {
+      have: 'eq',
+      have_exactly: 'eq',
+      have_at_least: 'be >=',
+      have_at_most: 'be <='
+    }.each do |old_matcher, new_matcher|
+      with_node type: 'send',
+                message: 'to',
+                arguments: {
+                  first: {
+                    type: 'send',
+                    receiver: {
+                      type: 'send',
+                      message: old_matcher
+                    }
+                  }
+                } do
         times = node.arguments.first.receiver.arguments.first.to_source
         items_name = node.arguments.first.message
         if :items == items_name
