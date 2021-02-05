@@ -37,6 +37,7 @@ Synvert::Rewriter.new 'rails', 'upgrade_4_2_to_5_0' do
   add_snippet 'rails', 'convert_render_nothing_true_to_head_ok'
   add_snippet 'rails', 'convert_rails_test_request_methods_4_2_to_5_0'
   add_snippet 'rails', 'add_application_record'
+  add_snippet 'rails', 'add_application_job'
 
   within_file 'config/application.rb' do
     # remove config.raise_in_transactional_callbacks = true
@@ -124,23 +125,6 @@ Synvert::Rewriter.new 'rails', 'upgrade_4_2_to_5_0' do
     # self.errors.add
     with_node type: 'send', receiver: { type: 'send', message: 'errors' }, message: '[]=' do
       replace_with '{{receiver}}.add({{arguments.first}}, {{arguments.last}})'
-    end
-  end
-
-  # adds file app/jobs/application_job.rb
-  new_code = "class ApplicationJob < ActiveJob::Base\n\nend"
-  add_file 'app/jobs/application_job.rb', new_code
-
-  within_files 'app/jobs/**/*.rb' do
-    # class PostJob < ActiveJob::Base
-    # end
-    # =>
-    # class PostJob < ApplicationJob
-    # end
-    with_node type: 'class', name: { not: 'ApplicationJob' }, parent_class: 'ActiveJob::Base' do
-      goto_node :parent_class do
-        replace_with 'ApplicationJob'
-      end
     end
   end
 
