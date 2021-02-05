@@ -5,7 +5,8 @@ RSpec.describe 'Convert rails request methods from 4.2 to 5.0' do
 
   context 'functional test' do
     let(:fake_file_path) { 'test/functional/posts_controller_test.rb' }
-    let(:test_content) { "
+    let(:test_content) {
+      "
       class PostsControllerTest < ActionController::TestCase
         def test_show
           get :show, { id: user.id }, { notice: 'Welcome' }, { admin: user.admin? }
@@ -23,8 +24,10 @@ RSpec.describe 'Convert rails request methods from 4.2 to 5.0' do
           delete :destroy, { id: user.id }, nil, { admin: user.admin? }
         end
       end
-    " }
-    let(:test_rewritten_content) { "
+    "
+    }
+    let(:test_rewritten_content) {
+      "
       class PostsControllerTest < ActionController::TestCase
         def test_show
           get :show, params: { id: user.id }, flash: { notice: 'Welcome' }, session: { admin: user.admin? }
@@ -42,14 +45,16 @@ RSpec.describe 'Convert rails request methods from 4.2 to 5.0' do
           delete :destroy, params: { id: user.id }, session: { admin: user.admin? }
         end
       end
-    " }
+    "
+    }
 
     include_examples 'convertable'
   end
 
   context 'integration test' do
     let(:fake_file_path) { 'spec/integration/posts_controller_spec.rb' }
-    let(:test_content) { "
+    let(:test_content) {
+      "
       RSpec.describe '/posts' do
         it 'tests show' do
           get '/posts/1', user_id: user.id
@@ -67,8 +72,10 @@ RSpec.describe 'Convert rails request methods from 4.2 to 5.0' do
           delete '/posts/1', nil, { 'HTTP_AUTHORIZATION' => 'fake' }
         end
       end
-    " }
-    let(:test_rewritten_content) { "
+    "
+    }
+    let(:test_rewritten_content) {
+      "
       RSpec.describe '/posts' do
         it 'tests show' do
           get '/posts/1', params: { user_id: user.id }
@@ -86,7 +93,8 @@ RSpec.describe 'Convert rails request methods from 4.2 to 5.0' do
           delete '/posts/1', headers: { 'HTTP_AUTHORIZATION' => 'fake' }
         end
       end
-    " }
+    "
+    }
 
     include_examples 'convertable'
   end

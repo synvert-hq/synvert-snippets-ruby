@@ -5,7 +5,8 @@ RSpec.describe 'Fix shoulda deprecations' do
 
   context 'unit test methods' do
     let(:fake_file_path) { 'test/unit/post_test.rb' }
-    let(:test_content) { "
+    let(:test_content) {
+      "
 class PostTest < ActiveSupport::TestCase
   should validate_format_of(:email).with('user@example.com')
 
@@ -13,8 +14,10 @@ class PostTest < ActiveSupport::TestCase
 
   should ensure_exclusion_of(:age).in_range(30..60)
 end
-    "}
-    let(:test_rewritten_content) { "
+    "
+    }
+    let(:test_rewritten_content) {
+      "
 class PostTest < ActiveSupport::TestCase
   should allow_value('user@example.com').for(:email)
 
@@ -22,14 +25,16 @@ class PostTest < ActiveSupport::TestCase
 
   should validate_exclusion_of(:age).in_range(30..60)
 end
-    "}
+    "
+    }
 
     include_examples 'convertable'
   end
 
   context 'functional test methods' do
     let(:fake_file_path) { 'test/functional/posts_controller_test.rb' }
-    let(:test_content) { '
+    let(:test_content) {
+      '
 class UsersControllerTest < ActionController::TestCase
   context "GET /show" do
     should assign_to(:user)
@@ -40,8 +45,10 @@ class UsersControllerTest < ActionController::TestCase
     should respond_with_content_type "application/json"
   end
 end
-    '}
-    let(:test_rewritten_content) { '
+    '
+    }
+    let(:test_rewritten_content) {
+      '
 class UsersControllerTest < ActionController::TestCase
   context "GET /show" do
     should "assigns user" do
@@ -62,7 +69,8 @@ class UsersControllerTest < ActionController::TestCase
     end
   end
 end
-    '}
+    '
+    }
 
     include_examples 'convertable'
   end
