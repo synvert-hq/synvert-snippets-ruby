@@ -1,14 +1,14 @@
 Synvert::Rewriter.new 'rails', 'add_active_record_migration_rails_version' do
-  description <<-EOF
-It adds default ActiveRecord::Migration rails version.
-
-    class CreateUsers < ActiveRecord::Migration
-    end
-
-    =>
-
-    class CreateUsers < ActiveRecord::Migration[4.2]
-    end
+  description <<~EOF
+    It adds default ActiveRecord::Migration rails version.
+    
+        class CreateUsers < ActiveRecord::Migration
+        end
+    
+        =>
+    
+        class CreateUsers < ActiveRecord::Migration[4.2]
+        end
   EOF
 
   if_gem 'rails', { gte: '5.0.0' }

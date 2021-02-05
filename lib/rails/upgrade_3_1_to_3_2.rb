@@ -1,26 +1,26 @@
 Synvert::Rewriter.new 'rails', 'upgrade_3_1_to_3_2' do
-  description <<-EOF
-It upgrades rails from 3.1 to 3.2.
-
-1. it insrts new configs in config/environments/development.rb.
-
-    config.active_record.mass_assignment_sanitizer = :strict
-    config.active_record.auto_explain_threshold_in_seconds = 0.5
-
-2. it insert new configs in config/environments/test.rb.
-
-    config.active_record.mass_assignment_sanitizer = :strict
-
-3. deprecations
-
-    set_table_name "project" => self.table_name = "project"
-    set_inheritance_column = "type" => self.inheritance_column = "type"
-    set_sequence_name = "seq" => self.sequence_name = "seq"
-    set_primary_key = "id" => self.primary_key = "id"
-    set_locking_column = "lock" => self.locking_column = "lock"
-
-    ActionController::UnknownAction => AbstractController::ActionNotFound
-    ActionController::DoubleRenderError => AbstractController::DoubleRenderError
+  description <<~EOF
+    It upgrades rails from 3.1 to 3.2.
+    
+    1. it insrts new configs in config/environments/development.rb.
+    
+        config.active_record.mass_assignment_sanitizer = :strict
+        config.active_record.auto_explain_threshold_in_seconds = 0.5
+    
+    2. it insert new configs in config/environments/test.rb.
+    
+        config.active_record.mass_assignment_sanitizer = :strict
+    
+    3. deprecations
+    
+        set_table_name "project" => self.table_name = "project"
+        set_inheritance_column = "type" => self.inheritance_column = "type"
+        set_sequence_name = "seq" => self.sequence_name = "seq"
+        set_primary_key = "id" => self.primary_key = "id"
+        set_locking_column = "lock" => self.locking_column = "lock"
+    
+        ActionController::UnknownAction => AbstractController::ActionNotFound
+        ActionController::DoubleRenderError => AbstractController::DoubleRenderError
   EOF
 
   if_gem 'rails', { gte: '3.1.0' }
@@ -68,13 +68,13 @@ It upgrades rails from 3.1 to 3.2.
     warn 'Rails::Plugin is deprecated and will be removed in Rails 4.0. Instead of adding plugins to vendor/plugins use gems or bundler with path or git dependencies.'
   end
 
-  todo <<-EOF
-Make the following changes to your Gemfile.
-
-    group :assets do
-      gem 'sass-rails',   '~> 3.2.3'
-      gem 'coffee-rails', '~> 3.2.1'
-      gem 'uglifier',     '>= 1.0.3'
-    end
+  todo <<~EOF
+    Make the following changes to your Gemfile.
+    
+        group :assets do
+          gem 'sass-rails',   '~> 3.2.3'
+          gem 'coffee-rails', '~> 3.2.1'
+          gem 'uglifier',     '>= 1.0.3'
+        end
   EOF
 end
