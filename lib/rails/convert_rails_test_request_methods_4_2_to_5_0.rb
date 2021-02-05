@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 Synvert::Rewriter.new 'rails', 'convert_rails_test_request_methods_4_2_to_5_0' do
   description <<-EOF
 It converts rails test request methods from 4.2 to 5.0

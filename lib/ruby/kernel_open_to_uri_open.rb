@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 Synvert::Rewriter.new 'ruby', 'kernel_open_to_uri_open' do
   description <<-EOF
 It converts Kernel#open to URI.open

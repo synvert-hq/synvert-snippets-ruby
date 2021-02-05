@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 Synvert::Rewriter.new 'rspec', 'its_to_it' do
   description <<-EOF
 It converts rspec its to it.

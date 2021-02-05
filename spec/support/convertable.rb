@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 def load_snippet(snippet_name)
   rewriter_path = File.expand_path(File.join(File.dirname(__FILE__), '../../lib', "#{snippet_name}.rb"))
   eval(File.read(rewriter_path))
