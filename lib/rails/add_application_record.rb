@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 Synvert::Rewriter.new 'rails', 'add_application_record' do
   description <<-EOF
 It adds app/models/application_record.rb file and replaces ActiveRecord::Base with ApplicationRecord in model files.

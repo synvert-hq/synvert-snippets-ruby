@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 
 Synvert::Rewriter.new 'rails', 'convert_render_nothing_true_to_head_ok' do
   description <<-EOF

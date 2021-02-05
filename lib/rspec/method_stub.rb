@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 Synvert::Rewriter.new 'rspec', 'method_stub' do
   description <<-EOF
 It converts rspec method stub.

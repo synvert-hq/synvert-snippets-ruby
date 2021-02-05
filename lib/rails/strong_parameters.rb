@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 Synvert::Rewriter.new 'rails', 'strong_parameters' do
   default_columns = %w[id created_at updated_at deleted_at]
 
