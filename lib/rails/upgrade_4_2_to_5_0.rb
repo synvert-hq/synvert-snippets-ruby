@@ -36,6 +36,7 @@ Synvert::Rewriter.new 'rails', 'upgrade_4_2_to_5_0' do
   add_snippet 'rails', 'add_active_record_migration_rails_version'
   add_snippet 'rails', 'convert_render_nothing_true_to_head_ok'
   add_snippet 'rails', 'convert_rails_test_request_methods_4_2_to_5_0'
+  add_snippet 'rails', 'add_application_record'
 
   within_file 'config/application.rb' do
     # remove config.raise_in_transactional_callbacks = true
@@ -91,12 +92,6 @@ Synvert::Rewriter.new 'rails', 'upgrade_4_2_to_5_0' do
     end
   end
 
-  # adds file app/models/application_record.rb
-  new_code = "class ApplicationRecord < ActiveRecord::Base\n"
-  new_code << "  self.abstract_class = true\n"
-  new_code << 'end'
-  add_file 'app/models/application_record.rb', new_code
-
   within_files 'app/models/**/*.rb' do
     # after_commit :add_to_index_later, on: :create
     # after_commit :update_in_index_later, on: :update
@@ -129,17 +124,6 @@ Synvert::Rewriter.new 'rails', 'upgrade_4_2_to_5_0' do
     # self.errors.add
     with_node type: 'send', receiver: { type: 'send', message: 'errors' }, message: '[]=' do
       replace_with '{{receiver}}.add({{arguments.first}}, {{arguments.last}})'
-    end
-
-    # class Post < ActiveRecord::Base
-    # end
-    # =>
-    # class Post < ApplicationRecord
-    # end
-    with_node type: 'class', name: { not: 'ApplicationRecord' }, parent_class: 'ActiveRecord::Base' do
-      goto_node :parent_class do
-        replace_with 'ApplicationRecord'
-      end
     end
   end
 
