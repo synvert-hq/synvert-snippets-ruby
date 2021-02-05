@@ -72,12 +72,37 @@ It converts rspec method stub.
     end
 
     # allow(obj).to receive(:message).and_return { 1 } => allow(obj).to receive(:message) { 1 }
-    with_node type: 'send', receiver: { type: 'send', message: 'allow' }, arguments: { first: { type: 'block', caller: { type: 'send', message: 'and_return', arguments: [] } } } do
+    with_node type: 'send',
+              receiver: {
+                type: 'send',
+                message: 'allow'
+              },
+              arguments: {
+                first: {
+                  type: 'block',
+                  caller: {
+                    type: 'send',
+                    message: 'and_return',
+                    arguments: []
+                  }
+                }
+              } do
       replace_with '{{receiver}}.to {{arguments.first.caller.receiver}} { {{arguments.first.body}} }'
     end
 
     # allow(obj).to receive(:message).and_return => allow(obj).to receive(:message)
-    with_node type: 'send', receiver: { type: 'send', message: 'allow' }, arguments: { first: { type: 'send', message: 'and_return', arguments: [] } } do
+    with_node type: 'send',
+              receiver: {
+                type: 'send',
+                message: 'allow'
+              },
+              arguments: {
+                first: {
+                  type: 'send',
+                  message: 'and_return',
+                  arguments: []
+                }
+              } do
       replace_with '{{receiver}}.to {{arguments.first.receiver}}'
     end
   end

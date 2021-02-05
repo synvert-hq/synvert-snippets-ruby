@@ -5,7 +5,8 @@ RSpec.describe 'Fix factory_girl deprecations' do
 
   context 'factory methods' do
     let(:fake_file_path) { 'test/factories/post.rb' }
-    let(:test_content) { '
+    let(:test_content) {
+      '
 Factory.sequence :login do |n|
   "new_user_#{n}"
 end
@@ -20,8 +21,10 @@ Factory.define(:admin, :parent => :user) do |admin|
     user.phone_digits = generate(:phone_digits)
   end
 end
-    '}
-    let(:test_rewritten_content) { '
+    '
+    }
+    let(:test_rewritten_content) {
+      '
 FactoryGirl.define do
   sequence :login do |n|
     "new_user_#{n}"
@@ -38,14 +41,16 @@ FactoryGirl.define do
     end
   end
 end
-    '}
+    '
+    }
 
     include_examples 'convertable'
   end
 
   context 'unit test methods' do
     let(:fake_file_path) { 'test/unit/post_test.rb' }
-    let(:test_content) { "
+    let(:test_content) {
+      '
 class PostTest < ActiveSupport::TestCase
   def test_post
     Factory(:comment)
@@ -56,8 +61,10 @@ class PostTest < ActiveSupport::TestCase
     Factory.attributes_for(:post)
   end
 end
-    "}
-    let(:test_rewritten_content) { "
+    '
+    }
+    let(:test_rewritten_content) {
+      '
 class PostTest < ActiveSupport::TestCase
   def test_post
     create(:comment)
@@ -68,7 +75,8 @@ class PostTest < ActiveSupport::TestCase
     attributes_for(:post)
   end
 end
-    "}
+    '
+    }
 
     include_examples 'convertable'
   end
