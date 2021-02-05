@@ -1,8 +1,8 @@
 Synvert::Rewriter.new 'ruby', 'new_lambda_syntax' do
-  description <<-EOF
-Use ruby new lambda syntax
-
-    lambda { # do some thing } => -> { # do some thing }
+  description <<~EOF
+    Use ruby new lambda syntax
+    
+        lambda { # do some thing } => -> { # do some thing }
   EOF
 
   if_ruby '1.9.0'

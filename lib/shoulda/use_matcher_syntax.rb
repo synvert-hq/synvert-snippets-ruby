@@ -1,115 +1,115 @@
 Synvert::Rewriter.new 'shoulda', 'use_matcher_syntax' do
-  description <<-EOF
-It converts shoulda macros to matcher syntax.
-
-models:
-
-  should_belongs_to :user => should belong_to(:user)
-
-  should_have_one :category => should have_one(:category)
-
-  should_have_many :comments => should have_many(:comments)
-
-  should_have_and_belong_to_many :tags => should have_and_belong_to_many(:tags)
-
-  should_validate_presence_of :title, :body
-  =>
-  should validate_presence_of(:title)
-  should validate_presence_of(:body)
-
-  should_validate_uniqueness_of :name, :message => 'O NOES! SOMEONE STOELED YER NAME!'
-  =>
-  should validate_uniqueness_of(:name).with_message('O NOES! SOMEONE STOELED YER NAME!')
-
-  should_validate_numericality_of :age => should validate_numericality_of(:age)
-
-  should_validate_acceptance_of :eula => should validate_acceptance_of(:eula)
-
-  should_ensure_length_in_range :password, (6..20)
-  =>
-  should ensure_length_of(:password).is_at_least(6).is_at_most(20)
-
-  should_ensure_length_is :ssn, 9 => should ensure_length_of(:ssn).is_equal_to(9)
-
-  should_ensure_value_in_range :age, (0..100)
-  =>
-  should ensure_inclusion_of(:age).in_range(0..100)
-
-  should_allow_values_for :isbn, 'isbn 1 2345 6789 0', 'ISBN 1-2345-6789-0'
-  =>
-  should allow_value('isbn 1 2345 6789 0').for(:isbn)
-  should allow_value('isbn 1-2345-6789-0').for(:isbn)
-
-  should_not_allow_values_for :isbn, "bad1", "bad 2"
-  =>
-  should_not allow_value("bad1").for(:isbn)
-  should_not allow_value("bad2").for(:isbn)
-
-  should_allow_mass_assignment_of :first_name, :last_name
-  =>
-  should allow_mass_assignment_of(:first_name)
-  should allow_mass_assignment_of(:last_name)
-
-  should_not_allow_mass_assignment_of :password, :admin_flag
-  =>
-  should_not allow_mass_assignment_of(:password)
-  should_not allow_mass_assignment_of(:admin_flag)
-
-  should_have_readonly_attributes :password, :admin_flag
-  =>
-  should have_readonly_attributes(:password)
-  should have_readonly_attributes(:admin_flag)
-
-controllers:
-
-  should_set_the_flash_to "Thank you for placing this order."
-  =>
-  should set_the_flash.to("Thank you for placing this order.")
-
-  should_not_set_the_flash => should_not set_the_flash
-
-  should_filter_params :password, :ssn
-  =>
-  should filter_param(:password)
-  should filter_param(:ssn)
-
-  should_assign_to :user, :posts
-  =>
-  should assign_to(:user)
-  should assign_to(:posts)
-
-  should_assign_to :user, :class => User
-  =>
-  should assign_to(:user).with_kind_of(User)
-
-  should_assign_to(:user) { @user } => should assign_to(:user).with(@user)
-
-  should_not_assign_to :user, :posts
-  =>
-  should_not assign_to(:user)
-  should_not assign_to(:posts)
-
-  should_set_session(:user_id) { @user.id }
-  =>
-  should set_session(:user_id).to(@user.id)
-
-  should_respond_with :success => should respond_with(:success)
-
-  should_respond_with_content_type :rss => should respond_with_content_type(:rss)
-
-  should_render_template :new => should render_template(:new)
-
-  should_render_with_layout "special" => should render_with_layout("special")
-
-  should_render_without_layout => should_not render_layout
-
-  should_route :get, "/posts", :controller => :posts, :action => :index
-  =>
-  should route(:get, "/posts").to(:controller => :posts, :action => :index)
-
-  should_redirect_to("the user profile") { user_url(@user) }
-  =>
-  should redirect_to("the user profile") { user_url(@user) }
+  description <<~EOF
+    It converts shoulda macros to matcher syntax.
+    
+    models:
+    
+      should_belongs_to :user => should belong_to(:user)
+    
+      should_have_one :category => should have_one(:category)
+    
+      should_have_many :comments => should have_many(:comments)
+    
+      should_have_and_belong_to_many :tags => should have_and_belong_to_many(:tags)
+    
+      should_validate_presence_of :title, :body
+      =>
+      should validate_presence_of(:title)
+      should validate_presence_of(:body)
+    
+      should_validate_uniqueness_of :name, :message => 'O NOES! SOMEONE STOELED YER NAME!'
+      =>
+      should validate_uniqueness_of(:name).with_message('O NOES! SOMEONE STOELED YER NAME!')
+    
+      should_validate_numericality_of :age => should validate_numericality_of(:age)
+    
+      should_validate_acceptance_of :eula => should validate_acceptance_of(:eula)
+    
+      should_ensure_length_in_range :password, (6..20)
+      =>
+      should ensure_length_of(:password).is_at_least(6).is_at_most(20)
+    
+      should_ensure_length_is :ssn, 9 => should ensure_length_of(:ssn).is_equal_to(9)
+    
+      should_ensure_value_in_range :age, (0..100)
+      =>
+      should ensure_inclusion_of(:age).in_range(0..100)
+    
+      should_allow_values_for :isbn, 'isbn 1 2345 6789 0', 'ISBN 1-2345-6789-0'
+      =>
+      should allow_value('isbn 1 2345 6789 0').for(:isbn)
+      should allow_value('isbn 1-2345-6789-0').for(:isbn)
+    
+      should_not_allow_values_for :isbn, "bad1", "bad 2"
+      =>
+      should_not allow_value("bad1").for(:isbn)
+      should_not allow_value("bad2").for(:isbn)
+    
+      should_allow_mass_assignment_of :first_name, :last_name
+      =>
+      should allow_mass_assignment_of(:first_name)
+      should allow_mass_assignment_of(:last_name)
+    
+      should_not_allow_mass_assignment_of :password, :admin_flag
+      =>
+      should_not allow_mass_assignment_of(:password)
+      should_not allow_mass_assignment_of(:admin_flag)
+    
+      should_have_readonly_attributes :password, :admin_flag
+      =>
+      should have_readonly_attributes(:password)
+      should have_readonly_attributes(:admin_flag)
+    
+    controllers:
+    
+      should_set_the_flash_to "Thank you for placing this order."
+      =>
+      should set_the_flash.to("Thank you for placing this order.")
+    
+      should_not_set_the_flash => should_not set_the_flash
+    
+      should_filter_params :password, :ssn
+      =>
+      should filter_param(:password)
+      should filter_param(:ssn)
+    
+      should_assign_to :user, :posts
+      =>
+      should assign_to(:user)
+      should assign_to(:posts)
+    
+      should_assign_to :user, :class => User
+      =>
+      should assign_to(:user).with_kind_of(User)
+    
+      should_assign_to(:user) { @user } => should assign_to(:user).with(@user)
+    
+      should_not_assign_to :user, :posts
+      =>
+      should_not assign_to(:user)
+      should_not assign_to(:posts)
+    
+      should_set_session(:user_id) { @user.id }
+      =>
+      should set_session(:user_id).to(@user.id)
+    
+      should_respond_with :success => should respond_with(:success)
+    
+      should_respond_with_content_type :rss => should respond_with_content_type(:rss)
+    
+      should_render_template :new => should render_template(:new)
+    
+      should_render_with_layout "special" => should render_with_layout("special")
+    
+      should_render_without_layout => should_not render_layout
+    
+      should_route :get, "/posts", :controller => :posts, :action => :index
+      =>
+      should route(:get, "/posts").to(:controller => :posts, :action => :index)
+    
+      should_redirect_to("the user profile") { user_url(@user) }
+      =>
+      should redirect_to("the user profile") { user_url(@user) }
   EOF
 
   if_gem 'shoulda', { gte: '2.11.0' }

@@ -1,10 +1,10 @@
 Synvert::Rewriter.new 'rspec', 'block_to_expect' do
-  description <<-EOF
-It converts rspec block to expect.
-
-    lambda { do_something }.should raise_error => expect { do_something }.to raise_error
-    proc { do_something }.should raise_error => expect { do_something }.to raise_error
-    -> { do_something }.should raise_error => expect { do_something }.to raise_error
+  description <<~EOF
+    It converts rspec block to expect.
+    
+        lambda { do_something }.should raise_error => expect { do_something }.to raise_error
+        proc { do_something }.should raise_error => expect { do_something }.to raise_error
+        -> { do_something }.should raise_error => expect { do_something }.to raise_error
   EOF
 
   if_gem 'rspec', { gte: '2.11.0' }

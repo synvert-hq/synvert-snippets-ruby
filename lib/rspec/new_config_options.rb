@@ -1,42 +1,42 @@
 Synvert::Rewriter.new 'rspec', 'new_config_options' do
-  description <<-EOF
-It converts rspec configuration options.
-
-    It removes `config.treat_symbols_as_metadata_keys_with_true_values = true`
-
-    RSpec.configure do |c|
-      c.backtrace_clean_patterns
-      c.backtrace_clean_patterns = [/lib\/something/]
-      c.color_enabled = true
-
-      c.out
-      c.out = File.open('output.txt', 'w')
-      c.output
-      c.output = File.open('output.txt', 'w')
-
-      c.backtrace_cleaner
-      c.color?(output)
-      c.filename_pattern
-      c.filename_pattern = '**/*_test.rb'
-      c.warnings
-    end
-    =>
-    RSpec.configure do |c|
-      c.backtrace_exclusion_patterns
-      c.backtrace_exclusion_patterns = [/lib\/something/]
-      c.color = true
-
-      c.output_stream
-      c.output_stream = File.open('output.txt', 'w')
-      c.output_stream
-      c.output_stream = File.open('output.txt', 'w')
-
-      c.backtrace_formatter
-      c.color_enabled?(output)
-      c.pattern
-      c.pattern = '**/*_test.rb'
-      c.warnings?
-    end
+  description <<~EOF
+    It converts rspec configuration options.
+    
+        It removes `config.treat_symbols_as_metadata_keys_with_true_values = true`
+    
+        RSpec.configure do |c|
+          c.backtrace_clean_patterns
+          c.backtrace_clean_patterns = [/lib\/something/]
+          c.color_enabled = true
+    
+          c.out
+          c.out = File.open('output.txt', 'w')
+          c.output
+          c.output = File.open('output.txt', 'w')
+    
+          c.backtrace_cleaner
+          c.color?(output)
+          c.filename_pattern
+          c.filename_pattern = '**/*_test.rb'
+          c.warnings
+        end
+        =>
+        RSpec.configure do |c|
+          c.backtrace_exclusion_patterns
+          c.backtrace_exclusion_patterns = [/lib\/something/]
+          c.color = true
+    
+          c.output_stream
+          c.output_stream = File.open('output.txt', 'w')
+          c.output_stream
+          c.output_stream = File.open('output.txt', 'w')
+    
+          c.backtrace_formatter
+          c.color_enabled?(output)
+          c.pattern
+          c.pattern = '**/*_test.rb'
+          c.warnings?
+        end
   EOF
 
   if_gem 'rspec', { gte: '2.99.0' }

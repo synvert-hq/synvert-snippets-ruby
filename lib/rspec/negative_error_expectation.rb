@@ -1,10 +1,10 @@
 Synvert::Rewriter.new 'rspec', 'negative_error_expectation' do
-  description <<-EOF
-It converts rspec negative error expectation.
-
-    expect { do_something }.not_to raise_error(SomeErrorClass) => expect { do_something }.not_to raise_error
-    expect { do_something }.not_to raise_error('message') => expect { do_something }.not_to raise_error
-    expect { do_something }.not_to raise_error(SomeErrorClass, 'message') => expect { do_something }.not_to raise_error
+  description <<~EOF
+    It converts rspec negative error expectation.
+    
+        expect { do_something }.not_to raise_error(SomeErrorClass) => expect { do_something }.not_to raise_error
+        expect { do_something }.not_to raise_error('message') => expect { do_something }.not_to raise_error
+        expect { do_something }.not_to raise_error(SomeErrorClass, 'message') => expect { do_something }.not_to raise_error
   EOF
   if_gem 'rspec', { gte: '2.14.0' }
 
