@@ -1,5 +1,3 @@
-# encoding: utf-8
-
 require 'spec_helper'
 
 RSpec.describe 'Upgrade rails from 4.0 to 4.1' do
