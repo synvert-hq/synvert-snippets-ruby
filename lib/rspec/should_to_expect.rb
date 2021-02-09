@@ -28,7 +28,14 @@ It converts rspec should to expect.
       # 1.should == 1 => expect(1).to eq 1
       # 1.should < 1 => expect(1).to be < 2
       # Integer.should === 1 => expect(Integer).to be === 1
-      { '==' => 'eq', '<' => 'be <', '>' => 'be >', '<=' => 'be <=', '>=' => 'be >=', '===' => 'be ===' }.each do |old_matcher, new_matcher|
+      {
+        '==' => 'eq',
+        '<' => 'be <',
+        '>' => 'be >',
+        '<=' => 'be <=',
+        '>=' => 'be >=',
+        '===' => 'be ==='
+      }.each do |old_matcher, new_matcher|
         with_node type: 'send', receiver: { type: 'send', message: old_message }, message: old_matcher do
           if node.receiver.receiver
             replace_with "expect({{receiver.receiver}}).#{new_message} #{new_matcher} {{arguments}}"

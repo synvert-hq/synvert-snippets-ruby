@@ -3,7 +3,8 @@ require 'spec_helper'
 RSpec.describe 'Use will_paginate new syntax' do
   let(:rewriter_name) { 'will_paginate/use_new_syntax' }
   let(:fake_file_path) { 'app/models/post.rb' }
-  let(:test_content) { '
+  let(:test_content) {
+    '
 class Post
   def queries
     Post.paginate(:conditions => {:active => true}, :order => "created_at DESC", :per_page => 10, :page => 1)
@@ -18,8 +19,10 @@ class Post
     end
   end
 end
-  '}
-  let(:test_rewritten_content) { '
+  '
+  }
+  let(:test_rewritten_content) {
+    '
 class Post
   def queries
     Post.where(:active => true).order("created_at DESC").paginate(:per_page => 10, :page => 1)
@@ -34,7 +37,8 @@ class Post
     end
   end
 end
-  '}
+  '
+  }
 
   include_examples 'convertable'
 end
