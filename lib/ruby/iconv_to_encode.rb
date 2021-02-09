@@ -32,8 +32,8 @@ It convert Iconv#iconv to String#encode
       if (must_silently_ignore_bad_chars)
         encode_options = ', invalid: :replace, undef: :replace'
       end
-      cleaned_from_charset = from_charset.to_source.gsub(/\/{2}[^\/']+/, '')
-      cleaned_to_charset = to_charset.to_source.gsub(/\/{2}[^\/']+/, '')
+      cleaned_from_charset = from_charset.to_source.gsub(%r{/{2}[^/']+}, '')
+      cleaned_to_charset = to_charset.to_source.gsub(%r{/{2}[^/']+}, '')
       replace_with(
         "force_encoding(#{cleaned_from_charset}).encode(#{cleaned_to_charset}#{encode_options})"
       )
