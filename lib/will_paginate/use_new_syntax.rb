@@ -17,10 +17,7 @@ It uses will_paginate new syntax.
 
   ar_keys = [:conditions, :order, :joins, :select, :from, :having, :group, :include, :limit, :offset, :lock, :readonly]
   wp_keys = [:page, :per_page]
-  ar_keys_converters = {
-    :conditions => :where,
-    :include => :includes
-  }
+  ar_keys_converters = { conditions: :where, include: :includes }
 
   helper_method :generate_new_queries do |hash_node|
     new_queries = []
@@ -54,7 +51,9 @@ It uses will_paginate new syntax.
     within_node type: 'send', message: 'paginate', arguments: { size: 1 } do
       argument_node = node.arguments.last
       if :hash == argument_node.type && (ar_keys & argument_node.keys.map(&:to_value)).length > 0
-        replace_with add_receiver_if_necessary("#{generate_new_queries(argument_node)}.#{generate_will_paginate_query(argument_node)}")
+        replace_with add_receiver_if_necessary(
+                       "#{generate_new_queries(argument_node)}.#{generate_will_paginate_query(argument_node)}"
+                     )
       end
     end
 
