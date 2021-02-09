@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 RSpec.describe 'Ruby uses new safe navigation operator', skip: Gem::Version.new(RUBY_VERSION.dup) < Gem::Version.new('2.3.0') do

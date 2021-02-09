@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 Synvert::Rewriter.new 'ruby', 'iconv_to_encode' do
   description <<-EOF
 It convert Iconv#iconv to String#encode

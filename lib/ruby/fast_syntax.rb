@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 Synvert::Rewriter.new 'ruby', 'fast_syntax' do
   description <<-EOF
 Use ruby fast syntax, it calls snippets

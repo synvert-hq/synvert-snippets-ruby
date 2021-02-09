@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 Synvert::Rewriter.new 'rails', 'upgrade_4_2_to_5_0' do
   description <<-EOF
 1. it replaces config.static_cache_control = ... with config.public_file_server.headers = ... in config files.

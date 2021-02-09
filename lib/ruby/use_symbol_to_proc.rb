@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 Synvert::Rewriter.new 'ruby', 'use_symbol_to_proc' do
   description <<-EOF
 It uses &: (short for symbol to proc)

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 Synvert::Rewriter.new 'rails', 'convert_dynamic_finders' do
   description <<-EOF
 It converts rails dynamic finders to arel syntax.
