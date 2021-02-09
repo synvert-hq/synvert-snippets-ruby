@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 Synvert::Rewriter.new 'rails', 'redirect_with_flash' do
   description <<-EOS
 

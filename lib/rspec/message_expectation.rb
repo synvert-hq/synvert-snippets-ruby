@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 Synvert::Rewriter.new 'rspec', 'message_expectation' do
   description <<-EOF
 It convert rspec message expectation.

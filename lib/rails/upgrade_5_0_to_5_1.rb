@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 Synvert::Rewriter.new 'rails', 'upgrade_5_0_to_5_1' do
   description <<-EOF
 1. it replaces HashWithIndifferentAccess with ActiveSupport::HashWithIndifferentAccess.

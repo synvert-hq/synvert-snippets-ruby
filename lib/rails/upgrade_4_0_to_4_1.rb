@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'securerandom'
 
 Synvert::Rewriter.new 'rails', 'upgrade_4_0_to_4_1' do

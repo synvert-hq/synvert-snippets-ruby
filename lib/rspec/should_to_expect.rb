@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 Synvert::Rewriter.new 'rspec', 'should_to_expect' do
   description <<-EOF
 It converts rspec should to expect.

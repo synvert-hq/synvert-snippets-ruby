@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 Synvert::Rewriter.new 'rails', 'convert_rails_root' do
   description <<-EOF
 It converts RAILS_ROOT to Rails.root.

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 Synvert::Rewriter.new 'rspec', 'negative_error_expectation' do
   description <<-EOF
 It converts rspec negative error expectation.

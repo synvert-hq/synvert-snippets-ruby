@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 Synvert::Rewriter.new 'rspec', 'custom_matcher_new_syntax' do
   description <<-eos
 It uses RSpec::Matchers new syntax.

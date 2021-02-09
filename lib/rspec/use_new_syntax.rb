@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 Synvert::Rewriter.new 'rspec', 'use_new_syntax' do
   description <<-EOF
 It converts rspec code to new syntax, it calls all convert_rspec_* snippets.
