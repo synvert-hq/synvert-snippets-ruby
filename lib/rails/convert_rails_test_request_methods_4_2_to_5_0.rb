@@ -15,6 +15,16 @@ It converts rails test request methods from 4.2 to 5.0
     get '/posts/1', params: { user_id: user.id }, headers: { 'HTTP_AUTHORIZATION' => 'fake' }
   EOF
 
+  helper_method :make_up_hash_pair do |key, argument_node|
+    if argument_node.to_source != 'nil'
+      if argument_node.type == :hash
+        "#{key}: #{add_curly_brackets_if_necessary(argument_node.to_source)}"
+      else
+        "#{key}: #{argument_node.to_source}"
+      end
+    end
+  end
+
   # get :show, { id: user.id }, { notice: 'Welcome' }, { admin: user.admin? }
   # =>
   # get :show, params: { id: user.id }, flash: { notice: 'Welcome' }, session: { admin: user.admin? }.
@@ -25,15 +35,6 @@ It converts rails test request methods from 4.2 to 5.0
         next unless node.arguments[1].type == :hash
         next if node.arguments[1].has_key?(:params)
 
-        def make_up_hash_pair(key, argument_node)
-          if argument_node.to_source != 'nil'
-            if argument_node.type == :hash
-              "#{key}: #{add_curly_brackets_if_necessary(argument_node.to_source)}"
-            else
-              "#{key}: #{argument_node.to_source}"
-            end
-          end
-        end
         options = []
         options << make_up_hash_pair('params', node.arguments[1])
         options << make_up_hash_pair('flash', node.arguments[2]) if node.arguments.size > 2
@@ -52,15 +53,6 @@ It converts rails test request methods from 4.2 to 5.0
         next unless node.arguments.size > 1
         next if node.arguments[1].type == :hash && (node.arguments[1].has_key?(:params) || node.arguments[1].has_key?(:headers))
 
-        def make_up_hash_pair(key, argument_node)
-          if argument_node.to_source != 'nil'
-            if argument_node.type == :hash
-              "#{key}: #{add_curly_brackets_if_necessary(argument_node.to_source)}"
-            else
-              "#{key}: #{argument_node.to_source}"
-            end
-          end
-        end
         options = []
         options << make_up_hash_pair('params', node.arguments[1])
         options << make_up_hash_pair('headers', node.arguments[2]) if node.arguments.size > 2
