@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 Synvert::Rewriter.new 'factory_bot', 'deprecate_static_value' do
   description <<-EOF
 It deprecates factory_bot static value

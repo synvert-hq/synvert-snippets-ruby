@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 Synvert::Rewriter.new 'factory_girl', 'use_short_syntax' do
   description <<-EOF
 Uses FactoryGirl short syntax.

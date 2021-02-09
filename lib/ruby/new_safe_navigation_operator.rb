@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 Synvert::Rewriter.new 'ruby', 'new_safe_navigation_operator' do
   description <<-EOF
 Use ruby new safe navigation operator.

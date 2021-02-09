@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 Synvert::Rewriter.new 'rails', 'upgrade_2_3_to_3_0' do
   description <<-EOF
 It converts rails from 2.3 to 3.0, it calls

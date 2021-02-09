@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 Synvert::Rewriter.new 'rspec', 'boolean_matcher' do
   description <<-EOF
 It converts rspec boolean matcher.

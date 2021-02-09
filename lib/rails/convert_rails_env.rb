@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 Synvert::Rewriter.new 'rails', 'convert_rails_env' do
   description <<-EOF
 It converts RAILS_ENV to Rails.env.

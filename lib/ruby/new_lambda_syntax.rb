@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 Synvert::Rewriter.new 'ruby', 'new_lambda_syntax' do
   description <<-EOF
 Use ruby new lambda syntax

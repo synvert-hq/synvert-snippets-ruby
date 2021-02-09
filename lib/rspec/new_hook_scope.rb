@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 Synvert::Rewriter.new 'rspec', 'new_hook_scope' do
   description <<-EOF
 It converts new hook scope.
