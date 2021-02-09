@@ -1,5 +1,3 @@
-# encoding: utf-8
-
 require 'spec_helper'
 
 RSpec.describe 'Convert rails mailers from 2.3 to 3.0' do

@@ -1,5 +1,3 @@
-# encoding: utf-8
-
 require 'spec_helper'
 
 RSpec.describe 'Upgrade rails from 5.0 to 5.1' do
