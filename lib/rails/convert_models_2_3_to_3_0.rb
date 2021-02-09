@@ -258,7 +258,7 @@ It converts rails models from 2.3 to 3.0.
     # Post.where("title = ?", title).update_all("title = \'title\'")
     within_node type: 'send', message: :update_all, arguments: { size: 2 } do
       updates_node, conditions_node = node.arguments
-      replace_with add_receiver_if_necessary("where(#{(strip_brackets(conditions_node.to_source))}).update_all(#{strip_brackets(updates_node.to_source)})")
+      replace_with add_receiver_if_necessary("where(#{strip_brackets(conditions_node.to_source)}).update_all(#{strip_brackets(updates_node.to_source)})")
     end
 
     # Post.update_all({:title => "title"}, {:title => "test"}, {:limit => 2})
