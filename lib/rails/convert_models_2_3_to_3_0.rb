@@ -1,93 +1,93 @@
 Synvert::Rewriter.new 'rails', 'convert_models_2_3_to_3_0' do
-  description <<-EOF
-It converts rails models from 2.3 to 3.0.
-
-    named_scope :active, :conditions => {:active => true}, :order => "created_at desc"
-    named_scope :my_active, lambda { |user| {:conditions => ["user_id = ? and active = ?", user.id, true], :order => "created_at desc"} }
-    =>
-    scope :active, where(:active => true).order("created_at desc")
-    scope :my_active, lambda { |user| where("user_id = ? and active = ?", user.id, true).order("created_at desc") }
-
-    default_scope :order => "id DESC"
-    =>
-    default_scope order("id DESC")
-
-    Post.find(:all, :limit => 2)
-    Post.find(:all)
-    Post.find(:first)
-    Post.find(:last, :conditions => {:title => "test"})
-    Post.first(:conditions => {:title => "test"})
-    Post.all(:joins => :comments)
-    =>
-    Post.limit(2)
-    Post.all
-    Post.first
-    Post.where(:title => "test").last
-    Post.where(:title => "test").first
-    Post.joins(:comments)
-
-    Post.find_in_batches(:conditions => {:title => "test"}, :batch_size => 100) do |posts|
-    end
-    Post.find_in_batches(:conditions => {:title => "test"}) do |posts|
-    end
-    =>
-    Post.where(:title => "test").find_each(:batch_size => 100) do |post|
-    end
-    Post.where(:title => "test").find_each do |post|
-    end
-
-    with_scope(:find => {:conditions => {:active => true}}) { Post.first }
-    with_exclusive_scope(:find => {:limit =>1}) { Post.last }
-    =>
-    with_scope(where(:active => true)) { Post.first }
-    with_exclusive_scope(limit(1)) { Post.last }
-
-    Client.count("age", :conditions => {:active => true})
-    Client.average("orders_count", :conditions => {:active => true})
-    Client.min("age", :conditions => {:active => true})
-    Client.max("age", :conditions => {:active => true})
-    Client.sum("orders_count", :conditions => {:active => true})
-    =>
-    Client.where(:active => true).count("age")
-    Client.where(:active => true).average("orders_count")
-    Client.where(:active => true).min("age")
-    Client.where(:active => true).max("age")
-    Client.where(:active => true).sum("orders_count")
-
-
-    self.errors.on(:email).present?
-    =>
-    self.errors[:email].present?
-
-    self.errors.add_to_base("error message")
-    =>
-    self.errors.add(:base, "error message")
-
-    self.save(false)
-    =>
-    self.save(:validate => false)
-
-    Post.update_all({:title => "title"}, {:title => "test"})
-    Post.update_all("title = \'title\'", "title = \'test\'")
-    Post.update_all("title = \'title\'", ["title = ?", title])
-    Post.update_all({:title => "title"}, {:title => "test"}, {:limit => 2})
-    =>
-    Post.where(:title => "test").update_all(:title => "title")
-    Post.where("title = \'test\'").update_all("title = \'title\'")
-    Post.where(["title = ?", title]).update_all("title = \'title\'")
-    Post.where(:title => "test").limit(2).update_all(:title => "title")
-
-    Post.delete_all("title = \'test\'")
-    Post.delete_all(["title = ?", title])
-    =>
-    Post.where("title = \'test\'").delete_all
-    Post.where("title = ?", title).delete_all
-
-    Post.destroy_all("title = \'test\'")
-    Post.destroy_all(["title = ?", title])
-    =>
-    Post.where("title = \'test\'").destroy_all
-    Post.where("title = ?", title).destroy_all
+  description <<~EOF
+    It converts rails models from 2.3 to 3.0.
+    
+        named_scope :active, :conditions => {:active => true}, :order => "created_at desc"
+        named_scope :my_active, lambda { |user| {:conditions => ["user_id = ? and active = ?", user.id, true], :order => "created_at desc"} }
+        =>
+        scope :active, where(:active => true).order("created_at desc")
+        scope :my_active, lambda { |user| where("user_id = ? and active = ?", user.id, true).order("created_at desc") }
+    
+        default_scope :order => "id DESC"
+        =>
+        default_scope order("id DESC")
+    
+        Post.find(:all, :limit => 2)
+        Post.find(:all)
+        Post.find(:first)
+        Post.find(:last, :conditions => {:title => "test"})
+        Post.first(:conditions => {:title => "test"})
+        Post.all(:joins => :comments)
+        =>
+        Post.limit(2)
+        Post.all
+        Post.first
+        Post.where(:title => "test").last
+        Post.where(:title => "test").first
+        Post.joins(:comments)
+    
+        Post.find_in_batches(:conditions => {:title => "test"}, :batch_size => 100) do |posts|
+        end
+        Post.find_in_batches(:conditions => {:title => "test"}) do |posts|
+        end
+        =>
+        Post.where(:title => "test").find_each(:batch_size => 100) do |post|
+        end
+        Post.where(:title => "test").find_each do |post|
+        end
+    
+        with_scope(:find => {:conditions => {:active => true}}) { Post.first }
+        with_exclusive_scope(:find => {:limit =>1}) { Post.last }
+        =>
+        with_scope(where(:active => true)) { Post.first }
+        with_exclusive_scope(limit(1)) { Post.last }
+    
+        Client.count("age", :conditions => {:active => true})
+        Client.average("orders_count", :conditions => {:active => true})
+        Client.min("age", :conditions => {:active => true})
+        Client.max("age", :conditions => {:active => true})
+        Client.sum("orders_count", :conditions => {:active => true})
+        =>
+        Client.where(:active => true).count("age")
+        Client.where(:active => true).average("orders_count")
+        Client.where(:active => true).min("age")
+        Client.where(:active => true).max("age")
+        Client.where(:active => true).sum("orders_count")
+    
+    
+        self.errors.on(:email).present?
+        =>
+        self.errors[:email].present?
+    
+        self.errors.add_to_base("error message")
+        =>
+        self.errors.add(:base, "error message")
+    
+        self.save(false)
+        =>
+        self.save(:validate => false)
+    
+        Post.update_all({:title => "title"}, {:title => "test"})
+        Post.update_all("title = \'title\'", "title = \'test\'")
+        Post.update_all("title = \'title\'", ["title = ?", title])
+        Post.update_all({:title => "title"}, {:title => "test"}, {:limit => 2})
+        =>
+        Post.where(:title => "test").update_all(:title => "title")
+        Post.where("title = \'test\'").update_all("title = \'title\'")
+        Post.where(["title = ?", title]).update_all("title = \'title\'")
+        Post.where(:title => "test").limit(2).update_all(:title => "title")
+    
+        Post.delete_all("title = \'test\'")
+        Post.delete_all(["title = ?", title])
+        =>
+        Post.where("title = \'test\'").delete_all
+        Post.where("title = ?", title).delete_all
+    
+        Post.destroy_all("title = \'test\'")
+        Post.destroy_all(["title = ?", title])
+        =>
+        Post.where("title = \'test\'").destroy_all
+        Post.where("title = ?", title).destroy_all
   EOF
 
   keys = [:conditions, :order, :joins, :select, :from, :having, :group, :include, :limit, :offset, :lock, :readonly]

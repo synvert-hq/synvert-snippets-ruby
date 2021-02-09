@@ -1,11 +1,11 @@
 
 Synvert::Rewriter.new 'rails', 'convert_render_nothing_true_to_head_ok' do
-  description <<-EOF
-It replaces render nothing: true with head :ok in controller files.
-
-    render nothing: true
-    =>
-    head :ok
+  description <<~EOF
+    It replaces render nothing: true with head :ok in controller files.
+    
+        render nothing: true
+        =>
+        head :ok
   EOF
 
   within_file 'app/controllers/**/*.rb' do

@@ -1,23 +1,23 @@
 Synvert::Rewriter.new 'rspec', 'remove_monkey_patches' do
-  description <<-EOF
-It removes monkey patching of the top level methods like describe
-
-    RSpec.configure do |rspec|
-    end
-    =>
-    RSpec.configure do |rspec|
-      rspec.expose_dsl_globally = false
-    end
-
-    describe 'top-level example group' do
-      describe 'nested example group' do
-      end
-    end
-    =>
-    RSpec.describe 'top-level example group' do
-      describe 'nested example group' do
-      end
-    end
+  description <<~EOF
+    It removes monkey patching of the top level methods like describe
+    
+        RSpec.configure do |rspec|
+        end
+        =>
+        RSpec.configure do |rspec|
+          rspec.expose_dsl_globally = false
+        end
+    
+        describe 'top-level example group' do
+          describe 'nested example group' do
+          end
+        end
+        =>
+        RSpec.describe 'top-level example group' do
+          describe 'nested example group' do
+          end
+        end
   EOF
 
   if_gem 'rspec', { gte: '3.0.0' }
