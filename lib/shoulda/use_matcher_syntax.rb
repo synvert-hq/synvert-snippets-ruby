@@ -136,7 +136,7 @@ controllers:
       other_calls = hash_to_calls(node.arguments.last)
       replace_with "#{new_code}.#{other_calls}"
     else
-      replace_with "#{new_code}"
+      replace_with new_code
     end
   end
 
