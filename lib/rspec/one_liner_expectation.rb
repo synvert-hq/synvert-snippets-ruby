@@ -61,7 +61,7 @@ Synvert::Rewriter.new 'rspec', 'one_liner_expectation' do
               EOS
             else
               replace_with <<~EOS
-                it '#{old_matcher.to_s.sub('have', 'has').gsub('_', ' ')} #{times} #{items_name}' do
+                it '#{old_matcher.to_s.sub('have', 'has').tr('_', ' ')} #{times} #{items_name}' do
                   expect(subject.#{items_name}.size).#{new_message} #{new_matcher} #{times}
                 end
               EOS
