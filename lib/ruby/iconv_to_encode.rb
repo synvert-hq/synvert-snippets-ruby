@@ -31,7 +31,7 @@ It convert Iconv#iconv to String#encode
       must_silently_ignore_bad_chars = from_charset.type == :str &&
         from_charset.to_value.split('//').include?('IGNORE')
       encode_options = ''
-      if (must_silently_ignore_bad_chars)
+      if must_silently_ignore_bad_chars
         encode_options = ', invalid: :replace, undef: :replace'
       end
       cleaned_from_charset = from_charset.to_source.gsub(/\/{2}[^\/']+/, '')
