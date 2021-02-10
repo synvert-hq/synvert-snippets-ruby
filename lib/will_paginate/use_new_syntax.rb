@@ -17,8 +17,8 @@ Synvert::Rewriter.new 'will_paginate', 'use_new_syntax' do
 
   if_gem 'will_paginate', { gte: '3.0.0' }
 
-  ar_keys = [:conditions, :order, :joins, :select, :from, :having, :group, :include, :limit, :offset, :lock, :readonly]
-  wp_keys = [:page, :per_page]
+  ar_keys = %i[conditions order joins select from having group include limit offset lock readonly]
+  wp_keys = %i[page per_page]
   ar_keys_converters = {
     :conditions => :where,
     :include => :includes
