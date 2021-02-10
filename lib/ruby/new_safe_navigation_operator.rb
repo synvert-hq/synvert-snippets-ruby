@@ -18,7 +18,7 @@ Synvert::Rewriter.new 'ruby', 'new_safe_navigation_operator' do
       # =>
       # u.?profile.?thumbnails.?large(100, format: 'jpg')
       # u.?profile.?thumbnails.?large(100, format: 'jpg')
-      %w(try! try).each do |message|
+      %w[try! try].each do |message|
         within_node type: 'send', message: message do
           if node.arguments.size == 0
             # Do nothing
