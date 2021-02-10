@@ -23,7 +23,7 @@ Synvert::Rewriter.new 'rspec', 'new_hook_scope' do
     # before(:all) { do_something }
     # =>
     # before(:context) { do_something }
-    %w(before after around).each do |scope|
+    %w[before after around].each do |scope|
       with_node type: 'send', message: scope, arguments: [:all] do
         replace_with add_receiver_if_necessary("#{scope}(:context)")
       end

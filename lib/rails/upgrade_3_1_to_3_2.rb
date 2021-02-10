@@ -47,7 +47,7 @@ Synvert::Rewriter.new 'rails', 'upgrade_3_1_to_3_2' do
     # set_sequence_name = "seq" => self.sequence_name = "seq"
     # set_primary_key = "id" => self.primary_key = "id"
     # set_locking_column = "lock" => self.locking_column = "lock"
-    %w(set_table_name set_inheritance_column set_sequence_name set_primary_key set_locking_column).each do |message|
+    %w[set_table_name set_inheritance_column set_sequence_name set_primary_key set_locking_column].each do |message|
       with_node type: 'send', message: message do
         new_message = message.sub('set_', '')
         replace_with "self.#{new_message} = {{arguments}}"

@@ -83,7 +83,7 @@ end"
     # Factory.define :user do |user|
     #   after(:create) { |instance| create_list(:post, 5, user: instance) }
     # end
-    %w(after_build after_create).each do |message|
+    %w[after_build after_create].each do |message|
       within_node type: 'block', caller: { type: 'send', message: message } do
         goto_node :caller do
           new_message = message.sub('after_', '')
@@ -158,7 +158,7 @@ end"
     # Factory.create(:user) => create(:user)
     # Factory.build(:use) => build(:user)
     # Factory.attributes_for(:user) => attributes_for(:user)
-    %w(create build attributes_for).each do |message|
+    %w[create build attributes_for].each do |message|
       with_node type: 'send', receiver: 'Factory', message: message do
         replace_with "#{message}({{arguments}})"
       end

@@ -64,7 +64,7 @@ Synvert::Rewriter.new 'factory_girl', 'use_short_syntax' do
 
   # insert include FactoryGirl::Syntax::Methods
   within_file 'test/test_helper.rb' do
-    %w(Test::Unit::TestCase ActiveSupport::TestCase MiniTest::Unit::TestCase MiniTest::Spec MiniTest::Rails::ActiveSupport::TestCase).each do |class_name|
+    %w[Test::Unit::TestCase ActiveSupport::TestCase MiniTest::Unit::TestCase MiniTest::Spec MiniTest::Rails::ActiveSupport::TestCase].each do |class_name|
       within_node type: 'class', name: class_name do
         unless_exist_node type: 'send', message: 'include', arguments: ['FactoryGirl::Syntax::Methods'] do
           insert 'include FactoryGirl::Syntax::Methods'
@@ -89,7 +89,7 @@ Synvert::Rewriter.new 'factory_girl', 'use_short_syntax' do
   # FactoryGirl.create_pair(...) => create_pair(...)
   # FactoryGirl.build_pair(...) => build_pair(...)
   within_files '{test,spec,features}/**/*.rb' do
-    %w(create build attributes_for build_stubbed create_list build_list create_pair build_pair).each do |message|
+    %w[create build attributes_for build_stubbed create_list build_list create_pair build_pair].each do |message|
       with_node type: 'send', receiver: 'FactoryGirl', message: message do
         replace_with "#{message}({{arguments}})"
       end

@@ -31,7 +31,7 @@ Synvert::Rewriter.new 'rails', 'convert_rails_test_request_methods_4_2_to_5_0' d
   # =>
   # get :show, params: { id: user.id }, flash: { notice: 'Welcome' }, session: { admin: user.admin? }.
   within_files '{test,spec}/{functional,controllers}/**/*.rb' do
-    %w(get post put patch delete).each do |message|
+    %w[get post put patch delete].each do |message|
       with_node type: 'send', message: message do
         next unless node.arguments.size > 1
         next unless node.arguments[1].type == :hash
@@ -50,7 +50,7 @@ Synvert::Rewriter.new 'rails', 'convert_rails_test_request_methods_4_2_to_5_0' d
   # =>
   # get '/posts/1', params: { user_id: user.id }, headers: { 'HTTP_AUTHORIZATION' => 'fake' }
   within_files '{test,spec}/{integration}/**/*.rb' do
-    %w(get post put patch delete).each do |message|
+    %w[get post put patch delete].each do |message|
       with_node type: 'send', message: message do
         next unless node.arguments.size > 1
         next if node.arguments[1].type == :hash && (node.arguments[1].has_key?(:params) || node.arguments[1].has_key?(:headers))
