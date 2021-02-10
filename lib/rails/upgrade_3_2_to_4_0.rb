@@ -279,7 +279,7 @@ It upgrades rails from 3.2 to 4.0.
         other_arguments_str = node.arguments[0...-1].map(&:to_source).join(', ')
         confirm = hash.hash_value(:confirm).to_source
         other_options = hash.children.map { |pair|
-          unless [:confirm, :data].include?(pair.key.to_value)
+          unless %i[confirm data].include?(pair.key.to_value)
             if pair.key.type == :sym
               "#{pair.key.to_value}: #{pair.value.to_source}"
             else
