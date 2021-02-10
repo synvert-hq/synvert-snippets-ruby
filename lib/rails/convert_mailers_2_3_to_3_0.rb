@@ -63,7 +63,7 @@ It converts rails mailers from 2.3 to 3.0.
           args[:to] = node.arguments.first.to_source
           remove
         end
-        %w(subject from cc bcc).each do |message|
+        %w[subject from cc bcc].each do |message|
           with_node type: 'send', receiver: nil, message: message do
             args[message.to_sym] = node.arguments.first.to_source
             remove

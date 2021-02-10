@@ -45,8 +45,8 @@ After version 2.6.2
 
   if_gem 'shoulda-matchers', { gte: '1.5.0' }
 
-  unit_test_file_patterns = %w(test/unit/**/*_test.rb spec/models/**/*_spec.rb)
-  function_test_file_patterns = %w(test/functional/**/*_test.rb spec/controllers/**/*_spec.rb)
+  unit_test_file_patterns = %w[test/unit/**/*_test.rb spec/models/**/*_spec.rb]
+  function_test_file_patterns = %w[test/functional/**/*_test.rb spec/controllers/**/*_spec.rb]
 
   unit_test_file_patterns.each do |file_pattern|
     within_files file_pattern do

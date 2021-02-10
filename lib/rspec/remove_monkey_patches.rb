@@ -24,7 +24,7 @@ It removes monkey patching of the top level methods like describe
 
   if_gem 'rspec', { gte: '3.0.0' }
 
-  monkey_patches_methods = %w(describe shared_examples shared_examples_for shared_context)
+  monkey_patches_methods = %w[describe shared_examples shared_examples_for shared_context]
 
   within_files 'spec/**/*.rb' do
     top_level = true
