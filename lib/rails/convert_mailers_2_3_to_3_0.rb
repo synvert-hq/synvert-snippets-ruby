@@ -1,36 +1,36 @@
 # frozen_string_literal: true
 
 Synvert::Rewriter.new 'rails', 'convert_mailers_2_3_to_3_0' do
-  description <<-EOF
-It converts rails mailers from 2.3 to 3.0.
-
-  class Notifier < ActionMailer::Base
-    def signup_notification(recipient)
-      recipients      recipient.email_address_with_name
-      subject         "New account information"
-      from            "system@example.com"
-      sent_on         Time.now
-      content_type    "multipart/alternative"
-      body            :account => recipient
-    end
-  end
-  =>
-  class Notifier < ActionMailer::Base
-    def signup_notification(recipient)
-      @account = recipient
-      mail(:to => recipient.email_address_with_name, :subject => "New account information", :from => "system@example.com", :date => Time.now)
-    end
-  end
-
-  Notifier.deliver_signup_notification(recipient)
-  =>
-  Notifier.signup_notification(recipient).deliver
-
-  message = Notifier.create_signup_notification(recipient)
-  Notifier.deliver(message)
-  =>
-  message = Notifier.signup_notification(recipient)
-  message.deliver
+  description <<~EOF
+    It converts rails mailers from 2.3 to 3.0.
+    
+      class Notifier < ActionMailer::Base
+        def signup_notification(recipient)
+          recipients      recipient.email_address_with_name
+          subject         "New account information"
+          from            "system@example.com"
+          sent_on         Time.now
+          content_type    "multipart/alternative"
+          body            :account => recipient
+        end
+      end
+      =>
+      class Notifier < ActionMailer::Base
+        def signup_notification(recipient)
+          @account = recipient
+          mail(:to => recipient.email_address_with_name, :subject => "New account information", :from => "system@example.com", :date => Time.now)
+        end
+      end
+    
+      Notifier.deliver_signup_notification(recipient)
+      =>
+      Notifier.signup_notification(recipient).deliver
+    
+      message = Notifier.create_signup_notification(recipient)
+      Notifier.deliver(message)
+      =>
+      message = Notifier.signup_notification(recipient)
+      message.deliver
   EOF
 
   if_gem 'rails', { gte: '2.3.0' }

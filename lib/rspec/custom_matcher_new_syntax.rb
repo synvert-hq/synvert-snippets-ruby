@@ -1,22 +1,22 @@
 # frozen_string_literal: true
 
 Synvert::Rewriter.new 'rspec', 'custom_matcher_new_syntax' do
-  description <<-eos
-It uses RSpec::Matchers new syntax.
-
-    RSpec::Matchers.define :be_awesome do
-      match_for_should { }
-      match_for_should_not { }
-      failure_message_for_should { }
-      failure_message_for_should_not { }
-    end
-    =>
-    RSpec::Matchers.define :be_awesome do
-      match { }
-      match_when_negated { }
-      failure_message { }
-      failure_message_when_negated { }
-    end
+  description <<~eos
+    It uses RSpec::Matchers new syntax.
+    
+        RSpec::Matchers.define :be_awesome do
+          match_for_should { }
+          match_for_should_not { }
+          failure_message_for_should { }
+          failure_message_for_should_not { }
+        end
+        =>
+        RSpec::Matchers.define :be_awesome do
+          match { }
+          match_when_negated { }
+          failure_message { }
+          failure_message_when_negated { }
+        end
   eos
 
   if_gem 'rspec', { gte: '3.0.0' }

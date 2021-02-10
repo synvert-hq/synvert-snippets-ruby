@@ -1,16 +1,16 @@
 # frozen_string_literal: true
 
 Synvert::Rewriter.new 'ruby', 'block_to_yield' do
-  description <<-EOF
-It converts block to yield.
-
-    def slow(&block)
-      block.call
-    end
-    =>
-    def slow
-      yield
-    end
+  description <<~EOF
+    It converts block to yield.
+    
+        def slow(&block)
+          block.call
+        end
+        =>
+        def slow
+          yield
+        end
   EOF
 
   within_files '**/*.rb' do

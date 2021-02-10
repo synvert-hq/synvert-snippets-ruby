@@ -1,52 +1,52 @@
 # frozen_string_literal: true
 
 Synvert::Rewriter.new 'factory_bot', 'deprecate_static_value' do
-  description <<-EOF
-It deprecates factory_bot static value
-
-  FactoryBot.define do
-    factory :post do
-      user
-      association :user
-      title "Something"
-      comments_count 0
-      tag Tag::MAGIC
-      recent_statuses []
-      status([:draft, :published].sample)
-      published_at 1.day.from_now
-      created_at(1.day.ago)
-      updated_at Time.current
-      update_times [Time.current]
-      meta_tags(foo: Time.current)
-      other_tags({ foo: Time.current })
-      options color: :blue
-      trait :old do
-        published_at 1.week.ago
+  description <<~EOF
+    It deprecates factory_bot static value
+    
+      FactoryBot.define do
+        factory :post do
+          user
+          association :user
+          title "Something"
+          comments_count 0
+          tag Tag::MAGIC
+          recent_statuses []
+          status([:draft, :published].sample)
+          published_at 1.day.from_now
+          created_at(1.day.ago)
+          updated_at Time.current
+          update_times [Time.current]
+          meta_tags(foo: Time.current)
+          other_tags({ foo: Time.current })
+          options color: :blue
+          trait :old do
+            published_at 1.week.ago
+          end
+        end
       end
-    end
-  end
-  =>
-  FactoryBot.define do
-    factory :post do
-      user
-      association :user
-      title { "Something" }
-      comments_count { 0 }
-      tag { Tag::MAGIC }
-      recent_statuses { [] }
-      status { [:draft, :published].sample }
-      published_at { 1.day.from_now }
-      created_at { 1.day.ago }
-      updated_at { Time.current }
-      update_times { [Time.current] }
-      meta_tags { { foo: Time.current } }
-      other_tags { { foo: Time.current } }
-      options { { color: :blue } }
-      trait :old do
-        published_at { 1.week.ago }
+      =>
+      FactoryBot.define do
+        factory :post do
+          user
+          association :user
+          title { "Something" }
+          comments_count { 0 }
+          tag { Tag::MAGIC }
+          recent_statuses { [] }
+          status { [:draft, :published].sample }
+          published_at { 1.day.from_now }
+          created_at { 1.day.ago }
+          updated_at { Time.current }
+          update_times { [Time.current] }
+          meta_tags { { foo: Time.current } }
+          other_tags { { foo: Time.current } }
+          options { { color: :blue } }
+          trait :old do
+            published_at { 1.week.ago }
+          end
+        end
       end
-    end
-  end
   EOF
 
   within_files '{test,spec}/factories/**/*.rb' do

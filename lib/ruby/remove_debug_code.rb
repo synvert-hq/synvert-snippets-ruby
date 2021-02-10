@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
 Synvert::Rewriter.new 'ruby', 'remove_debug_code' do
-  description <<-EOF
-It removes puts and p methods
+  description <<~EOF
+    It removes puts and p methods
   EOF
 
   within_files '**/*.rb' do

@@ -1,32 +1,32 @@
 # frozen_string_literal: true
 
 Synvert::Rewriter.new 'rails', 'convert_rails_env' do
-  description <<-EOF
-It converts RAILS_ENV to Rails.env.
-
-  RAILS_ENV
-  =>
-  Rails.env
-
-  \"\#{RAILS_ENV}\"
-  =>
-  \"\#{Rails.env}\"
-
-  RAILS_ENV == 'development'
-  =>
-  Rails.env.development?
-
-  'development' == RAILS_ENV
-  =>
-  Rails.env.development?
-
-  RAILS_ENV != 'development'
-  =>
-  !Rails.env.development?
-
-  'development' != RAILS_ENV
-  =>
-  !Rails.env.development?
+  description <<~EOF
+    It converts RAILS_ENV to Rails.env.
+    
+      RAILS_ENV
+      =>
+      Rails.env
+    
+      \"\#{RAILS_ENV}\"
+      =>
+      \"\#{Rails.env}\"
+    
+      RAILS_ENV == 'development'
+      =>
+      Rails.env.development?
+    
+      'development' == RAILS_ENV
+      =>
+      Rails.env.development?
+    
+      RAILS_ENV != 'development'
+      =>
+      !Rails.env.development?
+    
+      'development' != RAILS_ENV
+      =>
+      !Rails.env.development?
   EOF
 
   if_gem 'rails', { gte: '2.3.0' }

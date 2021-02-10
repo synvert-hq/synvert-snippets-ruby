@@ -1,46 +1,46 @@
 # frozen_string_literal: true
 
 Synvert::Rewriter.new 'shoulda', 'fix_deprecations' do
-  description <<-EOF
-It converts deprecations
-
-After version 1.5.0
-
-models:
-
-  should validate_format_of(:email).with('user@example.com')
-  =>
-  should allow_value('user@example.com').for(:email)
-
-controllers:
-
-  should assign_to(:user)
-  =>
-  should "assigns user" do
-    assert_not_nil assigns(:user)
-  end
-
-  should assign_to(:user) { @user }
-  =>
-  should "assigns user" do
-    assert_equal @user, assigns(:user)
-  end
-
-  should respond_with_content_type "application/json"
-  =>
-  should "responds with application/json" do
-    assert_equal "application/json", response.content_type
-  end
-
-After version 2.6.2
-
-  should ensure_inclusion_of(:age).in_range(0..100)
-  =>
-  should validate_inclusion_of(:age).in_range(0..100)
-
-  should ensure_exclusion_of(:age).in_range(0..100)
-  =>
-  should validate_exclusion_of(:age).in_range(0..100)
+  description <<~EOF
+    It converts deprecations
+    
+    After version 1.5.0
+    
+    models:
+    
+      should validate_format_of(:email).with('user@example.com')
+      =>
+      should allow_value('user@example.com').for(:email)
+    
+    controllers:
+    
+      should assign_to(:user)
+      =>
+      should "assigns user" do
+        assert_not_nil assigns(:user)
+      end
+    
+      should assign_to(:user) { @user }
+      =>
+      should "assigns user" do
+        assert_equal @user, assigns(:user)
+      end
+    
+      should respond_with_content_type "application/json"
+      =>
+      should "responds with application/json" do
+        assert_equal "application/json", response.content_type
+      end
+    
+    After version 2.6.2
+    
+      should ensure_inclusion_of(:age).in_range(0..100)
+      =>
+      should validate_inclusion_of(:age).in_range(0..100)
+    
+      should ensure_exclusion_of(:age).in_range(0..100)
+      =>
+      should validate_exclusion_of(:age).in_range(0..100)
   EOF
 
   if_gem 'shoulda-matchers', { gte: '1.5.0' }

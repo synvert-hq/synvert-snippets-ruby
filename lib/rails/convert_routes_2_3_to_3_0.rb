@@ -1,50 +1,50 @@
 # frozen_string_literal: true
 
 Synvert::Rewriter.new 'rails', 'convert_routes_2_3_to_3_0' do
-  description <<-EOF
-It converts rails routes from 2.3 to 3.0.
-
-    map.root :controller => "home", :action => :index
-    => root :to => "home#index"
-
-    map.connect "/main/:id", :controller => "main", :action => "home"
-    => match "/main/:id", :to => "main#home"
-
-    map.connect "/:controller/:action/:id"
-    => match "/:controller(/:action(/:id))(.:format)"
-
-    map.admin_signup "/admin_signup", :controller => "admin_signup", :action => "new", :method => "post"
-    => post "/admin_signup", :to => "admin_signup#new", :as => "admin_signup"
-
-    map.with_options :controller => "manage" do |manage|
-      manage.manage_index "manage_index", :action => "index"
-      manage.manage_intro "manage_intro", :action => "intro"
-    end
-    =>
-    manage.manage_index "manage_index", :to => "index#manage"
-    manage.manage_intro "manage_intro", :to => "intro#manage"
-
-    map.namespace :admin do |admin|
-      admin.resources :users
-    end
-    =>
-    namespace :admin do
-      resources :users
-    end
-
-    map.resources :posts, :collection => { :generate_pdf => :get }, :member => {:activate => :post} do |posts|
-      posts.resources :comments
-    end
-    =>
-    resources :posts do
-      collection do
-        get :generate_pdf
-      end
-      member do
-        post :activate
-      end
-      resources :comments
-    end
+  description <<~EOF
+    It converts rails routes from 2.3 to 3.0.
+    
+        map.root :controller => "home", :action => :index
+        => root :to => "home#index"
+    
+        map.connect "/main/:id", :controller => "main", :action => "home"
+        => match "/main/:id", :to => "main#home"
+    
+        map.connect "/:controller/:action/:id"
+        => match "/:controller(/:action(/:id))(.:format)"
+    
+        map.admin_signup "/admin_signup", :controller => "admin_signup", :action => "new", :method => "post"
+        => post "/admin_signup", :to => "admin_signup#new", :as => "admin_signup"
+    
+        map.with_options :controller => "manage" do |manage|
+          manage.manage_index "manage_index", :action => "index"
+          manage.manage_intro "manage_intro", :action => "intro"
+        end
+        =>
+        manage.manage_index "manage_index", :to => "index#manage"
+        manage.manage_intro "manage_intro", :to => "intro#manage"
+    
+        map.namespace :admin do |admin|
+          admin.resources :users
+        end
+        =>
+        namespace :admin do
+          resources :users
+        end
+    
+        map.resources :posts, :collection => { :generate_pdf => :get }, :member => {:activate => :post} do |posts|
+          posts.resources :comments
+        end
+        =>
+        resources :posts do
+          collection do
+            get :generate_pdf
+          end
+          member do
+            post :activate
+          end
+          resources :comments
+        end
   EOF
 
   if_gem 'rails', { gte: '2.3.0' }

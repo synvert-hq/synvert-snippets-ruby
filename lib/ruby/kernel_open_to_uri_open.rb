@@ -1,12 +1,12 @@
 # frozen_string_literal: true
 
 Synvert::Rewriter.new 'ruby', 'kernel_open_to_uri_open' do
-  description <<-EOF
-It converts Kernel#open to URI.open
-
-    open('http://test.com')
-    =>
-    URI.open('http://test.com')
+  description <<~EOF
+    It converts Kernel#open to URI.open
+    
+        open('http://test.com')
+        =>
+        URI.open('http://test.com')
   EOF
 
   within_files '**/*.rb' do
