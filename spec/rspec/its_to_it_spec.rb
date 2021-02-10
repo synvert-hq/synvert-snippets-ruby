@@ -5,7 +5,8 @@ require 'spec_helper'
 RSpec.describe 'RSpec converts its to it' do
   let(:rewriter_name) { 'rspec/its_to_it' }
   let(:fake_file_path) { 'spec/models/post_spec.rb' }
-  let(:test_content) { "
+  let(:test_content) {
+    "
 describe Post do
   describe 'example' do
     subject { { foo: 1, bar: 2 } }
@@ -14,8 +15,10 @@ describe Post do
     its('keys.first') { should == :foo }
   end
 end
-  "}
-  let(:test_rewritten_content) { "
+  "
+  }
+  let(:test_rewritten_content) {
+    "
 describe Post do
   describe 'example' do
     subject { { foo: 1, bar: 2 } }
@@ -36,7 +39,8 @@ describe Post do
     end
   end
 end
-  "}
+  "
+  }
 
   include_examples 'convertable'
 end

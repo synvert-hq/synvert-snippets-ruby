@@ -29,14 +29,32 @@ It upgrades rails from 3.1 to 3.2.
 
   within_file 'config/environments/development.rb' do
     # insert config.active_record.auto_explain_threshold_in_seconds = 0.5
-    unless_exist_node type: 'send', receiver: { type: 'send', receiver: { type: 'send', message: 'config' }, message: 'active_record' }, message: 'auto_explain_threshold_in_seconds=' do
+    unless_exist_node type: 'send',
+                      receiver: {
+                        type: 'send',
+                        receiver: {
+                          type: 'send',
+                          message: 'config'
+                        },
+                        message: 'active_record'
+                      },
+                      message: 'auto_explain_threshold_in_seconds=' do
       insert 'config.active_record.auto_explain_threshold_in_seconds = 0.5'
     end
   end
 
   within_files 'config/environments/{development,test}.rb' do
     # insert config.active_record.mass_assignment_sanitizer = :strict
-    unless_exist_node type: 'send', receiver: { type: 'send', receiver: { type: 'send', message: 'config' }, message: 'active_record' }, message: 'mass_assignment_sanitizer=' do
+    unless_exist_node type: 'send',
+                      receiver: {
+                        type: 'send',
+                        receiver: {
+                          type: 'send',
+                          message: 'config'
+                        },
+                        message: 'active_record'
+                      },
+                      message: 'mass_assignment_sanitizer=' do
       insert 'config.active_record.mass_assignment_sanitizer = :strict'
     end
   end
@@ -47,7 +65,7 @@ It upgrades rails from 3.1 to 3.2.
     # set_sequence_name = "seq" => self.sequence_name = "seq"
     # set_primary_key = "id" => self.primary_key = "id"
     # set_locking_column = "lock" => self.locking_column = "lock"
-    %w(set_table_name set_inheritance_column set_sequence_name set_primary_key set_locking_column).each do |message|
+    %w[set_table_name set_inheritance_column set_sequence_name set_primary_key set_locking_column].each do |message|
       with_node type: 'send', message: message do
         new_message = message.sub('set_', '')
         replace_with "self.#{new_message} = {{arguments}}"
@@ -58,8 +76,10 @@ It upgrades rails from 3.1 to 3.2.
   within_files 'app/controllers/**/*.rb' do
     # ActionController::UnknownAction => AbstractController::ActionNotFound
     # ActionController::DoubleRenderError => AbstractController::DoubleRenderError
-    { 'ActionController::UnknownAction' => 'AbstractController::ActionNotFound',
-     'ActionController::DoubleRenderError' => 'AbstractController::DoubleRenderError' }.each do |old_const, new_const|
+    {
+      'ActionController::UnknownAction' => 'AbstractController::ActionNotFound',
+      'ActionController::DoubleRenderError' => 'AbstractController::DoubleRenderError'
+    }.each do |old_const, new_const|
       with_node type: 'const', to_source: old_const do
         replace_with new_const
       end

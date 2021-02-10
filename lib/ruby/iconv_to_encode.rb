@@ -28,17 +28,14 @@ It convert Iconv#iconv to String#encode
     with_node type: 'send', receiver: 'Iconv', message: 'new', arguments: { size: 2 } do
       to_charset = node.arguments[0]
       from_charset = node.arguments[1]
-      must_silently_ignore_bad_chars = from_charset.type == :str &&
-        from_charset.to_value.split('//').include?('IGNORE')
+      must_silently_ignore_bad_chars = from_charset.type == :str && from_charset.to_value.split('//').include?('IGNORE')
       encode_options = ''
       if (must_silently_ignore_bad_chars)
         encode_options = ', invalid: :replace, undef: :replace'
       end
       cleaned_from_charset = from_charset.to_source.gsub(/\/{2}[^\/']+/, '')
       cleaned_to_charset = to_charset.to_source.gsub(/\/{2}[^\/']+/, '')
-      replace_with(
-        "force_encoding(#{cleaned_from_charset}).encode(#{cleaned_to_charset}#{encode_options})"
-      )
+      replace_with("force_encoding(#{cleaned_from_charset}).encode(#{cleaned_to_charset}#{encode_options})")
     end
   end
 end
