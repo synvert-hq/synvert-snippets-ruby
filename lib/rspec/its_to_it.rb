@@ -71,19 +71,19 @@ It converts rspec its to it.
           its_arg = node.caller.arguments.first.to_source
           its_arg = its_arg[1...-1] if its_arg =~ /^['"].*['"]$/
           its_arg = its_arg[1..-1] if its_arg[0] == ':'
-          rewritten_code = ''
+          rewritten_code = []
           args = its_arg.split('.')
           args.each_with_index do |arg, index|
             describe_name = arg[0] =~ /^[a-z]/ ? '#' + arg : arg
             message_name = arg[0] =~ /^[a-z]/ ? '.' + arg : arg
-            rewritten_code << "#{'  ' * index}describe '#{describe_name}' do\n"
-            rewritten_code << "#{'  ' * (index + 1)}subject { super()#{message_name} }\n"
-            rewritten_code << "#{'  ' * (index + 1)}it { {{body}} }\n" if index + 1 == args.length
+            rewritten_code << "#{'  ' * index}describe '#{describe_name}' do"
+            rewritten_code << "#{'  ' * (index + 1)}subject { super()#{message_name} }"
+            rewritten_code << "#{'  ' * (index + 1)}it { {{body}} }" if index + 1 == args.length
           end
           args.length.times do |i|
-            rewritten_code << "#{'  ' * (args.length - 1 - i)}end\n"
+            rewritten_code << "#{'  ' * (args.length - 1 - i)}end"
           end
-          replace_with rewritten_code
+          replace_with rewritten_code.join("\n")
         end
       end
     end

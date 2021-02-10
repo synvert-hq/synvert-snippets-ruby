@@ -118,16 +118,17 @@ It upgrade rails from 3.0 to 3.1.
   end
 
   # add config/initializers/wrap_parameters.rb'
-  new_code =  "# Enable parameter wrapping for JSON. You can disable this by setting :format to an empty array.\n"
-  new_code << "ActiveSupport.on_load(:action_controller) do\n"
-  new_code << "  wrap_parameters format: [:json]\n"
-  new_code << "end\n"
-  new_code << "\n"
-  new_code << "# Disable root element in JSON by default.\n"
-  new_code << "ActiveSupport.on_load(:active_record) do\n"
-  new_code << "  self.include_root_in_json = false\n"
-  new_code << 'end'
-  add_file 'config/initializers/wrap_parameters.rb', new_code
+  add_file 'config/initializers/wrap_parameters.rb', <<~EOS
+    # Enable parameter wrapping for JSON. You can disable this by setting :format to an empty array.
+    ActiveSupport.on_load(:action_controller) do
+      wrap_parameters format: [:json]
+    end
+
+    # Disable root element in JSON by default.
+    ActiveSupport.on_load(:active_record) do
+      self.include_root_in_json = false
+    end
+  EOS
 
   within_file 'config/initializers/session_store.rb' do
     # add Application.session_store :cookie_store, key: '_xxx-session'

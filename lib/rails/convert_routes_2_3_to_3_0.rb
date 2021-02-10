@@ -66,11 +66,12 @@ It converts rails routes from 2.3 to 3.0.
     if !method && hash_node.has_key?(:conditions) && hash_node.hash_value(:conditions).has_key?(:method)
       method = hash_node.hash_value(:conditions).hash_value(:method).to_value
     end
-    method ||= 'match'
+    method || 'match'
   end
 
   helper_method :generate_new_member_routes do |member_routes|
-    new_member_routes = "  member do\n"
+    new_member_routes = []
+    new_member_routes << "  member do\n"
     if member_routes.type == :hash
       member_routes.children.each do |pair_node|
         Array(pair_node.value.to_value).each do |method|
@@ -84,11 +85,12 @@ It converts rails routes from 2.3 to 3.0.
       end
     end
     new_member_routes << "  end\n"
-    new_member_routes
+    new_member_routes.join
   end
 
   helper_method :generate_new_collection_routes do |collection_routes|
-    new_collection_routes = "  collection do\n"
+    new_collection_routes = []
+    new_collection_routes << "  collection do\n"
     if collection_routes.type == :hash
       collection_routes.children.each do |pair_node|
         Array(pair_node.value.to_value).each do |method|
@@ -102,7 +104,7 @@ It converts rails routes from 2.3 to 3.0.
       end
     end
     new_collection_routes << "  end\n"
-    new_collection_routes
+    new_collection_routes.join
   end
 
   helper_method :reject_keys do |hash_node, *keys|
@@ -125,10 +127,11 @@ It converts rails routes from 2.3 to 3.0.
     with_node type: 'block', caller: { type: 'send', receiver: { not: nil }, message: 'namespace' } do
       if node.arguments.length > 0
         block_argument = node.arguments.first.to_source
-        new_routes = "namespace {{caller.arguments}} do\n"
+        new_routes = []
+        new_routes << "namespace {{caller.arguments}} do\n"
         new_routes << generate_new_child_routes(node, block_argument)
         new_routes << 'end'
-        replace_with new_routes
+        replace_with new_routes.join
       end
     end
   end
@@ -143,12 +146,12 @@ It converts rails routes from 2.3 to 3.0.
     # manage.manage_intro "manage_intro", :action => "intro", :controller => "manage"
     with_node type: 'block', caller: { type: 'send', message: 'with_options' } do
       block_argument = node.arguments.first.to_source
-      new_routes = ''
+      new_routes = []
       node.body.each do |child_node|
         new_route = child_node.to_source.sub(block_argument, 'map')
         new_routes << "#{new_route}, {{caller.arguments}}\n"
       end
-      replace_with new_routes
+      replace_with new_routes.join
     end
   end
 
@@ -175,11 +178,12 @@ It converts rails routes from 2.3 to 3.0.
           collection_routes = hash_argument.hash_value(:collection)
           member_routes = hash_argument.hash_value(:member)
           other_options = reject_keys(hash_argument, :collection, :member)
-          new_routes = if other_options.length > 0
-                         "#{message} {{caller.arguments.first}}, #{other_options.join(', ')} do\n"
-                       else
-                         "#{message} {{caller.arguments.first}} do\n"
-                       end
+          new_routes = []
+          if other_options.length > 0
+            new_routes << "#{message} {{caller.arguments.first}}, #{other_options.join(', ')} do\n"
+          else
+            new_routes << "#{message} {{caller.arguments.first}} do\n"
+          end
           new_routes << generate_new_collection_routes(collection_routes) if collection_routes
           new_routes << generate_new_member_routes(member_routes) if member_routes
         else
@@ -187,7 +191,7 @@ It converts rails routes from 2.3 to 3.0.
         end
         new_routes << generate_new_child_routes(node, block_argument)
         new_routes << 'end'
-        replace_with new_routes
+        replace_with new_routes.join
       end
     end
   end
@@ -241,15 +245,16 @@ It converts rails routes from 2.3 to 3.0.
           collection_routes = hash_argument.hash_value(:collection)
           member_routes = hash_argument.hash_value(:member)
           other_options = reject_keys(hash_argument, :collection, :member)
-          new_routes = if other_options.length > 0
-                         "#{message} {{arguments.first}}, #{other_options.join(', ')} do\n"
-                       else
-                         "#{message} {{arguments.first}} do\n"
-                       end
+          new_routes = []
+          if other_options.length > 0
+            new_routes << "#{message} {{arguments.first}}, #{other_options.join(', ')} do\n"
+          else
+            new_routes << "#{message} {{arguments.first}} do\n"
+          end
           new_routes << generate_new_collection_routes(collection_routes) if collection_routes
           new_routes << generate_new_member_routes(member_routes) if member_routes
           new_routes << 'end'
-          replace_with new_routes
+          replace_with new_routes.join
         else
           replace_with "#{message} {{arguments}}"
         end

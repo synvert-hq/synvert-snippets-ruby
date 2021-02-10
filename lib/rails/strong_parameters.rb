@@ -77,10 +77,11 @@ It uses string_parameters to replace attr_accessible.
           # append def xxx_params; ...; end
           permit_params = parameters[object_name].join(', ')
           unless_exist_node type: 'def', name: "#{object_name}_params" do
-            new_code =  "def #{object_name}_params\n"
-            new_code << "  params.require(:#{object_name}).permit(#{permit_params})\n"
-            new_code << 'end'
-            append new_code
+            append <<~EOS
+              def #{object_name}_params
+                params.require(:#{object_name}).permit(#{permit_params})
+              end
+            EOS
           end
 
           # params[:xxx] => xxx_params

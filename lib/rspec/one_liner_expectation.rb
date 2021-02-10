@@ -53,18 +53,19 @@ It convers rspec one liner expectation.
           if_only_exist_node type: 'send', receiver: nil, message: old_message, arguments: { first: { type: 'send', receiver: { type: 'send', message: old_matcher } } } do
             times = node.body.first.arguments.first.receiver.arguments.first.to_source
             items_name = node.body.first.arguments.first.message
-            new_code = ''
             if :items == items_name
-              new_code << "it 'has #{times} items' do\n"
-              new_code << "  expect(subject.size).#{new_message} #{new_matcher}(#{times})\n"
-              new_code << 'end'
+              replace_with <<~EOS
+                it 'has #{times} items' do
+                  expect(subject.size).#{new_message} #{new_matcher}(#{times})
+                end
+              EOS
             else
-              it_message = "#{old_matcher.to_s.sub('have', 'has').gsub('_', ' ')} #{times} #{items_name}"
-              new_code << "it '#{it_message}' do\n"
-              new_code << "  expect(subject.#{items_name}.size).#{new_message} #{new_matcher} #{times}\n"
-              new_code << 'end'
+              replace_with <<~EOS
+                it '#{old_matcher.to_s.sub('have', 'has').gsub('_', ' ')} #{times} #{items_name}' do
+                  expect(subject.#{items_name}.size).#{new_message} #{new_matcher} #{times}
+                end
+              EOS
             end
-            replace_with new_code
           end
         end
       end
