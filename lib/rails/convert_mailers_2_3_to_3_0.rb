@@ -63,7 +63,7 @@ It converts rails mailers from 2.3 to 3.0.
           args[:to] = node.arguments.first.to_source
           remove
         end
-        %w(subject from cc bcc).each do |message|
+        %w[subject from cc bcc].each do |message|
           with_node type: 'send', receiver: nil, message: message do
             args[message.to_sym] = node.arguments.first.to_source
             remove
@@ -79,7 +79,9 @@ It converts rails mailers from 2.3 to 3.0.
         with_node type: 'send', receiver: nil, message: 'body', arguments: { size: 1 } do
           body_argument = node.arguments.first
           if :hash == body_argument.type
-            replace_with body_argument.children.map { |pair_node| "@#{pair_node.key.to_value} = #{pair_node.value.to_source}" }.join("\n")
+            replace_with body_argument.children.map { |pair_node|
+                           "@#{pair_node.key.to_value} = #{pair_node.value.to_source}"
+                         }.join("\n")
           end
         end
         if args.size > 0

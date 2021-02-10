@@ -60,7 +60,7 @@ It deprecates factory_bot static value
               new_arguments = add_curly_brackets_if_necessary(node.arguments.first.to_source)
               replace_with "{{message}} { #{new_arguments} }"
             else
-              replace_with "{{message}} { {{arguments}} }"
+              replace_with '{{message}} { {{arguments}} }'
             end
           end
         end

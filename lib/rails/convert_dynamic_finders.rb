@@ -26,9 +26,7 @@ It converts rails dynamic finders to arel syntax.
     return nil if (fields - attributes).present?
 
     if fields.length == node.arguments.length && :hash != node.arguments.first.type
-      fields.length.times.map { |i|
-        fields[i] + ': ' + node.arguments[i].to_source
-      }.join(', ')
+      fields.length.times.map { |i| fields[i] + ': ' + node.arguments[i].to_source }.join(', ')
     else
       '{{arguments}}'
     end
