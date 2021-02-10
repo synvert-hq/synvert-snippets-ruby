@@ -5,7 +5,8 @@ require 'spec_helper'
 RSpec.describe 'RSpec use new config options' do
   let(:rewriter_name) { 'rspec/new_config_options' }
   let(:fake_file_path) { 'spec/spec_helper.rb' }
-  let(:test_content) { '
+  let(:test_content) {
+    '
 RSpec.configure do |config|
   config.treat_symbols_as_metadata_keys_with_true_values = true
 
@@ -24,8 +25,10 @@ RSpec.configure do |config|
   config.filename_pattern = "**\/*_test.rb"
   config.warnings
 end
-  '}
-  let(:test_rewritten_content) { '
+  '
+  }
+  let(:test_rewritten_content) {
+    '
 RSpec.configure do |config|
 
   config.backtrace_exclusion_patterns
@@ -43,7 +46,8 @@ RSpec.configure do |config|
   config.pattern = "**\/*_test.rb"
   config.warnings?
 end
-  '}
+  '
+  }
 
   include_examples 'convertable'
 end

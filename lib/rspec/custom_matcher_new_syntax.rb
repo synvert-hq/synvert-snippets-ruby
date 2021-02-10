@@ -36,16 +36,18 @@ It uses RSpec::Matchers new syntax.
       #   failure_message { }
       #   failure_message_when_negated { }
       # end
-      { match_for_should: 'match',
-       match_for_should_not: 'match_when_negated',
-       failure_message_for_should: 'failure_message',
-       failure_message_for_should_not: 'failure_message_when_negated' }.each do |old_message, new_message|
-         with_node type: 'block', caller: { receiver: nil, message: old_message } do
-           goto_node :caller do
-             replace_with new_message
-           end
-         end
-       end
+      {
+        match_for_should: 'match',
+        match_for_should_not: 'match_when_negated',
+        failure_message_for_should: 'failure_message',
+        failure_message_for_should_not: 'failure_message_when_negated'
+      }.each do |old_message, new_message|
+        with_node type: 'block', caller: { receiver: nil, message: old_message } do
+          goto_node :caller do
+            replace_with new_message
+          end
+        end
+      end
     end
   end
 end
