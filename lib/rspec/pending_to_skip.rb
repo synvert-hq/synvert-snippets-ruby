@@ -1,45 +1,45 @@
 # frozen_string_literal: true
 
 Synvert::Rewriter.new 'rspec', 'pending_to_skip' do
-  description <<-EOF
-It converts rspec pending to skip.
-
-    it 'is skipped', :pending => true do
-      do_something_possibly_fail
-    end
-    =>
-    it 'is skipped', :skip => true do
-      do_something_possibly_fail
-    end
-
-    pending 'is skipped' do
-      do_something_possibly_fail
-    end
-    =>
-    skip 'is skipped' do
-      do_something_possibly_fail
-    end
-
-    it 'is skipped' do
-      pending
-      do_something_possibly_fail
-    end
-    =>
-    it 'is skipped' do
-      skip
-      do_something_possibly_fail
-    end
-
-    it 'is run and expected to fail' do
-      pending do
-        do_something_surely_fail
-      end
-    end
-    =>
-    it 'is run and expected to fail' do
-      skip
-      do_something_surely_fail
-    end
+  description <<~EOF
+    It converts rspec pending to skip.
+    
+        it 'is skipped', :pending => true do
+          do_something_possibly_fail
+        end
+        =>
+        it 'is skipped', :skip => true do
+          do_something_possibly_fail
+        end
+    
+        pending 'is skipped' do
+          do_something_possibly_fail
+        end
+        =>
+        skip 'is skipped' do
+          do_something_possibly_fail
+        end
+    
+        it 'is skipped' do
+          pending
+          do_something_possibly_fail
+        end
+        =>
+        it 'is skipped' do
+          skip
+          do_something_possibly_fail
+        end
+    
+        it 'is run and expected to fail' do
+          pending do
+            do_something_surely_fail
+          end
+        end
+        =>
+        it 'is run and expected to fail' do
+          skip
+          do_something_surely_fail
+        end
   EOF
 
   if_gem 'rspec', { gte: '3.0.0' }

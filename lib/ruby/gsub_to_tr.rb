@@ -1,12 +1,12 @@
 # frozen_string_literal: true
 
 Synvert::Rewriter.new 'ruby', 'gsub_to_tr' do
-  description <<-EOF
-It converts String#gsub to String#tr
-
-    'slug from title'.gsub(' ', '_')
-    =>
-    'slug from title'.tr(' ', '_')
+  description <<~EOF
+    It converts String#gsub to String#tr
+    
+        'slug from title'.gsub(' ', '_')
+        =>
+        'slug from title'.tr(' ', '_')
   EOF
 
   within_files '**/*.rb' do

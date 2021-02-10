@@ -1,10 +1,10 @@
 # frozen_string_literal: true
 
 Synvert::Rewriter.new 'rspec', 'be_close_to_be_within' do
-  description <<-EOF
-It converts rspec be_close matcher to be_within matcher.
-
-    expect(1.0 / 3.0).to be_close(0.333, 0.001) => expect(1.0 / 3.0).to be_within(0.001).of(0.333)
+  description <<~EOF
+    It converts rspec be_close matcher to be_within matcher.
+    
+        expect(1.0 / 3.0).to be_close(0.333, 0.001) => expect(1.0 / 3.0).to be_within(0.001).of(0.333)
   EOF
 
   if_gem 'rspec', { gte: '2.1.0' }

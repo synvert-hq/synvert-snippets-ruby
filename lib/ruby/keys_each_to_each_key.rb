@@ -1,12 +1,12 @@
 # frozen_string_literal: true
 
 Synvert::Rewriter.new 'ruby', 'keys_each_to_each_key' do
-  description <<-EOF
-It convert Hash#keys.each to Hash#each_key
-
-    params.keys.each {}
-    =>
-    params.each_key {}
+  description <<~EOF
+    It convert Hash#keys.each to Hash#each_key
+    
+        params.keys.each {}
+        =>
+        params.each_key {}
   EOF
 
   within_files '**/*.rb' do

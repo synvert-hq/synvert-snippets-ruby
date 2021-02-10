@@ -1,11 +1,11 @@
 # frozen_string_literal: true
 
 Synvert::Rewriter.new 'rails', 'upgrade_5_0_to_5_1' do
-  description <<-EOF
-1. it replaces HashWithIndifferentAccess with ActiveSupport::HashWithIndifferentAccess.
-
-2. it replaces Rails.application.config.secrets[:smtp_settings]["address"] with
-   Rails.application.config.secrets[:smtp_settings][:address]
+  description <<~EOF
+    1. it replaces HashWithIndifferentAccess with ActiveSupport::HashWithIndifferentAccess.
+    
+    2. it replaces Rails.application.config.secrets[:smtp_settings]["address"] with
+       Rails.application.config.secrets[:smtp_settings][:address]
   EOF
 
   within_files '**/*.rb' do

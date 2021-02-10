@@ -1,38 +1,38 @@
 # frozen_string_literal: true
 
 Synvert::Rewriter.new 'rails', 'upgrade_4_2_to_5_0' do
-  description <<-EOF
-1. it replaces config.static_cache_control = ... with config.public_file_server.headers = ... in config files.
-
-2. it replaces config.serve_static_files = ... with config.public_file_server.enabled = ... in config files.
-
-3. it replaces render nothing: true with head :ok in controller files.
-
-4. it replaces head status: 406 with head 406 in controller files.
-
-5. it replaces middleware.use "Foo::Bar" with "middleware.use Foo::Bar" in config files.
-
-6. it replaces redirect_to :back with redirect_back in controller files.
-
-7. it replaces after_commit :xxx, on: :yyy with after_yyy_commit :xxx in model files.
-
-8. it replaces errors[]= to errors.add in model files.
-
-9. it adds app/models/application_record.rb file.
-
-10. it replaces ActiveRecord::Base with ApplicationRecord in model files.
-
-11. it adds app/jobs/application_job.rb file.
-
-12. it replaces ActiveJob::Base with ApplicationJob in job files.
-
-13. it replaces MissingSourceFile with LoadError.
-
-14. it adds config/initializers/new_framework_defaults.rb.
-
-15. it replaces get :show, { id: user.id }, { notice: 'Welcome' }, { admin: user.admin? } with get :show, params: { id: user.id }, flash: { notice: 'Welcome' }, session: { admin: user.admin? } in test files.
-
-16. it removes raise_in_transactional_callbacks= in config/application.rb.
+  description <<~EOF
+    1. it replaces config.static_cache_control = ... with config.public_file_server.headers = ... in config files.
+    
+    2. it replaces config.serve_static_files = ... with config.public_file_server.enabled = ... in config files.
+    
+    3. it replaces render nothing: true with head :ok in controller files.
+    
+    4. it replaces head status: 406 with head 406 in controller files.
+    
+    5. it replaces middleware.use "Foo::Bar" with "middleware.use Foo::Bar" in config files.
+    
+    6. it replaces redirect_to :back with redirect_back in controller files.
+    
+    7. it replaces after_commit :xxx, on: :yyy with after_yyy_commit :xxx in model files.
+    
+    8. it replaces errors[]= to errors.add in model files.
+    
+    9. it adds app/models/application_record.rb file.
+    
+    10. it replaces ActiveRecord::Base with ApplicationRecord in model files.
+    
+    11. it adds app/jobs/application_job.rb file.
+    
+    12. it replaces ActiveJob::Base with ApplicationJob in job files.
+    
+    13. it replaces MissingSourceFile with LoadError.
+    
+    14. it adds config/initializers/new_framework_defaults.rb.
+    
+    15. it replaces get :show, { id: user.id }, { notice: 'Welcome' }, { admin: user.admin? } with get :show, params: { id: user.id }, flash: { notice: 'Welcome' }, session: { admin: user.admin? } in test files.
+    
+    16. it removes raise_in_transactional_callbacks= in config/application.rb.
   EOF
 
   add_snippet 'rails', 'add_active_record_migration_rails_version'
