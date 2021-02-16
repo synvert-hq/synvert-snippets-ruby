@@ -2,17 +2,17 @@
 
 Synvert::Rewriter.new 'will_paginate', 'use_new_syntax' do
   description <<~EOS
-It uses will_paginate new syntax.
-
-    Post.paginate(:conditions => {:active => true}, :order => "created_at DESC", :per_page => 10, :page => 1)
-
-    Post.paginated_each(:conditions => {:active => true}, :order => "created_at DESC", :per_page => 10) do |post|
-    end
-=>
-    Post.where(:active => true).order("created_at DESC").paginate(:per_page => 10, :page => 1)
-
-    Post.where(:active => true).order("created_at DESC").find_each(:batch_size => 10) do |post|
-    end
+    It uses will_paginate new syntax.
+    
+        Post.paginate(:conditions => {:active => true}, :order => "created_at DESC", :per_page => 10, :page => 1)
+    
+        Post.paginated_each(:conditions => {:active => true}, :order => "created_at DESC", :per_page => 10) do |post|
+        end
+    =>
+        Post.where(:active => true).order("created_at DESC").paginate(:per_page => 10, :page => 1)
+    
+        Post.where(:active => true).order("created_at DESC").find_each(:batch_size => 10) do |post|
+        end
   EOS
 
   if_gem 'will_paginate', { gte: '3.0.0' }
