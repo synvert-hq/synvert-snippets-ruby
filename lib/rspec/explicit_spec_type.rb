@@ -39,16 +39,18 @@ Synvert::Rewriter.new 'rspec', 'explicit_spec_type' do
   # =>
   # describe SomeModel, :type => :model do
   # end
-  { models: 'model',
-   controllers: 'controller',
-   helpers: 'helper',
-   mailers: 'mailer',
-   requests: 'request',
-   integration: 'request',
-   api: 'request',
-   routing: 'routing',
-   views: 'view',
-   features: 'feature' }.each do |directory, type|
+  {
+    models: 'model',
+    controllers: 'controller',
+    helpers: 'helper',
+    mailers: 'mailer',
+    requests: 'request',
+    integration: 'request',
+    api: 'request',
+    routing: 'routing',
+    views: 'view',
+    features: 'feature'
+  }.each do |directory, type|
     within_files "spec/#{directory}/*.rb" do
       top_level = true
       with_node type: 'send', message: 'describe' do

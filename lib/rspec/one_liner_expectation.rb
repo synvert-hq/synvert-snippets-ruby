@@ -50,7 +50,18 @@ Synvert::Rewriter.new 'rspec', 'one_liner_expectation' do
       # end
       matcher_converters.each do |old_matcher, new_matcher|
         with_node type: 'block', caller: { message: 'it' } do
-          if_only_exist_node type: 'send', receiver: nil, message: old_message, arguments: { first: { type: 'send', receiver: { type: 'send', message: old_matcher } } } do
+          if_only_exist_node type: 'send',
+                             receiver: nil,
+                             message: old_message,
+                             arguments: {
+                               first: {
+                                 type: 'send',
+                                 receiver: {
+                                   type: 'send',
+                                   message: old_matcher
+                                 }
+                               }
+                             } do
             times = node.body.first.arguments.first.receiver.arguments.first.to_source
             items_name = node.body.first.arguments.first.message
             if :items == items_name
