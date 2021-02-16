@@ -26,12 +26,30 @@ Synvert::Rewriter.new 'rails', 'strong_parameters' do
 
   within_files 'config/**/*.rb' do
     # remove config.active_record.whitelist_attributes = ...
-    with_node type: 'send', receiver: { type: 'send', receiver: { type: 'send', message: 'config' }, message: 'active_record' }, message: 'whitelist_attributes=' do
+    with_node type: 'send',
+              receiver: {
+                type: 'send',
+                receiver: {
+                  type: 'send',
+                  message: 'config'
+                },
+                message: 'active_record'
+              },
+              message: 'whitelist_attributes=' do
       remove
     end
 
     # remove config.active_record.mass_assignment_sanitizer = ...
-    with_node type: 'send', receiver: { type: 'send', receiver: { type: 'send', message: 'config' }, message: 'active_record' }, message: 'mass_assignment_sanitizer=' do
+    with_node type: 'send',
+              receiver: {
+                type: 'send',
+                receiver: {
+                  type: 'send',
+                  message: 'config'
+                },
+                message: 'active_record'
+              },
+              message: 'mass_assignment_sanitizer=' do
       remove
     end
   end

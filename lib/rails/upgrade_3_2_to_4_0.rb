@@ -101,7 +101,16 @@ Synvert::Rewriter.new 'rails', 'upgrade_3_2_to_4_0' do
 
   within_file 'config/**/*.rb' do
     # remove config.active_record.identity_map = true
-    with_node type: 'send', receiver: { type: 'send', receiver: { type: 'send', message: 'config' }, message: 'active_record' }, message: 'identity_map=' do
+    with_node type: 'send',
+              receiver: {
+                type: 'send',
+                receiver: {
+                  type: 'send',
+                  message: 'config'
+                },
+                message: 'active_record'
+              },
+              message: 'identity_map=' do
       remove
     end
 
@@ -111,12 +120,30 @@ Synvert::Rewriter.new 'rails', 'upgrade_3_2_to_4_0' do
     end
 
     # config.assets.compress = ... => config.assets.js_compressor = ...
-    with_node type: 'send', receiver: { type: 'send', receiver: { type: 'send', message: 'config' }, message: 'assets' }, message: 'compress=' do
+    with_node type: 'send',
+              receiver: {
+                type: 'send',
+                receiver: {
+                  type: 'send',
+                  message: 'config'
+                },
+                message: 'assets'
+              },
+              message: 'compress=' do
       replace_with 'config.assets.js_compressor = {{arguments}}'
     end
 
     # remove config.action_dispatch.best_standards_support = ...
-    with_node type: 'send', receiver: { type: 'send', receiver: { type: 'send', message: 'config' }, message: 'action_dispatch' }, message: 'best_standards_support=' do
+    with_node type: 'send',
+              receiver: {
+                type: 'send',
+                receiver: {
+                  type: 'send',
+                  message: 'config'
+                },
+                message: 'action_dispatch'
+              },
+              message: 'best_standards_support=' do
       remove
     end
 
@@ -145,7 +172,13 @@ Synvert::Rewriter.new 'rails', 'upgrade_3_2_to_4_0' do
     end
 
     # remove config.active_record.auto_explain_threshold_in_seconds = x
-    with_node type: 'send', message: 'auto_explain_threshold_in_seconds=', receiver: { type: 'send', receiver: 'config', message: 'active_record' } do
+    with_node type: 'send',
+              message: 'auto_explain_threshold_in_seconds=',
+              receiver: {
+                type: 'send',
+                receiver: 'config',
+                message: 'active_record'
+              } do
       remove
     end
   end
@@ -246,7 +279,7 @@ Synvert::Rewriter.new 'rails', 'upgrade_3_2_to_4_0' do
 
   within_files 'app/models/**/*.rb' do
     # has_many :comments, dependent: :restrict => has_many :comments, dependent: restrict_with_exception
-    %w(has_one has_many).each do |message|
+    %w[has_one has_many].each do |message|
       within_node type: 'send', receiver: nil, message: message do
         with_node type: 'pair', key: 'dependent', value: :restrict do
           replace_with 'dependent: :restrict_with_exception'
@@ -260,11 +293,12 @@ Synvert::Rewriter.new 'rails', 'upgrade_3_2_to_4_0' do
     # before_filter :load_post => before_action :load_post
     # after_filter :increment_view_count => after_filter :increment_view_count
     with_node type: 'send', receiver: nil, message: /_filter$/ do
-      new_message = if node.message == :skip_filter
-                      'skip_action_callback'
-                    else
-                      node.message.to_s.sub('filter', 'action')
-                    end
+      new_message =
+        if node.message == :skip_filter
+          'skip_action_callback'
+        else
+          node.message.to_s.sub('filter', 'action')
+        end
       replace_with "#{new_message} {{arguments}}"
     end
   end
@@ -278,15 +312,16 @@ Synvert::Rewriter.new 'rails', 'upgrade_3_2_to_4_0' do
         hash = node.arguments.last
         other_arguments_str = node.arguments[0...-1].map(&:to_source).join(', ')
         confirm = hash.hash_value(:confirm).to_source
-        other_options = hash.children.map { |pair|
-          unless [:confirm, :data].include?(pair.key.to_value)
-            if pair.key.type == :sym
-              "#{pair.key.to_value}: #{pair.value.to_source}"
-            else
-              "#{pair.key.to_source} => #{pair.value.to_source}"
+        other_options =
+          hash.children.map { |pair|
+            unless [:confirm, :data].include?(pair.key.to_value)
+              if pair.key.type == :sym
+                "#{pair.key.to_value}: #{pair.value.to_source}"
+              else
+                "#{pair.key.to_source} => #{pair.value.to_source}"
+              end
             end
-          end
-        }.compact.join(', ')
+          }.compact.join(', ')
         data_options = "data: { confirm: #{confirm} }"
         replace_with "link_to #{other_arguments_str}, #{other_options}, #{data_options}"
       end
@@ -294,16 +329,18 @@ Synvert::Rewriter.new 'rails', 'upgrade_3_2_to_4_0' do
   end
 
   within_files '**/*.rb' do
-    { 'ActiveRecord::Fixtures' => 'ActiveRecord::FixtureSet',
-     'ActiveRecord::TestCase' => 'ActiveSupport::TestCase',
-     'ActionController::Integration' => 'ActionDispatch::Integration',
-     'ActionController::IntegrationTest' => 'ActionDispatch::IntegrationTest',
-     'ActionController::PerformanceTest' => 'ActionDispatch::PerformanceTest',
-     'ActionController::AbstractRequest' => 'ActionDispatch::Request',
-     'ActionController::Request' => 'ActionDispatch::Request',
-     'ActionController::AbstractResponse' => 'ActionDispatch::Response',
-     'ActionController::Response' => 'ActionDispatch::Response',
-     'ActionController::Routing' => 'ActionDispatch::Routing' }.each do |deprecated, favor|
+    {
+      'ActiveRecord::Fixtures' => 'ActiveRecord::FixtureSet',
+      'ActiveRecord::TestCase' => 'ActiveSupport::TestCase',
+      'ActionController::Integration' => 'ActionDispatch::Integration',
+      'ActionController::IntegrationTest' => 'ActionDispatch::IntegrationTest',
+      'ActionController::PerformanceTest' => 'ActionDispatch::PerformanceTest',
+      'ActionController::AbstractRequest' => 'ActionDispatch::Request',
+      'ActionController::Request' => 'ActionDispatch::Request',
+      'ActionController::AbstractResponse' => 'ActionDispatch::Response',
+      'ActionController::Response' => 'ActionDispatch::Response',
+      'ActionController::Routing' => 'ActionDispatch::Routing'
+    }.each do |deprecated, favor|
       with_node to_source: deprecated do
         replace_with favor
       end

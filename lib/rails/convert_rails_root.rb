@@ -69,7 +69,17 @@ Synvert::Rewriter.new 'rails', 'convert_rails_root' do
     # File.exists?(Rails.root.join('config/database.yml'))
     # =>
     # Rails.root.join('config/database.yml').exist?
-    with_node type: 'send', receiver: 'File', message: 'exists?', arguments: { size: 1, first: { type: 'send', receiver: 'Rails.root', message: 'join' } } do
+    with_node type: 'send',
+              receiver: 'File',
+              message: 'exists?',
+              arguments: {
+                size: 1,
+                first: {
+                  type: 'send',
+                  receiver: 'Rails.root',
+                  message: 'join'
+                }
+              } do
       replace_with '{{arguments.first}}.exist?'
     end
   end
