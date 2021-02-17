@@ -1,15 +1,27 @@
 # frozen_string_literal: true
 
-Synvert::Rewriter.new 'ruby', 'new_hash_syntax' do
-  description <<~'EOF'
-    Use ruby new hash syntax extended in ruby 2.2.
-    
-        {:foo => 'bar'} => {foo: 'bar'}
-        {:'foo-x' => 'bar'} => {'foo-x': 'bar'}
-        {:"foo-#{suffix}" 'bar'} => {"foo-#{suffix}": 'bar'}
-  EOF
+Synvert::Rewriter.new 'ruby', 'new_2_2_hash_syntax' do
+  description <<~'EOS'
+    Use ruby 2.2 new hash syntax.
+
+    ```ruby
+    { :foo => 'bar' }
+    { :'foo-x' => 'bar' }
+    { :"foo-#{suffix}" 'bar' }
+    ```
+
+    =>
+
+    ```ruby
+    { foo: 'bar' }
+    { 'foo-x': 'bar' }
+    { "foo-#{suffix}": 'bar' }
+    ```
+  EOS
 
   if_ruby '2.2.0'
+
+  add_snippet 'ruby', 'new_1_9_hash_syntax'
 
   within_files '**/*.rb' do
     # {:foo => 'bar'} => {foo: 'bar'}
