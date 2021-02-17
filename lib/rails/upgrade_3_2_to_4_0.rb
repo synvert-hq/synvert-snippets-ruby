@@ -213,7 +213,7 @@ Synvert::Rewriter.new 'rails', 'upgrade_3_2_to_4_0' do
 
   within_files 'app/models/**/*.rb' do
     # has_many :comments, dependent: :restrict => has_many :comments, dependent: restrict_with_exception
-    %w(has_one has_many).each do |message|
+    %w[has_one has_many].each do |message|
       within_node type: 'send', receiver: nil, message: message do
         with_node type: 'pair', key: 'dependent', value: :restrict do
           replace_with 'dependent: :restrict_with_exception'

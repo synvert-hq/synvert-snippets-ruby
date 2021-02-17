@@ -70,7 +70,7 @@ Synvert::Rewriter.new 'ruby', 'merge_to_square_brackets' do
     within_node type: 'block', caller: { type: 'send', message: 'inject' }, arguments: { size: 2 }, body: { size: 1 } do
       hash_name = node.arguments.first.name.to_s
       block_start_line = node.line
-      %w(merge merge!).each do |message|
+      %w[merge merge!].each do |message|
         with_node type: 'send', receiver: hash_name, message: message, arguments: { size: 1, first: { type: 'hash' } } do
           merge_line = node.line
           splitter = block_start_line == merge_line ? '; ' : "\n"
@@ -94,7 +94,7 @@ Synvert::Rewriter.new 'ruby', 'merge_to_square_brackets' do
     within_node type: 'block', caller: { type: 'send', message: 'each_with_object' }, arguments: { size: 2 }, body: { size: 1 } do
       hash_name = node.arguments.last.name.to_s
       block_start_line = node.line
-      %w(merge merge!).each do |message|
+      %w[merge merge!].each do |message|
         with_node type: 'send', receiver: hash_name, message: message, arguments: { size: 1, first: { type: 'hash' } } do
           merge_line = node.line
           splitter = block_start_line == merge_line ? '; ' : "\n"

@@ -157,7 +157,7 @@ Synvert::Rewriter.new 'rails', 'upgrade_3_0_to_3_1' do
   within_files 'db/migrate/*.rb' do
     # def self.up => def up
     # def self.down => def down
-    %w(up down).each do |name|
+    %w[up down].each do |name|
       with_node type: 'defs', name: name do
         new_code = <<~EOS
           def #{name}

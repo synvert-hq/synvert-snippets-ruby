@@ -198,7 +198,7 @@ Synvert::Rewriter.new 'rails', 'convert_models_2_3_to_3_0' do
     # default_scope :conditions => {:active => true}
     # =>
     # default_scope where(:active => true)
-    %w(named_scope default_scope).each do |message|
+    %w[named_scope default_scope].each do |message|
       within_node type: 'send', message: message, arguments: { last: { type: 'hash' } } do
         with_node type: 'hash' do
           if keys.any? { |key| node.has_key? key }
@@ -254,7 +254,7 @@ Synvert::Rewriter.new 'rails', 'convert_models_2_3_to_3_0' do
       end
     end
 
-    %w(first last).each do |message|
+    %w[first last].each do |message|
       # Post.first(:conditions => {:title => "test"})
       # =>
       # Post.where(:title => "test").first
@@ -266,7 +266,7 @@ Synvert::Rewriter.new 'rails', 'convert_models_2_3_to_3_0' do
       end
     end
 
-    %w(count average min max sum).each do |message|
+    %w[count average min max sum].each do |message|
       # Client.count("age", :conditions => {:active => true})
       # Client.average("orders_count", :conditions => {:active => true})
       # Client.min("age", :conditions => {:active => true})
@@ -353,14 +353,14 @@ Synvert::Rewriter.new 'rails', 'convert_models_2_3_to_3_0' do
     # =>
     # Post.where("title = \'test\'").destroy_all
     # Post.where("title = ?", title).destroy_all
-    %w(delete_all destroy_all).each do |message|
+    %w[delete_all destroy_all].each do |message|
       within_node type: 'send', message: message, arguments: { size: 1 } do
         conditions_node = node.arguments.first
         replace_with add_receiver_if_necessary("where(#{strip_brackets(conditions_node.to_source)}).#{message}")
       end
     end
 
-    %w(find_each find_in_batches).each do |message|
+    %w[find_each find_in_batches].each do |message|
       # Post.find_each(:conditions => {:title => "test"}, :batch_size => 100) do |post|
       # end
       # =>
@@ -385,7 +385,7 @@ Synvert::Rewriter.new 'rails', 'convert_models_2_3_to_3_0' do
       end
     end
 
-    %w(with_scope with_exclusive_scope).each do |message|
+    %w[with_scope with_exclusive_scope].each do |message|
       # with_scope(:find => {:conditions => {:active => true}}) { Post.first }
       # =>
       # with_scope(where(:active => true)) { Post.first }

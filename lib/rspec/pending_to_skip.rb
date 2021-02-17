@@ -89,7 +89,7 @@ Synvert::Rewriter.new 'rspec', 'pending_to_skip' do
       replace_with 'skip {{arguments}}'
     end
 
-    %w(it describe context).each do |message|
+    %w[it describe context].each do |message|
       # it 'is skipped', :pending => true do
       #   do_something_possibly_fail
       # end
