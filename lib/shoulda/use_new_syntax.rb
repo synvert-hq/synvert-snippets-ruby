@@ -1,8 +1,9 @@
 # frozen_string_literal: true
 
 Synvert::Rewriter.new 'shoulda', 'use_new_syntax' do
-  description 'It calls shoulda/use_matcher_syntax and shoulda/fix_deprecations sub snippets.'
+  description 'It uses shoulda new syntax and fix deprecations.'
 
   add_snippet 'shoulda', 'use_matcher_syntax'
-  add_snippet 'shoulda', 'fix_deprecations'
+  add_snippet 'shoulda', 'fix_1_5_deprecations'
+  add_snippet 'shoulda', 'fix_2_6_deprecations'
 end

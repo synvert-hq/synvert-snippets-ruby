@@ -1,10 +1,8 @@
 # frozen_string_literal: true
 
-Synvert::Rewriter.new 'shoulda', 'fix_deprecations' do
+Synvert::Rewriter.new 'shoulda', 'fix_1_5_deprecations' do
   description <<~EOS
-    It converts deprecations
-
-    After version 1.5.0
+    It fixes shoulda 1.5 deprecations.
 
     models:
 
@@ -42,20 +40,6 @@ Synvert::Rewriter.new 'shoulda', 'fix_deprecations' do
     should "responds with application/json" do
       assert_equal "application/json", response.content_type
     end
-    ```
-
-    After version 2.6.2
-
-    ```ruby
-    should ensure_inclusion_of(:age).in_range(0..100)
-    should ensure_exclusion_of(:age).in_range(0..100)
-    ```
-
-    =>
-
-    ```ruby
-    should validate_inclusion_of(:age).in_range(0..100)
-    should validate_exclusion_of(:age).in_range(0..100)
     ```
   EOS
 
@@ -140,26 +124,6 @@ end"
         replace_with "should \"responds with #{content_type}\" do
   assert_equal \"#{content_type}\", response.content_type
 end"
-      end
-    end
-  end
-
-  if_gem 'shoulda-matchers', { gt: '2.6.2' }
-
-  unit_test_file_patterns.each do |file_pattern|
-    within_files file_pattern do
-      # should ensure_inclusion_of(:age).in_range(0..100)
-      # =>
-      # should validate_inclusion_of(:age).in_range(0..100)
-      with_node type: 'send', message: 'ensure_inclusion_of' do
-        replace_with 'validate_inclusion_of({{arguments}})'
-      end
-
-      # should ensure_exclusion_of(:age).in_range(0..100)
-      # =>
-      # should validate_exclusion_of(:age).in_range(0..100)
-      with_node type: 'send', message: 'ensure_exclusion_of' do
-        replace_with 'validate_exclusion_of({{arguments}})'
       end
     end
   end
