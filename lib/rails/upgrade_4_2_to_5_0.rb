@@ -53,7 +53,18 @@ Synvert::Rewriter.new 'rails', 'upgrade_4_2_to_5_0' do
     # config.middleware.use "Foo::Bar"
     # =>
     # config.middleware.use Foo::Bar
-    with_node type: 'send', receiver: { type: 'send', receiver: 'config', message: 'middleware' }, message: 'use', arguments: { first: { type: 'str' } } do
+    with_node type: 'send',
+              receiver: {
+                type: 'send',
+                receiver: 'config',
+                message: 'middleware'
+              },
+              message: 'use',
+              arguments: {
+                first: {
+                  type: 'str'
+                }
+              } do
       arguments_source = node.arguments.map(&:to_source)
       arguments_source[0] = node.arguments.first.to_value
       replace_with "{{receiver}}.{{message}} #{arguments_source.join(', ')}"

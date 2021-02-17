@@ -5,7 +5,8 @@ require 'spec_helper'
 RSpec.describe 'Convert head response' do
   let(:rewriter_name) { 'rails/convert_head_response' }
   let(:fake_file_path) { 'app/controllers/posts_controller.rb' }
-  let(:test_content) { '
+  let(:test_content) {
+    '
 class PostsController < ApplicationController
   rescue_from BadGateway do
     head status: 502
@@ -23,8 +24,10 @@ class PostsController < ApplicationController
     head location: "/foo"
   end
 end
-  '}
-  let(:test_rewritten_content) { '
+  '
+  }
+  let(:test_rewritten_content) {
+    '
 class PostsController < ApplicationController
   rescue_from BadGateway do
     head 502
@@ -42,7 +45,8 @@ class PostsController < ApplicationController
     head :ok, location: "/foo"
   end
 end
-  '}
+  '
+  }
 
   include_examples 'convertable'
 end

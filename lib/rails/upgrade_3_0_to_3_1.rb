@@ -77,46 +77,118 @@ Synvert::Rewriter.new 'rails', 'upgrade_3_0_to_3_1' do
 
   within_file 'config/application.rb' do
     # insert config.assets.version = '1.0'
-    unless_exist_node type: 'send', receiver: { type: 'send', receiver: { type: 'send', message: 'config' }, message: 'assets' }, message: 'version=' do
+    unless_exist_node type: 'send',
+                      receiver: {
+                        type: 'send',
+                        receiver: {
+                          type: 'send',
+                          message: 'config'
+                        },
+                        message: 'assets'
+                      },
+                      message: 'version=' do
       insert "config.assets.version = '1.0'"
     end
 
     # insert config.assets.enabled = true
-    unless_exist_node type: 'send', receiver: { type: 'send', receiver: { type: 'send', message: 'config' }, message: 'assets' }, message: 'enabled=' do
+    unless_exist_node type: 'send',
+                      receiver: {
+                        type: 'send',
+                        receiver: {
+                          type: 'send',
+                          message: 'config'
+                        },
+                        message: 'assets'
+                      },
+                      message: 'enabled=' do
       insert 'config.assets.enabled = true'
     end
   end
 
   within_file 'config/environments/development.rb' do
     # remove config.action_view.debug_rjs = true
-    with_node type: 'send', receiver: { type: 'send', receiver: { type: 'send', message: 'config' }, message: 'action_view' }, message: 'debug_rjs=' do
+    with_node type: 'send',
+              receiver: {
+                type: 'send',
+                receiver: {
+                  type: 'send',
+                  message: 'config'
+                },
+                message: 'action_view'
+              },
+              message: 'debug_rjs=' do
       remove
     end
 
     # insert config.assets.debug = true
-    unless_exist_node type: 'send', receiver: { type: 'send', receiver: { type: 'send', message: 'config' }, message: 'assets' }, message: 'debug=' do
+    unless_exist_node type: 'send',
+                      receiver: {
+                        type: 'send',
+                        receiver: {
+                          type: 'send',
+                          message: 'config'
+                        },
+                        message: 'assets'
+                      },
+                      message: 'debug=' do
       insert 'config.assets.debug = true'
     end
 
     # insert config.assets.compress = false
-    unless_exist_node type: 'send', receiver: { type: 'send', receiver: { type: 'send', message: 'config' }, message: 'assets' }, message: 'compress=' do
+    unless_exist_node type: 'send',
+                      receiver: {
+                        type: 'send',
+                        receiver: {
+                          type: 'send',
+                          message: 'config'
+                        },
+                        message: 'assets'
+                      },
+                      message: 'compress=' do
       insert 'config.assets.compress = false'
     end
   end
 
   within_file 'config/environments/production.rb' do
     # insert config.assets.digest = true
-    unless_exist_node type: 'send', receiver: { type: 'send', receiver: { type: 'send', message: 'config' }, message: 'assets' }, message: 'digest=' do
+    unless_exist_node type: 'send',
+                      receiver: {
+                        type: 'send',
+                        receiver: {
+                          type: 'send',
+                          message: 'config'
+                        },
+                        message: 'assets'
+                      },
+                      message: 'digest=' do
       insert 'config.assets.digest = true'
     end
 
     # insert config.assets.compile = false
-    unless_exist_node type: 'send', receiver: { type: 'send', receiver: { type: 'send', message: 'config' }, message: 'assets' }, message: 'compile=' do
+    unless_exist_node type: 'send',
+                      receiver: {
+                        type: 'send',
+                        receiver: {
+                          type: 'send',
+                          message: 'config'
+                        },
+                        message: 'assets'
+                      },
+                      message: 'compile=' do
       insert 'config.assets.compile = false'
     end
 
     # insert config.assets.compress = true
-    unless_exist_node type: 'send', receiver: { type: 'send', receiver: { type: 'send', message: 'config' }, message: 'assets' }, message: 'compress=' do
+    unless_exist_node type: 'send',
+                      receiver: {
+                        type: 'send',
+                        receiver: {
+                          type: 'send',
+                          message: 'config'
+                        },
+                        message: 'assets'
+                      },
+                      message: 'compress=' do
       insert 'config.assets.compress = true'
     end
   end
@@ -148,7 +220,15 @@ Synvert::Rewriter.new 'rails', 'upgrade_3_0_to_3_1' do
 
   within_file 'config/initializers/session_store.rb' do
     # add Application.session_store :cookie_store, key: '_xxx-session'
-    with_node type: 'send', receiver: { type: 'send', message: 'config' }, message: 'session_store', arguments: { first: :cookie_store } do
+    with_node type: 'send',
+              receiver: {
+                type: 'send',
+                message: 'config'
+              },
+              message: 'session_store',
+              arguments: {
+                first: :cookie_store
+              } do
       session_store_key = node.receiver.receiver.to_source.split(':').first.underscore
       replace_with "{{receiver}}.session_store :cookie_store, key: '_#{session_store_key}-session'"
     end
@@ -157,7 +237,7 @@ Synvert::Rewriter.new 'rails', 'upgrade_3_0_to_3_1' do
   within_files 'db/migrate/*.rb' do
     # def self.up => def up
     # def self.down => def down
-    %w(up down).each do |name|
+    %w[up down].each do |name|
       with_node type: 'defs', name: name do
         new_code = <<~EOS
           def #{name}
