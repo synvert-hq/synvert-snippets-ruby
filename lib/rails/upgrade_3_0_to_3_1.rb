@@ -73,6 +73,8 @@ Synvert::Rewriter.new 'rails', 'upgrade_3_0_to_3_1' do
     ```
   EOS
 
+  add_snippet 'rails', 'use_migrations_instance_methods'
+
   if_gem 'rails', { gte: '3.1.0' }
 
   within_file 'config/application.rb' do
@@ -151,21 +153,6 @@ Synvert::Rewriter.new 'rails', 'upgrade_3_0_to_3_1' do
     with_node type: 'send', receiver: { type: 'send', message: 'config' }, message: 'session_store', arguments: { first: :cookie_store } do
       session_store_key = node.receiver.receiver.to_source.split(':').first.underscore
       replace_with "{{receiver}}.session_store :cookie_store, key: '_#{session_store_key}-session'"
-    end
-  end
-
-  within_files 'db/migrate/*.rb' do
-    # def self.up => def up
-    # def self.down => def down
-    %w(up down).each do |name|
-      with_node type: 'defs', name: name do
-        new_code = <<~EOS
-          def #{name}
-              {{body}}
-            end
-        EOS
-        replace_with new_code.strip, autoindent: false
-      end
     end
   end
 

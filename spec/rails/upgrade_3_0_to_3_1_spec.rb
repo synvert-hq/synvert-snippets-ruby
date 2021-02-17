@@ -65,35 +65,13 @@ Synvert::Application.config.session_store :cookie_store, key: 'somethingold'
   let(:session_store_rewritten_content) { "
 Synvert::Application.config.session_store :cookie_store, key: '_synvert-session'
   "}
-  let(:create_posts_content) { "
-class CreatePosts < ActiveRecord::Migration
-  def self.up
-    create_table :posts do |t|
-      t.string :name
-    end
-    add_index :posts, :name
+  let(:fake_file_paths) { %w[config/application.rb config/environments/development.rb config/environments/production.rb config/environments/test.rb config/initializers/session_store.rb config/initializers/wrap_parameters.rb] }
+  let(:test_contents) { [application_content, development_content, production_content, test_content, session_store_content, nil] }
+  let(:test_rewritten_contents) { [application_rewritten_content, development_rewritten_content, production_rewritten_content, test_rewritten_content, session_store_rewritten_content, wrap_parameters_rewritten_content] }
+
+  before do
+    load_sub_snippets(%w[rails/use_migrations_instance_methods])
   end
-  def self.down
-    drop_table :posts
-  end
-end
-  "}
-  let(:create_posts_rewritten_content) { "
-class CreatePosts < ActiveRecord::Migration
-  def up
-    create_table :posts do |t|
-      t.string :name
-    end
-    add_index :posts, :name
-  end
-  def down
-    drop_table :posts
-  end
-end
-  "}
-  let(:fake_file_paths) { %w[config/application.rb config/environments/development.rb config/environments/production.rb config/environments/test.rb config/initializers/session_store.rb config/initializers/wrap_parameters.rb db/migrate/20140831000000_create_posts.rb] }
-  let(:test_contents) { [application_content, development_content, production_content, test_content, session_store_content, nil, create_posts_content] }
-  let(:test_rewritten_contents) { [application_rewritten_content, development_rewritten_content, production_rewritten_content, test_rewritten_content, session_store_rewritten_content, wrap_parameters_rewritten_content, create_posts_rewritten_content] }
 
   include_examples 'convertable with multiple files'
 end

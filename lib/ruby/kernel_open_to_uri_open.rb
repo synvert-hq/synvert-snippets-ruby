@@ -2,7 +2,7 @@
 
 Synvert::Rewriter.new 'ruby', 'kernel_open_to_uri_open' do
   description <<~EOS
-    It converts Kernel#open to URI.open
+    It converts `Kernel#open` to `URI.open`
 
     ```ruby
     open('http://test.com')
