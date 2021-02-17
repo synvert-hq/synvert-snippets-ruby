@@ -25,9 +25,10 @@ Synvert::Rewriter.new 'ruby', 'new_safe_navigation_operator' do
     # u.?profile.?thumbnails.?large(100, format: 'jpg')
     %w(try! try).each do |message|
       within_node type: 'send', message: message do
-        if node.arguments.size == 0
+        case node.arguments.size
+        when 0
           # Do nothing
-        elsif node.arguments.size == 1
+        when 1
           replace_with '{{receiver}}&.{{arguments.first.to_value}}'
         else
           replace_with '{{receiver}}&.{{arguments.first.to_value}}({{arguments[1..-1]}})'
