@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe 'Fix factory_girl deprecations' do
-  let(:rewriter_name) { 'factory_girl/fix_deprecations' }
+  let(:rewriter_name) { 'factory_girl/fix_2_0_deprecations' }
 
   context 'factory methods' do
     let(:fake_file_path) { 'test/factories/post.rb' }

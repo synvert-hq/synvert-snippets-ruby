@@ -1,45 +1,57 @@
 # frozen_string_literal: true
 
-Synvert::Rewriter.new 'factory_girl', 'fix_deprecations' do
-  description <<~EOF
-    It converts deprecations
-    
-    Factory
-    
-      Factory.sequence :login do |n|
+Synvert::Rewriter.new 'factory_girl', 'fix_2_0_deprecations' do
+  description <<~EOS
+    It fixes factory girl 2.0 deprecations
+
+    ```ruby
+    Factory.sequence :login do |n|
+      "new_user_\#{n}"
+    end
+    Factory.define :user do |user|
+      user.admin true
+      user.login { Factory.next(:login) }
+      user.sequence(:email) { |n| "user\#{n}@gmail.com" }
+      user.after_create { |instance| create_list(:post, 5, user: instance) }
+    end
+    ```
+
+    =>
+
+    ```ruby
+    FactoryGirl.define do
+      sequence :user do |n|
         "new_user_\#{n}"
       end
-      Factory.define :user do |user|
-        user.admin true
-        user.login { Factory.next(:login) }
-        user.sequence(:email) { |n| "user\#{n}@gmail.com" }
-        user.after_create { |instance| create_list(:post, 5, user: instance) }
+      factory :user do |user|
+        admin true
+        login { generate(:login) }
+        sequence(:email) { |n| "user\#{n}@gmail.com" }
+        after(:create) { |instance| create_list(:post, 5, user: instance) }
       end
-    
-      =>
-    
-      FactoryGirl.define do
-        sequence :user do |n|
-          "new_user_\#{n}"
-        end
-        factory :user do |user|
-          admin true
-          login { generate(:login) }
-          sequence(:email) { |n| "user\#{n}@gmail.com" }
-          after(:create) { |instance| create_list(:post, 5, user: instance) }
-        end
-      end
-    
-    Test
-    
-      Factory(:user) => create(:user)
-      Factory.next(:email) => generate(:email)
-      Factory.stub(:comment) => build_stubbed(:comment)
-      Factory.create(:user) => create(:user)
-      Factory.build(:use) => build(:user)
-      Factory.attributes_for(:user) => attributes_for(:user)
-    
-  EOF
+    end
+    ```
+
+    ```ruby
+    Factory(:user)
+    Factory.next(:email)
+    Factory.stub(:comment)
+    Factory.create(:user)
+    Factory.build(:use)
+    Factory.attributes_for(:user)
+    ```
+
+    =>
+
+    ```ruby
+    create(:user)
+    generate(:email)
+    build_stubbed(:comment)
+    create(:user)
+    build(:user)
+    attributes_for(:user)
+    ```
+  EOS
 
   if_gem 'factory_girl', { gte: '2.0.0' }
 
@@ -49,9 +61,12 @@ Synvert::Rewriter.new 'factory_girl', 'fix_deprecations' do
     # end
     unless_exist_node type: 'send', receiver: 'FactoryGirl', message: 'define' do
       body = node.to_source.gsub("\n", "\n  ")
-      replace_with "FactoryGirl.define do
-  #{body}
-end"
+      new_body = <<~EOS
+        FactoryGirl.define do
+          #{body}
+        end
+      EOS
+      replace_with new_body.strip
     end
   end
 
