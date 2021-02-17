@@ -52,7 +52,7 @@ Synvert::Rewriter.new 'factory_bot', 'use_short_syntax' do
     FactoryBot.build_list(...)
     FactoryBot.create_pair(...)
     FactoryBot.build_pair(...)
-    ```ruby
+    ```
 
     =>
 
@@ -65,7 +65,7 @@ Synvert::Rewriter.new 'factory_bot', 'use_short_syntax' do
     build_list(...)
     create_pair(...)
     build_pair(...)
-    ```ruby
+    ```
   EOS
 
   # insert include FactoryBot::Syntax::Methods

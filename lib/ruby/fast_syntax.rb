@@ -4,7 +4,7 @@ Synvert::Rewriter.new 'ruby', 'fast_syntax' do
   description <<~EOS
     Use ruby fast syntax.
 
-    Reference: [https://speakerdeck.com/sferik/writing-fast-ruby](https://speakerdeck.com/sferik/writing-fast-ruby)
+    Reference: https://speakerdeck.com/sferik/writing-fast-ruby
   EOS
 
   add_snippet 'ruby', 'block_to_yield'

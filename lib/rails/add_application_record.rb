@@ -2,7 +2,10 @@
 
 Synvert::Rewriter.new 'rails', 'add_application_record' do
   description <<~EOS
-    It adds app/models/application_record.rb file and replaces ActiveRecord::Base with ApplicationRecord in model files.
+    It adds ApplicationRecord
+
+    1. it adds app/models/application_record.rb file.
+    2. it replaces ActiveRecord::Base with ApplicationRecord in model files.
 
     ```ruby
     class Post < ActiveRecord::Base

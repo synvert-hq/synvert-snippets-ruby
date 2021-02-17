@@ -2,7 +2,7 @@
 
 Synvert::Rewriter.new 'rails', 'convert_views_2_3_to_3_0' do
   description <<~EOS
-    1. remove h helper, rails 3 uses it by default.
+    1. remove `h` helper, rails 3 uses it by default.
 
     ```erb
     <%= h user.login %>

@@ -2,7 +2,7 @@
 
 Synvert::Rewriter.new 'ruby', 'gsub_to_tr' do
   description <<~EOS
-    It converts String#gsub to String#tr
+    It converts `String#gsub` to `String#tr`
 
     ```ruby
     'slug from title'.gsub(' ', '_')

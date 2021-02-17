@@ -2,7 +2,7 @@
 
 Synvert::Rewriter.new 'rails', 'convert_controller_filter_to_action' do
   description <<~EOS
-    It rename before_filter callbacks to before_action
+    It renames before_filter callbacks to before_action
 
     ```ruby
     class PostsController < ApplicationController

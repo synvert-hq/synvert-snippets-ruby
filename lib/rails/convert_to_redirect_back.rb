@@ -1,7 +1,19 @@
 # frozen_string_literal: true
 
 Synvert::Rewriter.new 'rails', 'convert_to_redirect_back' do
-  description 'It converts `redirect_to :back` to `redirect_back`'
+  description <<~EOS
+    It converts `redirect_to :back` to `redirect_back`
+
+    ```ruby
+    redirect_to :back
+    ```
+
+    =>
+
+    ```ruby
+    redirect_back
+    ```
+  EOS
 
   within_file 'app/controllers/**/*.rb' do
     # redirect_to :back

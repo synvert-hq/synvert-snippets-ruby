@@ -4,7 +4,7 @@ Synvert::Rewriter.new 'rails', 'upgrade_3_1_to_3_2' do
   description <<~EOS
     It upgrades rails from 3.1 to 3.2.
 
-    1. it insrts new configs in config/environments/development.rb.
+    1. it inserts new configs in config/environments/development.rb.
 
     ```ruby
     config.active_record.mass_assignment_sanitizer = :strict

@@ -1,7 +1,19 @@
 # frozen_string_literal: true
 
 Synvert::Rewriter.new 'rails', 'convert_rails_logger' do
-  description 'It converts RAILS_DEFAULT_LOGGER to Rails.logger.'
+  description <<~EOS
+  It converts RAILS_DEFAULT_LOGGER to Rails.logger.
+
+  ```ruby
+  RAILS_DEFAULT_LOGGER
+  ```
+
+  =>
+
+  ```ruby
+  Rails.logger
+  ```
+  EOS
 
   if_gem 'rails', { gte: '2.3.0' }
 

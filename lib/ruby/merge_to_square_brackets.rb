@@ -2,7 +2,7 @@
 
 Synvert::Rewriter.new 'ruby', 'merge_to_square_brackets' do
   description <<~EOS
-    It converts Hash#merge and Hash#merge! methods to Hash#[]=
+    It converts `Hash#merge` and `Hash#merge!` methods to `Hash#[]=`
 
     ```ruby
     enum.inject({}) do |h, e|

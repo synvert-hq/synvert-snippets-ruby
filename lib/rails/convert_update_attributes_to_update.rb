@@ -2,7 +2,7 @@
 
 Synvert::Rewriter.new 'rails', 'convert_update_attributes_to_update' do
   description <<~EOS
-    It converts .update_attributes to .update
+    It converts `.update_attributes` to `.update`
 
     ```ruby
     user.update_attributes(title: 'new')

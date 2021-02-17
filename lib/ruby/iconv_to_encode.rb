@@ -2,7 +2,7 @@
 
 Synvert::Rewriter.new 'ruby', 'iconv_to_encode' do
   description <<~EOS
-    It convert Iconv#iconv to String#encode
+    It convert `Iconv#iconv` to `String#encode`
 
     ```ruby
     Iconv.new('cp1252', 'utf-8').iconv(string)

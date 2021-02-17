@@ -52,7 +52,7 @@ Synvert::Rewriter.new 'factory_girl', 'use_short_syntax' do
     FactoryGirl.build_list(...)
     FactoryGirl.create_pair(...)
     FactoryGirl.build_pair(...)
-    ```ruby
+    ```
 
     =>
 
@@ -65,7 +65,7 @@ Synvert::Rewriter.new 'factory_girl', 'use_short_syntax' do
     build_list(...)
     create_pair(...)
     build_pair(...)
-    ```ruby
+    ```
   EOS
 
   if_gem 'factory_girl', { gte: '2.0.0' }

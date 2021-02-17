@@ -2,7 +2,7 @@
 
 Synvert::Rewriter.new 'ruby', 'keys_each_to_each_key' do
   description <<~EOS
-    It convert Hash#keys.each to Hash#each_key
+    It convert `Hash#keys.each` to `Hash#each_key`
 
     ```ruby
     params.keys.each {}

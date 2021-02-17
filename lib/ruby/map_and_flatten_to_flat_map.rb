@@ -2,7 +2,7 @@
 
 Synvert::Rewriter.new 'ruby', 'map_and_flatten_to_flat_map' do
   description <<~EOS
-    It converts map and flatten to flat_map
+    It converts `map` and `flatten` to `flat_map`
 
     ```ruby
     enum.map do
