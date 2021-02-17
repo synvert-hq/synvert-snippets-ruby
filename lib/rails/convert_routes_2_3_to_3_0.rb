@@ -328,7 +328,7 @@ Synvert::Rewriter.new 'rails', 'convert_routes_2_3_to_3_0' do
     # => post "/admin_signup", :to => "admin_signup#new", :as => "admin_signup"
     within_node type: 'send', receiver: 'map' do
       message = node.message
-      unless [:root, :connect, :resource, :resources].include? message
+      unless %i[root connect resource resources].include? message
         url = node.arguments.first.to_value
         hash_node = node.arguments.last
         if hash_node.type == :hash
