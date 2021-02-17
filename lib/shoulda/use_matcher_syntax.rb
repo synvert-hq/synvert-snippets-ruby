@@ -158,8 +158,8 @@ Synvert::Rewriter.new 'shoulda', 'use_matcher_syntax' do
     end
   end
 
-  unit_test_file_patterns = %w(test/unit/**/*_test.rb spec/models/**/*_spec.rb)
-  functional_test_file_patterns = %w(test/functional/**/*_test.rb spec/controllers/**/*_spec.rb)
+  unit_test_file_patterns = %w[test/unit/**/*_test.rb spec/models/**/*_spec.rb]
+  functional_test_file_patterns = %w[test/functional/**/*_test.rb spec/controllers/**/*_spec.rb]
 
   unit_test_file_patterns.each do |file_pattern|
     within_files file_pattern do
@@ -174,10 +174,10 @@ Synvert::Rewriter.new 'shoulda', 'use_matcher_syntax' do
       # should_allow_mass_assignment_of :first_name
       # =>
       # should allow_mass_assignment_of(:first_name)
-      %w(should_belong_to should_have_one should_have_many should_have_and_belong_to_many
+      %w[should_belong_to should_have_one should_have_many should_have_and_belong_to_many
          should_validate_presence_of should_validate_uniqueness_of should_validate_numericality_of should_validate_acceptance_of
          should_allow_mass_assignment_of should_not_allow_mass_assignment_of
-         should_have_readonly_attributes should_not_have_readonly_attributes).each do |message|
+         should_have_readonly_attributes should_not_have_readonly_attributes].each do |message|
         with_node type: 'send', message: message do
           new_message = message.start_with?('should_not') ? message.sub('should_not_', 'should_not ') : message.sub('_', ' ')
           if node.arguments.size == 1
@@ -236,7 +236,7 @@ Synvert::Rewriter.new 'shoulda', 'use_matcher_syntax' do
       # =>
       # should allow_value('isbn 1 2345 6789 0').for(:isbn)
       # should allow_value('ISBN 1-2345-6789-0').for(:isbn)
-      %w(should_allow_values_for should_not_allow_values_for).each do |message|
+      %w[should_allow_values_for should_not_allow_values_for].each do |message|
         with_node type: 'send', message: message do
           should_or_should_not = message.include?('_not') ? 'should_not' : 'should'
           field = node.arguments.first.to_source
@@ -331,7 +331,7 @@ Synvert::Rewriter.new 'shoulda', 'use_matcher_syntax' do
       # should_render_template :new => should render_template(:new)
       #
       # should_render_with_layout "special" => should render_with_layout("special")
-      %w(should_respond_with should_respond_with_content_type should_render_template should_render_with_layout).each do |message|
+      %w[should_respond_with should_respond_with_content_type should_render_template should_render_with_layout].each do |message|
         with_node type: 'send', message: message do
           new_message = message.sub('_', ' ')
           replace_with "#{new_message}({{arguments}})"
