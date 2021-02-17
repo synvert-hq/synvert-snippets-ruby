@@ -4,11 +4,6 @@ require 'spec_helper'
 
 RSpec.describe 'Upgrade rails from 4.2 to 5.0' do
   let(:rewriter_name) { 'rails/upgrade_4_2_to_5_0' }
-
-  def indent_content(content, count: 2)
-    content.strip.split("\n").map { |line| line.empty? ? line : "#{' ' * count}#{line}" }.join("\n")
-  end
-
   let(:application_content) { '
 module Synvert
   class Application < Rails::Application
@@ -42,106 +37,18 @@ end
   '}
   let(:posts_controller_content) { '
 class PostsController < ApplicationController
-  rescue_from BadGateway do
-    head status: 502
-  end
-  def test
-    render nothing: true
-  end
-  def redirect
-    head location: "/foo"
-  end
-  def redirect_back
-    redirect_to :back
+  def test_load_error
+    rescue MissingSourceFile
   end
 end
   '}
   let(:posts_controller_rewritten_content) { '
 class PostsController < ApplicationController
-  rescue_from BadGateway do
-    head 502
-  end
-  def test
-    head :ok
-  end
-  def redirect
-    head :ok, location: "/foo"
-  end
-  def redirect_back
-    redirect_back
-  end
-end
-  '}
-  let(:nested_controller_content) { "
-module Namespace
-#{indent_content(posts_controller_content)}
-end
-  "}
-  let(:nested_controller_rewritten_content) { "
-module Namespace
-#{indent_content(posts_controller_rewritten_content)}
-end
-  "}
-  let(:post_model_content) { '
-class Post < ActiveRecord::Base
-  after_commit :add_to_index_later, on: :create, if: :can_add?
-  after_commit :update_in_index_later, on: :update
-  after_commit :remove_from_index_later, on: :destroy
-
-  def test_load_error
-    rescue MissingSourceFile
-  end
-
-  def validate_author
-    errors[:base] = "author not present" unless author
-    self.errors[:base] = "author not present" unless author
-  end
-end
-  '}
-  let(:post_model_rewritten_content) { '
-class Post < ApplicationRecord
-  after_create_commit :add_to_index_later, if: :can_add?
-  after_update_commit :update_in_index_later
-  after_destroy_commit :remove_from_index_later
-
   def test_load_error
     rescue LoadError
   end
-
-  def validate_author
-    errors.add(:base, "author not present") unless author
-    self.errors.add(:base, "author not present") unless author
-  end
 end
   '}
-  let(:nested_model_content) { "
-module Namespace
-#{indent_content(post_model_content)}
-end
-  "}
-  let(:nested_model_rewritten_content) { "
-module Namespace
-#{indent_content(post_model_rewritten_content)}
-end
-  "}
-  let(:post_job_content) { '
-class PostJob < ActiveJob::Base
-end
-  '}
-  let(:post_job_rewritten_content) { '
-class PostJob < ApplicationJob
-end
-  '}
-  let(:nested_job_content) { "
-module Namespace
-#{indent_content(post_job_content)}
-end
-  "}
-  let(:nested_job_rewritten_content) { "
-module Namespace
-#{indent_content(post_job_rewritten_content)}
-end
-  "}
   let(:new_framework_defaults_rewritten_content) { '
 # Be sure to restart your server when you modify this file.
 #
@@ -168,22 +75,20 @@ ActiveSupport.halt_callback_chains_on_return_false = false
 # Configure SSL options to enable HSTS with subdomains. Previous versions had false.
 Rails.application.config.ssl_options = { hsts: { subdomains: true } }
   '.strip}
-  let(:fake_file_paths) { %w[config/application.rb config/environments/production.rb config/initializers/new_framework_defaults.rb
-    app/controllers/posts_controller.rb app/controllers/namespace/posts_controller.rb app/models/post.rb
-    app/models/namespace/post.rb app/jobs/post_job.rb app/jobs/namespace/post_job.rb] }
-  let(:test_contents) { [application_content, production_content, nil, posts_controller_content, nested_controller_content,
-    post_model_content, nested_model_content, post_job_content, nested_job_content] }
-  let(:test_rewritten_contents) { [application_rewritten_content, production_rewritten_content, new_framework_defaults_rewritten_content,
-    posts_controller_rewritten_content, nested_controller_rewritten_content, post_model_rewritten_content, nested_model_rewritten_content,
-    post_job_rewritten_content, nested_job_rewritten_content] }
+  let(:fake_file_paths) { %w[config/application.rb config/environments/production.rb config/initializers/new_framework_defaults.rb app/controllers/posts_controller.rb] }
+  let(:test_contents) { [application_content, production_content, nil, posts_controller_content] }
+  let(:test_rewritten_contents) { [application_rewritten_content, production_rewritten_content, new_framework_defaults_rewritten_content, posts_controller_rewritten_content] }
 
   before do
     load_sub_snippets(%w[
       rails/add_active_record_migration_rails_version
-      rails/convert_render_nothing_true_to_head_ok
+      rails/convert_head_response
       rails/convert_rails_test_request_methods_4_2_to_5_0
       rails/add_application_record
       rails/add_application_job
+      rails/convert_after_commit
+      rails/convert_model_errors_add
+      rails/convert_to_redirect_back
     ])
   end
 

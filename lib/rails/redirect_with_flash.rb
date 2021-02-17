@@ -2,22 +2,33 @@
 
 Synvert::Rewriter.new 'rails', 'redirect_with_flash' do
   description <<-EOS
-
   Fold flash setting into redirect_to.
 
+  ```ruby
   flash[:notice] = "huzzah"
   redirect_to root_path
+  ```
+
   =>
+
+  ```ruby
   redirect_to root_path, notice: "huzzah"
+  ```
 
   and
 
+  ```ruby
   flash[:error] = "booo"
   redirect_to root_path
-  =>
-  redirect_to root_path, flash: {error: "huzzah"}
+  ```
 
+  =>
+
+  ```ruby
+  redirect_to root_path, flash: {error: "huzzah"}
+  ```
   EOS
+
   within_file 'app/controllers/**/*rb' do
     within_node type: 'def' do
       line = nil

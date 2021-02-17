@@ -1,13 +1,23 @@
 # frozen_string_literal: true
 
 Synvert::Rewriter.new 'rspec', 'negative_error_expectation' do
-  description <<~EOF
+  description <<~EOS
     It converts rspec negative error expectation.
-    
-        expect { do_something }.not_to raise_error(SomeErrorClass) => expect { do_something }.not_to raise_error
-        expect { do_something }.not_to raise_error('message') => expect { do_something }.not_to raise_error
-        expect { do_something }.not_to raise_error(SomeErrorClass, 'message') => expect { do_something }.not_to raise_error
-  EOF
+
+    ```ruby
+    expect { do_something }.not_to raise_error(SomeErrorClass)
+    expect { do_something }.not_to raise_error('message')
+    expect { do_something }.not_to raise_error(SomeErrorClass, 'message')
+    ```
+
+    =>
+
+    ```ruby
+    expect { do_something }.not_to raise_error
+    expect { do_something }.not_to raise_error
+    expect { do_something }.not_to raise_error
+    ```
+  EOS
   if_gem 'rspec', { gte: '2.14.0' }
 
   within_files 'spec/**/*.rb' do

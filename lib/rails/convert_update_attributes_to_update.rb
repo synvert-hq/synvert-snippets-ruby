@@ -1,15 +1,21 @@
 # frozen_string_literal: true
 
 Synvert::Rewriter.new 'rails', 'convert_update_attributes_to_update' do
-  description <<~EOF
+  description <<~EOS
     It converts .update_attributes to .update
-    
-        user.update_attributes(title: 'new')
-        user.update_attributes!(title: 'new')
-        =>
-        user.update(title: 'new')
-        user.update!(title: 'new')
-  EOF
+
+    ```ruby
+    user.update_attributes(title: 'new')
+    user.update_attributes!(title: 'new')
+    ```
+
+    =>
+
+    ```ruby
+    user.update(title: 'new')
+    user.update!(title: 'new')
+    ```
+  EOS
 
   within_files '**/*.rb' do
     # user.update_attributes(title: 'new')

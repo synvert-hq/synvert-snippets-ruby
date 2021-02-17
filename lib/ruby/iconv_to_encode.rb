@@ -1,13 +1,19 @@
 # frozen_string_literal: true
 
 Synvert::Rewriter.new 'ruby', 'iconv_to_encode' do
-  description <<~EOF
+  description <<~EOS
     It convert Iconv#iconv to String#encode
-    
-        Iconv.new('cp1252', 'utf-8').iconv(string)
-        =>
-        string.force_encoding('utf-8').encode('cp1252')
-  EOF
+
+    ```ruby
+    Iconv.new('cp1252', 'utf-8').iconv(string)
+    ```
+
+    =>
+
+    ```ruby
+    string.force_encoding('utf-8').encode('cp1252')
+    ```
+  EOS
 
   within_files '**/*.rb' do
     # Iconv.new('cp1252', 'utf-8').iconv(string)

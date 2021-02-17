@@ -1,21 +1,33 @@
 # frozen_string_literal: true
 
 Synvert::Rewriter.new 'rails', 'convert_rails_test_request_methods_4_2_to_5_0' do
-  description <<~EOF
+  description <<~EOS
     It converts rails test request methods from 4.2 to 5.0
-    
-        functional test:
-    
-        get :show, { id: user.id }, { notice: 'Welcome' }, { admin: user.admin? }
-        =>
-        get :show, params: { id: user.id }, flash: { notice: 'Welcome' }, session: { admin: user.admin? }.
-    
-        integration test:
-    
-        get '/posts/1', user_id: user.id, { 'HTTP_AUTHORIZATION' => 'fake' }
-        =>
-        get '/posts/1', params: { user_id: user.id }, headers: { 'HTTP_AUTHORIZATION' => 'fake' }
-  EOF
+
+    functional test:
+
+    ```ruby
+    get :show, { id: user.id }, { notice: 'Welcome' }, { admin: user.admin? }
+    ```
+
+    =>
+
+    ```ruby
+    get :show, params: { id: user.id }, flash: { notice: 'Welcome' }, session: { admin: user.admin? }.
+    ```
+
+    integration test:
+
+    ```ruby
+    get '/posts/1', user_id: user.id, { 'HTTP_AUTHORIZATION' => 'fake' }
+    ```
+
+    =>
+
+    ```ruby
+    get '/posts/1', params: { user_id: user.id }, headers: { 'HTTP_AUTHORIZATION' => 'fake' }
+    ```
+  EOS
 
   helper_method :make_up_hash_pair do |key, argument_node|
     if argument_node.to_source != 'nil'

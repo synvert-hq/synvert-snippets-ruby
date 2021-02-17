@@ -19,9 +19,9 @@ Synvert::Rewriter.new 'ruby', 'new_2_2_hash_syntax' do
     ```
   EOS
 
-  if_ruby '2.2.0'
-
   add_snippet 'ruby', 'new_1_9_hash_syntax'
+
+  if_ruby '2.2.0'
 
   within_files '**/*.rb' do
     # {:foo => 'bar'} => {foo: 'bar'}

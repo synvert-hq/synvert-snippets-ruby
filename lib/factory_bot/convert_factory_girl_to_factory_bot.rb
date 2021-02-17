@@ -1,46 +1,71 @@
 # frozen_string_literal: true
 
 Synvert::Rewriter.new 'factory_bot', 'convert_factory_girl_to_factory_bot' do
-  description <<~EOF
-    It converts factory_girl to factory_bot
-    
-      require 'factory_girl'
-      require 'factory_girl_rails'
-      =>
-      require 'factory_bot'
-      require 'factory_bot_rails'
-    
-      RSpec.configure do |config|
-        config.include FactoryGirl::Syntax::Methods
+  description <<~EOS
+    It converts FactoryGirl to FactoryBot
+
+    ```ruby
+    require 'factory_girl'
+    require 'factory_girl_rails'
+    ```
+
+    =>
+
+    ```ruby
+    require 'factory_bot'
+    require 'factory_bot_rails'
+    ```
+
+    ```ruby
+    RSpec.configure do |config|
+      config.include FactoryGirl::Syntax::Methods
+    end
+    ```
+
+    =>
+
+    ```ruby
+    RSpec.configure do |config|
+      config.include FactoryBot::Syntax::Methods
+    end
+    ```
+
+    ```ruby
+    FactoryGirl.define do
+      factory :user do
+        email { Faker::Internet.email }
+        username Faker::Name.first_name.downcase
+        password "Sample:1"
+        password_confirmation "Sample:1"
       end
-      =>
-      RSpec.configure do |config|
-        config.include FactoryBot::Syntax::Methods
+    end
+    ```
+
+    =>
+
+    ```ruby
+    FactoryBot.define do
+      factory :user do
+        email { Faker::Internet.email }
+        username Faker::Name.first_name.downcase
+        password "Sample:1"
+        password_confirmation "Sample:1"
       end
-    
-    
-      FactoryGirl.define do
-        factory :user do
-          email { Faker::Internet.email }
-          username Faker::Name.first_name.downcase
-          password "Sample:1"
-          password_confirmation "Sample:1"
-        end
-      end
-      =>
-      FactoryBot.define do
-        factory :user do
-          email { Faker::Internet.email }
-          username Faker::Name.first_name.downcase
-          password "Sample:1"
-          password_confirmation "Sample:1"
-        end
-      end
-    
-      user = FactoryGirl.create(:user)
-      =>
-      user = FactoryBot.create(:user)
-  EOF
+    end
+    ```
+
+    ```ruby
+    FactoryGirl.create(:user)
+    FactoryGirl.build(:user)
+    ```
+
+    =>
+
+    ```ruby
+    FactoryBot.create(:user)
+    FactoryBot.build(:user)
+    ```
+  EOS
 
   within_files '{test,spec}/**/*.rb' do
     with_node type: 'const', to_source: 'FactoryGirl' do

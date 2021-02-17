@@ -1,22 +1,34 @@
 # frozen_string_literal: true
 
 Synvert::Rewriter.new 'rspec', 'explicit_spec_type' do
-  description <<~eos
+  description <<~EOS
     It explicits spec type.
-    
-        RSpec.configure do |rspec|
-        end
-        =>
-        RSpec.configure do |rspec|
-          rspec.infer_spec_type_from_file_location!
-        end
-    
-        describe SomeModel do
-        end
-        =>
-        describe SomeModel, :type => :model do
-        end
-  eos
+
+    ```ruby
+    RSpec.configure do |rspec|
+    end
+    ```
+
+    =>
+
+    ```ruby
+    RSpec.configure do |rspec|
+      rspec.infer_spec_type_from_file_location!
+    end
+    ```
+
+    ```ruby
+    describe SomeModel do
+    end
+    ```
+
+    =>
+
+    ```ruby
+    describe SomeModel, :type => :model do
+    end
+    ```
+  EOS
 
   if_gem 'rspec-rails', { gte: '2.99.0' }
 

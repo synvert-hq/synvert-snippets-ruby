@@ -1,45 +1,32 @@
 # frozen_string_literal: true
 
 Synvert::Rewriter.new 'rails', 'upgrade_4_2_to_5_0' do
-  description <<~EOF
-    1. it replaces config.static_cache_control = ... with config.public_file_server.headers = ... in config files.
-    
-    2. it replaces config.serve_static_files = ... with config.public_file_server.enabled = ... in config files.
-    
-    3. it replaces render nothing: true with head :ok in controller files.
-    
-    4. it replaces head status: 406 with head 406 in controller files.
-    
-    5. it replaces middleware.use "Foo::Bar" with "middleware.use Foo::Bar" in config files.
-    
-    6. it replaces redirect_to :back with redirect_back in controller files.
-    
-    7. it replaces after_commit :xxx, on: :yyy with after_yyy_commit :xxx in model files.
-    
-    8. it replaces errors[]= to errors.add in model files.
-    
-    9. it adds app/models/application_record.rb file.
-    
-    10. it replaces ActiveRecord::Base with ApplicationRecord in model files.
-    
-    11. it adds app/jobs/application_job.rb file.
-    
-    12. it replaces ActiveJob::Base with ApplicationJob in job files.
-    
-    13. it replaces MissingSourceFile with LoadError.
-    
-    14. it adds config/initializers/new_framework_defaults.rb.
-    
-    15. it replaces get :show, { id: user.id }, { notice: 'Welcome' }, { admin: user.admin? } with get :show, params: { id: user.id }, flash: { notice: 'Welcome' }, session: { admin: user.admin? } in test files.
-    
-    16. it removes raise_in_transactional_callbacks= in config/application.rb.
-  EOF
+  description <<~EOS
+    It upgrades rails 4.2 to 5.0
+
+    1. it replaces `config.static_cache_control = ...` with `config.public_file_server.headers = ...` in config files.
+
+    2. it replaces `config.serve_static_files = ...` with `config.public_file_server.enabled = ...` in config files.
+
+    3. it replaces `middleware.use "Foo::Bar"` with `middleware.use Foo::Bar` in config files.
+
+    4. it replaces `MissingSourceFile` with `LoadError`.
+
+    5. it adds config/initializers/new_framework_defaults.rb.
+
+    6. it removes `raise_in_transactional_callbacks=` in config/application.rb.
+  EOS
 
   add_snippet 'rails', 'add_active_record_migration_rails_version'
-  add_snippet 'rails', 'convert_render_nothing_true_to_head_ok'
+  add_snippet 'rails', 'convert_head_response'
   add_snippet 'rails', 'convert_rails_test_request_methods_4_2_to_5_0'
   add_snippet 'rails', 'add_application_record'
   add_snippet 'rails', 'add_application_job'
+  add_snippet 'rails', 'convert_after_commit'
+  add_snippet 'rails', 'convert_model_errors_add'
+  add_snippet 'rails', 'convert_to_redirect_back'
+
+  if_gem 'rails', { gte: '5.0.0' }
 
   within_file 'config/application.rb' do
     # remove config.raise_in_transactional_callbacks = true
@@ -73,63 +60,6 @@ Synvert::Rewriter.new 'rails', 'upgrade_4_2_to_5_0' do
     end
   end
 
-  within_file 'app/controllers/**/*.rb' do
-    # head status: 406
-    # head location: '/foo'
-    # =>
-    # head 406
-    # head :ok, location: '/foo'
-    with_node type: 'send', receiver: nil, message: 'head', arguments: { size: 1, first: { type: 'hash' } } do
-      if node.arguments.first.has_key? :status
-        replace_with 'head {{arguments.first.values.first}}'
-      else
-        replace_with 'head :ok, {{arguments}}'
-      end
-    end
-
-    # redirect_to :back
-    # =>
-    # redirect_back
-    with_node type: 'send', receiver: nil, message: 'redirect_to', arguments: [:back] do
-      replace_with 'redirect_back'
-    end
-  end
-
-  within_files 'app/models/**/*.rb' do
-    # after_commit :add_to_index_later, on: :create
-    # after_commit :update_in_index_later, on: :update
-    # after_commit :remove_from_index_later, on: :destroy
-    # =>
-    # after_create_commit :add_to_index_later
-    # after_update_commit :update_in_index_later
-    # after_detroy_commit :remove_from_index_later
-    with_node type: 'send', receiver: nil, message: 'after_commit', arguments: { size: 2 } do
-      options = node.arguments.last
-      if options.has_key?(:on)
-        other_options = options.children.reject { |pair_node| pair_node.key.to_value == :on }
-        if other_options.empty?
-          replace_with "after_#{options.hash_value(:on).to_value}_commit {{arguments.first.to_source}}"
-        else
-          replace_with "after_#{options.hash_value(:on).to_value}_commit {{arguments.first.to_source}}, #{other_options.map(&:to_source).join(', ')}"
-        end
-      end
-    end
-
-    # errors[] =
-    # =>
-    # errors.add
-    with_node type: 'send', receiver: 'errors', message: '[]=' do
-      replace_with 'errors.add({{arguments.first}}, {{arguments.last}})'
-    end
-
-    # self.errors[] =
-    # =>
-    # self.errors.add
-    with_node type: 'send', receiver: { type: 'send', message: 'errors' }, message: '[]=' do
-      replace_with '{{receiver}}.add({{arguments.first}}, {{arguments.last}})'
-    end
-  end
-
   within_files '**/*.rb' do
     # MissingSourceFile
     # =>
@@ -139,31 +69,31 @@ Synvert::Rewriter.new 'rails', 'upgrade_4_2_to_5_0' do
     end
   end
 
-  new_code = "
-# Be sure to restart your server when you modify this file.
-#
-# This file contains migration options to ease your Rails 5.0 upgrade.
-#
-# Read the Guide for Upgrading Ruby on Rails for more info on each option.
+  new_code = <<~EOS
+    # Be sure to restart your server when you modify this file.
+    #
+    # This file contains migration options to ease your Rails 5.0 upgrade.
+    #
+    # Read the Guide for Upgrading Ruby on Rails for more info on each option.
 
-# Enable per-form CSRF tokens. Previous versions had false.
-Rails.application.config.action_controller.per_form_csrf_tokens = true
+    # Enable per-form CSRF tokens. Previous versions had false.
+    Rails.application.config.action_controller.per_form_csrf_tokens = true
 
-# Enable origin-checking CSRF mitigation. Previous versions had false.
-Rails.application.config.action_controller.forgery_protection_origin_check = true
+    # Enable origin-checking CSRF mitigation. Previous versions had false.
+    Rails.application.config.action_controller.forgery_protection_origin_check = true
 
-# Make Ruby 2.4 preserve the timezone of the receiver when calling `to_time`.
-# Previous versions had false.
-ActiveSupport.to_time_preserves_timezone = true
+    # Make Ruby 2.4 preserve the timezone of the receiver when calling `to_time`.
+    # Previous versions had false.
+    ActiveSupport.to_time_preserves_timezone = true
 
-# Require `belongs_to` associations by default. Previous versions had false.
-Rails.application.config.active_record.belongs_to_required_by_default = true
+    # Require `belongs_to` associations by default. Previous versions had false.
+    Rails.application.config.active_record.belongs_to_required_by_default = true
 
-# Do not halt callback chains when a callback returns false. Previous versions had true.
-ActiveSupport.halt_callback_chains_on_return_false = false
+    # Do not halt callback chains when a callback returns false. Previous versions had true.
+    ActiveSupport.halt_callback_chains_on_return_false = false
 
-# Configure SSL options to enable HSTS with subdomains. Previous versions had false.
-Rails.application.config.ssl_options = { hsts: { subdomains: true } }
-  ".strip
-  add_file 'config/initializers/new_framework_defaults.rb', new_code
+    # Configure SSL options to enable HSTS with subdomains. Previous versions had false.
+    Rails.application.config.ssl_options = { hsts: { subdomains: true } }
+  EOS
+  add_file 'config/initializers/new_framework_defaults.rb', new_code.strip
 end

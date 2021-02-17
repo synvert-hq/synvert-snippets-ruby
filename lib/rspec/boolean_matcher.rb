@@ -1,12 +1,21 @@
 # frozen_string_literal: true
 
 Synvert::Rewriter.new 'rspec', 'boolean_matcher' do
-  description <<~EOF
+  description <<~EOS
     It converts rspec boolean matcher.
-    
-        be_true => be_truthy
-        be_false => be_falsey
-  EOF
+
+    ```ruby
+    be_true
+    be_false
+    ```
+
+    =>
+
+    ```ruby
+    be_truthy
+    be_falsey
+    ```
+  EOS
 
   if_gem 'rspec', { gte: '2.99.0' }
 

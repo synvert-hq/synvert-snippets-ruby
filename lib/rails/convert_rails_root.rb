@@ -1,29 +1,27 @@
 # frozen_string_literal: true
 
 Synvert::Rewriter.new 'rails', 'convert_rails_root' do
-  description <<~EOF
+  description <<~EOS
     It converts RAILS_ROOT to Rails.root.
-    
-      RAILS_ROOT
-      =>
-      Rails.root
-    
-      File.join(RAILS_ROOT, 'config/database.yml')
-      =>
-      Rails.root.join('config/database.yml')
-    
-      RAILS_ROOT + 'config/database.yml')
-      =>
-      Rails.root.join('config/database.yml')
-    
-      "\#{RAILS_ROOT}/config/database.yml"
-      =>
-      Rails.root.join('config/database.yml')
-    
-      File.exists?(Rails.root.join('config/database.yml'))
-      =>
-      Rails.root.join('config/database.yml').exist?
-  EOF
+
+    ```ruby
+    RAILS_ROOT
+    File.join(RAILS_ROOT, 'config/database.yml')
+    RAILS_ROOT + 'config/database.yml')
+    "\#{RAILS_ROOT}/config/database.yml"
+    File.exists?(Rails.root.join('config/database.yml'))
+    ```
+
+    =>
+
+    ```ruby
+    Rails.root
+    Rails.root.join('config/database.yml')
+    Rails.root.join('config/database.yml')
+    Rails.root.join('config/database.yml')
+    Rails.root.join('config/database.yml').exist?
+    ```
+  EOS
 
   if_gem 'rails', { gte: '2.3.0' }
 

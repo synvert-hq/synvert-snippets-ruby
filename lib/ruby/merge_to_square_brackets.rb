@@ -1,30 +1,48 @@
 # frozen_string_literal: true
 
 Synvert::Rewriter.new 'ruby', 'merge_to_square_brackets' do
-  description <<~EOF
+  description <<~EOS
     It converts Hash#merge and Hash#merge! methods to Hash#[]=
-    
-        enum.inject({}) do |h, e|
-          h.merge(e => e)
-        end
-        =>
-        enum.inject({}) do |h, e|
-          h[e] = e
-          h
-        end
-    
-        enum.inject({}) { |h, e| h.merge!(e => e) }
-        =>
-        enum.inject({}) { |h, e| h[e] = e; h }
-    
-        enum.each_with_object({}) do |e, h|
-          h.merge!(e => e)
-        end
-        =>
-        enum.each_with_object({}) do |e, h|
-          h[e] = e
-        end
-  EOF
+
+    ```ruby
+    enum.inject({}) do |h, e|
+      h.merge(e => e)
+    end
+    ```
+
+    =>
+
+    ```ruby
+    enum.inject({}) do |h, e|
+      h[e] = e
+      h
+    end
+    ```
+
+    ```ruby
+    enum.inject({}) { |h, e| h.merge!(e => e) }
+    ```
+
+    =>
+
+    ```ruby
+    enum.inject({}) { |h, e| h[e] = e; h }
+    ```
+
+    ```ruby
+    enum.each_with_object({}) do |e, h|
+      h.merge!(e => e)
+    end
+    ```
+
+    =>
+
+    ```ruby
+    enum.each_with_object({}) do |e, h|
+      h[e] = e
+    end
+    ```
+  EOS
 
   helper_method :hash_node_to_square_brackets_code do |hash_node, splitter|
     hash_node.children.map { |pair_node|

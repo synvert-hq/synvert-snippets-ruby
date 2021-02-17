@@ -3,26 +3,32 @@
 Synvert::Rewriter.new 'rails', 'strong_parameters' do
   default_columns = %w[id created_at updated_at deleted_at]
 
-  description <<~EOF
-    It uses string_parameters to replace attr_accessible.
-    
+  description <<~EOS
+    It uses string_parameters to replace `attr_accessible`.
+
     1. it removes active_record configurations.
-    
-        config.active_record.whitelist_attributes = ...
-        config.active_record.mass_assignment_sanitizer = ...
-    
-    2. it removes attr_accessible and attr_protected code in models.
-    
+
+    ```ruby
+    config.active_record.whitelist_attributes = ...
+    config.active_record.mass_assignment_sanitizer = ...
+    ```
+
+    2. it removes `attr_accessible` and `attr_protected` code in models.
+
     3. it adds xxx_params in controllers
-    
-        def xxx_params
-          params.require(:xxx).permit(...)
-        end
-    
+
+    ```ruby
+    def xxx_params
+      params.require(:xxx).permit(...)
+    end
+    ```
+
     4. it replaces params[:xxx] with xxx_params.
-    
-        params[:xxx] => xxx_params
-  EOF
+
+    ```ruby
+    params[:xxx] => xxx_params
+    ```
+  EOS
 
   within_files 'config/**/*.rb' do
     # remove config.active_record.whitelist_attributes = ...

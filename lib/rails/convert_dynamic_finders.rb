@@ -1,16 +1,29 @@
 # frozen_string_literal: true
 
 Synvert::Rewriter.new 'rails', 'convert_dynamic_finders' do
-  description <<~EOF
+  description <<~EOS
     It converts rails dynamic finders to arel syntax.
-    
-        find_all_by_... => where(...)
-        find_by_... => where(...).first
-        find_last_by_... => where(...).last
-        scoped_by_... => where(...)
-        find_or_initialize_by_... => find_or_initialize_by(...)
-        find_or_create_by_... => find_or_create_by(...)
-  EOF
+
+    ```ruby
+    find_all_by_...
+    find_by_...
+    find_last_by_...
+    scoped_by_...
+    find_or_initialize_by_...
+    find_or_create_by_...
+    ```
+
+    =>
+
+    ```ruby
+    where(...)
+    where(...).first
+    where(...).last
+    where(...)
+    find_or_initialize_by(...)
+    find_or_create_by(...)
+    ```
+  EOS
 
   attributes = ['id']
   within_file 'db/schema.rb' do

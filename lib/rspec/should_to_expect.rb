@@ -1,19 +1,35 @@
 # frozen_string_literal: true
 
 Synvert::Rewriter.new 'rspec', 'should_to_expect' do
-  description <<~EOF
+  description <<~EOS
     It converts rspec should to expect.
-    
-        obj.should matcher => expect(obj).to matcher
-        obj.should_not matcher => expect(obj).not_to matcher
-    
-        1.should == 1 => expect(1).to eq 1
-        1.should < 1 => expect(1).to be < 2
-        Integer.should === 1 => expect(Integer).to be === 1
-    
-        'string'.should =~ /^str/ => expect('string').to match /^str/
-        [1, 2, 3].should =~ [2, 1, 3] => expect([1, 2, 3]).to match_array [2, 1, 3]
-  EOF
+
+    ```ruby
+    obj.should matcher
+    obj.should_not matcher
+
+    1.should == 1
+    1.should < 1
+    Integer.should === 1
+
+    'string'.should =~ /^str/
+    [1, 2, 3].should =~ [2, 1, 3]
+    ```
+
+    =>
+
+    ```ruby
+    expect(obj).to matcher
+    expect(obj).not_to matcher
+
+    expect(1).to eq 1
+    expect(1).to be < 2
+    expect(Integer).to be === 1
+
+    expect('string').to match /^str/
+    expect([1, 2, 3]).to match_array [2, 1, 3]
+    ```
+  EOS
 
   if_gem 'rspec', { gte: '2.11.0' }
 

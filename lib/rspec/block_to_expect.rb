@@ -1,13 +1,23 @@
 # frozen_string_literal: true
 
 Synvert::Rewriter.new 'rspec', 'block_to_expect' do
-  description <<~EOF
+  description <<~EOS
     It converts rspec block to expect.
-    
-        lambda { do_something }.should raise_error => expect { do_something }.to raise_error
-        proc { do_something }.should raise_error => expect { do_something }.to raise_error
-        -> { do_something }.should raise_error => expect { do_something }.to raise_error
-  EOF
+
+    ```ruby
+    lambda { do_something }.should raise_error
+    proc { do_something }.should raise_error
+    -> { do_something }.should raise_error
+    ```
+
+    =>
+
+    ```ruby
+    expect { do_something }.to raise_error
+    expect { do_something }.to raise_error
+    expect { do_something }.to raise_error
+    ```
+  EOS
 
   if_gem 'rspec', { gte: '2.11.0' }
 

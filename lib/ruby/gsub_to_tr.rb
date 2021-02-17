@@ -1,13 +1,19 @@
 # frozen_string_literal: true
 
 Synvert::Rewriter.new 'ruby', 'gsub_to_tr' do
-  description <<~EOF
+  description <<~EOS
     It converts String#gsub to String#tr
-    
-        'slug from title'.gsub(' ', '_')
-        =>
-        'slug from title'.tr(' ', '_')
-  EOF
+
+    ```ruby
+    'slug from title'.gsub(' ', '_')
+    ```
+
+    =>
+
+    ```ruby
+    'slug from title'.tr(' ', '_')
+    ```
+  EOS
 
   within_files '**/*.rb' do
     # 'slug from title'.gsub(' ', '_')

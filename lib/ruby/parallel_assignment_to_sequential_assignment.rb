@@ -1,14 +1,20 @@
 # frozen_string_literal: true
 
 Synvert::Rewriter.new 'ruby', 'parallel_assignment_to_sequential_assignment' do
-  description <<~EOF
+  description <<~EOS
     It converts parallel assignment to sequential assignment.
-    
-        a, b = 1, 2
-        =>
-        a = 1
-        b = 2
-  EOF
+
+    ```ruby
+    a, b = 1, 2
+    ```
+
+    =>
+
+    ```ruby
+    a = 1
+    b = 2
+    ```
+  EOS
 
   within_files '**/*.rb' do
     # a, b = 1, 2

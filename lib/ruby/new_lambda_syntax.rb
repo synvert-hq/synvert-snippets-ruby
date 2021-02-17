@@ -1,11 +1,19 @@
 # frozen_string_literal: true
 
 Synvert::Rewriter.new 'ruby', 'new_lambda_syntax' do
-  description <<~EOF
+  description <<~EOS
     Use ruby new lambda syntax
-    
-        lambda { # do some thing } => -> { # do some thing }
-  EOF
+
+    ```ruby
+    lambda { # do some thing }
+    ```
+
+    =>
+
+    ```ruby
+    -> { # do some thing }
+    ```
+  EOS
 
   if_ruby '1.9.0'
 

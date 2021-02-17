@@ -1,17 +1,21 @@
 # frozen_string_literal: true
 
 Synvert::Rewriter.new 'rails', 'add_application_job' do
-  description <<~EOF
+  description <<~EOS
     It adds app/models/application_job.rb file and replaces ActiveJob::Base with ApplicationJob in model files.
-    
-        class PostJob < ActiveJob::Base
-        end
-    
-        =>
-    
-        class PostJob < ApplicationJob
-        end
-  EOF
+
+    ```ruby
+    class PostJob < ActiveJob::Base
+    end
+    ```
+
+    =>
+
+    ```ruby
+    class PostJob < ApplicationJob
+    end
+    ```
+  EOS
 
   # adds file app/models/application_job.rb
   add_file 'app/jobs/application_job.rb', <<~EOS

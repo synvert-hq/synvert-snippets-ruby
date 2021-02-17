@@ -1,24 +1,33 @@
 # frozen_string_literal: true
 
 Synvert::Rewriter.new 'rspec', 'one_liner_expectation' do
-  description <<~EOF
+  description <<~EOS
     It convers rspec one liner expectation.
-    
-        it { should matcher } => it { is_expected.to matcher }
-        it { should_not matcher } => it { is_expected.not_to matcher }
-    
-        it { should have(3).items }
-        =>
-        it 'has 3 items' do
-          expect(subject.size).to eq(3)
-        end
-    
-        it { should have_at_least(3).players }
-        =>
-        it 'has at least 3 players' do
-          expect(subject.players.size).to be >= 3
-        end
-  EOF
+
+    ```ruby
+    it { should matcher }
+    it { should_not matcher }
+
+    it { should have(3).items }
+
+    it { should have_at_least(3).players }
+    ```
+
+    =>
+
+    ```ruby
+    it { is_expected.to matcher }
+    it { is_expected.not_to matcher }
+
+    it 'has 3 items' do
+      expect(subject.size).to eq(3)
+    end
+
+    it 'has at least 3 players' do
+      expect(subject.players.size).to be >= 3
+    end
+    ```
+  EOS
 
   if_gem 'rspec', { gte: '2.99.0' }
 

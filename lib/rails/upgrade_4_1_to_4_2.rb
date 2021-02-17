@@ -1,11 +1,15 @@
 # frozen_string_literal: true
 
 Synvert::Rewriter.new 'rails', 'upgrade_4_1_to_4_2' do
-  description <<~EOF
-    1. it replaces config.serve_static_assets = ... with config.serve_static_files = ... in config files.
-    
-    2. it inserts config.active_record.raise_in_transactional_callbacks = true in config/application.rb
-  EOF
+  description <<~EOS
+    It upgrades rails from 4.1 to 4.2
+
+    1. it replaces `config.serve_static_assets = ...` with `config.serve_static_files = ...` in config files.
+
+    2. it inserts `config.active_record.raise_in_transactional_callbacks = true` in config/application.rb
+  EOS
+
+  if_gem 'rails', { gte: '4.2.0' }
 
   within_files 'config/environments/*.rb' do
     # config.serve_static_assets = false

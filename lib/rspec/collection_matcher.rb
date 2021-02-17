@@ -1,16 +1,29 @@
 # frozen_string_literal: true
 
 Synvert::Rewriter.new 'rspec', 'collection_matcher' do
-  description <<~EOF
+  description <<~EOS
     It converts rspec collection matcher.
-    
-        expect(collection).to have(3).items => expect(collection.size).to eq(3)
-        expect(collection).to have_exactly(3).items => expect(collection.size).to eq(3)
-        expect(collection).to have_at_least(3).items => expect(collection.size).to be >= 3
-        expect(collection).to have_at_most(3).items => expect(collection.size).to be <= 3
-    
-        expect(team).to have(3).players => expect(team.players.size).to eq 3
-  EOF
+
+    ```ruby
+    expect(collection).to have(3).items
+    expect(collection).to have_exactly(3).items
+    expect(collection).to have_at_least(3).items
+    expect(collection).to have_at_most(3).items
+
+    expect(team).to have(3).players
+    ```
+
+    =>
+
+    ```ruby
+    expect(collection.size).to eq(3)
+    expect(collection.size).to eq(3)
+    expect(collection.size).to be >= 3
+    expect(collection.size).to be <= 3
+
+    expect(team.players.size).to eq 3
+    ```
+  EOS
 
   if_gem 'rspec', { gte: '2.11.0' }
 

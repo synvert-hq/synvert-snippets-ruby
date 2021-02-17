@@ -3,91 +3,102 @@
 require 'securerandom'
 
 Synvert::Rewriter.new 'rails', 'upgrade_3_2_to_4_0' do
-  description <<~EOF
+  description <<~EOS
     It upgrades rails from 3.2 to 4.0.
-    
-    1. it removes assets group in config/application.rb.
-    
-        if defined?(Bundler)
-          Bundler.require(*Rails.groups(:assets => %w(development test)))
-        end
-        => Bundler.require(:default, Rails.env)
-    
-    2. it removes config.active_record.identity_map = true from config files.
-       it removes config.active_record.auto_explain_threshold_in_seconds = 0.5 from config files.
-    
-    3. it changes config.assets.compress = ... to config.assets.js_compressor = ...
-    
-    4. it removes include_root_in_json from config/initializers/wrap_parameters.rb.
-    
-        ActiveSupport.on_load(:active_record) do
-          self.include_root_in_json = false
-        end
-    
-    5. it inserts secret_key_base to config/initializers/secret_token.rb.
-    
-        Application.config.secret_key_base = '...'
-    
-    6. it removes config.action_dispatch.best_standards_support = ... from config files.
-    
-    7. it inserts config.eager_load = true in config/environments/production.rb.
-    
-    8. it inserts config.eager_load = false in config/environments/development.rb.
-    
-    9. it inserts config.eager_load = false in config/environments/test.rb.
-    
-    10. it removes any code using ActionDispatch::BestStandardsSupport in config files.
-    
-    11. it replaces ActionController::Base.page_cache_extension = ... with ActionController::Base.default_static_extension = ... in config files.
-    
-    12. it removes Rack::Utils.escape in config/routes.rb.
-    
-        Rack::Utils.escape('こんにちは') => 'こんにちは'
-    
-    13. it replaces match in config/routes.rb.
-    
-        match "/" => "root#index" => get "/" => "root#index"
-    
-    14. it removes rename_index in db migrations.
-    
-    15. it replaces instance method serialized_attributes with class method.
-    
-        self.serialized_attributes => self.class.serialized_attributes
-    
-    16. it adds lambda for scope.
-    
-        scope :active, where(active: true) => scope :active, -> { where(active: true) }
-    
-    17. it replaces ActiveRecord::Fixtures with ActiveRecord::FixtureSet.
-           replaces ActiveRecord::TestCase with ActiveSupport::TestCase.
-           replaces ActionController::Integration with ActionDispatch::Integration
-           replaces ActionController::IntegrationTest with ActionDispatch::IntegrationTest
-           replaces ActionController::PerformanceTest with ActionDispatch::PerformanceTest
-           replaces ActionController::AbstractRequest with ActionDispatch::Request
-           replaces ActionController::Request with ActionDispatch::Request
-           replaces ActionController::AbstractResponse with ActionDispatch::Response
-           replaces ActionController::Response with ActionDispatch::Response
-           replaces ActionController::Routing with ActionDispatch::Routing
-    
-    18. it calls another snippet convert_rails_dynamic_finder.
-    
-    19. it calls another snippet strong_parameters.
-    
-    20. it replaces skip_filter with skip_action_callback in controllers.
-           replaces before_filter/after_filter with before_action/after_action in controllers.
-    
-    21. it replaces dependent: :restrict to dependent: :restrict_with_exception.
-    
-    22. it removes config.whiny_nils = true.
-    
-    23. it replaces
-    
-        link_to 'delete', post_path(post), confirm: 'Are you sure to delete post?'
-        =>
-        link_to 'delete', post_path(post), data: {confirm: 'Are you sure to delete post?'}
-  EOF
 
-  if_gem 'rails', { gte: '3.2.0' }
+    1. it removes assets group in config/application.rb.
+
+    ```ruby
+    if defined?(Bundler)
+      Bundler.require(*Rails.groups(:assets => %w(development test)))
+    end
+    ```
+
+    =>
+
+    ```ruby
+    Bundler.require(:default, Rails.env)
+    ```
+
+    2. it removes `config.active_record.identity_map = true` from config files.
+       it removes `config.active_record.auto_explain_threshold_in_seconds = 0.5` from config files.
+
+    3. it changes `config.assets.compress = ...` to `config.assets.js_compressor = ...`
+
+    4. it removes `include_root_in_json` from config/initializers/wrap_parameters.rb.
+
+    5. it inserts secret_key_base to config/initializers/secret_token.rb.
+
+    ```ruby
+    Application.config.secret_key_base = '...'
+    ```
+
+    6. it removes `config.action_dispatch.best_standards_support = ...` from config files.
+
+    7. it inserts `config.eager_load = true` in config/environments/production.rb.
+
+    8. it inserts `config.eager_load = false` in config/environments/development.rb.
+
+    9. it inserts `config.eager_load = false` in config/environments/test.rb.
+
+    10. it removes any code using `ActionDispatch::BestStandardsSupport` in config files.
+
+    11. it replaces `ActionController::Base.page_cache_extension = ...` with `ActionController::Base.default_static_extension = ...` in config files.
+
+    12. it removes `Rack::Utils.escape` in config/routes.rb.
+
+    ```ruby
+    Rack::Utils.escape('こんにちは') => 'こんにちは'
+    ```
+
+    13. it replaces match in config/routes.rb.
+
+    ```ruby
+    match "/" => "root#index"
+    ```
+
+    =>
+
+    ```ruby
+    get "/" => "root#index"
+    ```
+
+    14. it replaces instance method serialized_attributes with class method.
+
+    ```ruby
+    self.serialized_attributes
+    ```
+
+    =>
+
+    ```ruby
+    self.class.serialized_attributes
+    ```
+
+    15. it replaces `dependent: :restrict` to `dependent: :restrict_with_exception`.
+
+    16. it removes `config.whiny_nils = true`.
+
+    17. it replaces
+
+    ```ruby
+    link_to 'delete', post_path(post), confirm: 'Are you sure to delete post?'
+    ```
+
+    =>
+
+    ```ruby
+    link_to 'delete', post_path(post), data: { confirm: 'Are you sure to delete post?' }
+    ```
+  EOS
+
+  add_snippet 'rails', 'convert_dynamic_finders'
+  add_snippet 'rails', 'strong_parameters'
+  add_snippet 'rails', 'convert_controller_filter_to_action'
+  add_snippet 'rails', 'convert_model_lambda_scope'
+  add_snippet 'rails', 'fix_4_0_deprecations'
+
+  if_gem 'rails', { gte: '4.0.0' }
 
   within_file 'config/application.rb' do
     # if defined?(Bundler)
@@ -193,54 +204,10 @@ Synvert::Rewriter.new 'rails', 'upgrade_3_2_to_4_0' do
     end
   end
 
-  within_files 'db/migrate/*.rb' do
-    # remove rename_index ...
-    with_node type: 'send', message: 'rename_index' do
-      remove
-    end
-  end
-
   within_files 'app/models/**/*.rb' do
     # self.serialized_attributes => self.class.serialized_attributes
     with_node type: 'send', receiver: 'self', message: 'serialized_attributes' do
       replace_with 'self.class.serialized_attributes'
-    end
-  end
-
-  within_files 'app/models/**/*.rb' do
-    # scope :active, where(active: true) => scope :active, -> { where(active: true) }
-    with_node type: 'send', receiver: nil, message: 'scope' do
-      with_node type: 'block', caller: { type: 'send', receiver: nil, message: 'proc' } do
-        if node.arguments.length > 0
-          replace_with '->({{arguments}}) { {{body}} }'
-        else
-          replace_with '-> { {{body}} }'
-        end
-      end
-
-      with_node type: 'block', caller: { type: 'send', receiver: 'Proc', message: 'new' } do
-        if node.arguments.length > 0
-          replace_with '->({{arguments}}) { {{body}} }'
-        else
-          replace_with '-> { {{body}} }'
-        end
-      end
-
-      unless_exist_node type: 'block', caller: { type: 'send', message: 'lambda' } do
-        replace_with 'scope {{arguments.first}}, -> { {{arguments.last}} }'
-      end
-    end
-
-    # default_scope order("updated_at DESC") => default_scope -> { order("updated_at DESC") }
-    with_node type: 'send', receiver: nil, message: 'default_scope' do
-      unless_exist_node type: 'block', caller: { type: 'send', message: 'lambda' } do
-        replace_with 'default_scope -> { {{arguments.last}} }'
-      end
-    end
-
-    # default_scope { order("updated_at DESC") } => default_scope -> { order("updated_at DESC") }
-    with_node type: 'block', caller: { type: 'send', receiver: nil, message: 'default_scope' } do
-      replace_with 'default_scope -> { {{body}} }'
     end
   end
 
@@ -255,24 +222,10 @@ Synvert::Rewriter.new 'rails', 'upgrade_3_2_to_4_0' do
     end
   end
 
-  within_files 'app/controllers/**/*.rb' do
-    # skip_filter :load_post => skip_action_callback :load_post
-    # before_filter :load_post => before_action :load_post
-    # after_filter :increment_view_count => after_filter :increment_view_count
-    with_node type: 'send', receiver: nil, message: /_filter$/ do
-      new_message = if node.message == :skip_filter
-                      'skip_action_callback'
-                    else
-                      node.message.to_s.sub('filter', 'action')
-                    end
-      replace_with "#{new_message} {{arguments}}"
-    end
-  end
-
   within_files 'app/views/**/*.erb' do
     # link_to 'delete', post_path(post), confirm: 'Are you sure to delete post?'
     # =>
-    # link_to 'delete', post_path(post), data: {confirm: 'Are you sure to delete post?'}
+    # link_to 'delete', post_path(post), data: { confirm: 'Are you sure to delete post?' }
     within_node type: 'send', message: 'link_to', arguments: { last: { type: 'hash' } } do
       if node.arguments.last.has_key?(:confirm)
         hash = node.arguments.last
@@ -293,33 +246,13 @@ Synvert::Rewriter.new 'rails', 'upgrade_3_2_to_4_0' do
     end
   end
 
-  within_files '**/*.rb' do
-    { 'ActiveRecord::Fixtures' => 'ActiveRecord::FixtureSet',
-     'ActiveRecord::TestCase' => 'ActiveSupport::TestCase',
-     'ActionController::Integration' => 'ActionDispatch::Integration',
-     'ActionController::IntegrationTest' => 'ActionDispatch::IntegrationTest',
-     'ActionController::PerformanceTest' => 'ActionDispatch::PerformanceTest',
-     'ActionController::AbstractRequest' => 'ActionDispatch::Request',
-     'ActionController::Request' => 'ActionDispatch::Request',
-     'ActionController::AbstractResponse' => 'ActionDispatch::Response',
-     'ActionController::Response' => 'ActionDispatch::Response',
-     'ActionController::Routing' => 'ActionDispatch::Routing' }.each do |deprecated, favor|
-      with_node to_source: deprecated do
-        replace_with favor
-      end
-    end
-  end
-
-  add_snippet 'rails', 'convert_dynamic_finders'
-  add_snippet 'rails', 'strong_parameters'
-
-  todo <<~EOF
+  todo <<~EOS
     1. Rails 4.0 no longer supports loading plugins from vendor/plugins. You must replace any plugins by extracting them to gems and adding them to your Gemfile. If you choose not to make them gems, you can move them into, say, lib/my_plugin/* and add an appropriate initializer in config/initializers/my_plugin.rb.
-    
+
     2.  Make the following changes to your Gemfile.
-    
+
         gem 'sass-rails', '~> 4.0.0'
         gem 'coffee-rails', '~> 4.0.0'
         gem 'uglifier', '>= 1.3.0'
-  EOF
+  EOS
 end

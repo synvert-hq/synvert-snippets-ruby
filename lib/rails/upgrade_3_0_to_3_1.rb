@@ -1,63 +1,79 @@
 # frozen_string_literal: true
 
 Synvert::Rewriter.new 'rails', 'upgrade_3_0_to_3_1' do
-  description <<~EOF
+  description <<~EOS
     It upgrade rails from 3.0 to 3.1.
-    
-    1. it enables asset pipeline.
-    
-        config.assets.enabled = true
-        config.assets.version = '1.0'
-    
-    2. it removes config.action_view.debug_rjs in config/environments/development.rb
-    
-    3. it adds asset pipeline configs in config/environments/development.rb
-    
-        # Do not compress assets
-        config.assets.compress = false
-    
-        # Expands the lines which load the assets
-        config.assets.debug = true
-    
-    4. it adds asset pipeline configs in config/environments/production.rb
-    
-        # Compress JavaScripts and CSS
-        config.assets.compress = true
-    
-        # Don't fallback to assets pipeline if a precompiled asset is missed
-        config.assets.compile = false
-    
-         # Generate digests for assets URLs
-         config.assets.digest = true
-    
-    5. it adds asset pipeline configs in config/environments/test.rb
-    
-        # Configure static asset server for tests with Cache-Control for performance
-        config.serve_static_assets = true
-        config.static_cache_control = "public, max-age=3600"
-    
-    6. it creates config/environments/wrap_parameters.rb.
-    
-    7. it replaces session_store in config/initializers/session_store.rb
-    
-        Application.session_store :cookie_store, key: '_xxx-session'
-    
-    8. Migrations now use instance methods rather than class methods
-    
-        def self.up
-        end
-        =>
-        def up
-        end
-    
-        def self.down
-        end
-        =>
-        def down
-        end
-  EOF
 
-  if_gem 'rails', { gte: '3.0.0' }
+    1. it enables asset pipeline.
+
+    ```ruby
+    config.assets.enabled = true
+    config.assets.version = '1.0'
+    ```
+
+    2. it removes `config.action_view.debug_rjs` in config/environments/development.rb
+
+    3. it adds asset pipeline configs in config/environments/development.rb
+
+    ```ruby
+    # Do not compress assets
+    config.assets.compress = false
+
+    # Expands the lines which load the assets
+    config.assets.debug = true
+    ```
+
+    4. it adds asset pipeline configs in config/environments/production.rb
+
+    ```ruby
+    # Compress JavaScripts and CSS
+    config.assets.compress = true
+
+    # Don't fallback to assets pipeline if a precompiled asset is missed
+    config.assets.compile = false
+
+    # Generate digests for assets URLs
+    config.assets.digest = true
+    ```
+
+    5. it adds asset pipeline configs in config/environments/test.rb
+
+    ```ruby
+    # Configure static asset server for tests with Cache-Control for performance
+    config.serve_static_assets = true
+    config.static_cache_control = "public, max-age=3600"
+    ```
+
+    6. it creates config/environments/wrap_parameters.rb.
+
+    7. it replaces session_store in config/initializers/session_store.rb
+
+    ```ruby
+    Application.session_store :cookie_store, key: '_xxx-session'
+    ```
+
+    8. Migrations now use instance methods rather than class methods
+
+    ```ruby
+    def self.up
+    end
+
+    def self.down
+    end
+    ```
+
+    =>
+
+    ```ruby
+    def up
+    end
+
+    def down
+    end
+    ```
+  EOS
+
+  if_gem 'rails', { gte: '3.1.0' }
 
   within_file 'config/application.rb' do
     # insert config.assets.version = '1.0'
@@ -143,22 +159,25 @@ Synvert::Rewriter.new 'rails', 'upgrade_3_0_to_3_1' do
     # def self.down => def down
     %w(up down).each do |name|
       with_node type: 'defs', name: name do
-        replace_with "def #{name}
-    {{body}}
-  end", autoindent: false
+        new_code = <<~EOS
+          def #{name}
+              {{body}}
+            end
+        EOS
+        replace_with new_code.strip, autoindent: false
       end
     end
   end
 
-  todo <<~EOF
+  todo <<~EOS
     Make the following changes to your Gemfile.
-    
+
         group :assets do
           gem 'sass-rails',   "~> 3.1.5"
           gem 'coffee-rails', "~> 3.1.1"
           gem 'uglifier',     ">= 1.0.3"
         end
-    
+
         gem 'jquery-rails'
-  EOF
+  EOS
 end

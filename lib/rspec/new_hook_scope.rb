@@ -1,17 +1,21 @@
 # frozen_string_literal: true
 
 Synvert::Rewriter.new 'rspec', 'new_hook_scope' do
-  description <<~EOF
+  description <<~EOS
     It converts new hook scope.
-    
-        before(:each) { do_something }
-        =>
-        before(:example) { do_something }
-    
-        before(:all) { do_something }
-        =>
-        before(:context) { do_something }
-  EOF
+
+    ```ruby
+    before(:each) { do_something }
+    before(:all) { do_something }
+    ```
+
+    =>
+
+    ```ruby
+    before(:example) { do_something }
+    before(:context) { do_something }
+    ```
+  EOS
 
   if_gem 'rspec', { gte: '3.0.0' }
 

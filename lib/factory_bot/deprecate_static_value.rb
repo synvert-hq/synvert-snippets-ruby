@@ -1,53 +1,61 @@
 # frozen_string_literal: true
 
 Synvert::Rewriter.new 'factory_bot', 'deprecate_static_value' do
-  description <<~EOF
+  description <<~EOS
     It deprecates factory_bot static value
-    
-      FactoryBot.define do
-        factory :post do
-          user
-          association :user
-          title "Something"
-          comments_count 0
-          tag Tag::MAGIC
-          recent_statuses []
-          status([:draft, :published].sample)
-          published_at 1.day.from_now
-          created_at(1.day.ago)
-          updated_at Time.current
-          update_times [Time.current]
-          meta_tags(foo: Time.current)
-          other_tags({ foo: Time.current })
-          options color: :blue
-          trait :old do
-            published_at 1.week.ago
-          end
+
+    ```ruby
+    FactoryBot.define do
+      factory :post do
+        user
+        association :user
+        title "Something"
+        comments_count 0
+        tag Tag::MAGIC
+        recent_statuses []
+        status([:draft, :published].sample)
+        published_at 1.day.from_now
+        created_at(1.day.ago)
+        updated_at Time.current
+        update_times [Time.current]
+        meta_tags(foo: Time.current)
+        other_tags({ foo: Time.current })
+        options color: :blue
+        trait :old do
+          published_at 1.week.ago
         end
       end
-      =>
-      FactoryBot.define do
-        factory :post do
-          user
-          association :user
-          title { "Something" }
-          comments_count { 0 }
-          tag { Tag::MAGIC }
-          recent_statuses { [] }
-          status { [:draft, :published].sample }
-          published_at { 1.day.from_now }
-          created_at { 1.day.ago }
-          updated_at { Time.current }
-          update_times { [Time.current] }
-          meta_tags { { foo: Time.current } }
-          other_tags { { foo: Time.current } }
-          options { { color: :blue } }
-          trait :old do
-            published_at { 1.week.ago }
-          end
+    end
+    ```
+
+    =>
+
+    ```ruby
+    FactoryBot.define do
+      factory :post do
+        user
+        association :user
+        title { "Something" }
+        comments_count { 0 }
+        tag { Tag::MAGIC }
+        recent_statuses { [] }
+        status { [:draft, :published].sample }
+        published_at { 1.day.from_now }
+        created_at { 1.day.ago }
+        updated_at { Time.current }
+        update_times { [Time.current] }
+        meta_tags { { foo: Time.current } }
+        other_tags { { foo: Time.current } }
+        options { { color: :blue } }
+        trait :old do
+          published_at { 1.week.ago }
         end
       end
-  EOF
+    end
+    ```
+  EOS
+
+  if_gem 'factory_bot', { gte: '4.11' }
 
   within_files '{test,spec}/factories/**/*.rb' do
     %w[factory transient trait].each do |message|

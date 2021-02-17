@@ -1,17 +1,23 @@
 # frozen_string_literal: true
 
 Synvert::Rewriter.new 'ruby', 'map_and_flatten_to_flat_map' do
-  description <<~EOF
+  description <<~EOS
     It converts map and flatten to flat_map
-    
-        enum.map do
-          # do something
-        end.flatten
-        =>
-        enum.flat_map do
-          # do something
-        end
-  EOF
+
+    ```ruby
+    enum.map do
+      # do something
+    end.flatten
+    ```
+
+    =>
+
+    ```ruby
+    enum.flat_map do
+      # do something
+    end
+    ```
+  EOS
 
   within_files '**/*.rb' do
     # enum.map do
