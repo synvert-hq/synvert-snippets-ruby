@@ -4,7 +4,8 @@ require 'spec_helper'
 
 RSpec.describe 'Convert rails mailers from 2.3 to 3.0' do
   let(:rewriter_name) { 'rails/convert_mailers_2_3_to_3_0' }
-  let(:notifier_content) { '
+  let(:notifier_content) {
+    '
 class Notifier < ActionMailer::Base
   def signup_notification(recipient)
     recipients      recipient.email_address_with_name
@@ -15,16 +16,20 @@ class Notifier < ActionMailer::Base
     body            :account => recipient
   end
 end
-  '}
-  let(:notifier_rewritten_content) { '
+  '
+  }
+  let(:notifier_rewritten_content) {
+    '
 class Notifier < ActionMailer::Base
   def signup_notification(recipient)
     @account = recipient
     mail(:to => recipient.email_address_with_name, :subject => "New account information", :from => "system@example.com", :date => Time.now)
   end
 end
-  '}
-  let(:notifiers_controller_content) { '
+  '
+  }
+  let(:notifiers_controller_content) {
+    '
 class NotifiersController < ApplicationController
   def notify
     Notifier.deliver_signup_notification(recipient)
@@ -33,8 +38,10 @@ class NotifiersController < ApplicationController
     Notifier.deliver(message)
   end
 end
-  '}
-  let(:notifiers_controller_rewritten_content) { '
+  '
+  }
+  let(:notifiers_controller_rewritten_content) {
+    '
 class NotifiersController < ApplicationController
   def notify
     Notifier.signup_notification(recipient).deliver
@@ -43,7 +50,8 @@ class NotifiersController < ApplicationController
     message.deliver
   end
 end
-  '}
+  '
+  }
   let(:fake_file_paths) { %w[app/mailers/notifier.rb app/controllers/notifiers_controller.rb] }
   let(:test_contents) { [notifier_content, notifiers_controller_content] }
   let(:test_rewritten_contents) { [notifier_rewritten_content, notifiers_controller_rewritten_content] }

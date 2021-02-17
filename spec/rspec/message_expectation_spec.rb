@@ -5,7 +5,8 @@ require 'spec_helper'
 RSpec.describe 'RSpec converts message expectation' do
   let(:rewriter_name) { 'rspec/message_expectation' }
   let(:fake_file_path) { 'spec/models/post_spec.rb' }
-  let(:test_content) { "
+  let(:test_content) {
+    "
 describe Post do
   it 'test' do
     obj.should_receive(:message)
@@ -18,8 +19,10 @@ describe Post do
     expect(obj).to receive(:message).and_return
   end
 end
-  "}
-  let(:test_rewritten_content) { "
+  "
+  }
+  let(:test_rewritten_content) {
+    "
 describe Post do
   it 'test' do
     expect(obj).to receive(:message)
@@ -32,7 +35,8 @@ describe Post do
     expect(obj).to receive(:message)
   end
 end
-  "}
+  "
+  }
 
   include_examples 'convertable'
 end

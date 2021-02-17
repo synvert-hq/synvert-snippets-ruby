@@ -19,7 +19,7 @@ Synvert::Rewriter.new 'shoulda', 'fix_2_6_deprecations' do
 
   if_gem 'shoulda-matchers', { gt: '2.6.2' }
 
-  %w(test/unit/**/*_test.rb spec/models/**/*_spec.rb).each do |file_pattern|
+  %w[test/unit/**/*_test.rb spec/models/**/*_spec.rb].each do |file_pattern|
     within_files file_pattern do
       # should ensure_inclusion_of(:age).in_range(0..100)
       # =>
