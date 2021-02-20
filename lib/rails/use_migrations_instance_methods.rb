@@ -28,7 +28,7 @@ Synvert::Rewriter.new 'rails', 'use_migrations_instance_methods' do
   within_files 'db/migrate/*.rb' do
     # def self.up => def up
     # def self.down => def down
-    %w(up down).each do |name|
+    %w[up down].each do |name|
       with_node type: 'defs', name: name do
         new_code = <<~EOS
           def #{name}
