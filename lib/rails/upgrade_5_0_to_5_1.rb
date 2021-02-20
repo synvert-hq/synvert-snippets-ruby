@@ -2,6 +2,8 @@
 
 Synvert::Rewriter.new 'rails', 'upgrade_5_0_to_5_1' do
   description <<~EOS
+    It upgrades rails 5.0 to 5.1.
+
     1. it replaces `HashWithIndifferentAccess` with `ActiveSupport::HashWithIndifferentAccess`.
 
     2. it replaces `Rails.application.config.secrets[:smtp_settings]["address"]` with
