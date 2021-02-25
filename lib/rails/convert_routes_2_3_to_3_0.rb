@@ -143,11 +143,6 @@ Synvert::Rewriter.new 'rails', 'convert_routes_2_3_to_3_0' do
     new_collection_routes.join
   end
 
-  helper_method :reject_keys do |hash_node, *keys|
-    hash_node.children.reject { |pair_node| keys.include? pair_node.key.to_value }
-      .map(&:to_source)
-  end
-
   helper_method :generate_new_child_routes do |parent_node, parent_argument|
     parent_node.body.map { |child_node| "  #{child_node.to_source.sub(parent_argument, 'map')}\n" }.join('')
   end
@@ -213,10 +208,10 @@ Synvert::Rewriter.new 'rails', 'convert_routes_2_3_to_3_0' do
         if hash_argument.type == :hash && (hash_argument.has_key?(:collection) || hash_argument.has_key?(:member))
           collection_routes = hash_argument.hash_value(:collection)
           member_routes = hash_argument.hash_value(:member)
-          other_options = reject_keys(hash_argument, :collection, :member)
+          other_options_code = reject_keys_from_hash(hash_argument, :collection, :member)
           new_routes = []
-          if other_options.length > 0
-            new_routes << "#{message} {{caller.arguments.first}}, #{other_options.join(', ')} do\n"
+          if other_options_code.length > 0
+            new_routes << "#{message} {{caller.arguments.first}}, #{other_options_code} do\n"
           else
             new_routes << "#{message} {{caller.arguments.first}} do\n"
           end
@@ -241,9 +236,9 @@ Synvert::Rewriter.new 'rails', 'convert_routes_2_3_to_3_0' do
         if hash_node.has_key?(:action) && hash_node.has_key?(:controller)
           controller_action_name = extract_controller_action_name(hash_node)
           method = hash_node.has_key?(:method) ? hash_node.hash_value(:method).to_value : 'match'
-          other_options = reject_keys(hash_node, :controller, :action, :method)
-          if other_options.length > 0
-            replace_with "#{method} {{arguments.first}}, :to => \"#{controller_action_name}\", #{other_options.join(', ')}"
+          other_options_code = reject_keys_from_hash(hash_node, :controller, :action, :method)
+          if other_options_code.length > 0
+            replace_with "#{method} {{arguments.first}}, :to => \"#{controller_action_name}\", #{other_options_code}"
           else
             replace_with "#{method} {{arguments.first}}, :to => \"#{controller_action_name}\""
           end
@@ -280,10 +275,10 @@ Synvert::Rewriter.new 'rails', 'convert_routes_2_3_to_3_0' do
         if hash_argument.type == :hash && (hash_argument.has_key?(:collection) || hash_argument.has_key?(:member))
           collection_routes = hash_argument.hash_value(:collection)
           member_routes = hash_argument.hash_value(:member)
-          other_options = reject_keys(hash_argument, :collection, :member)
+          other_options_code = reject_keys_from_hash(hash_argument, :collection, :member)
           new_routes = []
-          if other_options.length > 0
-            new_routes << "#{message} {{arguments.first}}, #{other_options.join(', ')} do\n"
+          if other_options_code.length > 0
+            new_routes << "#{message} {{arguments.first}}, #{other_options_code} do\n"
           else
             new_routes << "#{message} {{arguments.first}} do\n"
           end
@@ -337,10 +332,10 @@ Synvert::Rewriter.new 'rails', 'convert_routes_2_3_to_3_0' do
               controller_action_name = hash_node.has_key?(:action) ? extract_controller_action_name(hash_node) : "#{hash_node.hash_value(:controller).to_value}#index"
               method = extract_method(hash_node)
               subdomain_node = extract_subdomain_node(hash_node)
-              other_options = reject_keys(hash_node, :controller, :action, :method, :conditions)
-              other_options << ":constraints => {:subdomain => #{subdomain_node.to_source}}" if subdomain_node
-              if other_options.length > 0
-                replace_with "#{method} {{arguments.first}}, :to => \"#{controller_action_name}\", #{other_options.join(', ')}, :as => \"#{message}\""
+              other_options_code = reject_keys_from_hash(hash_node, :controller, :action, :method, :conditions)
+              other_options_code += ":constraints => {:subdomain => #{subdomain_node.to_source}}" if subdomain_node
+              if other_options_code.length > 0
+                replace_with "#{method} {{arguments.first}}, :to => \"#{controller_action_name}\", #{other_options_code}, :as => \"#{message}\""
               else
                 replace_with "#{method} {{arguments.first}}, :to => \"#{controller_action_name}\", :as => \"#{message}\""
               end
