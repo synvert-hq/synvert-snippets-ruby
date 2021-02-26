@@ -136,14 +136,20 @@ Synvert::Rewriter.new 'shoulda', 'use_matcher_syntax' do
 
   helper_method :hash_to_calls do |hash_node|
     new_calls = []
-    message_converts = { message: 'with_message', short_message: 'with_short_message', long_message: 'with_long_message',
-                        high_message: 'with_high_message', low_message: 'with_low_message' }
+    message_converts = {
+      message: 'with_message',
+      short_message: 'with_short_message',
+      long_message: 'with_long_message',
+      high_message: 'with_high_message',
+      low_message: 'with_low_message'
+    }
     hash_node.children.each do |pair_node|
       method = pair_node.key.to_value
       if method == :case_sensitive
         new_calls << (pair_node.value.to_value ? 'case_sensitive' : 'case_insensitive')
       else
-        new_calls << "#{message_converts.has_key?(method) ? message_converts[method] : method}(#{pair_node.value.to_source})"
+        new_calls <<
+          "#{message_converts.has_key?(method) ? message_converts[method] : method}(#{pair_node.value.to_source})"
       end
     end
     new_calls.join('.')
@@ -158,8 +164,8 @@ Synvert::Rewriter.new 'shoulda', 'use_matcher_syntax' do
     end
   end
 
-  unit_test_file_patterns = %w(test/unit/**/*_test.rb spec/models/**/*_spec.rb)
-  functional_test_file_patterns = %w(test/functional/**/*_test.rb spec/controllers/**/*_spec.rb)
+  unit_test_file_patterns = %w[test/unit/**/*_test.rb spec/models/**/*_spec.rb]
+  functional_test_file_patterns = %w[test/functional/**/*_test.rb spec/controllers/**/*_spec.rb]
 
   unit_test_file_patterns.each do |file_pattern|
     within_files file_pattern do
@@ -174,12 +180,23 @@ Synvert::Rewriter.new 'shoulda', 'use_matcher_syntax' do
       # should_allow_mass_assignment_of :first_name
       # =>
       # should allow_mass_assignment_of(:first_name)
-      %w(should_belong_to should_have_one should_have_many should_have_and_belong_to_many
-         should_validate_presence_of should_validate_uniqueness_of should_validate_numericality_of should_validate_acceptance_of
-         should_allow_mass_assignment_of should_not_allow_mass_assignment_of
-         should_have_readonly_attributes should_not_have_readonly_attributes).each do |message|
+      %w[
+        should_belong_to
+        should_have_one
+        should_have_many
+        should_have_and_belong_to_many
+        should_validate_presence_of
+        should_validate_uniqueness_of
+        should_validate_numericality_of
+        should_validate_acceptance_of
+        should_allow_mass_assignment_of
+        should_not_allow_mass_assignment_of
+        should_have_readonly_attributes
+        should_not_have_readonly_attributes
+      ].each do |message|
         with_node type: 'send', message: message do
-          new_message = message.start_with?('should_not') ? message.sub('should_not_', 'should_not ') : message.sub('_', ' ')
+          new_message =
+            message.start_with?('should_not') ? message.sub('should_not_', 'should_not ') : message.sub('_', ' ')
           if node.arguments.size == 1
             replace_with "#{new_message}({{arguments}})"
           elsif node.arguments.last.type == :hash
@@ -200,7 +217,10 @@ Synvert::Rewriter.new 'shoulda', 'use_matcher_syntax' do
       # should ensure_length_of(:password).is_at_least(6).is_at_most(20)
       with_node type: 'send', message: 'should_ensure_length_in_range' do
         range = strip_brackets(node.arguments[1].to_source).split('..')
-        with_other_calls(node, "should ensure_length_of({{arguments.first}}).is_at_least(#{range.first}).is_at_most(#{range.last})")
+        with_other_calls(
+          node,
+          "should ensure_length_of({{arguments.first}}).is_at_least(#{range.first}).is_at_most(#{range.last})"
+        )
       end
 
       # should_ensure_length_at_least :name, 3
@@ -236,13 +256,13 @@ Synvert::Rewriter.new 'shoulda', 'use_matcher_syntax' do
       # =>
       # should allow_value('isbn 1 2345 6789 0').for(:isbn)
       # should allow_value('ISBN 1-2345-6789-0').for(:isbn)
-      %w(should_allow_values_for should_not_allow_values_for).each do |message|
+      %w[should_allow_values_for should_not_allow_values_for].each do |message|
         with_node type: 'send', message: message do
           should_or_should_not = message.include?('_not') ? 'should_not' : 'should'
           field = node.arguments.first.to_source
           replace_with node.arguments[1..-1].map { |node_argument|
-            "#{should_or_should_not} allow_value(#{node_argument.to_source}).for(#{field})"
-          }.join("\n")
+                         "#{should_or_should_not} allow_value(#{node_argument.to_source}).for(#{field})"
+                       }.join("\n")
         end
       end
     end
@@ -290,9 +310,7 @@ Synvert::Rewriter.new 'shoulda', 'use_matcher_syntax' do
       # should filter_param(:password)
       # should filter_param(:ssn)
       with_node type: 'send', message: 'should_filter_params' do
-        replace_with node.arguments.map { |node_argument|
-          "should filter_param(#{node_argument.to_source})"
-        }.join("\n")
+        replace_with node.arguments.map { |node_argument| "should filter_param(#{node_argument.to_source})" }.join("\n")
       end
 
       # should_assign_to :user, :posts
@@ -308,9 +326,7 @@ Synvert::Rewriter.new 'shoulda', 'use_matcher_syntax' do
           klazz = node.arguments.last.values.first
           replace_with "should assign_to({{arguments.first}}).with_kind_of(#{klazz.to_source})"
         else
-          replace_with node.arguments.map { |node_argument|
-            "should assign_to(#{node_argument.to_source})"
-          }.join("\n")
+          replace_with node.arguments.map { |node_argument| "should assign_to(#{node_argument.to_source})" }.join("\n")
         end
       end
 
@@ -319,9 +335,9 @@ Synvert::Rewriter.new 'shoulda', 'use_matcher_syntax' do
       # should_not assign_to(:user)
       # should_not assign_to(:posts)
       with_node type: 'send', message: 'should_not_assign_to' do
-        replace_with node.arguments.map { |node_argument|
-          "should_not assign_to(#{node_argument.to_source})"
-        }.join("\n")
+        replace_with node.arguments.map { |node_argument| "should_not assign_to(#{node_argument.to_source})" }.join(
+                       "\n"
+                     )
       end
 
       # should_respond_with :success => should respond_with(:success)
@@ -331,7 +347,12 @@ Synvert::Rewriter.new 'shoulda', 'use_matcher_syntax' do
       # should_render_template :new => should render_template(:new)
       #
       # should_render_with_layout "special" => should render_with_layout("special")
-      %w(should_respond_with should_respond_with_content_type should_render_template should_render_with_layout).each do |message|
+      %w[
+        should_respond_with
+        should_respond_with_content_type
+        should_render_template
+        should_render_with_layout
+      ].each do |message|
         with_node type: 'send', message: message do
           new_message = message.sub('_', ' ')
           replace_with "#{new_message}({{arguments}})"

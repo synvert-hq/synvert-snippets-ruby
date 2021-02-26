@@ -25,14 +25,32 @@ Synvert::Rewriter.new 'rails', 'upgrade_3_1_to_3_2' do
 
   within_file 'config/environments/development.rb' do
     # insert config.active_record.auto_explain_threshold_in_seconds = 0.5
-    unless_exist_node type: 'send', receiver: { type: 'send', receiver: { type: 'send', message: 'config' }, message: 'active_record' }, message: 'auto_explain_threshold_in_seconds=' do
+    unless_exist_node type: 'send',
+                      receiver: {
+                        type: 'send',
+                        receiver: {
+                          type: 'send',
+                          message: 'config'
+                        },
+                        message: 'active_record'
+                      },
+                      message: 'auto_explain_threshold_in_seconds=' do
       insert 'config.active_record.auto_explain_threshold_in_seconds = 0.5'
     end
   end
 
   within_files 'config/environments/{development,test}.rb' do
     # insert config.active_record.mass_assignment_sanitizer = :strict
-    unless_exist_node type: 'send', receiver: { type: 'send', receiver: { type: 'send', message: 'config' }, message: 'active_record' }, message: 'mass_assignment_sanitizer=' do
+    unless_exist_node type: 'send',
+                      receiver: {
+                        type: 'send',
+                        receiver: {
+                          type: 'send',
+                          message: 'config'
+                        },
+                        message: 'active_record'
+                      },
+                      message: 'mass_assignment_sanitizer=' do
       insert 'config.active_record.mass_assignment_sanitizer = :strict'
     end
   end

@@ -1,4 +1,3 @@
-
 # frozen_string_literal: true
 
 Synvert::Rewriter.new 'rails', 'convert_model_lambda_scope' do
