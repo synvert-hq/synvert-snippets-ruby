@@ -36,16 +36,18 @@ Synvert::Rewriter.new 'rails', 'fix_4_0_deprecations' do
   if_gem 'rails', { gte: '4.0.0' }
 
   within_files '**/*.rb' do
-    { 'ActiveRecord::Fixtures' => 'ActiveRecord::FixtureSet',
-     'ActiveRecord::TestCase' => 'ActiveSupport::TestCase',
-     'ActionController::Integration' => 'ActionDispatch::Integration',
-     'ActionController::IntegrationTest' => 'ActionDispatch::IntegrationTest',
-     'ActionController::PerformanceTest' => 'ActionDispatch::PerformanceTest',
-     'ActionController::AbstractRequest' => 'ActionDispatch::Request',
-     'ActionController::Request' => 'ActionDispatch::Request',
-     'ActionController::AbstractResponse' => 'ActionDispatch::Response',
-     'ActionController::Response' => 'ActionDispatch::Response',
-     'ActionController::Routing' => 'ActionDispatch::Routing' }.each do |deprecated, favor|
+    {
+      'ActiveRecord::Fixtures' => 'ActiveRecord::FixtureSet',
+      'ActiveRecord::TestCase' => 'ActiveSupport::TestCase',
+      'ActionController::Integration' => 'ActionDispatch::Integration',
+      'ActionController::IntegrationTest' => 'ActionDispatch::IntegrationTest',
+      'ActionController::PerformanceTest' => 'ActionDispatch::PerformanceTest',
+      'ActionController::AbstractRequest' => 'ActionDispatch::Request',
+      'ActionController::Request' => 'ActionDispatch::Request',
+      'ActionController::AbstractResponse' => 'ActionDispatch::Response',
+      'ActionController::Response' => 'ActionDispatch::Response',
+      'ActionController::Routing' => 'ActionDispatch::Routing'
+    }.each do |deprecated, favor|
       with_node to_source: deprecated do
         replace_with favor
       end

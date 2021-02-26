@@ -5,7 +5,8 @@ require 'spec_helper'
 RSpec.describe 'Convert rails views from 2.3 to 3.0' do
   let(:rewriter_name) { 'rails/convert_views_2_3_to_3_0' }
   let(:fake_file_path) { 'app/views/posts/_form.html.erb' }
-  let(:test_content) { "
+  let(:test_content) {
+    "
   <%= h user.login %>
   <%= post.title %>
 
@@ -15,8 +16,10 @@ RSpec.describe 'Convert rails views from 2.3 to 3.0' do
   <% end %>
   <%= form_for post do |f| %>
   <% end %>
-  "}
-  let(:test_rewritten_content) { "
+  "
+  }
+  let(:test_rewritten_content) {
+    "
   <%= user.login %>
   <%= post.title %>
 
@@ -26,7 +29,8 @@ RSpec.describe 'Convert rails views from 2.3 to 3.0' do
   <% end %>
   <%= form_for post do |f| %>
   <% end %>
-  "}
+  "
+  }
 
   include_examples 'convertable'
 end

@@ -7,7 +7,7 @@ Synvert::Rewriter.new 'ruby', 'remove_debug_code' do
 
   within_files '**/*.rb' do
     # removes puts and p methods
-    %w(puts p).each do |message|
+    %w[puts p].each do |message|
       with_node type: 'send', message: message do
         remove
       end
