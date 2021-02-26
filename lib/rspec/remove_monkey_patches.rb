@@ -39,7 +39,6 @@ Synvert::Rewriter.new 'rspec', 'remove_monkey_patches' do
   monkey_patches_methods = %w(describe shared_examples shared_examples_for shared_context)
 
   within_files 'spec/**/*.rb' do
-    top_level = true
     # describe 'top-level example group' do
     #   describe 'nested example group' do
     #   end
@@ -50,11 +49,10 @@ Synvert::Rewriter.new 'rspec', 'remove_monkey_patches' do
     #   end
     # end
     monkey_patches_methods.each do |message|
-      with_node type: 'send', message: message do
-        if !node.receiver && top_level
+      with_direct_node type: 'block', caller: { type: 'send', receiver: nil, message: message } do
+        goto_node :caller do
           replace_with 'RSpec.{{message}} {{arguments}}'
         end
-        top_level = false
       end
     end
   end
