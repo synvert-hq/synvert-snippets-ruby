@@ -163,7 +163,7 @@ Synvert::Rewriter.new 'rails', 'convert_models_2_3_to_3_0' do
     ```
   EOS
 
-  keys = [:conditions, :order, :joins, :select, :from, :having, :group, :include, :limit, :offset, :lock, :readonly]
+  keys = %i[conditions order joins select from having group include limit offset lock readonly]
   keys_converters = {
     conditions: :where,
     include: :includes
@@ -183,7 +183,7 @@ Synvert::Rewriter.new 'rails', 'convert_models_2_3_to_3_0' do
   helper_method :generate_batch_options do |hash_node|
     options = []
     hash_node.children.each do |pair_node|
-      if [:start, :batch_size].include? pair_node.key.to_value
+      if %i[start batch_size].include? pair_node.key.to_value
         options << pair_node.to_source
       end
     end
@@ -303,7 +303,7 @@ Synvert::Rewriter.new 'rails', 'convert_models_2_3_to_3_0' do
       replace_with add_receiver_if_necessary('all')
     end
 
-    [:first, :last].each do |message|
+    %i[first last].each do |message|
       # Post.find(:last, :conditions => {:title => "test"})
       # =>
       # Post.where(:title => "title").last
