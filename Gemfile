@@ -4,7 +4,7 @@ source 'https://rubygems.org'
 
 require 'pp' # https://github.com/defunkt/fakefs/issues/99
 
-gem 'synvert-core', '>= 0.21.1'
+gem 'synvert-core', '>= 0.21.2'
 gem 'coveralls', require: false
 gem 'rake'
 gem 'rspec'
