@@ -68,7 +68,7 @@ Synvert::Rewriter.new 'factory_bot', 'deprecate_static_value' do
               new_arguments = add_curly_brackets_if_necessary(node.arguments.first.to_source)
               replace_with "{{message}} { #{new_arguments} }"
             else
-              replace_with "{{message}} { {{arguments}} }"
+              replace_with '{{message}} { {{arguments}} }'
             end
           end
         end

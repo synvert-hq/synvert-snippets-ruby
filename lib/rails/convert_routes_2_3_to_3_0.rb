@@ -200,7 +200,7 @@ Synvert::Rewriter.new 'rails', 'convert_routes_2_3_to_3_0' do
     #   end
     #   map.resources :comments
     # end
-    %w(resource resources).each do |message|
+    %w[resource resources].each do |message|
       within_node type: 'block', caller: { type: 'send', receiver: { not: nil }, message: message } do
         block_argument = node.arguments.first.to_source
         hash_argument = node.caller.arguments.last
@@ -269,7 +269,7 @@ Synvert::Rewriter.new 'rails', 'convert_routes_2_3_to_3_0' do
     #     post :activate
     #   edn
     # end
-    %w(resource resources).each do |message|
+    %w[resource resources].each do |message|
       with_node type: 'send', receiver: 'map', message: message do
         hash_argument = node.arguments.last
         if hash_argument.type == :hash && (hash_argument.has_key?(:collection) || hash_argument.has_key?(:member))
@@ -329,7 +329,12 @@ Synvert::Rewriter.new 'rails', 'convert_routes_2_3_to_3_0' do
         if hash_node.type == :hash
           if hash_node.has_key?(:controller)
             if hash_node.has_key?(:action) || url !~ /:action/
-              controller_action_name = hash_node.has_key?(:action) ? extract_controller_action_name(hash_node) : "#{hash_node.hash_value(:controller).to_value}#index"
+              controller_action_name =
+                if hash_node.has_key?(:action)
+                  extract_controller_action_name(hash_node)
+                else
+                  "#{hash_node.hash_value(:controller).to_value}#index"
+                end
               method = extract_method(hash_node)
               subdomain_node = extract_subdomain_node(hash_node)
               other_options_code = reject_keys_from_hash(hash_node, :controller, :action, :method, :conditions)

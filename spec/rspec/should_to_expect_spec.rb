@@ -5,7 +5,8 @@ require 'spec_helper'
 RSpec.describe 'RSpec converts should to expect' do
   let(:rewriter_name) { 'rspec/should_to_expect' }
   let(:fake_file_path) { 'spec/models/post_spec.rb' }
-  let(:test_content) { "
+  let(:test_content) {
+    "
 describe Post do
   it 'test' do
     obj.should matcher
@@ -18,8 +19,10 @@ describe Post do
     [1, 2, 3].should =~ [2, 1, 3]
   end
 end
-  "}
-  let(:test_rewritten_content) { "
+  "
+  }
+  let(:test_rewritten_content) {
+    "
 describe Post do
   it 'test' do
     expect(obj).to matcher
@@ -32,7 +35,8 @@ describe Post do
     expect([1, 2, 3]).to match_array [2, 1, 3]
   end
 end
-  "}
+  "
+  }
 
   include_examples 'convertable'
 end
