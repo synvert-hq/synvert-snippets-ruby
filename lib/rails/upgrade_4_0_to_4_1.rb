@@ -46,7 +46,8 @@ Synvert::Rewriter.new 'rails', 'upgrade_4_0_to_4_1' do
     end
   end
 
-  add_file 'config/initializers/cookies_serializer.rb', 'Rails.application.config.action_dispatch.cookies_serializer = :json'
+  add_file 'config/initializers/cookies_serializer.rb',
+           'Rails.application.config.action_dispatch.cookies_serializer = :json'
 
   within_files '**/*.rb' do
     # MultiJson.dump(obj) => obj.to_json

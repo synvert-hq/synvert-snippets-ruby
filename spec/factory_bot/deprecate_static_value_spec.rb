@@ -5,7 +5,8 @@ require 'spec_helper'
 RSpec.describe 'Deprecate factory_bot static value' do
   let(:rewriter_name) { 'factory_bot/deprecate_static_value' }
   let(:fake_file_path) { 'spec/factories/post.rb' }
-  let(:test_content) { '
+  let(:test_content) {
+    '
 FactoryBot.define do
   factory :post do
     user
@@ -30,8 +31,10 @@ FactoryBot.define do
     end
   end
 end
-  '}
-  let(:test_rewritten_content) { '
+  '
+  }
+  let(:test_rewritten_content) {
+    '
 FactoryBot.define do
   factory :post do
     user
@@ -56,7 +59,8 @@ FactoryBot.define do
     end
   end
 end
-  '}
+  '
+  }
 
   include_examples 'convertable'
 end

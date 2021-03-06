@@ -6,7 +6,8 @@ RSpec.describe 'Convert dynamic finders' do
   let(:rewriter_name) { 'rails/convert_dynamic_finders' }
 
   before do
-    schema_content = '
+    schema_content =
+      '
 ActiveRecord::Schema.define(version: 20140211112752) do
 create_table "users", force: true do |t|
   t.integer  "account_id",               index: true
@@ -20,7 +21,7 @@ create_table "users", force: true do |t|
 end
 end
     '
-    FakeFS do
+    FakeFS() do
       FileUtils.mkdir_p 'db'
       File.write('db/schema.rb', schema_content)
     end
@@ -28,7 +29,8 @@ end
 
   context 'model' do
     let(:fake_file_path) { 'app/models/post.rb' }
-    let(:test_content) { '
+    let(:test_content) {
+      '
 class Post < ActiveRecord::Base
   def active_users
     User.find_all_by_email_and_active(email, true)
@@ -55,8 +57,10 @@ class Post < ActiveRecord::Base
     find_all_by_role_and_active("admin", true)
   end
 end
-    '}
-    let(:test_rewritten_content) { '
+    '
+    }
+    let(:test_rewritten_content) {
+      '
 class Post < ActiveRecord::Base
   def active_users
     User.where(email: email, active: true)
@@ -83,14 +87,16 @@ class Post < ActiveRecord::Base
     where(role: "admin", active: true)
   end
 end
-    '}
+    '
+    }
 
     include_examples 'convertable'
   end
 
   context 'controller' do
     let(:fake_file_path) { 'app/controllers/users_controller.rb' }
-    let(:test_content) { '
+    let(:test_content) {
+      '
 class UsersController < ApplicationController
   def new
     @user = User.find_or_initialize_by_login_and_email(params[:user][:login], params[:user][:email])
@@ -102,8 +108,10 @@ class UsersController < ApplicationController
     @user = User.find_or_create_by_label(params[:user][:label])
   end
 end
-    '}
-    let(:test_rewritten_content) { '
+    '
+    }
+    let(:test_rewritten_content) {
+      '
 class UsersController < ApplicationController
   def new
     @user = User.find_or_initialize_by(login: params[:user][:login], email: params[:user][:email])
@@ -115,7 +123,8 @@ class UsersController < ApplicationController
     @user = User.find_or_create_by_label(params[:user][:label])
   end
 end
-    '}
+    '
+    }
 
     include_examples 'convertable'
   end
