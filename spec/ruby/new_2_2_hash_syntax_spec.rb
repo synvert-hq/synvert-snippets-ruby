@@ -10,14 +10,14 @@ RSpec.describe 'Uses ruby 2.2 new hash synax' do
       { foo_key: 'foo_value', bar_key: 42, "baz-key" => true }
       { :"foo-#{key}" => 'foo_value', :"bar-key" => 42, :"a\tb" => false, :"c'd" => nil }
       { "foo-#{key}": 'foo_value', 'bar-key': 42, "a\tb": false, "c'd": nil }
-    EOS
+  EOS
   let(:test_rewritten_content) { <<~'EOS' }
       { foo: 'bar', 'foo' => 'bar' }
       { key1: 'value1', key2: 'value2' }
       { foo_key: 'foo_value', bar_key: 42, "baz-key" => true }
       { "foo-#{key}": 'foo_value', 'bar-key': 42, "a\tb": false, "c'd": nil }
       { "foo-#{key}": 'foo_value', 'bar-key': 42, "a\tb": false, "c'd": nil }
-    EOS
+  EOS
 
   before do
     load_sub_snippets(%w[ruby/new_1_9_hash_syntax])
