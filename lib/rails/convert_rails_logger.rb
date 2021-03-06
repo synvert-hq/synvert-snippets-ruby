@@ -2,17 +2,17 @@
 
 Synvert::Rewriter.new 'rails', 'convert_rails_logger' do
   description <<~EOS
-  It converts RAILS_DEFAULT_LOGGER to Rails.logger.
+    It converts RAILS_DEFAULT_LOGGER to Rails.logger.
 
-  ```ruby
-  RAILS_DEFAULT_LOGGER
-  ```
+    ```ruby
+    RAILS_DEFAULT_LOGGER
+    ```
 
-  =>
+    =>
 
-  ```ruby
-  Rails.logger
-  ```
+    ```ruby
+    Rails.logger
+    ```
   EOS
 
   if_gem 'rails', { gte: '2.3.0' }

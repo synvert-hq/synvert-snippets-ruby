@@ -9,8 +9,8 @@ RSpec.describe 'Add ApplicationJob' do
     let(:fake_file_path) { 'app/jobs/application_job.rb' }
     let(:test_content) { nil }
     let(:test_rewritten_content) { <<~EOS }
-        class ApplicationJob < ActiveJob::Base
-        end
+      class ApplicationJob < ActiveJob::Base
+      end
       EOS
 
     include_examples 'convertable'
@@ -19,12 +19,12 @@ RSpec.describe 'Add ApplicationJob' do
   context 'rename ActiveJob::Base' do
     let(:fake_file_path) { 'app/jobs/post_job.rb' }
     let(:test_content) { <<~EOS }
-        class PostJob < ActiveJob::Base
-        end
+      class PostJob < ActiveJob::Base
+      end
       EOS
     let(:test_rewritten_content) { <<~EOS }
-        class PostJob < ApplicationJob
-        end
+      class PostJob < ApplicationJob
+      end
       EOS
 
     include_examples 'convertable'
