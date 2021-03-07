@@ -62,7 +62,8 @@ Synvert::Rewriter.new 'factory_bot', 'deprecate_static_value' do
       within_node type: 'block', caller: { type: 'send', message: message } do
         goto_node :body do
           within_direct_node type: 'send', receiver: nil do
-            next if node.arguments.size == 0 || node.message == :association
+            next if node.arguments.empty?
+            next if %i[association sequence].include?(node.message)
 
             if node.arguments.size == 1 && node.arguments.first.type == :hash
               new_arguments = add_curly_brackets_if_necessary(node.arguments.first.to_source)
