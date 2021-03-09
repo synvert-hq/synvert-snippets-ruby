@@ -23,6 +23,7 @@ RSpec.describe 'Add ApplicationRecord' do
         class Post < ActiveRecord::Base
         end
       EOS
+
     let(:test_rewritten_content) { <<~EOS }
         class Post < ApplicationRecord
         end

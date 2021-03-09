@@ -5,24 +5,20 @@ require 'spec_helper'
 RSpec.describe 'Convert render :text to render :plain' do
   let(:rewriter_name) { 'rails/convert_render_text_to_render_plain' }
   let(:fake_file_path) { 'app/controllers/posts_controller.rb' }
-  let(:test_content) {
-    <<~EOS
+  let(:test_content) { <<~EOS }
       class PostsController < ApplicationController
         def index
           render text: 'OK'
         end
       end
     EOS
-  }
-  let(:test_rewritten_content) {
-    <<~EOS
+  let(:test_rewritten_content) { <<~EOS }
       class PostsController < ApplicationController
         def index
           render plain: 'OK'
         end
       end
     EOS
-  }
 
   include_examples 'convertable'
 end
