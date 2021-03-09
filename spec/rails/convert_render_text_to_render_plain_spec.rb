@@ -8,8 +8,12 @@ RSpec.describe 'Convert render :text to render :plain' do
   let(:test_content) {
     <<~EOS
       class PostsController < ApplicationController
-        def index
+        def foo
           render text: 'OK'
+        end
+
+        def bar
+          render text: 'Not OK', status: 403
         end
       end
     EOS
@@ -17,8 +21,12 @@ RSpec.describe 'Convert render :text to render :plain' do
   let(:test_rewritten_content) {
     <<~EOS
       class PostsController < ApplicationController
-        def index
+        def foo
           render plain: 'OK'
+        end
+
+        def bar
+          render plain: 'Not OK', status: 403
         end
       end
     EOS
