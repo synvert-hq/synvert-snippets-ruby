@@ -11,6 +11,7 @@ RSpec.describe 'Uses ruby 2.2 new hash synax' do
       { :"foo-#{key}" => 'foo_value', :"bar-key" => 42, :"a\tb" => false, :"c'd" => nil }
       { "foo-#{key}": 'foo_value', 'bar-key': 42, "a\tb": false, "c'd": nil }
     EOS
+
   let(:test_rewritten_content) { <<~'EOS' }
       { foo: 'bar', 'foo' => 'bar' }
       { key1: 'value1', key2: 'value2' }
