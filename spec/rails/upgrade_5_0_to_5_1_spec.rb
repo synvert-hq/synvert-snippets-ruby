@@ -36,5 +36,10 @@ end
   let(:test_contents) { [post_model_content] }
   let(:test_rewritten_contents) { [post_model_rewritten_content] }
 
+  before do
+    load_sub_snippets(%w[rails/convert_active_record_dirty_5_0_to_5_1])
+  end
+
+
   include_examples 'convertable with multiple files'
 end

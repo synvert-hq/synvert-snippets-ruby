@@ -10,6 +10,8 @@ Synvert::Rewriter.new 'rails', 'upgrade_5_0_to_5_1' do
        `Rails.application.config.secrets[:smtp_settings][:address]`
   EOS
 
+  add_snippet 'rails', 'convert_active_record_dirty_5_0_to_5_1'
+
   if_gem 'rails', { gte: '5.1.0' }
 
   within_files '**/*.rb' do
