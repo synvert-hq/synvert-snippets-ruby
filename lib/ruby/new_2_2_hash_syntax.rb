@@ -33,9 +33,9 @@ Synvert::Rewriter.new 'ruby', 'new_2_2_hash_syntax' do
         when :sym
           case node.key.to_source
           when /\A:"([^"'\\]*)"\z/
-            replace_with "'#{$1}': {{value}}"
+            replace_with "'#{Regexp.last_match(1)}': {{value}}"
           when /\A:(.+)\z/
-            replace_with "#{$1}: {{value}}"
+            replace_with "#{Regexp.last_match(1)}: {{value}}"
           end
         when :dsym
           if new_key = node.key.to_source[/\A:(.+)/, 1]
