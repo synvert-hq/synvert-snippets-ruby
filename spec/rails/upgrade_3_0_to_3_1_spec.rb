@@ -73,6 +73,7 @@ end
         self.include_root_in_json = false
       end
     EOS
+
   let(:session_store_content) {
     "
 Synvert::Application.config.session_store :cookie_store, key: 'somethingold'
