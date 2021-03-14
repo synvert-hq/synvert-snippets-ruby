@@ -79,7 +79,7 @@ Synvert::Rewriter.new 'rails', 'convert_active_record_dirty_5_0_to_5_1' do
     with_node type: 'sym', to_value: before_name do
       if before_name.is_a?(Regexp)
         node.to_value =~ before_name
-        replace_with ":#{after_name.sub('{{attribute}}', $1)}"
+        replace_with ":#{after_name.sub('{{attribute}}', Regexp.last_match(1))}"
       else
         replace_with after_name
       end
@@ -87,7 +87,7 @@ Synvert::Rewriter.new 'rails', 'convert_active_record_dirty_5_0_to_5_1' do
     with_node type: 'send', receiver: nil, message: before_name do
       if before_name.is_a?(Regexp)
         node.message.to_s =~ before_name
-        replace_with after_name.sub('{{attribute}}', $1)
+        replace_with after_name.sub('{{attribute}}', Regexp.last_match(1))
       else
         replace_with after_name
       end
