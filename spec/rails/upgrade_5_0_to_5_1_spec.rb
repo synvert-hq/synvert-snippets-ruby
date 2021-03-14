@@ -40,6 +40,5 @@ end
     load_sub_snippets(%w[rails/convert_active_record_dirty_5_0_to_5_1])
   end
 
-
   include_examples 'convertable with multiple files'
 end

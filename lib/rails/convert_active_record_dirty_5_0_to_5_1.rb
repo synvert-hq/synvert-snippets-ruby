@@ -58,7 +58,7 @@ Synvert::Rewriter.new 'rails', 'convert_active_record_dirty_5_0_to_5_1' do
   BEFORE_CALLBACK_CHANGES = {
     /(\w+)_changed\?$/ => 'will_save_change_to_{{attribute}}?',
     /(\w+)_change$/ => '{{attribute}}_change_to_be_saved',
-    /(\w+)_was$/ =>	'{{attribute}}_in_database',
+    /(\w+)_was$/ => '{{attribute}}_in_database',
     'changes' => 'changes_to_save',
     'changed?' => 'has_changes_to_save?',
     'changed' => 'changed_attribute_names_to_save',
@@ -68,7 +68,7 @@ Synvert::Rewriter.new 'rails', 'convert_active_record_dirty_5_0_to_5_1' do
   AFTER_CALLBACK_CHANGES = {
     /(\w+)_changed\?$/ => 'saved_change_to_{{attribute}}?',
     /(\w+)_change$/ => 'saved_change_to_{{attribute}}',
-    /(\w+)_was$/ =>	'{{attribute}}_before_last_save',
+    /(\w+)_was$/ => '{{attribute}}_before_last_save',
     'changes' => 'saved_changes',
     'changed?' => 'saved_changes?',
     'changed' => 'saved_changes.keys',
@@ -102,9 +102,7 @@ Synvert::Rewriter.new 'rails', 'convert_active_record_dirty_5_0_to_5_1' do
         before_callback_names << node.arguments[0].to_value
         if node.arguments[1] && node.arguments[1].type == :hash
           goto_node node.arguments[1] do
-            BEFORE_CALLBACK_CHANGES.each do |before_name, after_name|
-              convert_callback(before_name, after_name)
-            end
+            BEFORE_CALLBACK_CHANGES.each do |before_name, after_name| convert_callback(before_name, after_name)end
           end
         end
       end
@@ -120,14 +118,20 @@ Synvert::Rewriter.new 'rails', 'convert_active_record_dirty_5_0_to_5_1' do
 
     after_callback_names = []
 
-    %i[after_create after_update after_save after_commit after_create_commit after_update_commit after_save_commit].each do |callback_name|
+    %i[
+      after_create
+      after_update
+      after_save
+      after_commit
+      after_create_commit
+      after_update_commit
+      after_save_commit
+    ].each do |callback_name|
       with_node type: 'send', receiver: nil, message: callback_name do
         after_callback_names << node.arguments[0].to_value
         if node.arguments[1] && node.arguments[1].type == :hash
           goto_node node.arguments[1] do
-            AFTER_CALLBACK_CHANGES.each do |before_name, after_name|
-              convert_callback(before_name, after_name)
-            end
+            AFTER_CALLBACK_CHANGES.each do |before_name, after_name| convert_callback(before_name, after_name)end
           end
         end
       end
