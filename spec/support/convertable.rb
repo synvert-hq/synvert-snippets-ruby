@@ -6,7 +6,7 @@ def load_snippet(snippet_name)
 end
 
 def load_sub_snippets(sub_snippets)
-  sub_snippets.each do |sub_snippet| require(sub_snippet)end
+  sub_snippets.each { |sub_snippet| require(sub_snippet) }
 end
 
 shared_examples 'convertable' do
@@ -36,7 +36,7 @@ shared_examples 'convertable with multiple files' do
 
   describe 'with fakefs', fakefs: true do
     before do
-      file_paths.each do |file_path| FileUtils.mkdir_p(File.dirname(file_path))end
+      file_paths.each { |file_path| FileUtils.mkdir_p(File.dirname(file_path)) }
     end
 
     it 'converts' do

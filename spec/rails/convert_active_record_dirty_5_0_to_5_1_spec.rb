@@ -5,6 +5,18 @@ require 'spec_helper'
 RSpec.describe 'Convert ActiveRecord::Dirty 5.0 to 5.1' do
   let(:rewriter_name) { 'rails/convert_active_record_dirty_5_0_to_5_1' }
   let(:fake_file_path) { 'app/models/post.rb' }
+  let(:schema_content) {
+    <<~EOS
+      ActiveRecord::Schema.define(version: 20140211112752) do
+        create_table "posts", force: true do |t|
+          t.string   "title"
+          t.string   "summary"
+          t.boolean  "status"
+          t.timestamps
+        end
+      end
+    EOS
+  }
   let(:test_content) {
     <<~EOS
       class Post < ActiveRecord::Base
@@ -53,6 +65,13 @@ RSpec.describe 'Convert ActiveRecord::Dirty 5.0 to 5.1' do
       end
     EOS
   }
+
+  before do
+    FakeFS do
+      FileUtils.mkdir('db')
+      File.write('db/schema.rb', schema_content)
+    end
+  end
 
   include_examples 'convertable'
 end

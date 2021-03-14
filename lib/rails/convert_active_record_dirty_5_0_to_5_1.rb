@@ -75,11 +75,13 @@ Synvert::Rewriter.new 'rails', 'convert_active_record_dirty_5_0_to_5_1' do
     'changed_attributes' => 'saved_changes.transform_values(&:first)'
   }
 
-  helper_method :convert_callback do |before_name, after_name|
+  helper_method :convert_callback do |before_name, after_name, attributes|
     with_node type: 'sym', to_value: before_name do
       if before_name.is_a?(Regexp)
         node.to_value =~ before_name
-        replace_with ":#{after_name.sub('{{attribute}}', $1)}"
+        if attributes.include?($1)
+          replace_with ":#{after_name.sub('{{attribute}}', $1)}"
+        end
       else
         replace_with after_name
       end
@@ -87,56 +89,72 @@ Synvert::Rewriter.new 'rails', 'convert_active_record_dirty_5_0_to_5_1' do
     with_node type: 'send', receiver: nil, message: before_name do
       if before_name.is_a?(Regexp)
         node.message.to_s =~ before_name
-        replace_with after_name.sub('{{attribute}}', $1)
+        if attributes.include?($1)
+          replace_with after_name.sub('{{attribute}}', $1)
+        end
       else
         replace_with after_name
       end
     end
   end
 
+  object_attributes = {}
+  within_file 'db/schema.rb' do
+    within_node type: 'block', caller: { type: 'send', message: 'create_table' } do
+      object_name = node.caller.arguments.first.to_value.singularize
+      object_attributes[object_name] = []
+      with_node type: 'send', receiver: 't', message: { not: 'index' } do
+        if node.arguments.size > 0
+          attribute_name = node.arguments.first.to_value
+          object_attributes[object_name] << attribute_name
+        end
+      end
+    end
+  end
+
   within_files 'app/models/**/*.rb' do
-    before_callback_names = []
+    within_node type: 'class' do
+      object_name = node.name.to_source.underscore
 
-    %i[before_create before_update before_save].each do |callback_name|
-      with_node type: 'send', receiver: nil, message: callback_name do
-        before_callback_names << node.arguments[0].to_value
-        if node.arguments[1] && node.arguments[1].type == :hash
-          goto_node node.arguments[1] do
-            BEFORE_CALLBACK_CHANGES.each do |before_name, after_name|
-              convert_callback(before_name, after_name)
-            end
+      before_callback_names = []
+
+      %i[before_create before_update before_save].each do |callback_name|
+        with_node type: 'send', receiver: nil, message: callback_name do
+          if node.arguments[0].type == :sym
+            before_callback_names << node.arguments[0].to_value
+          end
+          BEFORE_CALLBACK_CHANGES.each do |before_name, after_name|
+            convert_callback(before_name, after_name, object_attributes[object_name])
           end
         end
       end
-    end
 
-    with_node type: 'def' do
-      if before_callback_names.include?(node.name)
-        BEFORE_CALLBACK_CHANGES.each do |before_name, after_name|
-          convert_callback(before_name, after_name)
-        end
-      end
-    end
-
-    after_callback_names = []
-
-    %i[after_create after_update after_save after_commit after_create_commit after_update_commit after_save_commit].each do |callback_name|
-      with_node type: 'send', receiver: nil, message: callback_name do
-        after_callback_names << node.arguments[0].to_value
-        if node.arguments[1] && node.arguments[1].type == :hash
-          goto_node node.arguments[1] do
-            AFTER_CALLBACK_CHANGES.each do |before_name, after_name|
-              convert_callback(before_name, after_name)
-            end
+      with_node type: 'def' do
+        if before_callback_names.include?(node.name)
+          BEFORE_CALLBACK_CHANGES.each do |before_name, after_name|
+            convert_callback(before_name, after_name, object_attributes[object_name])
           end
         end
       end
-    end
 
-    with_node type: 'def' do
-      if after_callback_names.include?(node.name)
-        AFTER_CALLBACK_CHANGES.each do |before_name, after_name|
-          convert_callback(before_name, after_name)
+      after_callback_names = []
+
+      %i[after_create after_update after_save after_commit after_create_commit after_update_commit after_save_commit].each do |callback_name|
+        with_node type: 'send', receiver: nil, message: callback_name do
+          if node.arguments[0].type == :sym
+            after_callback_names << node.arguments[0].to_value
+          end
+          AFTER_CALLBACK_CHANGES.each do |before_name, after_name|
+            convert_callback(before_name, after_name, object_attributes[object_name])
+          end
+        end
+      end
+
+      with_node type: 'def' do
+        if after_callback_names.include?(node.name)
+          AFTER_CALLBACK_CHANGES.each do |before_name, after_name|
+            convert_callback(before_name, after_name, object_attributes[object_name])
+          end
         end
       end
     end
