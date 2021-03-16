@@ -103,10 +103,10 @@ Synvert::Rewriter.new 'rails', 'convert_active_record_dirty_5_0_to_5_1' do
     with_node type: 'send', message: before_name do
       if before_name.is_a?(Regexp)
         if node.message.to_s =~ before_name && attributes.include?($1)
-          replace_with after_name.sub('{{attribute}}', $1)
+          replace_with add_receiver_if_necessary(after_name.sub('{{attribute}}', $1))
         end
       else
-        replace_with after_name
+        replace_with add_receiver_if_necessary(after_name)
       end
     end
   end
@@ -171,6 +171,12 @@ Synvert::Rewriter.new 'rails', 'convert_active_record_dirty_5_0_to_5_1' do
   within_files 'app/{models,observers}/**/*.rb' do
     within_node type: 'class' do
       object_name = node.name.to_source.sub(/Observer$/, '').underscore.gsub(/\//, '_').tableize
+
+      with_node type: 'send', receiver: 'self', message: 'table_name=' do
+        if node.arguments[0].type == :str
+          object_name = node.arguments[0].to_value
+        end
+      end
 
       find_callbacks_and_convert(BEFORE_CALLBACK_NAMES, BEFORE_CALLBACK_CHANGES, object_attributes[object_name])
       find_callbacks_and_convert(AFTER_CALLBACK_NAMES, AFTER_CALLBACK_CHANGES, object_attributes[object_name])
