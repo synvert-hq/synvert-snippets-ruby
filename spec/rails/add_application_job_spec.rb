@@ -22,6 +22,7 @@ RSpec.describe 'Add ApplicationJob' do
         class PostJob < ActiveJob::Base
         end
       EOS
+
     let(:test_rewritten_content) { <<~EOS }
         class PostJob < ApplicationJob
         end
