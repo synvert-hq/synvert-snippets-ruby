@@ -12,7 +12,7 @@ RSpec.describe 'Add ApplicationRecord' do
         class ApplicationRecord < ActiveRecord::Base
           self.abstract_class = true
         end
-      EOS
+    EOS
 
     include_examples 'convertable'
   end
@@ -22,11 +22,11 @@ RSpec.describe 'Add ApplicationRecord' do
     let(:test_content) { <<~EOS }
         class Post < ActiveRecord::Base
         end
-      EOS
+    EOS
     let(:test_rewritten_content) { <<~EOS }
         class Post < ApplicationRecord
         end
-      EOS
+    EOS
 
     include_examples 'convertable'
   end

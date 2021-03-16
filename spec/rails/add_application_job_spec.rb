@@ -11,7 +11,7 @@ RSpec.describe 'Add ApplicationJob' do
     let(:test_rewritten_content) { <<~EOS }
         class ApplicationJob < ActiveJob::Base
         end
-      EOS
+    EOS
 
     include_examples 'convertable'
   end
@@ -21,11 +21,11 @@ RSpec.describe 'Add ApplicationJob' do
     let(:test_content) { <<~EOS }
         class PostJob < ActiveJob::Base
         end
-      EOS
+    EOS
     let(:test_rewritten_content) { <<~EOS }
         class PostJob < ApplicationJob
         end
-      EOS
+    EOS
 
     include_examples 'convertable'
   end
