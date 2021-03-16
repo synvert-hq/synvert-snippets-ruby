@@ -100,7 +100,7 @@ Synvert::Rewriter.new 'rails', 'convert_active_record_dirty_5_0_to_5_1' do
     #   if title_chagned? || summary_changed?
     # . end
     # end
-    with_node type: 'send', receiver: nil, message: before_name do
+    with_node type: 'send', message: before_name do
       if before_name.is_a?(Regexp)
         if node.message.to_s =~ before_name && attributes.include?($1)
           replace_with after_name.sub('{{attribute}}', $1)
@@ -170,7 +170,7 @@ Synvert::Rewriter.new 'rails', 'convert_active_record_dirty_5_0_to_5_1' do
 
   within_files 'app/{models,observers}/**/*.rb' do
     within_node type: 'class' do
-      object_name = node.name.to_source.underscore.gsub(/\//, '_').tableize
+      object_name = node.name.to_source.sub(/Observer$/, '').underscore.gsub(/\//, '_').tableize
 
       find_callbacks_and_convert(BEFORE_CALLBACK_NAMES, BEFORE_CALLBACK_CHANGES, object_attributes[object_name])
       find_callbacks_and_convert(AFTER_CALLBACK_NAMES, AFTER_CALLBACK_CHANGES, object_attributes[object_name])
