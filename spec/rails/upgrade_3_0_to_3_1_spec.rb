@@ -63,15 +63,15 @@ end
   '
   }
   let(:wrap_parameters_rewritten_content) { <<~EOS }
-      # Enable parameter wrapping for JSON. You can disable this by setting :format to an empty array.
-      ActiveSupport.on_load(:action_controller) do
-        wrap_parameters format: [:json]
-      end
+    # Enable parameter wrapping for JSON. You can disable this by setting :format to an empty array.
+    ActiveSupport.on_load(:action_controller) do
+      wrap_parameters format: [:json]
+    end
 
-      # Disable root element in JSON by default.
-      ActiveSupport.on_load(:active_record) do
-        self.include_root_in_json = false
-      end
+    # Disable root element in JSON by default.
+    ActiveSupport.on_load(:active_record) do
+      self.include_root_in_json = false
+    end
     EOS
   let(:session_store_content) {
     "
