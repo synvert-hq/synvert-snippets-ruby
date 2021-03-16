@@ -120,7 +120,19 @@ Synvert::Rewriter.new 'rails', 'convert_active_record_dirty_5_0_to_5_1' do
       #
       #     after_save :invalidate_cache, if: :status_changed?
       with_node type: 'send', receiver: nil, message: callback_name do
-        custom_callback_names << node.arguments[0].to_value if node.arguments[0].type == :sym
+        custom_callback_names << node.arguments[0].to_value if !node.arguments.empty? && node.arguments[0].type == :sym
+        callback_changes.each do |before_name, after_name|
+          convert_dirty_api_change(before_name, after_name, attributes)
+        end
+      end
+
+      # find callback like
+      #
+      #     before_save do
+      #       if status_chagned?
+      #       end
+      #     end
+      with_node type: 'block', caller: { type: 'send', receiver: nil, message: callback_name } do
         callback_changes.each do |before_name, after_name|
           convert_dirty_api_change(before_name, after_name, attributes)
         end
