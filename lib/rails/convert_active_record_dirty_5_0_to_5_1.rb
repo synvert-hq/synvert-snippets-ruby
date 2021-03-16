@@ -84,8 +84,8 @@ Synvert::Rewriter.new 'rails', 'convert_active_record_dirty_5_0_to_5_1' do
     # after_save :invalidate_cache, if: :status_changed?
     with_node type: 'sym', to_value: before_name do
       if before_name.is_a?(Regexp)
-        if node.to_value =~ before_name && attributes.include?($1)
-          replace_with ":#{after_name.sub('{{attribute}}', $1)}"
+        if node.to_value =~ before_name && attributes.include?(Regexp.last_match(1))
+          replace_with ":#{after_name.sub('{{attribute}}', Regexp.last_match(1))}"
         end
       else
         replace_with after_name
@@ -102,8 +102,8 @@ Synvert::Rewriter.new 'rails', 'convert_active_record_dirty_5_0_to_5_1' do
     # end
     with_node type: 'send', receiver: nil, message: before_name do
       if before_name.is_a?(Regexp)
-        if node.message.to_s =~ before_name && attributes.include?($1)
-          replace_with after_name.sub('{{attribute}}', $1)
+        if node.message.to_s =~ before_name && attributes.include?(Regexp.last_match(1))
+          replace_with after_name.sub('{{attribute}}', Regexp.last_match(1))
         end
       else
         replace_with after_name
