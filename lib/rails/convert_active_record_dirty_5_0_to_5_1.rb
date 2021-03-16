@@ -157,7 +157,7 @@ Synvert::Rewriter.new 'rails', 'convert_active_record_dirty_5_0_to_5_1' do
   object_attributes = {}
   within_file 'db/schema.rb' do
     within_node type: 'block', caller: { type: 'send', message: 'create_table' } do
-      object_name = node.caller.arguments.first.to_value.singularize
+      object_name = node.caller.arguments.first.to_value.tableize
       object_attributes[object_name] = []
       with_node type: 'send', receiver: 't', message: { not: 'index' } do
         unless node.arguments.empty?
@@ -170,7 +170,7 @@ Synvert::Rewriter.new 'rails', 'convert_active_record_dirty_5_0_to_5_1' do
 
   within_files 'app/{models,observers}/**/*.rb' do
     within_node type: 'class' do
-      object_name = node.name.to_source.underscore
+      object_name = node.name.to_source.underscore.gsub(/\//, '_').tableize
 
       find_callbacks_and_convert(BEFORE_CALLBACK_NAMES, BEFORE_CALLBACK_CHANGES, object_attributes[object_name])
       find_callbacks_and_convert(AFTER_CALLBACK_NAMES, AFTER_CALLBACK_CHANGES, object_attributes[object_name])
