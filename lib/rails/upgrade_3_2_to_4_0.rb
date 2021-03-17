@@ -260,7 +260,7 @@ Synvert::Rewriter.new 'rails', 'upgrade_3_2_to_4_0' do
     # =>
     # link_to 'delete', post_path(post), data: { confirm: 'Are you sure to delete post?' }
     within_node type: 'send', message: 'link_to', arguments: { last: { type: 'hash' } } do
-      if node.arguments.last.has_key?(:confirm)
+      if node.arguments.last.key?(:confirm)
         hash = node.arguments.last
         other_arguments_str = node.arguments[0...-1].map(&:to_source).join(', ')
         confirm = hash.hash_value(:confirm).to_source

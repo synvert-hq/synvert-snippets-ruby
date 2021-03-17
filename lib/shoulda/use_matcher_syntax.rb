@@ -149,7 +149,7 @@ Synvert::Rewriter.new 'shoulda', 'use_matcher_syntax' do
         new_calls << (pair_node.value.to_value ? 'case_sensitive' : 'case_insensitive')
       else
         new_calls <<
-          "#{message_converts.has_key?(method) ? message_converts[method] : method}(#{pair_node.value.to_source})"
+          "#{message_converts.key?(method) ? message_converts[method] : method}(#{pair_node.value.to_source})"
       end
     end
     new_calls.join('.')

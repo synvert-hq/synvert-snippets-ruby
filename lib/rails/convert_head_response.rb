@@ -31,7 +31,7 @@ Synvert::Rewriter.new 'rails', 'convert_head_response' do
     # head :created
     with_node type: 'send', receiver: nil, message: 'render', arguments: { size: 1, first: { type: 'hash' } } do
       hash_node = node.arguments.first
-      if hash_node.has_key?(:nothing) && hash_node.hash_value(:nothing).to_value == true
+      if hash_node.key?(:nothing) && hash_node.hash_value(:nothing).to_value == true
         status_value = hash_node.hash_value(:status) ? hash_node.hash_value(:status).to_source : ':ok'
         replace_with "head #{status_value}"
       end
@@ -43,7 +43,7 @@ Synvert::Rewriter.new 'rails', 'convert_head_response' do
     # head 406
     # head :ok, location: '/foo'
     with_node type: 'send', receiver: nil, message: 'head', arguments: { size: 1, first: { type: 'hash' } } do
-      if node.arguments.first.has_key? :status
+      if node.arguments.first.key? :status
         replace_with 'head {{arguments.first.values.first}}'
       else
         replace_with 'head :ok, {{arguments}}'

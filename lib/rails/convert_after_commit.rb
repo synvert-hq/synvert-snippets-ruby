@@ -30,7 +30,7 @@ Synvert::Rewriter.new 'rails', 'convert_after_commit' do
     # after_detroy_commit :remove_from_index_later
     with_node type: 'send', receiver: nil, message: 'after_commit', arguments: { size: 2 } do
       options = node.arguments.last
-      if options.has_key?(:on)
+      if options.key?(:on)
         other_options = options.children.reject { |pair_node| pair_node.key.to_value == :on }
         if other_options.empty?
           replace_with "after_#{options.hash_value(:on).to_value}_commit {{arguments.first.to_source}}"

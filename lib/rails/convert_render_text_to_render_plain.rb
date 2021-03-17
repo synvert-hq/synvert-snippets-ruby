@@ -22,7 +22,7 @@ Synvert::Rewriter.new 'rails', 'convert_render_text_to_render_plain' do
   within_files 'app/controllers/**/*.rb' do
     with_node type: 'send', receiver: nil, message: 'render', arguments: { size: 1, first: { type: 'hash' } } do
       hash_node = node.arguments.first
-      if hash_node.has_key?(:text)
+      if hash_node.key?(:text)
         replace_with "render #{replace_hash_key(hash_node, :text, :plain)}"
       end
     end
