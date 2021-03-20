@@ -16,6 +16,7 @@ RSpec.describe 'Convert render :text to render :plain' do
         end
       end
     EOS
+
   let(:test_rewritten_content) { <<~EOS }
       class PostsController < ApplicationController
         def foo
