@@ -15,6 +15,7 @@ RSpec.describe 'Convert ActiveRecord::Dirty 5.0 to 5.1' do
         end
       end
     EOS
+
   let(:test_content) { <<~EOS }
       class Post < ActiveRecord::Base
         before_create :call_before_create
@@ -42,6 +43,7 @@ RSpec.describe 'Convert ActiveRecord::Dirty 5.0 to 5.1' do
         end
       end
     EOS
+
   let(:test_rewritten_content) { <<~EOS }
       class Post < ActiveRecord::Base
         before_create :call_before_create
