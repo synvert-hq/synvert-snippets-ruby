@@ -5,8 +5,7 @@ require 'spec_helper'
 RSpec.describe 'Convert ActiveRecord::Dirty 5.0 to 5.1' do
   let(:rewriter_name) { 'rails/convert_active_record_dirty_5_0_to_5_1' }
   let(:fake_file_path) { 'app/models/post.rb' }
-  let(:schema_content) {
-    <<~EOS
+  let(:schema_content) { <<~EOS }
       ActiveRecord::Schema.define(version: 20140211112752) do
         create_table "posts", force: true do |t|
           t.string   "title"
@@ -16,9 +15,7 @@ RSpec.describe 'Convert ActiveRecord::Dirty 5.0 to 5.1' do
         end
       end
     EOS
-  }
-  let(:test_content) {
-    <<~EOS
+  let(:test_content) { <<~EOS }
       class Post < ActiveRecord::Base
         before_create :call_before_create
         before_update :call_before_update, unless: :title_changed?
@@ -45,9 +42,7 @@ RSpec.describe 'Convert ActiveRecord::Dirty 5.0 to 5.1' do
         end
       end
     EOS
-  }
-  let(:test_rewritten_content) {
-    <<~EOS
+  let(:test_rewritten_content) { <<~EOS }
       class Post < ActiveRecord::Base
         before_create :call_before_create
         before_update :call_before_update, unless: :will_save_change_to_title?
@@ -74,10 +69,9 @@ RSpec.describe 'Convert ActiveRecord::Dirty 5.0 to 5.1' do
         end
       end
     EOS
-  }
 
   before do
-    FakeFS do
+    FakeFS() do
       FileUtils.mkdir('db')
       File.write('db/schema.rb', schema_content)
     end
