@@ -11,7 +11,7 @@ RSpec.describe 'Convert rails request methods from 4.2 to 5.0' do
       "
       class PostsControllerTest < ActionController::TestCase
         def test_show
-          get :show, { id: user.id }, { notice: 'Welcome' }, { admin: user.admin? }
+          get :show, { id: user.id, format: :json }, { notice: 'Welcome' }, { admin: user.admin? }
         end
 
         def test_index
@@ -32,7 +32,7 @@ RSpec.describe 'Convert rails request methods from 4.2 to 5.0' do
       "
       class PostsControllerTest < ActionController::TestCase
         def test_show
-          get :show, params: { id: user.id }, flash: { notice: 'Welcome' }, session: { admin: user.admin? }
+          get :show, params: { id: user.id }, flash: { notice: 'Welcome' }, session: { admin: user.admin? }, as: :json
         end
 
         def test_index
