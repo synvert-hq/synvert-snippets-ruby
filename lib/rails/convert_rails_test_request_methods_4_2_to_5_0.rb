@@ -64,6 +64,24 @@ Synvert::Rewriter.new 'rails', 'convert_rails_test_request_methods_4_2_to_5_0' d
     end
   end
 
+  within_files '{test,spec}/{functional,controllers}/**/*.rb' do
+    with_node type: 'send', message: 'xhr' do
+      request_method = node.arguments[0].to_value
+      action = node.arguments[1].to_value
+      if node.arguments.size == 2
+        replace_with "#{request_method} :#{action}, xhr: true"
+        next
+      end
+      format_value = node.arguments[2].hash_value(:format)
+      options = []
+      options << make_up_hash_pair('params', node.arguments[2])
+      options << make_up_hash_pair('flash', node.arguments[3]) if node.arguments.size > 3
+      options << make_up_hash_pair('session', node.arguments[4]) if node.arguments.size > 4
+      options << "as: #{format_value.to_source}" if format_value
+      replace_with "#{request_method} :#{action}, #{options.compact.join(', ')}, xhr: true"
+    end
+  end
+
   # get '/posts/1', user_id: user.id, { 'HTTP_AUTHORIZATION' => 'fake' }
   # =>
   # get '/posts/1', params: { user_id: user.id }, headers: { 'HTTP_AUTHORIZATION' => 'fake' }
