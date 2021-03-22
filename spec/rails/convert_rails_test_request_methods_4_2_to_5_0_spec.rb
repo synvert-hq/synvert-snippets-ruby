@@ -31,6 +31,7 @@ RSpec.describe 'Convert rails request methods from 4.2 to 5.0' do
         end
       end
     EOS
+
     let(:test_rewritten_content) { <<~EOS }
       class PostsControllerTest < ActionController::TestCase
         def test_show
