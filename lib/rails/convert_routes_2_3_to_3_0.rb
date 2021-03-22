@@ -326,8 +326,7 @@ Synvert::Rewriter.new 'rails', 'convert_routes_2_3_to_3_0' do
       unless %i[root connect resource resources].include? message
         url = node.arguments.first.to_value
         hash_node = node.arguments.last
-        if hash_node.type == :hash
-          if hash_node.key?(:controller)
+        if hash_node.type == :hash && hash_node.key?(:controller)
             if hash_node.key?(:action) || url !~ /:action/
               controller_action_name =
                 if hash_node.key?(:action)
@@ -348,7 +347,6 @@ Synvert::Rewriter.new 'rails', 'convert_routes_2_3_to_3_0' do
               replace_with 'match {{arguments}}'
             end
           end
-        end
       end
     end
   end
