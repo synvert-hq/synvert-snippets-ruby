@@ -35,9 +35,9 @@ Synvert::Rewriter.new 'rails', 'convert_rails_test_request_methods_4_2_to_5_0' d
     next if argument_node.to_source == 'nil'
 
     if argument_node.type == :hash
-      new_value = argument_node.children.reject { |pair_node| pair_node.key.to_value == :format }
+      new_value = argument_node.children.reject { |pair_node| %i[format xhr].include?(pair_node.key.to_value) }
         .map(&:to_source).join(', ')
-      "#{key}: #{add_curly_brackets_if_necessary(new_value)}"
+      "#{key}: #{add_curly_brackets_if_necessary(new_value)}" if new_value.length > 0
     else
       "#{key}: #{argument_node.to_source}"
     end
@@ -54,11 +54,13 @@ Synvert::Rewriter.new 'rails', 'convert_rails_test_request_methods_4_2_to_5_0' d
         next if node.arguments[1].key?(:params)
 
         format_value = node.arguments[1].hash_value(:format)
+        xhr_value = node.arguments[1].hash_value(:xhr)
         options = []
         options << make_up_hash_pair('params', node.arguments[1])
         options << make_up_hash_pair('flash', node.arguments[2]) if node.arguments.size > 2
         options << make_up_hash_pair('session', node.arguments[3]) if node.arguments.size > 3
         options << "as: #{format_value.to_source}" if format_value
+        options << "xhr: #{xhr_value.to_source}" if xhr_value
         replace_with "#{message} {{arguments.first}}, #{options.compact.join(', ')}"
       end
     end
@@ -72,7 +74,7 @@ Synvert::Rewriter.new 'rails', 'convert_rails_test_request_methods_4_2_to_5_0' d
         replace_with "#{request_method} :#{action}, xhr: true"
         next
       end
-      format_value = node.arguments[2].hash_value(:format)
+      format_value = node.arguments[2].type == :hash && node.arguments[2].hash_value(:format)
       options = []
       options << make_up_hash_pair('params', node.arguments[2])
       options << make_up_hash_pair('flash', node.arguments[3]) if node.arguments.size > 3
