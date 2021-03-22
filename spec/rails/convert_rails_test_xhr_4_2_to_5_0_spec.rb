@@ -16,6 +16,7 @@ RSpec.describe 'Convert Foo to Bar' do
       end
     end
   EOS
+
   let(:test_rewritten_content) { <<~EOS }
     class PostsControllerTest < ActionController::TestCase
       context "on XHR GET to show" do
