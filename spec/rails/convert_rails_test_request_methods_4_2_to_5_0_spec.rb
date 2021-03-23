@@ -10,7 +10,7 @@ RSpec.describe 'Convert rails request methods from 4.2 to 5.0' do
     let(:test_content) { <<~EOS }
       class PostsControllerTest < ActionController::TestCase
         def test_show
-          get :show, { id: user.id, format: :json }, { notice: 'Welcome' }, { admin: user.admin? }
+          get :show, { id: user.id, format: :json }, { admin: user.admin? }, { notice: 'Welcome' }
         end
 
         def test_index
@@ -22,7 +22,7 @@ RSpec.describe 'Convert rails request methods from 4.2 to 5.0' do
         end
 
         def test_destroy
-          delete :destroy, { id: user.id }, nil, { admin: user.admin? }
+          delete :destroy, { id: user.id }, { admin: user.admin? }
         end
 
         def test_xhr
@@ -34,7 +34,7 @@ RSpec.describe 'Convert rails request methods from 4.2 to 5.0' do
     let(:test_rewritten_content) { <<~EOS }
       class PostsControllerTest < ActionController::TestCase
         def test_show
-          get :show, params: { id: user.id }, flash: { notice: 'Welcome' }, session: { admin: user.admin? }, as: :json
+          get :show, params: { id: user.id }, session: { admin: user.admin? }, flash: { notice: 'Welcome' }, as: :json
         end
 
         def test_index
