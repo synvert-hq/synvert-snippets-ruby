@@ -27,7 +27,7 @@ Synvert::Rewriter.new 'rails', 'convert_model_lambda_scope' do
     ```
   EOS
 
-  if_gem 'activerecord', { gte: '4.0.0' }
+  if_gem 'activerecord', '>= 4.0'
 
   within_files 'app/models/**/*.rb' do
     # scope :active, where(active: true) => scope :active, -> { where(active: true) }

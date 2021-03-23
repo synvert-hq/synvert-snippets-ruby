@@ -12,7 +12,7 @@ Synvert::Rewriter.new 'rails', 'upgrade_5_0_to_5_1' do
 
   add_snippet 'rails', 'convert_active_record_dirty_5_0_to_5_1'
 
-  if_gem 'rails', { gte: '5.1.0' }
+  if_gem 'rails', '>= 5.1'
 
   within_files '**/*.rb' do
     # HashWithIndifferentAccess

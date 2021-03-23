@@ -17,7 +17,7 @@ Synvert::Rewriter.new 'rspec', 'boolean_matcher' do
     ```
   EOS
 
-  if_gem 'rspec', { gte: '2.99.0' }
+  if_gem 'rspec', '>= 2.99'
 
   within_files 'spec/**/*_spec.rb' do
     # be_true => be_truthy

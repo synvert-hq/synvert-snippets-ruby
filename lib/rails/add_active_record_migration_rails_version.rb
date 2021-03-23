@@ -17,7 +17,7 @@ Synvert::Rewriter.new 'rails', 'add_active_record_migration_rails_version' do
     ```
   EOS
 
-  if_gem 'rails', { gte: '5.0.0' }
+  if_gem 'rails', '>= 5.0'
 
   within_files 'db/migrate/*.rb' do
     with_node type: 'class' do

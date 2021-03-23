@@ -25,7 +25,7 @@ Synvert::Rewriter.new 'rails', 'convert_controller_filter_to_action' do
     ```
   EOS
 
-  if_gem 'actionpack', { gte: '4.0.0' }
+  if_gem 'actionpack', '>= 4.0'
 
   within_files 'app/controllers/**/*.rb' do
     # skip_filter :load_post => skip_action_callback :load_post

@@ -45,7 +45,7 @@ Synvert::Rewriter.new 'rails', 'convert_dynamic_finders' do
     end
   end
 
-  if_gem 'rails', { gte: '3.0.0' }
+  if_gem 'rails', '>= 3.0'
 
   within_files '**/*.rb' do
     # find_all_by_... => where(...)
@@ -77,7 +77,7 @@ Synvert::Rewriter.new 'rails', 'convert_dynamic_finders' do
     end
   end
 
-  if_gem 'rails', { gte: '4.0.0' }
+  if_gem 'rails', '>= 4.0'
 
   within_files '**/*.rb' do
     # find_or_initialize_by_... => find_or_initialize_by(...)

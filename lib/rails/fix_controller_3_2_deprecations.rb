@@ -25,7 +25,7 @@ Synvert::Rewriter.new 'rails', 'fix_controller_3_2_deprecations' do
     ```
   EOS
 
-  if_gem 'actionpack', { gte: '3.2.0' }
+  if_gem 'actionpack', '>= 3.2'
 
   within_files 'app/controllers/**/*.rb' do
     # ActionController::UnknownAction => AbstractController::ActionNotFound

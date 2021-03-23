@@ -33,7 +33,7 @@ Synvert::Rewriter.new 'rails', 'upgrade_4_0_to_4_1' do
       secret_key_base: <%= ENV["SECRET_KEY_BASE"] %>
   EOS
 
-  if_gem 'rails', { gte: '4.1.0' }
+  if_gem 'rails', '>= 4.1'
 
   add_file 'config/secrets.yml', secrets_content.strip
 

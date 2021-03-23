@@ -15,7 +15,7 @@ Synvert::Rewriter.new 'rails', 'convert_rails_logger' do
     ```
   EOS
 
-  if_gem 'rails', { gte: '2.3.0' }
+  if_gem 'rails', '>= 2.3'
 
   within_files '**/*.{rb,rake}' do
     with_node type: 'const', to_source: 'RAILS_DEFAULT_LOGGER' do

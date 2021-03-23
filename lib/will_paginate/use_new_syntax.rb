@@ -21,7 +21,7 @@ Synvert::Rewriter.new 'will_paginate', 'use_new_syntax' do
     ```
   EOS
 
-  if_gem 'will_paginate', { gte: '3.0.0' }
+  if_gem 'will_paginate', '>= 3.0'
 
   ar_keys = %i[conditions order joins select from having group include limit offset lock readonly]
   wp_keys = %i[page per_page]

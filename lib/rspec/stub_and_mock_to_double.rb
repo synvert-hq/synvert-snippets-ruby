@@ -17,7 +17,7 @@ Synvert::Rewriter.new 'rspec', 'stub_and_mock_to_double' do
     ```
   EOS
 
-  if_gem 'rspec', { gte: '2.14.0' }
+  if_gem 'rspec', '>= 2.14'
 
   within_files 'spec/**/*.rb' do
     # stub('something') => double('something')

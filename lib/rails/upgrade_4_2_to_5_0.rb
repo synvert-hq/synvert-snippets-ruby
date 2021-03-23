@@ -28,7 +28,7 @@ Synvert::Rewriter.new 'rails', 'upgrade_4_2_to_5_0' do
   add_snippet 'rails', 'convert_model_errors_add'
   add_snippet 'rails', 'convert_to_redirect_back'
 
-  if_gem 'rails', { gte: '5.0.0' }
+  if_gem 'rails', '>= 5.0'
 
   within_file 'config/application.rb' do
     # remove config.raise_in_transactional_callbacks = true

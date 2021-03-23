@@ -11,7 +11,7 @@ Synvert::Rewriter.new 'rails', 'upgrade_2_3_to_3_0' do
   add_snippet 'rails', 'convert_routes_2_3_to_3_0'
   add_snippet 'rails', 'convert_views_2_3_to_3_0'
 
-  if_gem 'rails', { gte: '3.0.0' }
+  if_gem 'rails', '>= 3.0'
 
   filter_parameters = []
   within_file 'app/controllers/application_controller.rb' do

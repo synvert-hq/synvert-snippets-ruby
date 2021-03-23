@@ -55,7 +55,7 @@ Synvert::Rewriter.new 'rails', 'fix_model_3_2_deprecations' do
     ```
   EOS
 
-  if_gem 'activerecord', { gte: '3.2.0' }
+  if_gem 'activerecord', '>= 3.2'
 
   within_files 'app/models/**/*.rb' do
     # set_table_name "project" => self.table_name = "project"

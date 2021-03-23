@@ -18,7 +18,7 @@ Synvert::Rewriter.new 'rails', 'convert_after_commit' do
     ```
   EOS
 
-  if_gem 'activerecord', { gte: '5.0.0' }
+  if_gem 'activerecord', '>= 5.0'
 
   within_files 'app/models/**/*.rb' do
     # after_commit :add_to_index_later, on: :create

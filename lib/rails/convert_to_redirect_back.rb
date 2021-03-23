@@ -15,6 +15,8 @@ Synvert::Rewriter.new 'rails', 'convert_to_redirect_back' do
     ```
   EOS
 
+  if_gem 'actionpack', '>= 5.0'
+
   within_file 'app/controllers/**/*.rb' do
     # redirect_to :back
     # =>

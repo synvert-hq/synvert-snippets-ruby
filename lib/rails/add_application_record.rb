@@ -20,6 +20,8 @@ Synvert::Rewriter.new 'rails', 'add_application_record' do
     ```
   EOS
 
+  if_gem 'activerecord', '>= 5.0'
+
   # adds file app/models/application_record.rb
   add_file 'app/models/application_record.rb', <<~EOS
     class ApplicationRecord < ActiveRecord::Base

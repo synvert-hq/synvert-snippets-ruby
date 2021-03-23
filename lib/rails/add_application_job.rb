@@ -21,6 +21,8 @@ Synvert::Rewriter.new 'rails', 'add_application_job' do
     ```
   EOS
 
+  if_gem 'activejob', '>= 5.0'
+
   # adds file app/models/application_job.rb
   add_file 'app/jobs/application_job.rb', <<~EOS
     class ApplicationJob < ActiveJob::Base

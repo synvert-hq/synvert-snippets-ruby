@@ -25,7 +25,7 @@ Synvert::Rewriter.new 'rspec', 'custom_matcher_new_syntax' do
     ```
   EOS
 
-  if_gem 'rspec', { gte: '3.0.0' }
+  if_gem 'rspec', '>= 3.0'
 
   within_files 'spec/**/*.rb' do
     within_node type: 'block', caller: { receiver: 'RSpec::Matchers', message: 'define' } do

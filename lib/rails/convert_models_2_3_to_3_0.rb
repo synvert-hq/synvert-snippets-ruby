@@ -163,6 +163,8 @@ Synvert::Rewriter.new 'rails', 'convert_models_2_3_to_3_0' do
     ```
   EOS
 
+  if_gem 'actionmailer', '>= 3.0'
+
   keys = %i[conditions order joins select from having group include limit offset lock readonly]
   keys_converters = { conditions: :where, include: :includes }
 

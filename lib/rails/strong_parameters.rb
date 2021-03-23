@@ -30,6 +30,8 @@ Synvert::Rewriter.new 'rails', 'strong_parameters' do
     ```
   EOS
 
+  if_gem 'rails', '>= 4.0'
+
   within_files 'config/**/*.rb' do
     # remove config.active_record.whitelist_attributes = ...
     with_node type: 'send',

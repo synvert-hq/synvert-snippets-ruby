@@ -53,7 +53,7 @@ Synvert::Rewriter.new 'rails', 'convert_active_record_dirty_5_0_to_5_1' do
     ```
   EOS
 
-  if_gem 'activerecord', { gte: '5.1.0' }
+  if_gem 'activerecord', '>= 5.1'
 
   BEFORE_CALLBACK_CHANGES = {
     /(\w+)_changed\?$/ => 'will_save_change_to_{{attribute}}?',

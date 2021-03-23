@@ -7,7 +7,7 @@ Synvert::Rewriter.new 'rails', 'upgrade_5_1_to_5_2' do
     1. it replaces `dalli_store` with `mem_cache_store`
   EOS
 
-  if_gem 'rails', { gte: '5.2.0' }
+  if_gem 'rails', '>= 5.2'
 
   within_file 'config/application.rb' do
     # dalli_store => mem_cache_store

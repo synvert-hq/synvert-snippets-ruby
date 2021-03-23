@@ -75,7 +75,7 @@ Synvert::Rewriter.new 'rails', 'upgrade_3_0_to_3_1' do
 
   add_snippet 'rails', 'use_migrations_instance_methods'
 
-  if_gem 'rails', { gte: '3.1.0' }
+  if_gem 'rails', '>= 3.1'
 
   within_file 'config/application.rb' do
     # insert config.assets.version = '1.0'

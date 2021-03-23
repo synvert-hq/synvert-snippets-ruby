@@ -33,7 +33,7 @@ Synvert::Rewriter.new 'rails', 'fix_4_0_deprecations' do
     ```
   EOS
 
-  if_gem 'rails', { gte: '4.0.0' }
+  if_gem 'rails', '>= 4.0'
 
   within_files '**/*.rb' do
     {

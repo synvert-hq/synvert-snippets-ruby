@@ -15,7 +15,7 @@ Synvert::Rewriter.new 'rspec', 'be_close_to_be_within' do
     ```
   EOS
 
-  if_gem 'rspec', { gte: '2.1.0' }
+  if_gem 'rspec', '>= 2.1'
 
   within_files 'spec/**/*.rb' do
     # expect(1.0 / 3.0).to be_close(0.333, 0.001) => expect(1.0 / 3.0).to be_within(0.001).of(0.333)

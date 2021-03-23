@@ -17,6 +17,8 @@ Synvert::Rewriter.new 'rails', 'convert_update_attributes_to_update' do
     ```
   EOS
 
+  if_gem 'activerecord', '>= 6.0'
+
   within_files '**/*.rb' do
     # user.update_attributes(title: 'new')
     # =>

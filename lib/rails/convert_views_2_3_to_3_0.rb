@@ -29,6 +29,8 @@ Synvert::Rewriter.new 'rails', 'convert_views_2_3_to_3_0' do
     ```
   EOS
 
+  if_gem 'actionview', '>= 3.0'
+
   %w[app/views/**/*.html.erb app/helpers/**/*.rb].each do |file_pattern|
     # <%= h user.login %> => <%= user.login %>
     within_files file_pattern do

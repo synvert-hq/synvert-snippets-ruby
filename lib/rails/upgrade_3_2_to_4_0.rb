@@ -98,7 +98,7 @@ Synvert::Rewriter.new 'rails', 'upgrade_3_2_to_4_0' do
   add_snippet 'rails', 'convert_model_lambda_scope'
   add_snippet 'rails', 'fix_4_0_deprecations'
 
-  if_gem 'rails', { gte: '4.0.0' }
+  if_gem 'rails', '>= 4.0'
 
   within_file 'config/application.rb' do
     # if defined?(Bundler)

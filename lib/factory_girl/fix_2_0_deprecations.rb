@@ -53,7 +53,7 @@ Synvert::Rewriter.new 'factory_girl', 'fix_2_0_deprecations' do
     ```
   EOS
 
-  if_gem 'factory_girl', { gte: '2.0.0' }
+  if_gem 'factory_girl', '>= 2.0'
 
   within_files '{test,spec}/factories/**/*.rb' do
     # add

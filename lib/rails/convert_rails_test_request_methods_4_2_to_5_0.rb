@@ -29,7 +29,7 @@ Synvert::Rewriter.new 'rails', 'convert_rails_test_request_methods_4_2_to_5_0' d
     ```
   EOS
 
-  if_gem 'rails', { gte: '5.0' }
+  if_gem 'rails', '>= 5.0'
 
   helper_method :make_up_hash_pair do |key, argument_node|
     next if argument_node.to_source == 'nil'

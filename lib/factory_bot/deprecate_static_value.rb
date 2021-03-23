@@ -55,7 +55,7 @@ Synvert::Rewriter.new 'factory_bot', 'deprecate_static_value' do
     ```
   EOS
 
-  if_gem 'factory_bot', { gte: '4.11' }
+  if_gem 'factory_bot', '>= 4.11'
 
   within_files '{test,spec}/factories/**/*.rb' do
     %w[factory transient trait].each do |message|

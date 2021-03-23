@@ -49,7 +49,7 @@ Synvert::Rewriter.new 'rspec', 'new_config_options' do
     ```
   EOS
 
-  if_gem 'rspec', { gte: '2.99.0' }
+  if_gem 'rspec', '>= 2.99'
 
   within_file 'spec/spec_helper.rb' do
     within_node type: 'block', caller: { type: 'send', receiver: 'RSpec', message: 'configure' } do

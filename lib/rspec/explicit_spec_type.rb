@@ -30,7 +30,7 @@ Synvert::Rewriter.new 'rspec', 'explicit_spec_type' do
     ```
   EOS
 
-  if_gem 'rspec-rails', { gte: '2.99.0' }
+  if_gem 'rspec-rails', '>= 2.99'
 
   within_file 'spec/rails_helper.rb' do
     # RSpec.configure do |rspec|

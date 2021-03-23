@@ -34,7 +34,7 @@ Synvert::Rewriter.new 'rspec', 'remove_monkey_patches' do
     ```
   EOS
 
-  if_gem 'rspec', { gte: '3.0.0' }
+  if_gem 'rspec', '>= 3.0'
 
   monkey_patches_methods = %w[describe shared_examples shared_examples_for shared_context]
 

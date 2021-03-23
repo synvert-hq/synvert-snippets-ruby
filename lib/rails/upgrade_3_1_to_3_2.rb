@@ -21,7 +21,7 @@ Synvert::Rewriter.new 'rails', 'upgrade_3_1_to_3_2' do
   add_snippet 'rails', 'fix_controller_3_2_deprecations'
   add_snippet 'rails', 'fix_model_3_2_deprecations'
 
-  if_gem 'rails', { gte: '3.2.0' }
+  if_gem 'rails', '>= 3.2'
 
   within_file 'config/environments/development.rb' do
     # insert config.active_record.auto_explain_threshold_in_seconds = 0.5

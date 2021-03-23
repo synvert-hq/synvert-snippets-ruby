@@ -17,7 +17,7 @@ Synvert::Rewriter.new 'rails', 'convert_model_errors_add' do
     ```
   EOS
 
-  if_gem 'activerecord', { gte: '5.0.0' }
+  if_gem 'activerecord', '>= 5.0'
 
   within_files 'app/models/**/*.rb' do
     # errors[] =

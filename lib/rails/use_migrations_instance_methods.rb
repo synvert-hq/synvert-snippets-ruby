@@ -23,7 +23,7 @@ Synvert::Rewriter.new 'rails', 'use_migrations_instance_methods' do
     ```
   EOS
 
-  if_gem 'activerecord', { gte: '3.1.0' }
+  if_gem 'activerecord', '>= 3.1'
 
   within_files 'db/migrate/*.rb' do
     # def self.up => def up

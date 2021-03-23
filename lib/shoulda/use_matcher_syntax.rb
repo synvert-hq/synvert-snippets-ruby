@@ -132,7 +132,7 @@ Synvert::Rewriter.new 'shoulda', 'use_matcher_syntax' do
     ```
   EOS
 
-  if_gem 'shoulda', { gte: '2.11.0' }
+  if_gem 'shoulda', '>= 2.11'
 
   helper_method :hash_to_calls do |hash_node|
     new_calls = []

@@ -19,7 +19,7 @@ Synvert::Rewriter.new 'rspec', 'block_to_expect' do
     ```
   EOS
 
-  if_gem 'rspec', { gte: '2.11.0' }
+  if_gem 'rspec', '>= 2.11'
 
   within_files 'spec/**/*.rb' do
     # lambda { do_something }.should raise_error => expect { do_something }.to raise_error
