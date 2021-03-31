@@ -24,14 +24,14 @@ Synvert::Rewriter.new 'rails', 'convert_update_attributes_to_update' do
     # =>
     # user.update(title: 'new')
     with_node type: 'send', message: 'update_attributes' do
-      replace_with add_receiver_if_necessary('update({{arguments}})')
+      replace :message, with: 'update'
     end
 
     # user.update_attributes!(title: 'new')
     # =>
     # user.update!(title: 'new')
     with_node type: 'send', message: 'update_attributes!' do
-      replace_with add_receiver_if_necessary('update!({{arguments}})')
+      replace :message, with: 'update!'
     end
   end
 end

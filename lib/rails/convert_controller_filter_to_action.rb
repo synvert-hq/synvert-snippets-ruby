@@ -38,7 +38,7 @@ Synvert::Rewriter.new 'rails', 'convert_controller_filter_to_action' do
         else
           node.message.to_s.sub('filter', 'action')
         end
-      replace_with "#{new_message} {{arguments}}"
+      replace :message, with: new_message
     end
   end
 end
