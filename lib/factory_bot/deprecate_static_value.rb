@@ -67,9 +67,9 @@ Synvert::Rewriter.new 'factory_bot', 'deprecate_static_value' do
 
             if node.arguments.size == 1 && node.arguments.first.type == :hash
               new_arguments = add_curly_brackets_if_necessary(node.arguments.first.to_source)
-              replace_with "{{message}} { #{new_arguments} }"
+              replace :arguments, with: "{ #{new_arguments} }"
             else
-              replace_with '{{message}} { {{arguments}} }'
+              replace :arguments, with: '{ {{arguments}} }'
             end
           end
         end

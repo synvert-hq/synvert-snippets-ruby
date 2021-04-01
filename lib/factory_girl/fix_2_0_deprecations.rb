@@ -94,7 +94,7 @@ Synvert::Rewriter.new 'factory_girl', 'fix_2_0_deprecations' do
       argument = node.arguments.first.to_source
       with_node type: 'block', caller: { type: 'send', receiver: argument } do
         goto_node :caller do
-          replace_with "{{message}}#{add_arguments_with_parenthesis_if_necessary}"
+          delete :receiver, :dot
         end
       end
     end
@@ -108,10 +108,8 @@ Synvert::Rewriter.new 'factory_girl', 'fix_2_0_deprecations' do
     # end
     %w[after_build after_create].each do |message|
       within_node type: 'block', caller: { type: 'send', message: message } do
-        goto_node :caller do
-          new_message = message.sub('after_', '')
-          replace_with "after(:#{new_message})"
-        end
+        new_message = message.sub('after_', '')
+        replace :caller, with: "after(:#{new_message})"
       end
     end
   end
@@ -135,7 +133,7 @@ Synvert::Rewriter.new 'factory_girl', 'fix_2_0_deprecations' do
                 } do
       argument = node.arguments.first.to_source
       with_node type: 'send', receiver: argument do
-        replace_with '{{message}} {{arguments}}'
+        delete :receiver, :dot
       end
     end
   end
@@ -159,16 +157,14 @@ Synvert::Rewriter.new 'factory_girl', 'fix_2_0_deprecations' do
         replace_with 'factory {{arguments}}'
       end
 
-      goto_node :arguments do
-        replace_with ''
-      end
+      delete :arguments
     end
 
     # Factory.sequence :login do |n|
     #   "new_user_#{n}"
     # end
     # =>
-    # sequence :user do |n|
+    # sequence :login do |n|
     #   "new_user_#{n}"
     # end
     within_node type: 'block',
@@ -181,7 +177,7 @@ Synvert::Rewriter.new 'factory_girl', 'fix_2_0_deprecations' do
                   size: 1
                 } do
       goto_node :caller do
-        replace_with 'sequence {{arguments}}'
+        delete :receiver, :dot
       end
     end
   end
@@ -189,7 +185,7 @@ Synvert::Rewriter.new 'factory_girl', 'fix_2_0_deprecations' do
   within_files '{test,spec}/**/*.rb' do
     # Factory(:user) => create(:user)
     with_node type: 'send', receiver: nil, message: 'Factory' do
-      replace_with 'create({{arguments}})'
+      replace :message, with: 'create'
     end
 
     # Factory.next(:email) => generate(:email)
@@ -207,7 +203,7 @@ Synvert::Rewriter.new 'factory_girl', 'fix_2_0_deprecations' do
     # Factory.attributes_for(:user) => attributes_for(:user)
     %w[create build attributes_for].each do |message|
       with_node type: 'send', receiver: 'Factory', message: message do
-        replace_with "#{message}({{arguments}})"
+        delete :receiver, :dot
       end
     end
   end

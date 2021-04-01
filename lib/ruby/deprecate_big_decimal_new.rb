@@ -17,7 +17,7 @@ Synvert::Rewriter.new 'ruby', 'deprecate_big_decimal_new' do
 
   within_files '**/*.rb' do
     with_node type: 'send', receiver: 'BigDecimal', message: 'new' do
-      replace_with 'BigDecimal({{arguments}})'
+      delete :dot, :message
     end
   end
 end

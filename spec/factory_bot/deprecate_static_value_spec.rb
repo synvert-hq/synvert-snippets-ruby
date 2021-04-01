@@ -43,13 +43,13 @@ FactoryBot.define do
     comments_count { 0 }
     tag { Tag::MAGIC }
     recent_statuses { [] }
-    status { [:draft, :published].sample }
+    status({ [:draft, :published].sample })
     published_at { 1.day.from_now }
-    created_at { 1.day.ago }
+    created_at({ 1.day.ago })
     updated_at { Time.current }
     update_times { [Time.current] }
-    meta_tags { { foo: Time.current } }
-    other_tags { { foo: Time.current } }
+    meta_tags({ { foo: Time.current } })
+    other_tags({ { foo: Time.current } })
     options { { color: :blue } }
     trait :old do
       published_at { 1.week.ago }

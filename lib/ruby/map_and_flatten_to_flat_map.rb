@@ -28,7 +28,12 @@ Synvert::Rewriter.new 'ruby', 'map_and_flatten_to_flat_map' do
     #   # do something
     # end
     with_node type: 'send', receiver: { type: 'block', caller: { type: 'send', message: 'map' } }, message: 'flatten' do
-      replace_with "{{receiver.to_source.sub('.map', '.flat_map')}}"
+      delete :dot, :message
+      goto_node :receiver do
+        goto_node :caller do
+          replace :message, with: 'flat_map'
+        end
+      end
     end
   end
 end

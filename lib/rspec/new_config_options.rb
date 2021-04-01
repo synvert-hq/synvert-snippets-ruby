@@ -86,7 +86,7 @@ Synvert::Rewriter.new 'rspec', 'new_config_options' do
         'warnings' => 'warnings?'
       }.each do |old_message, new_message|
         with_node type: 'send', receiver: config_name, message: old_message do
-          replace_with "#{config_name}.#{new_message}"
+          replace :message, with: new_message
         end
       end
 
@@ -106,14 +106,14 @@ Synvert::Rewriter.new 'rspec', 'new_config_options' do
       #   c.pattern = '**/*_test.rb'
       # end
       {
-        'backtrace_clean_patterns=' => 'backtrace_exclusion_patterns = ',
-        'color_enabled=' => 'color = ',
-        'out=' => 'output_stream = ',
-        'output=' => 'output_stream = ',
-        'filename_pattern=' => 'pattern = '
+        'backtrace_clean_patterns=' => 'backtrace_exclusion_patterns =',
+        'color_enabled=' => 'color =',
+        'out=' => 'output_stream =',
+        'output=' => 'output_stream =',
+        'filename_pattern=' => 'pattern ='
       }.each do |old_message, new_message|
         with_node type: 'send', receiver: config_name, message: old_message do
-          replace_with "#{config_name}.#{new_message}{{arguments}}"
+          replace :message, with: new_message
         end
       end
 
@@ -125,7 +125,7 @@ Synvert::Rewriter.new 'rspec', 'new_config_options' do
       #   c.color_enabled?(output)
       # end
       with_node type: 'send', receiver: config_name, message: 'color?' do
-        replace_with "#{config_name}.color_enabled?({{arguments}})"
+        replace :message, with: 'color_enabled?'
       end
     end
   end

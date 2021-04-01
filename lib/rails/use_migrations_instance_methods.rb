@@ -30,12 +30,7 @@ Synvert::Rewriter.new 'rails', 'use_migrations_instance_methods' do
     # def self.down => def down
     %w[up down].each do |name|
       with_node type: 'defs', name: name do
-        new_code = <<~EOS
-          def #{name}
-              {{body}}
-            end
-        EOS
-        replace_with new_code.strip, autoindent: false
+        delete :self, :dot
       end
     end
   end

@@ -52,7 +52,7 @@ Synvert::Rewriter.new 'rspec', 'method_stub' do
     # obj.unstub!(:message) => obj.unstub(:message)
     { stub!: 'stub', unstub!: 'unstub' }.each do |old_message, new_message|
       with_node type: 'send', message: old_message do
-        replace_with "{{receiver}}.#{new_message}({{arguments}})"
+        replace :message, with: new_message
       end
     end
 

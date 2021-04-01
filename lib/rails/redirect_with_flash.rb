@@ -29,7 +29,7 @@ Synvert::Rewriter.new 'rails', 'redirect_with_flash' do
   ```
   EOS
 
-  within_file 'app/controllers/**/*rb' do
+  within_file 'app/controllers/**/*.rb' do
     within_node type: 'def' do
       line = nil
       msg = nil

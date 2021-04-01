@@ -66,7 +66,7 @@ Synvert::Rewriter.new 'rails', 'fix_model_3_2_deprecations' do
     %w[set_table_name set_inheritance_column set_sequence_name set_primary_key set_locking_column].each do |message|
       with_node type: 'send', message: message do
         new_message = message.sub('set_', '')
-        replace_with "self.#{new_message} = {{arguments}}"
+        replace :message, with: "self.#{new_message} ="
       end
     end
   end

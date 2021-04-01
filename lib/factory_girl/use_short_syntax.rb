@@ -114,7 +114,7 @@ Synvert::Rewriter.new 'factory_girl', 'use_short_syntax' do
   within_files '{test,spec,features}/**/*.rb' do
     %w[create build attributes_for build_stubbed create_list build_list create_pair build_pair].each do |message|
       with_node type: 'send', receiver: 'FactoryGirl', message: message do
-        replace_with "#{message}({{arguments}})"
+        delete :receiver, :dot
       end
     end
   end

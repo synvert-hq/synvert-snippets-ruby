@@ -23,11 +23,11 @@ Synvert::Rewriter.new 'rspec', 'stub_and_mock_to_double' do
     # stub('something') => double('something')
     # mock('something') => double('something')
     with_node type: 'send', receiver: nil, message: 'stub' do
-      replace_with 'double({{arguments}})'
+      replace :message, with: 'double'
     end
 
     with_node type: 'send', receiver: nil, message: 'mock' do
-      replace_with 'double({{arguments}})'
+      replace :message, with: 'double'
     end
   end
 end

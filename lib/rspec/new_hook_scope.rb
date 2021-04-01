@@ -29,11 +29,11 @@ Synvert::Rewriter.new 'rspec', 'new_hook_scope' do
     # before(:context) { do_something }
     %w[before after around].each do |scope|
       with_node type: 'send', message: scope, arguments: [:all] do
-        replace_with add_receiver_if_necessary("#{scope}(:context)")
+        replace :arguments, with: ':context'
       end
 
       with_node type: 'send', message: scope, arguments: [:each] do
-        replace_with add_receiver_if_necessary("#{scope}(:example)")
+        replace :arguments, with: ':example'
       end
     end
   end
