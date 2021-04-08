@@ -86,7 +86,7 @@ Synvert::Rewriter.new 'rspec', 'pending_to_skip' do
     #   do_something_possibly_fail
     # end
     with_node type: 'send', receiver: nil, message: 'pending', arguments: { size: 1, first: { type: 'str' } } do
-      replace_with 'skip {{arguments}}'
+      replace :message, with: 'skip'
     end
 
     %w[it describe context].each do |message|

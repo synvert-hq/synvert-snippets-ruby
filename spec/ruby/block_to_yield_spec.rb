@@ -11,7 +11,7 @@ def test(&block)
 end
 
 def test(foo, bar, &block)
-  block.call foo, bar
+  block.call(foo, bar)
 end
   '
   }

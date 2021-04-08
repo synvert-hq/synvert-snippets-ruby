@@ -22,7 +22,7 @@ Synvert::Rewriter.new 'rspec', 'be_close_to_be_within' do
     with_node type: 'send', message: 'to', arguments: { first: { type: 'send', message: 'be_close' } } do
       within_arg = node.arguments.first.arguments.last.to_source
       of_arg = node.arguments.first.arguments.first.to_source
-      replace_with "{{receiver}}.to be_within(#{within_arg}).of(#{of_arg})"
+      replace :arguments, with: "be_within(#{within_arg}).of(#{of_arg})"
     end
   end
 end

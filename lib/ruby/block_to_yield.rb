@@ -32,7 +32,7 @@ Synvert::Rewriter.new 'ruby', 'block_to_yield' do
       block_called = false
       with_node type: 'send', receiver: block_arg_name, message: 'call' do
         block_called = true
-        replace_with "yield#{add_arguments_with_parenthesis_if_necessary}"
+        replace :receiver, :dot, :message, with: 'yield'
       end
       if block_called
         goto_node :arguments do

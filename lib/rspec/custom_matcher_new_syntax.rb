@@ -49,9 +49,7 @@ Synvert::Rewriter.new 'rspec', 'custom_matcher_new_syntax' do
         failure_message_for_should_not: 'failure_message_when_negated'
       }.each do |old_message, new_message|
         with_node type: 'block', caller: { receiver: nil, message: old_message } do
-          goto_node :caller do
-            replace_with new_message
-          end
+          replace :caller, with: new_message
         end
       end
     end
