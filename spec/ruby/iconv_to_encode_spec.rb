@@ -29,17 +29,14 @@ RSpec.describe 'Ruby Iconv#iconv to String#encode' do
   end
 
   describe 'remove iconv requires' do
-    let(:test_content) {
-      "
+    let(:test_content) { <<~EOS }
       require 'iconv'
       require 'foo'
-    "
-    }
-    let(:test_rewritten_content) {
-      "
+    EOS
+
+    let(:test_rewritten_content) { <<~EOS }
       require 'foo'
-    "
-    }
+    EOS
 
     include_examples 'convertable'
   end

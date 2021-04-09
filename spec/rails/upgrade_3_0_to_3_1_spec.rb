@@ -4,64 +4,56 @@ require 'spec_helper'
 
 RSpec.describe 'Upgrade rails from 3.0 to 3.1' do
   let(:rewriter_name) { 'rails/upgrade_3_0_to_3_1' }
-  let(:application_content) {
-    '
-Synvert::Application.configure do
-end
-  '
-  }
-  let(:application_rewritten_content) {
-    "
-Synvert::Application.configure do
-  config.assets.version = '1.0'
-  config.assets.enabled = true
-end
-  "
-  }
-  let(:development_content) {
-    '
-Synvert::Application.configure do
-  config.action_view.debug_rjs = true
-end
-  '
-  }
-  let(:development_rewritten_content) {
-    '
-Synvert::Application.configure do
-  config.assets.debug = true
-  config.assets.compress = false
-end
-  '
-  }
-  let(:production_content) {
-    '
-Synvert::Application.configure do
-end
-  '
-  }
-  let(:production_rewritten_content) {
-    '
-Synvert::Application.configure do
-  config.assets.digest = true
-  config.assets.compile = false
-  config.assets.compress = true
-end
-  '
-  }
-  let(:test_content) {
-    '
-Synvert::Application.configure do
-end
-  '
-  }
-  let(:test_rewritten_content) {
-    '
-Synvert::Application.configure do
-  config.static_cache_control = "public, max-age=3600"
-  config.serve_static_assets = true
-end
-  '
-  }
+  let(:application_content) { <<~EOS }
+    Synvert::Application.configure do
+    end
+  EOS
+
+  let(:application_rewritten_content) { <<~EOS }
+    Synvert::Application.configure do
+      config.assets.version = '1.0'
+      config.assets.enabled = true
+    end
+  EOS
+
+  let(:development_content) { <<~EOS }
+    Synvert::Application.configure do
+      config.action_view.debug_rjs = true
+    end
+  EOS
+
+  let(:development_rewritten_content) { <<~EOS }
+    Synvert::Application.configure do
+      config.assets.debug = true
+      config.assets.compress = false
+    end
+  EOS
+
+  let(:production_content) { <<~EOS }
+    Synvert::Application.configure do
+    end
+  EOS
+
+  let(:production_rewritten_content) { <<~EOS }
+    Synvert::Application.configure do
+      config.assets.digest = true
+      config.assets.compile = false
+      config.assets.compress = true
+    end
+  EOS
+
+  let(:test_content) { <<~EOS }
+    Synvert::Application.configure do
+    end
+  EOS
+
+  let(:test_rewritten_content) { <<~EOS }
+    Synvert::Application.configure do
+      config.static_cache_control = "public, max-age=3600"
+      config.serve_static_assets = true
+    end
+  EOS
+
   let(:wrap_parameters_rewritten_content) { <<~EOS }
     # Enable parameter wrapping for JSON. You can disable this by setting :format to an empty array.
     ActiveSupport.on_load(:action_controller) do
@@ -74,16 +66,14 @@ end
     end
   EOS
 
-  let(:session_store_content) {
-    "
-Synvert::Application.config.session_store :cookie_store, key: 'somethingold'
-  "
-  }
-  let(:session_store_rewritten_content) {
-    "
-Synvert::Application.config.session_store :cookie_store, key: '_synvert-session'
-  "
-  }
+  let(:session_store_content) { <<~EOS }
+    Synvert::Application.config.session_store :cookie_store, key: 'somethingold'
+  EOS
+
+  let(:session_store_rewritten_content) { <<~EOS }
+    Synvert::Application.config.session_store :cookie_store, key: '_synvert-session'
+  EOS
+
   let(:fake_file_paths) {
     %w[
       config/application.rb

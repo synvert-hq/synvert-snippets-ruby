@@ -7,24 +7,21 @@ RSpec.describe 'Ruby uses new safe navigation operator',
   let(:rewriter_name) { 'ruby/new_safe_navigation_operator' }
 
   context 'with arguments' do
-    let(:test_content) {
-      "
-u = User.find(id)
-u.try!(:profile).try!(:thumbnails).try!(:large, 100, format: 'jpg')
-u.try!('profile').try!('thumbnails').try!('large', 100, format: 'jpg')
-u.try(:profile).try(:thumbnails).try(:large, 100, format: 'jpg')
-u.try('profile').try('thumbnails').try('large', 100, format: 'jpg')
-    "
-    }
-    let(:test_rewritten_content) {
-      "
-u = User.find(id)
-u&.profile&.thumbnails&.large(100, format: 'jpg')
-u&.profile&.thumbnails&.large(100, format: 'jpg')
-u&.profile&.thumbnails&.large(100, format: 'jpg')
-u&.profile&.thumbnails&.large(100, format: 'jpg')
-    "
-    }
+    let(:test_content) { <<~EOS }
+      u = User.find(id)
+      u.try!(:profile).try!(:thumbnails).try!(:large, 100, format: 'jpg')
+      u.try!('profile').try!('thumbnails').try!('large', 100, format: 'jpg')
+      u.try(:profile).try(:thumbnails).try(:large, 100, format: 'jpg')
+      u.try('profile').try('thumbnails').try('large', 100, format: 'jpg')
+    EOS
+
+    let(:test_rewritten_content) { <<~EOS }
+      u = User.find(id)
+      u&.profile&.thumbnails&.large(100, format: 'jpg')
+      u&.profile&.thumbnails&.large(100, format: 'jpg')
+      u&.profile&.thumbnails&.large(100, format: 'jpg')
+      u&.profile&.thumbnails&.large(100, format: 'jpg')
+    EOS
 
     include_examples 'convertable'
   end

@@ -31,6 +31,7 @@ RSpec.describe 'Convert rails request methods from 4.2 to 5.0' do
         end
       end
     EOS
+
     let(:test_rewritten_content) { <<~EOS }
       class PostsControllerTest < ActionController::TestCase
         def test_show
@@ -61,8 +62,7 @@ RSpec.describe 'Convert rails request methods from 4.2 to 5.0' do
 
   context 'integration test' do
     let(:fake_file_path) { 'spec/integration/posts_controller_spec.rb' }
-    let(:test_content) {
-      "
+    let(:test_content) { <<~EOS }
       RSpec.describe '/posts' do
         it 'tests show' do
           get '/posts/1', user_id: user.id
@@ -80,10 +80,9 @@ RSpec.describe 'Convert rails request methods from 4.2 to 5.0' do
           delete '/posts/1', nil, { 'HTTP_AUTHORIZATION' => 'fake' }
         end
       end
-    "
-    }
-    let(:test_rewritten_content) {
-      "
+    EOS
+
+    let(:test_rewritten_content) { <<~EOS }
       RSpec.describe '/posts' do
         it 'tests show' do
           get '/posts/1', params: { user_id: user.id }
@@ -101,8 +100,7 @@ RSpec.describe 'Convert rails request methods from 4.2 to 5.0' do
           delete '/posts/1', headers: { 'HTTP_AUTHORIZATION' => 'fake' }
         end
       end
-    "
-    }
+    EOS
 
     include_examples 'convertable'
   end

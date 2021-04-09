@@ -35,7 +35,7 @@ Synvert::Rewriter.new 'rails', 'upgrade_4_0_to_4_1' do
 
   if_gem 'rails', '>= 4.1'
 
-  add_file 'config/secrets.yml', secrets_content.strip
+  add_file 'config/secrets.yml', secrets_content
 
   remove_file 'config/initializers/secret_token.rb'
 

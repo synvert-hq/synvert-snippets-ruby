@@ -5,8 +5,7 @@ require 'spec_helper'
 RSpec.describe 'Convert update_attributes to update' do
   let(:rewriter_name) { 'rails/convert_update_attributes_to_update' }
   let(:fake_file_path) { 'app/model/user.rb' }
-  let(:test_content) {
-    "
+  let(:test_content) { <<~EOS }
     class User < ActiveRecord::Base
       def test
         update_attributes(title: 'new')
@@ -14,10 +13,9 @@ RSpec.describe 'Convert update_attributes to update' do
         self.update(title: 'new')
       end
     end
-  "
-  }
-  let(:test_rewritten_content) {
-    "
+  EOS
+
+  let(:test_rewritten_content) { <<~EOS }
     class User < ActiveRecord::Base
       def test
         update(title: 'new')
@@ -25,8 +23,7 @@ RSpec.describe 'Convert update_attributes to update' do
         self.update(title: 'new')
       end
     end
-  "
-  }
+  EOS
 
   include_examples 'convertable'
 end

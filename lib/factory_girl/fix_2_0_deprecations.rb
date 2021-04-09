@@ -157,7 +157,7 @@ Synvert::Rewriter.new 'factory_girl', 'fix_2_0_deprecations' do
         replace_with 'factory {{arguments}}'
       end
 
-      delete :arguments
+      delete :arguments, :pipe
     end
 
     # Factory.sequence :login do |n|
