@@ -327,26 +327,26 @@ Synvert::Rewriter.new 'rails', 'convert_routes_2_3_to_3_0' do
         url = node.arguments.first.to_value
         hash_node = node.arguments.last
         if hash_node.type == :hash && hash_node.key?(:controller)
-            if hash_node.key?(:action) || url !~ /:action/
-              controller_action_name =
-                if hash_node.key?(:action)
-                  extract_controller_action_name(hash_node)
-                else
-                  "#{hash_node.hash_value(:controller).to_value}#index"
-                end
-              method = extract_method(hash_node)
-              subdomain_node = extract_subdomain_node(hash_node)
-              other_options_code = reject_keys_from_hash(hash_node, :controller, :action, :method, :conditions)
-              other_options_code += ":constraints => {:subdomain => #{subdomain_node.to_source}}" if subdomain_node
-              if other_options_code.length > 0
-                replace_with "#{method} {{arguments.first}}, :to => \"#{controller_action_name}\", #{other_options_code}, :as => \"#{message}\""
+          if hash_node.key?(:action) || url !~ /:action/
+            controller_action_name =
+              if hash_node.key?(:action)
+                extract_controller_action_name(hash_node)
               else
-                replace_with "#{method} {{arguments.first}}, :to => \"#{controller_action_name}\", :as => \"#{message}\""
+                "#{hash_node.hash_value(:controller).to_value}#index"
               end
+            method = extract_method(hash_node)
+            subdomain_node = extract_subdomain_node(hash_node)
+            other_options_code = reject_keys_from_hash(hash_node, :controller, :action, :method, :conditions)
+            other_options_code += ":constraints => {:subdomain => #{subdomain_node.to_source}}" if subdomain_node
+            if other_options_code.length > 0
+              replace_with "#{method} {{arguments.first}}, :to => \"#{controller_action_name}\", #{other_options_code}, :as => \"#{message}\""
             else
-              replace_with 'match {{arguments}}'
+              replace_with "#{method} {{arguments.first}}, :to => \"#{controller_action_name}\", :as => \"#{message}\""
             end
+          else
+            replace_with 'match {{arguments}}'
           end
+        end
       end
     end
   end
