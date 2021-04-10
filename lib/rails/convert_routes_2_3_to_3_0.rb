@@ -210,10 +210,10 @@ Synvert::Rewriter.new 'rails', 'convert_routes_2_3_to_3_0' do
           member_routes = hash_argument.hash_value(:member)
           other_options_code = reject_keys_from_hash(hash_argument, :collection, :member)
           new_routes = []
-          if other_options_code.length > 0
-            new_routes << "#{message} {{caller.arguments.first}}, #{other_options_code} do\n"
+          new_routes << if other_options_code.length > 0
+            "#{message} {{caller.arguments.first}}, #{other_options_code} do\n"
           else
-            new_routes << "#{message} {{caller.arguments.first}} do\n"
+            "#{message} {{caller.arguments.first}} do\n"
           end
           new_routes << generate_new_collection_routes(collection_routes) if collection_routes
           new_routes << generate_new_member_routes(member_routes) if member_routes
@@ -277,10 +277,10 @@ Synvert::Rewriter.new 'rails', 'convert_routes_2_3_to_3_0' do
           member_routes = hash_argument.hash_value(:member)
           other_options_code = reject_keys_from_hash(hash_argument, :collection, :member)
           new_routes = []
-          if other_options_code.length > 0
-            new_routes << "#{message} {{arguments.first}}, #{other_options_code} do\n"
+          new_routes << if other_options_code.length > 0
+            "#{message} {{arguments.first}}, #{other_options_code} do\n"
           else
-            new_routes << "#{message} {{arguments.first}} do\n"
+            "#{message} {{arguments.first}} do\n"
           end
           new_routes << generate_new_collection_routes(collection_routes) if collection_routes
           new_routes << generate_new_member_routes(member_routes) if member_routes

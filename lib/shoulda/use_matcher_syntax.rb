@@ -145,11 +145,10 @@ Synvert::Rewriter.new 'shoulda', 'use_matcher_syntax' do
     }
     hash_node.children.each do |pair_node|
       method = pair_node.key.to_value
-      if method == :case_sensitive
-        new_calls << (pair_node.value.to_value ? 'case_sensitive' : 'case_insensitive')
+      new_calls << if method == :case_sensitive
+        (pair_node.value.to_value ? 'case_sensitive' : 'case_insensitive')
       else
-        new_calls <<
-          "#{message_converts.key?(method) ? message_converts[method] : method}(#{pair_node.value.to_source})"
+        "#{message_converts.key?(method) ? message_converts[method] : method}(#{pair_node.value.to_source})"
       end
     end
     new_calls.join('.')
