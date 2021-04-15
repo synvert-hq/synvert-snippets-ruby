@@ -200,10 +200,16 @@ Synvert::Rewriter.new 'rails', 'convert_active_record_dirty_5_0_to_5_1' do
 
   within_files 'app/observers/**/*.rb' do
     within_node type: 'class' do
-      object_name = node.name.to_source.sub(/Observer$/, '').underscore.tr('/', '_').tableize
+      object_names = Array(node.name.to_source.sub(/Observer$/, '').underscore.tr('/', '_').tableize)
+
+      with_node type: 'send', receiver: nil, message: 'observe' do
+        object_names = node.arguments.map { |argument| argument.to_value.to_s.tableize }
+      end
 
       AFTER_CALLBACK_CHANGES.each do |before_name, after_name|
-        convert_send_dirty_api_change(before_name, after_name, object_attributes[object_name])
+        object_names.each do |object_name|
+          convert_send_dirty_api_change(before_name, after_name, object_attributes[object_name])
+        end
       end
     end
   end
