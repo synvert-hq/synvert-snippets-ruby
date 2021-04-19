@@ -185,6 +185,7 @@ Synvert::Rewriter.new 'rails', 'convert_active_record_dirty_5_0_to_5_1' do
 
   within_files 'app/models/**/*.rb' do
     within_node type: 'class' do
+      next if node.name.to_source.end_with?('Observer')
       object_name = node.name.to_source.underscore.tr('/', '_').tableize
 
       with_node type: 'send', receiver: 'self', message: 'table_name=' do
@@ -198,8 +199,9 @@ Synvert::Rewriter.new 'rails', 'convert_active_record_dirty_5_0_to_5_1' do
     end
   end
 
-  within_files 'app/observers/**/*.rb' do
+  within_files 'app/{models,observers}/**/*.rb' do
     within_node type: 'class' do
+      next unless node.name.to_source.end_with?('Observer')
       object_names = Array(node.name.to_source.sub(/Observer$/, '').underscore.tr('/', '_').tableize)
 
       with_node type: 'send', receiver: nil, message: 'observe' do
