@@ -6,7 +6,7 @@ Synvert::Rewriter.new 'rails', 'add_application_job' do
 
     1. it adds app/models/application_job.rb file.
 
-    2. it replaces ActiveJob::Base with ApplicationJob in model files.
+    2. it replaces ActiveJob::Base with ApplicationJob in job files.
 
     ```ruby
     class PostJob < ActiveJob::Base
@@ -23,7 +23,7 @@ Synvert::Rewriter.new 'rails', 'add_application_job' do
 
   if_gem 'activejob', '>= 5.0'
 
-  # adds file app/models/application_job.rb
+  # adds file app/jobs/application_job.rb
   add_file 'app/jobs/application_job.rb', <<~EOS
     class ApplicationJob < ActiveJob::Base
     end

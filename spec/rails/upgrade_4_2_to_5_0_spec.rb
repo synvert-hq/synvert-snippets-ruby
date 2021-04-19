@@ -116,6 +116,7 @@ Rails.application.config.ssl_options = { hsts: { subdomains: true } }
         rails/convert_rails_test_request_methods_4_2_to_5_0
         rails/add_application_record
         rails/add_application_job
+        rails/add_application_mailer
         rails/convert_after_commit
         rails/convert_model_errors_add
         rails/convert_to_redirect_back
