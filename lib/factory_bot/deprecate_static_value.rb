@@ -57,20 +57,18 @@ Synvert::Rewriter.new 'factory_bot', 'deprecate_static_value' do
 
   if_gem 'factory_bot', '>= 4.11'
 
-  within_files '{test,spec}/factories/**/*.rb' do
-    %w[factory transient trait].each do |message|
-      within_node type: 'block', caller: { type: 'send', message: message } do
-        goto_node :body do
-          within_direct_node type: 'send', receiver: nil do
-            next if node.arguments.empty?
-            next if %i[association sequence before after factory callback].include?(node.message)
+  target_methods = %i[factory transient trait]
+  skip_methods = %i[association sequence before after factory callback]
 
-            if node.arguments.size == 1 && node.arguments.first.type == :hash
-              new_arguments = add_curly_brackets_if_necessary(node.arguments.first.to_source)
-              replace :arguments, with: "{ #{new_arguments} }"
-            else
-              replace :arguments, with: '{ {{arguments}} }'
-            end
+  within_files '{test,spec}/factories/**/*.rb' do
+    within_node type: 'block', caller: { type: 'send', message: { in: target_methods } } do
+      goto_node :body do
+        within_direct_node type: 'send', receiver: nil, message: { not_in: skip_methods }, arguments: { size: 1 } do
+          if node.arguments.first.type == :hash
+            new_arguments = add_curly_brackets_if_necessary(node.arguments.first.to_source)
+            replace :arguments, with: "{ #{new_arguments} }"
+          else
+            replace :arguments, with: '{ {{arguments}} }'
           end
         end
       end

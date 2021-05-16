@@ -101,6 +101,8 @@ Synvert::Rewriter.new 'factory_bot', 'use_short_syntax' do
     end
   end
 
+  target_methods = %i[create build attributes_for build_stubbed create_list build_list create_pair build_pair]
+
   # FactoryBot.create(...) => create(...)
   # FactoryBot.build(...) => build(...)
   # FactoryBot.attributes_for(...) => attributes_for(...)
@@ -110,10 +112,8 @@ Synvert::Rewriter.new 'factory_bot', 'use_short_syntax' do
   # FactoryBot.create_pair(...) => create_pair(...)
   # FactoryBot.build_pair(...) => build_pair(...)
   within_files '{test,spec,features}/**/*.rb' do
-    %w[create build attributes_for build_stubbed create_list build_list create_pair build_pair].each do |message|
-      with_node type: 'send', receiver: 'FactoryBot', message: message do
-        delete :receiver, :dot
-      end
+    with_node type: 'send', receiver: 'FactoryBot', message: { in: target_methods } do
+      delete :receiver, :dot
     end
   end
 end
