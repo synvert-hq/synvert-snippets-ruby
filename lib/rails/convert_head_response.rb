@@ -31,11 +31,15 @@ Synvert::Rewriter.new 'rails', 'convert_head_response' do
     # =>
     # head :ok
     # head :created
-    with_node type: 'send', receiver: nil, message: 'render', arguments: { size: 1, first: { type: 'hash' } } do
-      hash_node = node.arguments.first
-      if hash_node.key?(:nothing) && hash_node.hash_value(:nothing).to_value == true
-        status_value = hash_node.hash_value(:status) ? hash_node.hash_value(:status).to_source : ':ok'
-        replace_with "head #{status_value}"
+    with_node type: 'send', receiver: nil, message: 'render', arguments: { size: 1, first: { type: 'hash', nothing_value: 'true' } } do
+      replace :message, with: 'head'
+      goto_node :arguments, :first do
+        with_node type: 'hash', nothing_value: 'true', status_value: nil do
+          replace_with ":ok"
+        end
+        with_node type: 'hash', nothing_value: 'true', status_value: any_value do
+          replace_with ':{{status_value}}'
+        end
       end
     end
 
@@ -45,10 +49,13 @@ Synvert::Rewriter.new 'rails', 'convert_head_response' do
     # head 406
     # head :ok, location: '/foo'
     with_node type: 'send', receiver: nil, message: 'head', arguments: { size: 1, first: { type: 'hash' } } do
-      if node.arguments.first.key? :status
-        replace_with 'head {{arguments.first.values.first}}'
-      else
-        replace_with 'head :ok, {{arguments}}'
+      goto_node :arguments, :first do
+        with_node type: 'hash', location_value: any_value do
+          replace_with ":ok, {{to_source}}"
+        end
+        with_node type: 'hash', status_value: any_value do
+          replace_with "{{status_value}}"
+        end
       end
     end
   end

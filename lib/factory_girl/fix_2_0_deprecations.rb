@@ -153,11 +153,11 @@ Synvert::Rewriter.new 'factory_girl', 'fix_2_0_deprecations' do
                 arguments: {
                   size: 1
                 } do
+      delete :arguments, :pipes
       goto_node :caller do
-        replace_with 'factory {{arguments}}'
+        delete :receiver, :dot
+        replace :message, with: 'factory'
       end
-
-      delete :arguments, :pipe
     end
 
     # Factory.sequence :login do |n|
@@ -190,12 +190,14 @@ Synvert::Rewriter.new 'factory_girl', 'fix_2_0_deprecations' do
 
     # Factory.next(:email) => generate(:email)
     with_node type: 'send', receiver: 'Factory', message: 'next' do
-      replace_with 'generate({{arguments}})'
+      delete :receiver, :dot
+      replace :message, with: 'generate'
     end
 
     # Factory.stub(:comment) => build_stubbed(:comment)
     with_node type: 'send', receiver: 'Factory', message: 'stub' do
-      replace_with 'build_stubbed({{arguments}})'
+      delete :receiver, :dot
+      replace :message, with: 'build_stubbed'
     end
 
     # Factory.create(:user) => create(:user)

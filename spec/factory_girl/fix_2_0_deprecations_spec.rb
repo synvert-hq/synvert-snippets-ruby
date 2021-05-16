@@ -30,7 +30,7 @@ RSpec.describe 'Fix factory_girl deprecations' do
           "new_user_\#{n}"
         end
 
-        factory :admin, :parent => :user do
+        factory(:admin, :parent => :user) do
           login { generate(:login) }
           admin true
           sequence(:email) {|n| "admin\#{n}@test.com" }

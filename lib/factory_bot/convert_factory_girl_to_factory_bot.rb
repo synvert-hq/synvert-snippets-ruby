@@ -72,10 +72,10 @@ Synvert::Rewriter.new 'factory_bot', 'convert_factory_girl_to_factory_bot' do
       replace_with 'FactoryBot'
     end
 
-    with_node type: 'send', receiver: nil, message: 'require', arguments: { first: 'factory_girl' } do
+    with_node type: 'send', receiver: nil, message: 'require', arguments: { first: "'factory_girl'" } do
       replace :arguments, with: "'factory_bot'"
     end
-    with_node type: 'send', receiver: nil, message: 'require', arguments: { first: 'factory_girl_rails' } do
+    with_node type: 'send', receiver: nil, message: 'require', arguments: { first: "'factory_girl_rails'" } do
       replace :arguments, with: "'factory_bot_rails'"
     end
   end
