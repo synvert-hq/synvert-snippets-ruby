@@ -27,20 +27,16 @@ Synvert::Rewriter.new 'ruby', 'block_to_yield' do
     # def slow
     #   yield
     # end
-    within_node type: 'def', arguments: { last: { type: 'blockarg' } } do
-      block_arg_name = node.arguments.last.name.to_s
-      block_called = false
-      with_node type: 'send', receiver: block_arg_name, message: 'call' do
-        block_called = true
-        replace :receiver, :dot, :message, with: 'yield'
+    within_node type: 'def', arguments: { contain: '&block' } do
+      if node.arguments.size > 1
+        replace :arguments, with: '{{arguments[0...-1]}}'
+      else
+        delete :arguments, :parentheses
       end
-      if block_called
-        goto_node :arguments do
-          if node.children.size > 1
-            replace_with '({{children[0..-2]}})'
-          else
-            replace_with ''
-          end
+      goto_node :body do
+        with_node type: 'send', receiver: 'block', message: 'call' do
+          delete :receiver, :dot
+          replace :message, with: 'yield'
         end
       end
     end
