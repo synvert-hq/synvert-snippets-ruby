@@ -31,11 +31,20 @@ Synvert::Rewriter.new 'rails', 'convert_head_response' do
     # =>
     # head :ok
     # head :created
-    with_node type: 'send', receiver: nil, message: 'render', arguments: { size: 1, first: { type: 'hash', nothing_value: 'true' } } do
+    with_node type: 'send',
+              receiver: nil,
+              message: 'render',
+              arguments: {
+                size: 1,
+                first: {
+                  type: 'hash',
+                  nothing_value: 'true'
+                }
+              } do
       replace :message, with: 'head'
       goto_node :arguments, :first do
         with_node type: 'hash', nothing_value: 'true', status_value: nil do
-          replace_with ":ok"
+          replace_with ':ok'
         end
         with_node type: 'hash', nothing_value: 'true', status_value: any_value do
           replace_with ':{{status_value}}'
@@ -51,10 +60,10 @@ Synvert::Rewriter.new 'rails', 'convert_head_response' do
     with_node type: 'send', receiver: nil, message: 'head', arguments: { size: 1, first: { type: 'hash' } } do
       goto_node :arguments, :first do
         with_node type: 'hash', location_value: any_value do
-          replace_with ":ok, {{to_source}}"
+          replace_with ':ok, {{to_source}}'
         end
         with_node type: 'hash', status_value: any_value do
-          replace_with "{{status_value}}"
+          replace_with '{{status_value}}'
         end
       end
     end
