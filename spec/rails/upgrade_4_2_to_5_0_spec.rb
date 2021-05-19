@@ -119,7 +119,6 @@ Rails.application.config.ssl_options = { hsts: { subdomains: true } }
         rails/add_application_mailer
         rails/convert_after_commit
         rails/convert_model_errors_add
-        rails/convert_to_redirect_back
       ]
     )
   end
