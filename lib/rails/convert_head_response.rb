@@ -47,8 +47,8 @@ Synvert::Rewriter.new 'rails', 'convert_head_response' do
           replace_with ':ok'
         end
         with_node type: 'hash', nothing_value: 'true', status_value: any_value do
-          replace_with ':{{status_value}}'
-        end
+          replace_with '{{status_source}}'
+       end
       end
     end
 
@@ -63,7 +63,7 @@ Synvert::Rewriter.new 'rails', 'convert_head_response' do
           replace_with ':ok, {{to_source}}'
         end
         with_node type: 'hash', status_value: any_value do
-          replace_with '{{status_value}}'
+          replace_with '{{status_source}}'
         end
       end
     end
