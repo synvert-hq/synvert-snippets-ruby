@@ -170,16 +170,16 @@ Synvert::Rewriter.new 'rails', 'upgrade_3_2_to_4_0' do
   end
 
   within_file 'config/environments/production.rb' do
-    # insert config.eager_load = true
+    # prepend config.eager_load = true
     unless_exist_node type: 'send', message: 'eager_load=' do
-      insert 'config.eager_load = true'
+      prepend 'config.eager_load = true'
     end
   end
 
   within_file 'config/environments/development.rb' do
-    # insert config.eager_load = false
+    # prepend config.eager_load = false
     unless_exist_node type: 'send', message: 'eager_load=' do
-      insert 'config.eager_load = false'
+      prepend 'config.eager_load = false'
     end
 
     # remove config.active_record.auto_explain_threshold_in_seconds = x
@@ -195,9 +195,9 @@ Synvert::Rewriter.new 'rails', 'upgrade_3_2_to_4_0' do
   end
 
   within_file 'config/environments/test.rb' do
-    # insert config.eager_load = false
+    # prepend config.eager_load = false
     unless_exist_node type: 'send', message: 'eager_load=' do
-      insert 'config.eager_load = false'
+      prepend 'config.eager_load = false'
     end
   end
 

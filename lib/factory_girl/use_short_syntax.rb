@@ -70,16 +70,16 @@ Synvert::Rewriter.new 'factory_girl', 'use_short_syntax' do
 
   if_gem 'factory_girl', '>= 2.0'
 
-  # insert include FactoryGirl::Syntax::Methods
+  # prepend include FactoryGirl::Syntax::Methods
   within_file 'spec/spec_helper.rb' do
     within_node type: 'block', caller: { receiver: 'RSpec', message: 'configure' } do
       unless_exist_node type: 'send', message: 'include', arguments: ['FactoryGirl::Syntax::Methods'] do
-        insert '{{arguments.first}}.include FactoryGirl::Syntax::Methods'
+        prepend '{{arguments.first}}.include FactoryGirl::Syntax::Methods'
       end
     end
   end
 
-  # insert include FactoryGirl::Syntax::Methods
+  # prepend include FactoryGirl::Syntax::Methods
   within_file 'test/test_helper.rb' do
     %w[
       Test::Unit::TestCase
@@ -90,16 +90,16 @@ Synvert::Rewriter.new 'factory_girl', 'use_short_syntax' do
     ].each do |class_name|
       within_node type: 'class', name: class_name do
         unless_exist_node type: 'send', message: 'include', arguments: ['FactoryGirl::Syntax::Methods'] do
-          insert 'include FactoryGirl::Syntax::Methods'
+          prepend 'include FactoryGirl::Syntax::Methods'
         end
       end
     end
   end
 
-  # insert World(FactoryGirl::Syntax::Methods)
+  # prepend World(FactoryGirl::Syntax::Methods)
   within_file 'features/support/env.rb' do
     unless_exist_node type: 'send', message: 'World', arguments: ['FactoryGirl::Syntax::Methods'] do
-      insert 'World(FactoryGirl::Syntax::Methods)'
+      prepend 'World(FactoryGirl::Syntax::Methods)'
     end
   end
 

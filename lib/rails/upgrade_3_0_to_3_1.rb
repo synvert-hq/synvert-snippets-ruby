@@ -78,7 +78,7 @@ Synvert::Rewriter.new 'rails', 'upgrade_3_0_to_3_1' do
   if_gem 'rails', '>= 3.1'
 
   within_file 'config/application.rb' do
-    # insert config.assets.version = '1.0'
+    # prepend config.assets.version = '1.0'
     unless_exist_node type: 'send',
                       receiver: {
                         type: 'send',
@@ -89,10 +89,10 @@ Synvert::Rewriter.new 'rails', 'upgrade_3_0_to_3_1' do
                         message: 'assets'
                       },
                       message: 'version=' do
-      insert "config.assets.version = '1.0'"
+      prepend "config.assets.version = '1.0'"
     end
 
-    # insert config.assets.enabled = true
+    # prepend config.assets.enabled = true
     unless_exist_node type: 'send',
                       receiver: {
                         type: 'send',
@@ -103,7 +103,7 @@ Synvert::Rewriter.new 'rails', 'upgrade_3_0_to_3_1' do
                         message: 'assets'
                       },
                       message: 'enabled=' do
-      insert 'config.assets.enabled = true'
+      prepend 'config.assets.enabled = true'
     end
   end
 
@@ -122,7 +122,7 @@ Synvert::Rewriter.new 'rails', 'upgrade_3_0_to_3_1' do
       remove
     end
 
-    # insert config.assets.debug = true
+    # prepend config.assets.debug = true
     unless_exist_node type: 'send',
                       receiver: {
                         type: 'send',
@@ -133,10 +133,10 @@ Synvert::Rewriter.new 'rails', 'upgrade_3_0_to_3_1' do
                         message: 'assets'
                       },
                       message: 'debug=' do
-      insert 'config.assets.debug = true'
+      prepend 'config.assets.debug = true'
     end
 
-    # insert config.assets.compress = false
+    # prepend config.assets.compress = false
     unless_exist_node type: 'send',
                       receiver: {
                         type: 'send',
@@ -147,12 +147,12 @@ Synvert::Rewriter.new 'rails', 'upgrade_3_0_to_3_1' do
                         message: 'assets'
                       },
                       message: 'compress=' do
-      insert 'config.assets.compress = false'
+      prepend 'config.assets.compress = false'
     end
   end
 
   within_file 'config/environments/production.rb' do
-    # insert config.assets.digest = true
+    # prepend config.assets.digest = true
     unless_exist_node type: 'send',
                       receiver: {
                         type: 'send',
@@ -163,10 +163,10 @@ Synvert::Rewriter.new 'rails', 'upgrade_3_0_to_3_1' do
                         message: 'assets'
                       },
                       message: 'digest=' do
-      insert 'config.assets.digest = true'
+      prepend 'config.assets.digest = true'
     end
 
-    # insert config.assets.compile = false
+    # prepend config.assets.compile = false
     unless_exist_node type: 'send',
                       receiver: {
                         type: 'send',
@@ -177,10 +177,10 @@ Synvert::Rewriter.new 'rails', 'upgrade_3_0_to_3_1' do
                         message: 'assets'
                       },
                       message: 'compile=' do
-      insert 'config.assets.compile = false'
+      prepend 'config.assets.compile = false'
     end
 
-    # insert config.assets.compress = true
+    # prepend config.assets.compress = true
     unless_exist_node type: 'send',
                       receiver: {
                         type: 'send',
@@ -191,19 +191,19 @@ Synvert::Rewriter.new 'rails', 'upgrade_3_0_to_3_1' do
                         message: 'assets'
                       },
                       message: 'compress=' do
-      insert 'config.assets.compress = true'
+      prepend 'config.assets.compress = true'
     end
   end
 
   within_file 'config/environments/test.rb' do
-    # insert config.static_cache_control = "public, max-age=3600"
+    # prepend config.static_cache_control = "public, max-age=3600"
     unless_exist_node type: 'send', receiver: { type: 'send', message: 'config' }, message: 'static_cache_control=' do
-      insert 'config.static_cache_control = "public, max-age=3600"'
+      prepend 'config.static_cache_control = "public, max-age=3600"'
     end
 
-    # insert config.serve_static_assets = true
+    # prepend config.serve_static_assets = true
     unless_exist_node type: 'send', receiver: { type: 'send', message: 'config' }, message: 'serve_static_assets=' do
-      insert 'config.serve_static_assets = true'
+      prepend 'config.serve_static_assets = true'
     end
   end
 

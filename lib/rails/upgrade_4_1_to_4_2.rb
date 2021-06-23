@@ -21,7 +21,7 @@ Synvert::Rewriter.new 'rails', 'upgrade_4_1_to_4_2' do
   end
 
   within_file 'config/application.rb' do
-    # insert config.active_record.raise_in_transactional_callbacks = true
+    # append config.active_record.raise_in_transactional_callbacks = true
     with_node type: 'class', parent_class: 'Rails::Application' do
       unless_exist_node type: 'send',
                         receiver: {
