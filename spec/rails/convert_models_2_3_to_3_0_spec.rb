@@ -104,10 +104,10 @@ RSpec.describe 'Convert rails models from 2.3 to 3.0' do
         Post.where(:title => "test").limit(2).update_all(:title => "title")
 
         Post.where("title = \'test\'").delete_all
-        Post.where("title = ?", title).delete_all
+        Post.where(["title = ?", title]).delete_all
 
         Post.where("title = \'test\'").destroy_all
-        Post.where("title = ?", title).destroy_all
+        Post.where(["title = ?", title]).destroy_all
       end
 
       def validate_email

@@ -147,7 +147,7 @@ Synvert::Rewriter.new 'rails', 'convert_models_2_3_to_3_0' do
 
     ```ruby
     Post.where("title = \'test\'").delete_all
-    Post.where("title = ?", title).delete_all
+    Post.where(["title = ?", title]).delete_all
     ```
 
     ```ruby
@@ -159,7 +159,7 @@ Synvert::Rewriter.new 'rails', 'convert_models_2_3_to_3_0' do
 
     ```ruby
     Post.where("title = \'test\'").destroy_all
-    Post.where("title = ?", title).destroy_all
+    Post.where(["title = ?", title]).destroy_all
     ```
   EOS
 
@@ -228,7 +228,7 @@ Synvert::Rewriter.new 'rails', 'convert_models_2_3_to_3_0' do
     # =>
     # scope :active, where(:active => true)
     with_node type: 'send', message: 'named_scope' do
-      replace_with add_receiver_if_necessary('scope {{arguments}}')
+      replace :message, with: 'scope'
     end
 
     # scoped(:conditions => {:active => true})
@@ -360,8 +360,8 @@ Synvert::Rewriter.new 'rails', 'convert_models_2_3_to_3_0' do
     # Post.where("title = ?", title).destroy_all
     %w[delete_all destroy_all].each do |message|
       within_node type: 'send', message: message, arguments: { size: 1 } do
-        conditions_node = node.arguments.first
-        replace_with add_receiver_if_necessary("where(#{strip_brackets(conditions_node.to_source)}).#{message}")
+        replace :message, with: 'where'
+        insert ".#{message}"
       end
     end
 
@@ -428,7 +428,7 @@ Synvert::Rewriter.new 'rails', 'convert_models_2_3_to_3_0' do
     # =>
     # self.save(:validate => false)
     with_node type: 'send', message: 'save', arguments: [false] do
-      replace_with add_receiver_if_necessary('save(:validate => false)')
+      replace :arguments, with: ':validate => false'
     end
   end
 end
