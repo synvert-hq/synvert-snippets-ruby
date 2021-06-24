@@ -20,7 +20,7 @@ Synvert::Rewriter.new 'ruby', 'kernel_open_to_uri_open' do
     # =>
     # URI.open('http://test.com')
     with_node type: 'send', receiver: nil, message: 'open' do
-      replace :message, with: 'URI.open'
+      insert 'URI.', at: 'beginning'
     end
   end
 end
