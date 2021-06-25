@@ -65,9 +65,7 @@ Synvert::Rewriter.new 'shoulda', 'fix_1_5_deprecations' do
                     message: 'with'
                   }
                 } do
-        value = node.arguments.first.arguments.first.to_source
-        field = node.arguments.first.receiver.arguments.first.to_source
-        replace_with "should allow_value(#{value}).for(#{field})"
+        replace_with "should allow_value({{arguments.first.arguments.first}}).for({{arguments.first.receiver.arguments.first}})"
       end
     end
   end
@@ -80,10 +78,11 @@ Synvert::Rewriter.new 'shoulda', 'fix_1_5_deprecations' do
       #   assert_not_nil assigns(:user)
       # end
       with_node type: 'send', message: 'should', arguments: { first: { type: 'send', message: 'assign_to' } } do
-        assign_to_param = node.arguments.first.arguments.first.to_value
-        replace_with "should \"assigns #{assign_to_param}\" do
-  assert_not_nil assigns(:#{assign_to_param})
-end"
+        replace_with <<~EOS
+          should 'assigns {{arguments.first.arguments.first.to_value}}' do
+            assert_not_nil assigns({{arguments.first.arguments.first}})
+          end
+        EOS
       end
 
       # should_not assign_to(:user)
@@ -92,10 +91,11 @@ end"
       #   assert_nil assigns(:user)
       # end
       with_node type: 'send', message: 'should_not', arguments: { first: { type: 'send', message: 'assign_to' } } do
-        assign_to_param = node.arguments.first.arguments.first.to_value
-        replace_with "should \"no assigns #{assign_to_param}\" do
-  assert_nil assigns(:#{assign_to_param})
-end"
+        replace_with <<~EOS
+          should 'no assigns {{arguments.first.arguments.first.to_value}}' do
+            assert_nil assigns({{arguments.first.arguments.first}})
+          end
+        EOS
       end
 
       # should assign_to(:user) { @user }
@@ -114,11 +114,11 @@ end"
                     }
                   }
                 } do
-        assign_to_param = node.arguments.first.caller.arguments.first.to_value
-        assign_to_value = node.arguments.first.body.first.to_source
-        replace_with "should \"assigns #{assign_to_param}\" do
-  assert_equal #{assign_to_value}, assigns(:#{assign_to_param})
-end"
+        replace_with <<~EOS
+          should 'assigns {{arguments.first.caller.arguments.first.to_value}}' do
+            assert_equal {{arguments.first.body.first}}, assigns({{arguments.first.caller.arguments.first}})
+          end
+        EOS
       end
 
       # should_not assign_to(:user) { @user }
@@ -137,11 +137,11 @@ end"
                     }
                   }
                 } do
-        assign_to_param = node.arguments.first.caller.arguments.first.to_value
-        assign_to_value = node.arguments.first.body.first.to_source
-        replace_with "should \"no assigns #{assign_to_param}\" do
-  assert_not_equal #{assign_to_value}, assigns(:#{assign_to_param})
-end"
+        replace_with <<~EOS
+          should 'no assigns {{arguments.first.caller.arguments.first.to_value}}' do
+            assert_not_equal {{arguments.first.body.first}}, assigns({{arguments.first.caller.arguments.first}})
+          end
+        EOS
       end
 
       # should respond_with_content_type "application/json"
@@ -157,10 +157,11 @@ end"
                       message: 'respond_with_content_type'
                     }
                   } do
-        content_type = node.arguments.first.arguments.first.to_value
-        replace_with "should \"responds with #{content_type}\" do
-  assert_equal \"#{content_type}\", response.content_type
-end"
+        replace_with <<~EOS
+          should 'responds with {{arguments.first.arguments.first.to_value}}' do
+            assert_equal {{arguments.first.arguments.first}}, response.content_type
+          end
+        EOS
       end
     end
   end

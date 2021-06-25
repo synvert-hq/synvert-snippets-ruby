@@ -32,7 +32,7 @@ RSpec.describe 'Fix shoulda 1.5 deprecations' do
           should_not assign_to(:user)
           should_not assign_to(:user) { @user }
 
-          should respond_with_content_type "application/json"
+          should respond_with_content_type 'application/json'
         end
       end
     EOS
@@ -40,21 +40,21 @@ RSpec.describe 'Fix shoulda 1.5 deprecations' do
     let(:test_rewritten_content) { <<~EOS }
       class UsersControllerTest < ActionController::TestCase
         context "GET /show" do
-          should "assigns user" do
+          should 'assigns user' do
             assert_not_nil assigns(:user)
           end
-          should "assigns user" do
+          should 'assigns user' do
             assert_equal @user, assigns(:user)
           end
-          should "no assigns user" do
+          should 'no assigns user' do
             assert_nil assigns(:user)
           end
-          should "no assigns user" do
+          should 'no assigns user' do
             assert_not_equal @user, assigns(:user)
           end
 
-          should "responds with application/json" do
-            assert_equal "application/json", response.content_type
+          should 'responds with application/json' do
+            assert_equal 'application/json', response.content_type
           end
         end
       end
