@@ -98,10 +98,10 @@ RSpec.describe 'Convert rails models from 2.3 to 3.0' do
         Client.where(:active => true).max("age")
         Client.where(:active => true).sum("orders_count")
 
-        Post.where(:title => "test").update_all(:title => "title")
-        Post.where("title = \'test\'").update_all("title = \'title\'")
-        Post.where("title = ?", title).update_all("title = \'title\'")
-        Post.where(:title => "test").limit(2).update_all(:title => "title")
+        Post.where({:title => "title"}).update_all({:title => "test"})
+        Post.where("title = 'title'").update_all("title = 'test'")
+        Post.where("title = 'title'").update_all(["title = ?", title])
+        Post.where({:title => "title"}).limit(2).update_all({:title => "test"})
 
         Post.where("title = \'test\'").delete_all
         Post.where(["title = ?", title]).delete_all

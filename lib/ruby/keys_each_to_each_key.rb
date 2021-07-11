@@ -19,8 +19,9 @@ Synvert::Rewriter.new 'ruby', 'keys_each_to_each_key' do
     # params.keys.each {}
     # =>
     # params.each_key {}
-    with_node type: 'send', message: 'each', receiver: { type: 'send', message: 'keys' } do
-      replace_with '{{receiver.receiver}}.each_key'
+    with_node type: 'send', receiver: { type: 'send', message: 'keys', arguments: { size: 0 } }, message: 'each', arguments: { size: 0 } do
+      replace :receiver, with: '{{receiver.receiver}}'
+      replace :message, with: 'each_key'
     end
   end
 end

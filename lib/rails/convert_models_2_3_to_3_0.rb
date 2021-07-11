@@ -331,20 +331,14 @@ Synvert::Rewriter.new 'rails', 'convert_models_2_3_to_3_0' do
     # Post.where("title = \'test\'").update_all("title = \'title\'")
     # Post.where("title = ?", title).update_all("title = \'title\'")
     within_node type: 'send', message: :update_all, arguments: { size: 2 } do
-      updates_node, conditions_node = node.arguments
-      replace_with add_receiver_if_necessary(
-                     "where(#{strip_brackets(conditions_node.to_source)}).update_all(#{strip_brackets(updates_node.to_source)})"
-                   )
+      replace_with add_receiver_if_necessary("where({{arguments.first}}).update_all({{arguments.last}})")
     end
 
     # Post.update_all({:title => "title"}, {:title => "test"}, {:limit => 2})
     # =>
     # Post.where(:title => "test").limit(2).update_all(:title => "title")
     within_node type: 'send', message: :update_all, arguments: { size: 3 } do
-      updates_node, conditions_node, options_node = node.arguments
-      replace_with add_receiver_if_necessary(
-                     "where(#{strip_brackets(conditions_node.to_source)}).#{generate_new_queries(options_node)}.update_all(#{strip_brackets(updates_node.to_source)})"
-                   )
+      replace_with add_receiver_if_necessary("where({{arguments.first}}).#{generate_new_queries(node.arguments.last)}.update_all({{arguments.second}})")
     end
 
     # Post.delete_all("title = \'test\'")
