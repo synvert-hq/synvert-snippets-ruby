@@ -11,7 +11,7 @@ Synvert::Rewriter.new 'ruby', 'iconv_to_encode' do
     =>
 
     ```ruby
-    string.force_encoding('utf-8').encode('cp1252')
+    string.force_encoding('cp1252').encode('utf-8')
     ```
   EOS
 

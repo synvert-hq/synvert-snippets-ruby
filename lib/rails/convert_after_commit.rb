@@ -27,7 +27,7 @@ Synvert::Rewriter.new 'rails', 'convert_after_commit' do
     # =>
     # after_create_commit :add_to_index_later
     # after_update_commit :update_in_index_later
-    # after_detroy_commit :remove_from_index_later
+    # after_destroy_commit :remove_from_index_later
     with_node type: 'send', receiver: nil, message: 'after_commit', arguments: { size: 2 } do
       options = node.arguments.last
       if options.key?(:on)
