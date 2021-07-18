@@ -8,6 +8,7 @@ RSpec.describe 'Convert to rails 6' do
   let(:test_content) { <<~EOS }
     messages = self.using(:slave).messages
   EOS
+
   let(:test_rewritten_content) { <<~EOS }
     messages = ActiveRecord::Base.connected_to(role: :reading) do
       self.messages
