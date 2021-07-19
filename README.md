@@ -1,6 +1,6 @@
 # Synvert::Snippets
 
-[![Build Status](https://secure.travis-ci.org/xinminlabs/synvert-snippets.png)](http://travis-ci.org/xinminlabs/synvert-snippets)
+![Main workflow](https://github.com/xinminlabs/synvert-snippets/actions/workflows/main.yml/badge.svg)
 [![Coverage Status](https://coveralls.io/repos/xinminlabs/synvert-snippets/badge.png?branch=master)](https://coveralls.io/r/xinminlabs/synvert-snippets)
 
 synvert-snippets list all snippets to convert ruby code based on
