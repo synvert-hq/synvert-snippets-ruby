@@ -23,9 +23,16 @@ Synvert::Rewriter.new 'octopus', 'convert_to_rails_6' do
         indent = ' ' * node.indent
         goto_node :right_value do
           using_node = nil
-          with_node type: 'send', message: 'using', arguments: [:slave] do
+          with_node type: 'send', receiver: { not: nil }, message: 'using', arguments: [:slave] do
             using_node = node
             delete :dot, :message, :parentheses, :arguments
+          end
+          with_node type: 'send', receiver: { type: 'send', receiver: nil, message: 'using', arguments: [:slave] } do
+            using_node = node
+            delete :dot
+            goto_node :receiver do
+              delete :message, :parentheses, :arguments
+            end
           end
           if using_node
             insert "ActiveRecord::Base.connected_to(role: :reading) do\n#{indent}  ", at: 'beginning'
@@ -41,9 +48,16 @@ Synvert::Rewriter.new 'octopus', 'convert_to_rails_6' do
           with_direct_node type: 'send' do
             indent = ' ' * node.indent
             using_node = nil
-            with_node type: 'send', message: 'using', arguments: [:slave] do
+            with_node type: 'send', receiver: { not: nil }, message: 'using', arguments: [:slave] do
               using_node = node
               delete :dot, :message, :parentheses, :arguments
+            end
+            with_node type: 'send', receiver: { type: 'send', receiver: nil, message: 'using', arguments: [:slave] } do
+              using_node = node
+              delete :dot
+              goto_node :receiver do
+                delete :message, :parentheses, :arguments
+              end
             end
             if using_node
               insert "ActiveRecord::Base.connected_to(role: :reading) do\n#{indent}  ", at: 'beginning'
