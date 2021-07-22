@@ -17,27 +17,31 @@ Synvert::Rewriter.new 'octopus', 'convert_to_rails_6' do
     ```
   EOS
 
+  helper_method :convert_using_to_connected_to do |indent|
+    using_node = false
+    with_node type: 'send', receiver: { not: nil }, message: 'using', arguments: [:slave] do
+      using_node = true
+      delete :dot, :message, :parentheses, :arguments
+    end
+    with_node type: 'send', receiver: { type: 'send', receiver: nil, message: 'using', arguments: [:slave] } do
+      using_node = true
+      goto_node :receiver do
+        delete :message, :parentheses, :arguments
+      end
+      delete :dot
+    end
+    if using_node
+      insert "ActiveRecord::Base.connected_to(role: :reading) do\n#{indent}  ", at: 'beginning'
+      insert "\n#{indent}end", at: 'end'
+    end
+  end
+
   within_files 'app/**/*.rb' do
     %w[ivasgn lvasgn or_asgn].each do |type|
       with_node type: type do
         indent = ' ' * node.indent
         goto_node :right_value do
-          using_node = nil
-          with_node type: 'send', receiver: { not: nil }, message: 'using', arguments: [:slave] do
-            using_node = node
-            delete :dot, :message, :parentheses, :arguments
-          end
-          with_node type: 'send', receiver: { type: 'send', receiver: nil, message: 'using', arguments: [:slave] } do
-            using_node = node
-            delete :dot
-            goto_node :receiver do
-              delete :message, :parentheses, :arguments
-            end
-          end
-          if using_node
-            insert "ActiveRecord::Base.connected_to(role: :reading) do\n#{indent}  ", at: 'beginning'
-            insert "\n#{indent}end", at: 'end'
-          end
+          convert_using_to_connected_to(indent)
         end
       end
     end
@@ -47,22 +51,7 @@ Synvert::Rewriter.new 'octopus', 'convert_to_rails_6' do
         goto_node :body do
           with_direct_node type: 'send' do
             indent = ' ' * node.indent
-            using_node = nil
-            with_node type: 'send', receiver: { not: nil }, message: 'using', arguments: [:slave] do
-              using_node = node
-              delete :dot, :message, :parentheses, :arguments
-            end
-            with_node type: 'send', receiver: { type: 'send', receiver: nil, message: 'using', arguments: [:slave] } do
-              using_node = node
-              delete :dot
-              goto_node :receiver do
-                delete :message, :parentheses, :arguments
-              end
-            end
-            if using_node
-              insert "ActiveRecord::Base.connected_to(role: :reading) do\n#{indent}  ", at: 'beginning'
-              insert "\n#{indent}end", at: 'end'
-            end
+            convert_using_to_connected_to(indent)
           end
         end
       end
