@@ -66,7 +66,7 @@ Synvert::Rewriter.new 'rspec', 'explicit_spec_type' do
     within_files "spec/#{directory}/*.rb" do
       top_level = true
       with_node type: 'send', message: 'describe' do
-        unless_exist_node type: 'pair', key: 'type' do
+        unless_exist_node type: 'pair', key: :type do
           replace_with add_receiver_if_necessary("describe {{arguments}}, type: :#{type}") if top_level
         end
         top_level = false
