@@ -45,7 +45,7 @@ Synvert::Rewriter.new 'rspec', 'method_stub' do
     ```
   EOS
 
-  if_gem 'rspec', '>= 2.14'
+  if_gem 'rspec-core', '>= 2.14'
 
   within_files 'spec/**/*.rb' do
     # obj.stub!(:message) => obj.stub(:message)
@@ -78,7 +78,7 @@ Synvert::Rewriter.new 'rspec', 'method_stub' do
     end
   end
 
-  if_gem 'rspec', '>= 3.0'
+  if_gem 'rspec-core', '>= 3.0'
 
   within_files 'spec/**/*.rb' do
     # obj.stub_chain(:foo, :bar, :baz) => allow(obj).to receive_message_chain(:foo, :bar, :baz)

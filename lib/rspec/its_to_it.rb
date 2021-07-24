@@ -40,7 +40,7 @@ Synvert::Rewriter.new 'rspec', 'its_to_it' do
     ```
   EOS
 
-  if_gem 'rspec', '>= 2.99'
+  if_gem 'rspec-core', '>= 2.99'
 
   within_files 'spec/**/*.rb' do
     # describe 'example' do

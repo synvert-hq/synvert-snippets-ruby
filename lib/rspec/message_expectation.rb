@@ -25,7 +25,7 @@ Synvert::Rewriter.new 'rspec', 'message_expectation' do
     ```
   EOS
 
-  if_gem 'rspec', '>= 2.14'
+  if_gem 'rspec-core', '>= 2.14'
 
   within_files 'spec/**/*.rb' do
     # obj.should_receive(:message) => expect(obj).to receive(:message)

@@ -25,7 +25,7 @@ Synvert::Rewriter.new 'rspec', 'collection_matcher' do
     ```
   EOS
 
-  if_gem 'rspec', '>= 2.11'
+  if_gem 'rspec-core', '>= 2.11'
 
   within_files 'spec/**/*_spec.rb' do
     # expect(collection).to have(3).items => expect(collection.size).to eq(3)

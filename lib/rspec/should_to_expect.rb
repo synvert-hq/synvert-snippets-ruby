@@ -31,7 +31,7 @@ Synvert::Rewriter.new 'rspec', 'should_to_expect' do
     ```
   EOS
 
-  if_gem 'rspec', '>= 2.11'
+  if_gem 'rspec-core', '>= 2.11'
 
   within_files 'spec/**/*.rb' do
     # obj.should matcher => expect(obj).to matcher

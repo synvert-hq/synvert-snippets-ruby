@@ -29,7 +29,7 @@ Synvert::Rewriter.new 'rspec', 'one_liner_expectation' do
     ```
   EOS
 
-  if_gem 'rspec', '>= 2.99'
+  if_gem 'rspec-core', '>= 2.99'
 
   matcher_converters = { have: 'eq', have_exactly: 'eq', have_at_least: 'be >=', have_at_most: 'be <=' }
   within_files 'spec/**/*.rb' do

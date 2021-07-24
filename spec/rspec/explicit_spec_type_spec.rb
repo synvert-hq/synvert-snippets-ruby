@@ -24,7 +24,7 @@ RSpec.describe 'Explicity spec type in rspec-rails' do
     include_examples 'convertable'
   end
 
-  context 'unit test included type' do
+  context 'unit test including type' do
     let(:fake_file_path) { 'spec/models/comment_spec.rb' }
     let(:test_content) { <<~EOS }
       RSpec.describe Comment, :type => :model do
@@ -44,6 +44,21 @@ RSpec.describe 'Explicity spec type in rspec-rails' do
   end
 
   context 'functional test' do
+    let(:fake_file_path) { 'spec/controllers/posts_controller_spec.rb' }
+    let(:test_content) { <<~EOS }
+      describe PostsController, type: :controller do
+      end
+    EOS
+
+    let(:test_rewritten_content) { <<~EOS }
+      describe PostsController, type: :controller do
+      end
+    EOS
+
+    include_examples 'convertable'
+  end
+
+  context 'functional test including type' do
     let(:fake_file_path) { 'spec/controllers/posts_controller_spec.rb' }
     let(:test_content) { <<~EOS }
       describe PostsController do

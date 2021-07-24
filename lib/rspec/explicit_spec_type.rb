@@ -63,7 +63,7 @@ Synvert::Rewriter.new 'rspec', 'explicit_spec_type' do
     views: 'view',
     features: 'feature'
   }.each do |directory, type|
-    within_files "spec/#{directory}/*.rb" do
+    within_files "spec/#{directory}/**/*.rb" do
       top_level = true
       with_node type: 'send', message: 'describe' do
         unless_exist_node type: 'pair', key: :type do

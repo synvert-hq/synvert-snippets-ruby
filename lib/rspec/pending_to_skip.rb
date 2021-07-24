@@ -48,7 +48,7 @@ Synvert::Rewriter.new 'rspec', 'pending_to_skip' do
     ```
   EOS
 
-  if_gem 'rspec', '>= 3.0'
+  if_gem 'rspec-core', '>= 3.0'
 
   within_files 'spec/**/*.rb' do
     # it 'is run and expected to fail' do

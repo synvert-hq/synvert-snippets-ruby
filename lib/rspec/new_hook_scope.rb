@@ -17,7 +17,7 @@ Synvert::Rewriter.new 'rspec', 'new_hook_scope' do
     ```
   EOS
 
-  if_gem 'rspec', '>= 3.0'
+  if_gem 'rspec-core', '>= 3.0'
 
   within_files 'spec/**/*.rb' do
     # before(:each) { do_something }
