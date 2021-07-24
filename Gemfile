@@ -8,7 +8,7 @@ gem 'coveralls', require: false
 gem 'fakefs', require: 'fakefs/safe'
 gem 'rake'
 gem 'rspec'
-gem 'synvert-core', '>= 0.45.0'
+gem 'synvert-core', '>= 0.45.2'
 
 gem 'guard'
 gem 'guard-rspec'
