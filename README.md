@@ -1,5 +1,7 @@
 # Synvert::Snippets
 
+<img src="https://xinminlabs.github.io/synvert/img/logo_96.png" alt="logo" width="32" height="32" />
+
 ![Main workflow](https://github.com/xinminlabs/synvert-snippets/actions/workflows/main.yml/badge.svg)
 [![Coverage Status](https://coveralls.io/repos/xinminlabs/synvert-snippets/badge.png?branch=master)](https://coveralls.io/r/xinminlabs/synvert-snippets)
 
@@ -18,4 +20,4 @@ synvert-core.
 4. Push to the branch (`git push origin my-new-feature`)
 5. Create a new Pull Request
 
-[1]: http://xinminlabs.github.io/synvert/
+[1]: https://xinminlabs.github.io/synvert/
