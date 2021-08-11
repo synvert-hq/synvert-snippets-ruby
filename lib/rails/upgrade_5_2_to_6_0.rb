@@ -6,6 +6,7 @@ Synvert::Rewriter.new 'rails', 'upgrade_5_2_to_6_0' do
   EOS
 
   add_snippet 'rails', 'convert_update_attributes_to_update'
+  add_snippet 'ruby', 'define_class_from_classic_mode_to_zeitwerk_mode'
 
   if_gem 'rails', '>= 6.0'
 end
