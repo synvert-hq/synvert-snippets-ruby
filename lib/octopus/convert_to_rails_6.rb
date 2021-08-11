@@ -28,6 +28,11 @@ Synvert::Rewriter.new 'octopus', 'convert_to_rails_6' do
   end
 
   within_files 'app/**/*.rb' do
+    # self.using(:slave).messages
+    # =>
+    # ActiveRecord::Base.connected_to(role: :reading) do
+    #   self.using(:slave).messages
+    # end
     %w[ivasgn lvasgn or_asgn].each do |type|
       with_node type: type do
         indent = node.indent
@@ -50,6 +55,13 @@ Synvert::Rewriter.new 'octopus', 'convert_to_rails_6' do
   end
 
   within_files 'app/**/*.rb' do
+    # ActiveRecord::Base.connected_to(role: :reading) do
+    #   self.using(:slave).messages
+    # end
+    # =>
+    # ActiveRecord::Base.connected_to(role: :reading) do
+    #   self.messages
+    # end
     with_node type: 'block', caller: { type: 'send', receiver: 'ActiveRecord::Base', message: 'connected_to', arguments: { first: { type: 'hash', role_value: :reading } } } do
       with_node type: 'send', receiver: { not: nil }, message: 'using', arguments: [:slave] do
         delete :dot, :message, :parentheses, :arguments
