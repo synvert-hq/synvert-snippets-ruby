@@ -17,31 +17,22 @@ Synvert::Rewriter.new 'octopus', 'convert_to_rails_6' do
     ```
   EOS
 
-  helper_method :convert_using_to_connected_to do |indent|
+  helper_method :wrap_ar_connected_to do |indent|
     using_node = false
-    with_node type: 'send', receiver: { not: nil }, message: 'using', arguments: [:slave] do
+    with_node type: 'send', message: 'using', arguments: [:slave] do
       using_node = true
-      delete :dot, :message, :parentheses, :arguments
-    end
-    with_node type: 'send', receiver: { type: 'send', receiver: nil, message: 'using', arguments: [:slave] } do
-      using_node = true
-      goto_node :receiver do
-        delete :message, :parentheses, :arguments
-      end
-      delete :dot
     end
     if using_node
-      insert "ActiveRecord::Base.connected_to(role: :reading) do\n#{indent}  ", at: 'beginning'
-      insert "\n#{indent}end", at: 'end'
+      wrap with: "ActiveRecord::Base.connected_to(role: :reading) do", indent: indent
     end
   end
 
   within_files 'app/**/*.rb' do
     %w[ivasgn lvasgn or_asgn].each do |type|
       with_node type: type do
-        indent = ' ' * node.indent
+        indent = node.indent
         goto_node :right_value do
-          convert_using_to_connected_to(indent)
+          wrap_ar_connected_to(indent)
         end
       end
     end
@@ -50,10 +41,24 @@ Synvert::Rewriter.new 'octopus', 'convert_to_rails_6' do
       with_node type: type do
         goto_node :body do
           with_direct_node type: 'send' do
-            indent = ' ' * node.indent
-            convert_using_to_connected_to(indent)
+            indent = node.indent
+            wrap_ar_connected_to(indent)
           end
         end
+      end
+    end
+  end
+
+  within_files 'app/**/*.rb' do
+    with_node type: 'block', caller: { type: 'send', receiver: 'ActiveRecord::Base', message: 'connected_to', arguments: { first: { type: 'hash', role_value: :reading } } } do
+      with_node type: 'send', receiver: { not: nil }, message: 'using', arguments: [:slave] do
+        delete :dot, :message, :parentheses, :arguments
+      end
+      with_node type: 'send', receiver: { type: 'send', receiver: nil, message: 'using', arguments: [:slave] } do
+        goto_node :receiver do
+          delete :message, :parentheses, :arguments
+        end
+        delete :dot
       end
     end
   end
