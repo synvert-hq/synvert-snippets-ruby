@@ -55,7 +55,7 @@ Synvert::Rewriter.new 'rails', 'convert_active_record_dirty_5_0_to_5_1' do
 
   if_gem 'activerecord', '>= 5.1'
 
-  BEFORE_CALLBACK_CHANGES = {
+  before_callback_changes = {
     /(\w+)_changed\?$/ => 'will_save_change_to_{{attribute}}?',
     /(\w+)_change$/ => '{{attribute}}_change_to_be_saved',
     /(\w+)_was$/ => '{{attribute}}_in_database',
@@ -65,7 +65,7 @@ Synvert::Rewriter.new 'rails', 'convert_active_record_dirty_5_0_to_5_1' do
     'changed_attributes' => 'attributes_in_database'
   }
 
-  AFTER_CALLBACK_CHANGES = {
+  after_callback_changes = {
     /(\w+)_changed\?$/ => 'saved_change_to_{{attribute}}?',
     /(\w+)_change$/ => 'saved_change_to_{{attribute}}',
     /(\w+)_was$/ => '{{attribute}}_before_last_save',
@@ -75,9 +75,9 @@ Synvert::Rewriter.new 'rails', 'convert_active_record_dirty_5_0_to_5_1' do
     'changed_attributes' => 'saved_changes.transform_values(&:first)'
   }
 
-  BEFORE_CALLBACK_NAMES = %i[before_create before_update before_save]
+  before_callback_names = %i[before_create before_update before_save]
 
-  AFTER_CALLBACK_NAMES = %i[
+  after_callback_names = %i[
     after_create
     after_update
     after_save
@@ -195,8 +195,8 @@ Synvert::Rewriter.new 'rails', 'convert_active_record_dirty_5_0_to_5_1' do
         end
       end
 
-      find_callbacks_and_convert(BEFORE_CALLBACK_NAMES, BEFORE_CALLBACK_CHANGES, object_attributes[object_name])
-      find_callbacks_and_convert(AFTER_CALLBACK_NAMES, AFTER_CALLBACK_CHANGES, object_attributes[object_name])
+      find_callbacks_and_convert(before_callback_names, before_callback_changes, object_attributes[object_name])
+      find_callbacks_and_convert(after_callback_names, after_callback_changes, object_attributes[object_name])
     end
   end
 
@@ -210,7 +210,7 @@ Synvert::Rewriter.new 'rails', 'convert_active_record_dirty_5_0_to_5_1' do
         object_names = node.arguments.map { |argument| argument.to_value.to_s.tableize }
       end
 
-      AFTER_CALLBACK_CHANGES.each do |before_name, after_name|
+      after_callback_changes.each do |before_name, after_name|
         object_names.each do |object_name|
           convert_send_dirty_api_change(before_name, after_name, object_attributes[object_name])
         end
