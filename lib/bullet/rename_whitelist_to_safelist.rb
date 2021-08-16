@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 Synvert::Rewriter.new('bullet', 'rename_whitelist_to_safelist') do
   within_files '**/*.rb' do
     {
