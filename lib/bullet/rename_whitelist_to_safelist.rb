@@ -1,4 +1,30 @@
+# frozen_string_literal: true
+
 Synvert::Rewriter.new('bullet', 'rename_whitelist_to_safelist') do
+  description <<~EOS
+    It renames bullet whitelist to safelist.
+
+    ```ruby
+    Bullet.add_whitelist(type: :n_plus_one_query, class_name: 'Klass', association: :department)
+    Bullet.delete_whitelist(type: :n_plus_one_query, class_name: 'Klass', association: :team)
+    Bullet.get_whitelist_associations(:n_plus_one_query, 'Klass')
+    Bullet.reset_whitelist
+    Bullet.clear_whitelist
+    ```
+
+    =>
+
+    ```ruby
+    Bullet.add_safelist(type: :n_plus_one_query, class_name: 'Klass', association: :department)
+    Bullet.delete_safelist(type: :n_plus_one_query, class_name: 'Klass', association: :team)
+    Bullet.get_safelist_associations(:n_plus_one_query, 'Klass')
+    Bullet.reset_safelist
+    Bullet.clear_safelist
+    ```
+  EOS
+
+  if_gem 'bullet', '>= 6.1.5'
+
   within_files '**/*.rb' do
     {
       add_whitelist: 'add_safelist',
