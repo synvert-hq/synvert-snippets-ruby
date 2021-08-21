@@ -35,7 +35,7 @@ Synvert::Rewriter.new 'octopus', 'convert_to_rails_6' do
     # end
     %w[ivasgn lvasgn or_asgn].each do |type|
       with_node type: type do
-        indent = node.indent
+        indent = node.column
         goto_node :right_value do
           wrap_ar_connected_to(indent)
         end
@@ -46,7 +46,7 @@ Synvert::Rewriter.new 'octopus', 'convert_to_rails_6' do
       with_node type: type do
         goto_node :body do
           with_direct_node type: 'send' do
-            indent = node.indent
+            indent = node.column
             wrap_ar_connected_to(indent)
           end
         end
