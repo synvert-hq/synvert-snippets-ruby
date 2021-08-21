@@ -50,9 +50,7 @@ Synvert::Rewriter.new 'rspec', 'remove_monkey_patches' do
     # end
     monkey_patches_methods.each do |message|
       with_direct_node type: 'block', caller: { type: 'send', receiver: nil, message: message } do
-        goto_node :caller do
-          replace :message, with: 'RSpec.{{message}}'
-        end
+        insert 'RSpec.', at: 'beginning'
       end
     end
   end

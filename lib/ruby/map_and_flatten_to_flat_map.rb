@@ -29,13 +29,7 @@ Synvert::Rewriter.new 'ruby', 'map_and_flatten_to_flat_map' do
     # end
     with_node type: 'send', receiver: { type: 'block', caller: { type: 'send', message: 'map' } }, message: 'flatten', arguments: { size: 0 } do
       delete :message, :dot
-      goto_node :receiver do
-        with_node type: 'block' do
-          goto_node :caller do
-            replace :message, with: 'flat_map'
-          end
-        end
-      end
+      replace 'receiver.caller.message', with: 'flat_map'
     end
   end
 end

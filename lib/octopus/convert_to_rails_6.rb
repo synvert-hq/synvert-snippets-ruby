@@ -67,10 +67,7 @@ Synvert::Rewriter.new 'octopus', 'convert_to_rails_6' do
         delete :dot, :message, :parentheses, :arguments
       end
       with_node type: 'send', receiver: { type: 'send', receiver: nil, message: 'using', arguments: [:slave] } do
-        goto_node :receiver do
-          delete :message, :parentheses, :arguments
-        end
-        delete :dot
+        delete :dot, 'receiver.message', 'receiver.parentheses', 'receiver.arguments'
       end
     end
   end
