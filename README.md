@@ -1,6 +1,6 @@
 # synvert-snippets-ruby
 
-<img src="https://xinminlabs.github.io/synvert/img/logo_96.png" alt="logo" width="32" height="32" />
+<img src="https://synvert.xinminlabs.com/img/logo_96.png" alt="logo" width="32" height="32" />
 
 ![Main workflow](https://github.com/xinminlabs/synvert-snippets-ruby/actions/workflows/main.yml/badge.svg)
 
@@ -19,4 +19,4 @@ synvert-core.
 4. Push to the branch (`git push origin my-new-feature`)
 5. Create a new Pull Request
 
-[1]: https://xinminlabs.github.io/synvert/
+[1]: https://synvert.xinminlabs.com
