@@ -42,7 +42,7 @@ Synvert::Rewriter.new 'rails', 'convert_head_response' do
                 }
               } do
       replace :message, with: 'head'
-      goto_node :arguments, :first do
+      goto_node 'arguments.first' do
         with_node type: 'hash', nothing_value: 'true', status_value: nil do
           replace_with ':ok'
         end
@@ -58,7 +58,7 @@ Synvert::Rewriter.new 'rails', 'convert_head_response' do
     # head 406
     # head :ok, location: '/foo'
     with_node type: 'send', receiver: nil, message: 'head', arguments: { size: 1, first: { type: 'hash' } } do
-      goto_node :arguments, :first do
+      goto_node 'arguments.first' do
         with_node type: 'hash', location_value: any_value do
           replace_with ':ok, {{to_source}}'
         end
