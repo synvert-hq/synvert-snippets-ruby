@@ -87,7 +87,6 @@ RSpec.describe 'Upgrade rails from 3.2 to 4.0' do
     ActiveSupport.on_load(:action_controller) do
       wrap_parameters format: [:json]
     end
-
   EOS
 
   let(:secret_token_content) { <<~EOS }
@@ -145,6 +144,7 @@ RSpec.describe 'Upgrade rails from 3.2 to 4.0' do
   let(:post_model_rewritten_content) { <<~EOS }
     class Post < ActiveRecord::Base
       has_many :comments, dependent: :restrict_with_exception
+
 
       def serialized_attrs
         self.class.serialized_attributes
