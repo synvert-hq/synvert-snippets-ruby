@@ -14,7 +14,9 @@ Synvert::Rewriter.new 'debug_me', 'remove_debug_me_calls' do
     with_node type: 'block', caller: { type: 'send', message: 'debug_me'} do
       remove
     end
+  end
 
+  within_files '**/*.rb' do
     # removes all debug_me calls that DO NOT have a block
     with_node type: 'send', message: 'debug_me' do
       remove
