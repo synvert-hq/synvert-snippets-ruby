@@ -16,7 +16,20 @@ Synvert::Rewriter.new 'minitest', 'assert_nil' do
   EOS
 
   within_files 'test/**/*_test.rb' do
-    with_node type: 'send', receiver: nil, message: 'assert_equal', arguments: { size: 2, first: nil, second: { type: 'send', receiver: nil, arguments: { size: 0 } } } do
+    with_node type: 'send',
+              receiver: nil,
+              message: 'assert_equal',
+              arguments: {
+                size: 2,
+                first: nil,
+                second: {
+                  type: 'send',
+                  receiver: nil,
+                  arguments: {
+                    size: 0
+                  }
+                }
+              } do
       replace :message, with: 'assert_nil'
       replace :arguments, with: '{{arguments.second}}'
     end
