@@ -145,7 +145,6 @@ RSpec.describe 'Upgrade rails from 3.2 to 4.0' do
     class Post < ActiveRecord::Base
       has_many :comments, dependent: :restrict_with_exception
 
-
       def serialized_attrs
         self.class.serialized_attributes
       end
