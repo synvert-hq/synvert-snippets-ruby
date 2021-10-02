@@ -92,7 +92,7 @@ Synvert::Rewriter.new 'will_paginate', 'use_new_syntax' do
     # Post.find_each do |post|
     # end
     within_node type: 'send', message: 'paginated_each', arguments: { size: 0 } do
-      replace_with add_receiver_if_necessary('find_each')
+      replace :message, with: 'find_each'
     end
   end
 end

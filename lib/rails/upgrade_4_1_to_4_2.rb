@@ -16,7 +16,7 @@ Synvert::Rewriter.new 'rails', 'upgrade_4_1_to_4_2' do
     # =>
     # config.serve_static_files = false
     with_node type: 'send', message: 'serve_static_assets=' do
-      replace_with '{{receiver}}.serve_static_files = {{arguments}}'
+      replace :message, with: 'serve_static_files ='
     end
   end
 

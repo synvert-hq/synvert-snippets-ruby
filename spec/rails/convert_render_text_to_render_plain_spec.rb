@@ -8,7 +8,7 @@ RSpec.describe 'Convert render :text to render :plain' do
   let(:test_content) { <<~EOS }
     class PostsController < ApplicationController
       def foo
-        render text: 'OK'
+        render :text => 'OK'
       end
 
       def bar
@@ -20,7 +20,7 @@ RSpec.describe 'Convert render :text to render :plain' do
   let(:test_rewritten_content) { <<~EOS }
     class PostsController < ApplicationController
       def foo
-        render plain: 'OK'
+        render :plain => 'OK'
       end
 
       def bar
