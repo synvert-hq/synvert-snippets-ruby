@@ -203,9 +203,7 @@ Synvert::Rewriter.new 'shoulda', 'use_matcher_syntax' do
             replace_with "#{new_message}({{arguments.first}}).#{other_calls}"
           else
             replaced_code = []
-            node.arguments.each do |argument|
-              replaced_code << "#{new_message}(#{argument.to_source})"
-            end
+            node.arguments.each { |argument| replaced_code << "#{new_message}(#{argument.to_source})" }
             replace_with replaced_code.join("\n")
           end
         end
@@ -259,9 +257,11 @@ Synvert::Rewriter.new 'shoulda', 'use_matcher_syntax' do
         with_node type: 'send', message: message do
           should_or_should_not = message.include?('_not') ? 'should_not' : 'should'
           field = node.arguments.first.to_source
-          replace_with node.arguments[1..-1].map { |node_argument|
-                         "#{should_or_should_not} allow_value(#{node_argument.to_source}).for(#{field})"
-                       }.join("\n")
+          replace_with node.arguments[1..-1]
+                         .map { |node_argument|
+                           "#{should_or_should_not} allow_value(#{node_argument.to_source}).for(#{field})"
+                         }
+                         .join("\n")
         end
       end
     end
@@ -334,9 +334,10 @@ Synvert::Rewriter.new 'shoulda', 'use_matcher_syntax' do
       # should_not assign_to(:user)
       # should_not assign_to(:posts)
       with_node type: 'send', message: 'should_not_assign_to' do
-        replace_with node.arguments.map { |node_argument| "should_not assign_to(#{node_argument.to_source})" }.join(
-                       "\n"
-                     )
+        replace_with node
+                       .arguments
+                       .map { |node_argument| "should_not assign_to(#{node_argument.to_source})" }
+                       .join("\n")
       end
 
       # should_respond_with :success => should respond_with(:success)

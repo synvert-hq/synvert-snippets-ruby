@@ -22,9 +22,7 @@ Synvert::Rewriter.new 'octopus', 'convert_to_rails_6' do
     with_node type: 'send', message: 'using', arguments: [:slave] do
       using_node = true
     end
-    if using_node
-      wrap with: "ActiveRecord::Base.connected_to(role: :reading) do", indent: indent
-    end
+    wrap with: 'ActiveRecord::Base.connected_to(role: :reading) do', indent: indent if using_node
   end
 
   within_files 'app/**/*.rb' do
@@ -62,7 +60,18 @@ Synvert::Rewriter.new 'octopus', 'convert_to_rails_6' do
     # ActiveRecord::Base.connected_to(role: :reading) do
     #   self.messages
     # end
-    with_node type: 'block', caller: { type: 'send', receiver: 'ActiveRecord::Base', message: 'connected_to', arguments: { first: { type: 'hash', role_value: :reading } } } do
+    with_node type: 'block',
+              caller: {
+                type: 'send',
+                receiver: 'ActiveRecord::Base',
+                message: 'connected_to',
+                arguments: {
+                  first: {
+                    type: 'hash',
+                    role_value: :reading
+                  }
+                }
+              } do
       with_node type: 'send', receiver: { not: nil }, message: 'using', arguments: [:slave] do
         delete :dot, :message, :parentheses, :arguments
       end

@@ -20,9 +20,7 @@ RSpec.describe 'Uses ruby 2.2 new hash synax' do
     { "foo-#{key}": 'foo_value', 'bar-key': 42, "a\tb": false, "c'd": nil }
   EOS
 
-  before do
-    load_sub_snippets(%w[ruby/new_1_9_hash_syntax])
-  end
+  before { load_sub_snippets(%w[ruby/new_1_9_hash_syntax]) }
 
   include_examples 'convertable'
 end
