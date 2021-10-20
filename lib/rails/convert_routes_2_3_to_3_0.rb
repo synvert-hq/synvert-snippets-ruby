@@ -116,9 +116,7 @@ Synvert::Rewriter.new 'rails', 'convert_routes_2_3_to_3_0' do
         end
       end
     else
-      Array(member_routes.to_value).each do |method|
-        new_member_routes << "    match :#{method}\n"
-      end
+      Array(member_routes.to_value).each { |method| new_member_routes << "    match :#{method}\n" }
     end
     new_member_routes << "  end\n"
     new_member_routes.join
@@ -135,9 +133,7 @@ Synvert::Rewriter.new 'rails', 'convert_routes_2_3_to_3_0' do
         end
       end
     else
-      Array(collection_routes.to_value).each do |method|
-        new_collection_routes << "    match :#{method}\n"
-      end
+      Array(collection_routes.to_value).each { |method| new_collection_routes << "    match :#{method}\n" }
     end
     new_collection_routes << "  end\n"
     new_collection_routes.join
@@ -294,13 +290,13 @@ Synvert::Rewriter.new 'rails', 'convert_routes_2_3_to_3_0' do
 
     # map.connect "/:controller/:action/:id"
     # => match "/:controller(/:action(/:id))(.:format)"
-    with_node type: 'send', receiver: 'map', message: 'connect', arguments: { first: %r|:controller/:action/:id| } do
+    with_node type: 'send', receiver: 'map', message: 'connect', arguments: { first: %r{:controller/:action/:id} } do
       replace_with 'match "/:controller(/:action(/:id))(.:format)"'
     end
 
     # map.connect "audio/:action/:id", :controller => "audio"
     # => match "audio(/:action(/:id))(.:format)", :controller => "audio"
-    with_node type: 'send', receiver: 'map', message: 'connect', arguments: { first: %r|(.*?)/:action/:id| } do
+    with_node type: 'send', receiver: 'map', message: 'connect', arguments: { first: %r{(.*?)/:action/:id} } do
       options_node = node.arguments.last
       if options_node.type == :hash && options_node.key?(:controller)
         controller_name = options_node.hash_value(:controller).to_value
@@ -310,7 +306,7 @@ Synvert::Rewriter.new 'rails', 'convert_routes_2_3_to_3_0' do
 
     # map.connect "video/:action", :controller => "video"
     # => match "video(/:action)(.:format)", :controller => "video"
-    with_node type: 'send', receiver: 'map', message: 'connect', arguments: { first: %r|(.*?)/:action['"]$| } do
+    with_node type: 'send', receiver: 'map', message: 'connect', arguments: { first: %r{(.*?)/:action['"]$} } do
       options_node = node.arguments.last
       if options_node.type == :hash && options_node.key?(:controller)
         controller_name = options_node.hash_value(:controller).children.last
