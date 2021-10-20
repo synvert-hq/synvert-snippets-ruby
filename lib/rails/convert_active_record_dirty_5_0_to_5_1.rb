@@ -90,10 +90,10 @@ Synvert::Rewriter.new 'rails', 'convert_active_record_dirty_5_0_to_5_1' do
   # convert ActiveRecord::Dirty api change
   #
   # after_save :invalidate_cache, if: :status_changed?
-  helper_method :convert_sym_dirty_api_change do |before_name, after_name, attributes|
+  helper_method :convert_sym_dirty_api_change do |before_name, after_name|
     with_node type: 'sym', to_value: before_name do
       if before_name.is_a?(Regexp)
-        if node.to_value =~ before_name && attributes.include?(Regexp.last_match(1))
+        if node.to_value =~ before_name
           replace_with ":#{after_name.sub('{{attribute}}', Regexp.last_match(1))}"
         end
       else
@@ -113,10 +113,10 @@ Synvert::Rewriter.new 'rails', 'convert_active_record_dirty_5_0_to_5_1' do
   #   if title_chagned? || summary_changed?
   # . end
   # end
-  helper_method :convert_send_dirty_api_change do |before_name, after_name, attributes|
+  helper_method :convert_send_dirty_api_change do |before_name, after_name|
     with_node type: 'send', message: before_name do
       if before_name.is_a?(Regexp)
-        if node.message.to_s =~ before_name && attributes.include?(Regexp.last_match(1))
+        if node.message.to_s =~ before_name
           replace :message, with: after_name.sub('{{attribute}}', Regexp.last_match(1))
         end
       else
@@ -126,7 +126,7 @@ Synvert::Rewriter.new 'rails', 'convert_active_record_dirty_5_0_to_5_1' do
   end
 
   # find callbacks and convert them
-  helper_method :find_callbacks_and_convert do |callback_names, callback_changes, attributes|
+  helper_method :find_callbacks_and_convert do |callback_names, callback_changes|
     custom_callback_names = []
 
     callback_names.each do |callback_name|
@@ -136,8 +136,8 @@ Synvert::Rewriter.new 'rails', 'convert_active_record_dirty_5_0_to_5_1' do
       with_node type: 'send', receiver: nil, message: callback_name do
         custom_callback_names << node.arguments[0].to_value if !node.arguments.empty? && node.arguments[0].type == :sym
         callback_changes.each do |before_name, after_name|
-          convert_sym_dirty_api_change(before_name, after_name, attributes)
-          convert_send_dirty_api_change(before_name, after_name, attributes)
+          convert_sym_dirty_api_change(before_name, after_name)
+          convert_send_dirty_api_change(before_name, after_name)
         end
       end
 
@@ -149,7 +149,7 @@ Synvert::Rewriter.new 'rails', 'convert_active_record_dirty_5_0_to_5_1' do
       #     end
       with_node type: 'block', caller: { type: 'send', receiver: nil, message: callback_name } do
         callback_changes.each do |before_name, after_name|
-          convert_send_dirty_api_change(before_name, after_name, attributes)
+          convert_send_dirty_api_change(before_name, after_name)
         end
       end
     end
@@ -162,22 +162,7 @@ Synvert::Rewriter.new 'rails', 'convert_active_record_dirty_5_0_to_5_1' do
     with_node type: 'def' do
       if callback_names.include?(node.name) || custom_callback_names.include?(node.name)
         callback_changes.each do |before_name, after_name|
-          convert_send_dirty_api_change(before_name, after_name, attributes)
-        end
-      end
-    end
-  end
-
-  # read model attributes from db/schema.rb
-  object_attributes = {}
-  within_file 'db/schema.rb' do
-    within_node type: 'block', caller: { type: 'send', message: 'create_table' } do
-      object_name = node.caller.arguments.first.to_value.tableize
-      object_attributes[object_name] = []
-      with_node type: 'send', receiver: 't', message: { not: 'index' } do
-        unless node.arguments.empty?
-          attribute_name = node.arguments.first.to_value
-          object_attributes[object_name] << attribute_name
+          convert_send_dirty_api_change(before_name, after_name)
         end
       end
     end
@@ -195,8 +180,8 @@ Synvert::Rewriter.new 'rails', 'convert_active_record_dirty_5_0_to_5_1' do
         end
       end
 
-      find_callbacks_and_convert(before_callback_names, before_callback_changes, object_attributes[object_name])
-      find_callbacks_and_convert(after_callback_names, after_callback_changes, object_attributes[object_name])
+      find_callbacks_and_convert(before_callback_names, before_callback_changes)
+      find_callbacks_and_convert(after_callback_names, after_callback_changes)
     end
   end
 
@@ -212,7 +197,7 @@ Synvert::Rewriter.new 'rails', 'convert_active_record_dirty_5_0_to_5_1' do
 
       after_callback_changes.each do |before_name, after_name|
         object_names.each do |object_name|
-          convert_send_dirty_api_change(before_name, after_name, object_attributes[object_name])
+          convert_send_dirty_api_change(before_name, after_name)
         end
       end
     end
