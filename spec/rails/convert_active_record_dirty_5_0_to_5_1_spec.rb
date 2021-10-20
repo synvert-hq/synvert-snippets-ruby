@@ -5,11 +5,7 @@ require 'spec_helper'
 RSpec.describe 'Convert ActiveRecord::Dirty 5.0 to 5.1' do
   let(:rewriter_name) { 'rails/convert_active_record_dirty_5_0_to_5_1' }
 
-  before do
-    FakeFS() do
-      FileUtils.mkdir('db')
-    end
-  end
+  before { FakeFS() { FileUtils.mkdir('db') } }
 
   context 'model' do
     let(:fake_file_path) { 'app/models/post.rb' }

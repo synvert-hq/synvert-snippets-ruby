@@ -265,15 +265,19 @@ Synvert::Rewriter.new 'rails', 'upgrade_3_2_to_4_0' do
         other_arguments_str = node.arguments[0...-1].map(&:to_source).join(', ')
         confirm = hash.hash_value(:confirm).to_source
         other_options =
-          hash.children.map { |pair|
-            unless %i[confirm data].include?(pair.key.to_value)
-              if pair.key.type == :sym
-                "#{pair.key.to_value}: #{pair.value.to_source}"
-              else
-                "#{pair.key.to_source} => #{pair.value.to_source}"
+          hash
+            .children
+            .map do |pair|
+              unless %i[confirm data].include?(pair.key.to_value)
+                if pair.key.type == :sym
+                  "#{pair.key.to_value}: #{pair.value.to_source}"
+                else
+                  "#{pair.key.to_source} => #{pair.value.to_source}"
+                end
               end
             end
-          }.compact.join(', ')
+            .compact
+            .join(', ')
         data_options = "data: { confirm: #{confirm} }"
         replace_with "link_to #{other_arguments_str}, #{other_options}, #{data_options}"
       end
