@@ -196,7 +196,7 @@ Synvert::Rewriter.new 'rails', 'convert_active_record_dirty_5_0_to_5_1' do
       end
 
       after_callback_changes.each do |before_name, after_name|
-        object_names.each do |object_name|
+        object_names.each do |_object_name|
           convert_send_dirty_api_change(before_name, after_name)
         end
       end
