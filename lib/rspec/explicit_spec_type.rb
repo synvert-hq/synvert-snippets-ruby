@@ -64,14 +64,10 @@ Synvert::Rewriter.new 'rspec', 'explicit_spec_type' do
     features: 'feature'
   }.each do |directory, type|
     within_files "spec/#{directory}/**/*.rb" do
-      top_level = true
-      with_node type: 'send', message: 'describe' do
-        if top_level
-          unless_exist_node type: 'pair', key: :type do
-            insert ", type: :#{type}"
-          end
+      with_node({ type: 'send', message: 'describe' }, { recursive: false }) do
+        unless_exist_node type: 'pair', key: :type do
+          insert ", type: :#{type}"
         end
-        top_level = false
       end
     end
   end
