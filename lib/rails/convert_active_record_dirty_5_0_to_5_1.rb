@@ -150,9 +150,7 @@ Synvert::Rewriter.new 'rails', 'convert_active_record_dirty_5_0_to_5_1' do
       #       end
       #     end
       with_node type: 'block', caller: { type: 'send', receiver: nil, message: callback_name } do
-        callback_changes.each do |before_name, after_name|
-          convert_send_dirty_api_change(before_name, after_name)
-        end
+        callback_changes.each { |before_name, after_name| convert_send_dirty_api_change(before_name, after_name) }
       end
     end
 
@@ -163,9 +161,7 @@ Synvert::Rewriter.new 'rails', 'convert_active_record_dirty_5_0_to_5_1' do
     #     end
     with_node type: 'def' do
       if callback_names.include?(node.name) || custom_callback_names.include?(node.name)
-        callback_changes.each do |before_name, after_name|
-          convert_send_dirty_api_change(before_name, after_name)
-        end
+        callback_changes.each { |before_name, after_name| convert_send_dirty_api_change(before_name, after_name) }
       end
     end
   end

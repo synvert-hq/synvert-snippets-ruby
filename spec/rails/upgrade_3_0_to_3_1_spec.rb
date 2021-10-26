@@ -74,7 +74,7 @@ RSpec.describe 'Upgrade rails from 3.0 to 3.1' do
     Synvert::Application.config.session_store :cookie_store, key: '_synvert-session'
   EOS
 
-  let(:fake_file_paths) {
+  let(:fake_file_paths) do
     %w[
       config/application.rb
       config/environments/development.rb
@@ -83,11 +83,11 @@ RSpec.describe 'Upgrade rails from 3.0 to 3.1' do
       config/initializers/session_store.rb
       config/initializers/wrap_parameters.rb
     ]
-  }
-  let(:test_contents) {
+  end
+  let(:test_contents) do
     [application_content, development_content, production_content, test_content, session_store_content, nil]
-  }
-  let(:test_rewritten_contents) {
+  end
+  let(:test_rewritten_contents) do
     [
       application_rewritten_content,
       development_rewritten_content,
@@ -96,11 +96,9 @@ RSpec.describe 'Upgrade rails from 3.0 to 3.1' do
       session_store_rewritten_content,
       wrap_parameters_rewritten_content
     ]
-  }
-
-  before do
-    load_sub_snippets(%w[rails/use_migrations_instance_methods])
   end
+
+  before { load_sub_snippets(%w[rails/use_migrations_instance_methods]) }
 
   include_examples 'convertable with multiple files'
 end
