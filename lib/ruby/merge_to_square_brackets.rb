@@ -45,13 +45,16 @@ Synvert::Rewriter.new 'ruby', 'merge_to_square_brackets' do
   EOS
 
   helper_method :hash_node_to_square_brackets_code do |hash_node, splitter|
-    hash_node.children.map { |pair_node|
-      if pair_node.key.type == :sym
-        "{{receiver}}[:#{pair_node.key.to_value}] = #{pair_node.value.to_source}"
-      else
-        "{{receiver}}[#{pair_node.key.to_source}] = #{pair_node.value.to_source}"
+    hash_node
+      .children
+      .map do |pair_node|
+        if pair_node.key.type == :sym
+          "{{receiver}}[:#{pair_node.key.to_value}] = #{pair_node.value.to_source}"
+        else
+          "{{receiver}}[#{pair_node.key.to_source}] = #{pair_node.value.to_source}"
+        end
       end
-    }.join(splitter)
+      .join(splitter)
   end
 
   within_files '**/*.rb' do
