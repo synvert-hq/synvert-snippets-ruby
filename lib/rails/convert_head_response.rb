@@ -23,7 +23,7 @@ Synvert::Rewriter.new 'rails', 'convert_head_response' do
     ```
   EOS
 
-  if_gem 'actionpack', '5.0'
+  if_gem 'actionpack', '>= 5.0'
 
   within_file 'app/controllers/**/*.rb' do
     # render nothing: true
