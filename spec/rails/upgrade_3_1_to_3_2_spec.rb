@@ -31,9 +31,7 @@ RSpec.describe 'Upgrade rails from 3.1 to 3.2' do
   let(:test_contents) { [development_content, test_content] }
   let(:test_rewritten_contents) { [development_rewritten_content, test_rewritten_content] }
 
-  before do
-    load_sub_snippets(%w[rails/fix_controller_3_2_deprecations rails/fix_model_3_2_deprecations])
-  end
+  before { load_sub_snippets(%w[rails/fix_controller_3_2_deprecations rails/fix_model_3_2_deprecations]) }
 
   include_examples 'convertable with multiple files'
 end

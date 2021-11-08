@@ -46,7 +46,7 @@ RSpec.describe 'Upgrade rails from 4.0 to 4.1' do
 
   let(:test_helper_content) { 'ActiveRecord::Migration.check_pending!' }
   let(:test_helper_rewritten_content) { "require 'test_help'" }
-  let(:fake_file_paths) {
+  let(:fake_file_paths) do
     %w[
       config/secrets.yml
       config/initializers/secret_token.rb
@@ -54,11 +54,11 @@ RSpec.describe 'Upgrade rails from 4.0 to 4.1' do
       app/models/post.rb
       test/test_helper.rb
     ]
-  }
+  end
   let(:test_contents) { [nil, secret_token_content, nil, post_content, test_helper_content] }
-  let(:test_rewritten_contents) {
+  let(:test_rewritten_contents) do
     [secrets_yml_content, nil, cookies_serializer_content, post_rewritten_content, test_helper_rewritten_content]
-  }
+  end
 
   before do
     expect(SecureRandom).to receive(:hex)
