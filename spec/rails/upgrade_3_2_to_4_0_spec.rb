@@ -163,7 +163,7 @@ RSpec.describe 'Upgrade rails from 3.2 to 4.0' do
     <% end %>
   EOS
 
-  let(:fake_file_paths) {
+  let(:fake_file_paths) do
     %w[
       config/application.rb
       config/environments/production.rb
@@ -176,8 +176,8 @@ RSpec.describe 'Upgrade rails from 3.2 to 4.0' do
       app/models/post.rb
       app/views/posts/index.html.erb
     ]
-  }
-  let(:test_contents) {
+  end
+  let(:test_contents) do
     [
       application_content,
       production_content,
@@ -190,8 +190,8 @@ RSpec.describe 'Upgrade rails from 3.2 to 4.0' do
       post_model_content,
       posts_index_content
     ]
-  }
-  let(:test_rewritten_contents) {
+  end
+  let(:test_rewritten_contents) do
     [
       application_rewritten_content,
       production_rewritten_content,
@@ -204,7 +204,7 @@ RSpec.describe 'Upgrade rails from 3.2 to 4.0' do
       post_model_rewritten_content,
       posts_index_rewritten_content
     ]
-  }
+  end
 
   before do
     expect(SecureRandom).to receive(:hex)
