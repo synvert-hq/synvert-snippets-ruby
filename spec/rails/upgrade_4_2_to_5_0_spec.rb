@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe 'Upgrade rails from 4.2 to 5.0' do
   let(:rewriter_name) { 'rails/upgrade_4_2_to_5_0' }
-  let(:application_content) {
+  let(:application_content) do
     '
 module Synvert
   class Application < Rails::Application
@@ -12,16 +12,16 @@ module Synvert
   end
 end
   '
-  }
-  let(:application_rewritten_content) {
+  end
+  let(:application_rewritten_content) do
     '
 module Synvert
   class Application < Rails::Application
   end
 end
   '
-  }
-  let(:production_content) {
+  end
+  let(:production_content) do
     '
 module Synvert
   class Application < Rails::Application
@@ -31,8 +31,8 @@ module Synvert
   end
 end
   '
-  }
-  let(:production_rewritten_content) {
+  end
+  let(:production_rewritten_content) do
     '
 module Synvert
   class Application < Rails::Application
@@ -42,8 +42,8 @@ module Synvert
   end
 end
   '
-  }
-  let(:posts_controller_content) {
+  end
+  let(:posts_controller_content) do
     '
 class PostsController < ApplicationController
   def test_load_error
@@ -51,8 +51,8 @@ class PostsController < ApplicationController
   end
 end
   '
-  }
-  let(:posts_controller_rewritten_content) {
+  end
+  let(:posts_controller_rewritten_content) do
     '
 class PostsController < ApplicationController
   def test_load_error
@@ -60,8 +60,8 @@ class PostsController < ApplicationController
   end
 end
   '
-  }
-  let(:new_framework_defaults_rewritten_content) {
+  end
+  let(:new_framework_defaults_rewritten_content) do
     '
 # Be sure to restart your server when you modify this file.
 #
@@ -88,24 +88,24 @@ ActiveSupport.halt_callback_chains_on_return_false = false
 # Configure SSL options to enable HSTS with subdomains. Previous versions had false.
 Rails.application.config.ssl_options = { hsts: { subdomains: true } }
   '.strip
-  }
-  let(:fake_file_paths) {
+  end
+  let(:fake_file_paths) do
     %w[
       config/application.rb
       config/environments/production.rb
       config/initializers/new_framework_defaults.rb
       app/controllers/posts_controller.rb
     ]
-  }
+  end
   let(:test_contents) { [application_content, production_content, nil, posts_controller_content] }
-  let(:test_rewritten_contents) {
+  let(:test_rewritten_contents) do
     [
       application_rewritten_content,
       production_rewritten_content,
       new_framework_defaults_rewritten_content,
       posts_controller_rewritten_content
     ]
-  }
+  end
 
   before do
     load_sub_snippets(

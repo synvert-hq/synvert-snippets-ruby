@@ -35,14 +35,12 @@ shared_examples 'convertable with multiple files' do
   let(:file_paths) { fake_file_paths }
 
   describe 'with fakefs', fakefs: true do
-    before do
-      file_paths.each { |file_path| FileUtils.mkdir_p(File.dirname(file_path)) }
-    end
+    before { file_paths.each { |file_path| FileUtils.mkdir_p(File.dirname(file_path)) } }
 
     it 'converts' do
-      file_paths.each_with_index { |file_path, index|
+      file_paths.each_with_index do |file_path, index|
         File.write(file_path, test_contents[index]) if test_contents[index]
-      }
+      end
       rewriter.process
       file_paths.each_with_index do |file_path, index|
         if test_rewritten_contents[index]

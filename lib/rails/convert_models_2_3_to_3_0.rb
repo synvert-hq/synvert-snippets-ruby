@@ -182,9 +182,7 @@ Synvert::Rewriter.new 'rails', 'convert_models_2_3_to_3_0' do
   helper_method :generate_batch_options do |hash_node|
     options = []
     hash_node.children.each do |pair_node|
-      if %i[start batch_size].include? pair_node.key.to_value
-        options << pair_node.to_source
-      end
+      options << pair_node.to_source if %i[start batch_size].include? pair_node.key.to_value
     end
     options.join(', ')
   end
@@ -200,9 +198,7 @@ Synvert::Rewriter.new 'rails', 'convert_models_2_3_to_3_0' do
     %w[named_scope default_scope].each do |message|
       within_node type: 'send', message: message, arguments: { last: { type: 'hash' } } do
         with_node type: 'hash' do
-          if keys.any? { |key| node.key? key }
-            replace_with generate_new_queries(node)
-          end
+          replace_with generate_new_queries(node) if keys.any? { |key| node.key? key }
         end
       end
 
@@ -216,9 +212,7 @@ Synvert::Rewriter.new 'rails', 'convert_models_2_3_to_3_0' do
       within_node type: 'send', message: message, arguments: { last: { type: 'block' } } do
         within_node type: 'block' do
           with_node type: 'hash' do
-            if keys.any? { |key| node.key? key }
-              replace_with generate_new_queries(node)
-            end
+            replace_with generate_new_queries(node) if keys.any? { |key| node.key? key }
           end
         end
       end
@@ -331,14 +325,16 @@ Synvert::Rewriter.new 'rails', 'convert_models_2_3_to_3_0' do
     # Post.where("title = \'test\'").update_all("title = \'title\'")
     # Post.where("title = ?", title).update_all("title = \'title\'")
     within_node type: 'send', message: :update_all, arguments: { size: 2 } do
-      replace_with add_receiver_if_necessary("where({{arguments.first}}).update_all({{arguments.last}})")
+      replace_with add_receiver_if_necessary('where({{arguments.first}}).update_all({{arguments.last}})')
     end
 
     # Post.update_all({:title => "title"}, {:title => "test"}, {:limit => 2})
     # =>
     # Post.where(:title => "test").limit(2).update_all(:title => "title")
     within_node type: 'send', message: :update_all, arguments: { size: 3 } do
-      replace_with add_receiver_if_necessary("where({{arguments.first}}).#{generate_new_queries(node.arguments.last)}.update_all({{arguments.second}})")
+      replace_with add_receiver_if_necessary(
+                     "where({{arguments.first}}).#{generate_new_queries(node.arguments.last)}.update_all({{arguments.second}})"
+                   )
     end
 
     # Post.delete_all("title = \'test\'")
