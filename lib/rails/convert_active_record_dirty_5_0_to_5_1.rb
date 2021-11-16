@@ -92,14 +92,16 @@ Synvert::Rewriter.new 'rails', 'convert_active_record_dirty_5_0_to_5_1' do
   # convert ActiveRecord::Dirty api change
   #
   # after_save :invalidate_cache, if: :status_changed?
-  helper_method :convert_sym_dirty_api_change do |before_name, after_name|
-    with_node type: 'sym', to_value: before_name do
-      if before_name.is_a?(Regexp)
-        if !skip_names[node.filename].include?(node.to_value.to_s) && node.to_value =~ before_name
-          replace_with ":#{after_name.sub('{{attribute}}', Regexp.last_match(1))}"
+  helper_method :convert_hash_value_dirty_api_change do |before_name, after_name|
+    with_node type: 'hash' do
+      with_node type: 'sym', to_value: before_name do
+        if before_name.is_a?(Regexp)
+          if !skip_names[node.filename].include?(node.to_value.to_s) && node.to_value =~ before_name
+            replace_with ":#{after_name.sub('{{attribute}}', Regexp.last_match(1))}"
+          end
+        else
+          replace_with after_name
         end
-      else
-        replace_with after_name
       end
     end
   end
@@ -138,7 +140,7 @@ Synvert::Rewriter.new 'rails', 'convert_active_record_dirty_5_0_to_5_1' do
       with_node type: 'send', receiver: nil, message: callback_name do
         custom_callback_names << node.arguments[0].to_value if !node.arguments.empty? && node.arguments[0].type == :sym
         callback_changes.each do |before_name, after_name|
-          convert_sym_dirty_api_change(before_name, after_name)
+          convert_hash_value_dirty_api_change(before_name, after_name)
           convert_send_dirty_api_change(before_name, after_name)
         end
       end
