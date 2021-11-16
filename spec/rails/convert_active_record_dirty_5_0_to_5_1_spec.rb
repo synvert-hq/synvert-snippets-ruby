@@ -30,13 +30,13 @@ RSpec.describe 'Convert ActiveRecord::Dirty 5.0 to 5.1' do
         end
 
         def call_before_create
-          if title_changed?
+          if title_changed? && user_changed?
             changes
           end
         end
 
         def call_after_create
-          if title_changed?
+          if title_changed? && user_changed?
             changes
           end
         end
@@ -65,13 +65,13 @@ RSpec.describe 'Convert ActiveRecord::Dirty 5.0 to 5.1' do
         end
 
         def call_before_create
-          if will_save_change_to_title?
+          if will_save_change_to_title? && user_changed?
             changes_to_save
           end
         end
 
         def call_after_create
-          if saved_change_to_title?
+          if saved_change_to_title? && user_changed?
             saved_changes
           end
         end
