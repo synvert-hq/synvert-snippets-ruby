@@ -87,7 +87,7 @@ Synvert::Rewriter.new 'rails', 'convert_active_record_dirty_5_0_to_5_1' do
     after_save_commit
   ]
 
-  skip_names = []
+  skip_names = {}
 
   # convert ActiveRecord::Dirty api change
   #
@@ -95,7 +95,7 @@ Synvert::Rewriter.new 'rails', 'convert_active_record_dirty_5_0_to_5_1' do
   helper_method :convert_sym_dirty_api_change do |before_name, after_name|
     with_node type: 'sym', to_value: before_name do
       if before_name.is_a?(Regexp)
-        if !skip_names.include?(node.to_value) && node.to_value =~ before_name
+        if !skip_names[node.filename].include?(node.to_value) && node.to_value =~ before_name
           replace_with ":#{after_name.sub('{{attribute}}', Regexp.last_match(1))}"
         end
       else
@@ -118,7 +118,7 @@ Synvert::Rewriter.new 'rails', 'convert_active_record_dirty_5_0_to_5_1' do
   helper_method :convert_send_dirty_api_change do |before_name, after_name|
     with_node type: 'send', message: before_name do
       if before_name.is_a?(Regexp)
-        if !skip_names.include?(node.to_value) && node.message.to_s =~ before_name
+        if !skip_names[node.filename].include?(node.to_value) && node.message.to_s =~ before_name
           replace :message, with: after_name.sub('{{attribute}}', Regexp.last_match(1))
         end
       else
@@ -174,10 +174,16 @@ Synvert::Rewriter.new 'rails', 'convert_active_record_dirty_5_0_to_5_1' do
     end
   end
 
+  # round one: find all possible skip names
   within_files 'app/{models,observers}/**/*.rb' do
     with_node type: 'def' do
-      skip_names << node.name
+      skip_names[node.filename] ||= []
+      skip_names[node.filename] << node.name
     end
+  end
+
+  # round two: find callbacks and do convert
+  within_files 'app/{models,observers}/**/*.rb' do
     find_callbacks_and_convert(before_callback_names, before_callback_changes)
     find_callbacks_and_convert(after_callback_names, after_callback_changes)
   end
