@@ -40,7 +40,7 @@ Synvert::Rewriter.new 'ruby', 'define_class_from_classic_mode_to_zeitwerk_mode' 
       original_name = node.name.to_source
       if original_name.include?('::') && !original_names.include?(original_name)
         original_names << original_name
-        module_name, _ = original_name.split('::', 2)
+        module_name, = original_name.split('::', 2)
         wrap with: "module #{module_name}"
       end
     end
