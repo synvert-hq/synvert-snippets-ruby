@@ -96,6 +96,11 @@ RSpec.describe 'Convert ActiveRecord::Dirty 5.0 to 5.1' do
           if title_changed?
             changes
           end
+          next_call
+        end
+
+        def next_call
+          changes
         end
       end
     EOS
@@ -106,6 +111,11 @@ RSpec.describe 'Convert ActiveRecord::Dirty 5.0 to 5.1' do
           if saved_change_to_title?
             saved_changes
           end
+          next_call
+        end
+
+        def next_call
+          saved_changes
         end
       end
     EOS

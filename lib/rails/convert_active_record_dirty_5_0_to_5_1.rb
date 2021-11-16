@@ -167,6 +167,10 @@ Synvert::Rewriter.new 'rails', 'convert_active_record_dirty_5_0_to_5_1' do
           convert_send_dirty_api_change(before_name, after_name)
         end
       end
+
+      with_node type: 'send', receiver: nil do
+        custom_callback_names  << node.message
+      end
     end
   end
 
