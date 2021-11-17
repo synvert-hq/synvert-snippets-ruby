@@ -40,16 +40,8 @@ Synvert::Rewriter.new 'will_paginate', 'use_new_syntax' do
 
   helper_method :generate_will_paginate_query do |hash_node|
     wp_params = []
-    hash_node.children.each do |pair_node|
-      if wp_keys.include? pair_node.key.to_value
-        wp_params << pair_node.to_source
-      end
-    end
-    if wp_params.length > 0
-      "paginate(#{wp_params.join(', ')})"
-    else
-      'paginate'
-    end
+    hash_node.children.each { |pair_node| wp_params << pair_node.to_source if wp_keys.include? pair_node.key.to_value }
+    wp_params.length > 0 ? "paginate(#{wp_params.join(', ')})" : 'paginate'
   end
 
   within_files Synvert::RAILS_APP_FILES + Synvert::RAILS_LIB_FILES do
@@ -74,9 +66,7 @@ Synvert::Rewriter.new 'will_paginate', 'use_new_syntax' do
       argument_node = node.arguments.last
       if :hash == argument_node.type
         new_code = []
-        if (ar_keys & argument_node.keys.map(&:to_value)).length > 0
-          new_code << generate_new_queries(argument_node)
-        end
+        new_code << generate_new_queries(argument_node) if (ar_keys & argument_node.keys.map(&:to_value)).length > 0
         new_code << if argument_node.key? :per_page
           "find_each(:batch_size => #{argument_node.hash_value(:per_page).to_source})"
         else

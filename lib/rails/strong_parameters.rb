@@ -69,9 +69,7 @@ Synvert::Rewriter.new 'rails', 'strong_parameters' do
       attributes[object_name] = []
       with_node type: 'send', receiver: 't', message: { not: 'index' } do
         attribute_name = node.arguments.first.to_value
-        unless default_columns.include?(attribute_name)
-          attributes[object_name] << ":#{attribute_name}"
-        end
+        attributes[object_name] << ":#{attribute_name}" unless default_columns.include?(attribute_name)
       end
     end
   end
@@ -113,9 +111,7 @@ Synvert::Rewriter.new 'rails', 'strong_parameters' do
           # params[:xxx] => xxx_params
           with_node type: 'send', receiver: 'params', message: '[]' do
             object_name = node.arguments.first.to_value.to_s
-            if parameters[object_name]
-              replace_with "#{object_name}_params"
-            end
+            replace_with "#{object_name}_params" if parameters[object_name]
           end
         end
       end

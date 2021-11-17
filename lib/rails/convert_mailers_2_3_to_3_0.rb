@@ -97,9 +97,10 @@ Synvert::Rewriter.new 'rails', 'convert_mailers_2_3_to_3_0' do
         with_node type: 'send', receiver: nil, message: 'body', arguments: { size: 1 } do
           body_argument = node.arguments.first
           if :hash == body_argument.type
-            replace_with body_argument.children.map { |pair_node|
-                           "@#{pair_node.key.to_value} = #{pair_node.value.to_source}"
-                         }.join("\n")
+            replace_with body_argument
+                           .children
+                           .map { |pair_node| "@#{pair_node.key.to_value} = #{pair_node.value.to_source}" }
+                           .join("\n")
           end
         end
         if args.size > 0
@@ -137,9 +138,7 @@ Synvert::Rewriter.new 'rails', 'convert_mailers_2_3_to_3_0' do
     # =>
     # message.deliver
     with_node type: 'send', message: 'deliver' do
-      if mailer_methods[node.receiver]
-        replace_with '{{arguments}}.{{message}}'
-      end
+      replace_with '{{arguments}}.{{message}}' if mailer_methods[node.receiver]
     end
   end
 end

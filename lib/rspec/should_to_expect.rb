@@ -38,9 +38,7 @@ Synvert::Rewriter.new 'rspec', 'should_to_expect' do
     # obj.should_not matcher => expect(obj).not_to matcher
     { should: 'to', should_not: 'not_to' }.each do |old_message, new_message|
       with_node type: 'send', receiver: { type: { not: 'block' } }, message: old_message do
-        if node.receiver && node.arguments.size > 0
-          replace_with "expect({{receiver}}).#{new_message} {{arguments}}"
-        end
+        replace_with "expect({{receiver}}).#{new_message} {{arguments}}" if node.receiver && node.arguments.size > 0
       end
 
       # 1.should == 1 => expect(1).to eq 1

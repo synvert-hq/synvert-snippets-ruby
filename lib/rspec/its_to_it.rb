@@ -85,9 +85,7 @@ Synvert::Rewriter.new 'rspec', 'its_to_it' do
           rewritten_code << "#{'  ' * (index + 1)}subject { super()#{message_name} }"
           rewritten_code << "#{'  ' * (index + 1)}it { {{body}} }" if index + 1 == args.length
         end
-        args.length.times do |i|
-          rewritten_code << "#{'  ' * (args.length - 1 - i)}end"
-        end
+        args.length.times { |i| rewritten_code << "#{'  ' * (args.length - 1 - i)}end" }
         replace_with rewritten_code.join("\n")
       end
     end

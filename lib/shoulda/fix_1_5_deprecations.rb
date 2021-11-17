@@ -61,7 +61,7 @@ Synvert::Rewriter.new 'shoulda', 'fix_1_5_deprecations' do
                   message: 'with'
                 }
               } do
-      replace_with "should allow_value({{arguments.first.arguments.first}}).for({{arguments.first.receiver.arguments.first}})"
+      replace_with 'should allow_value({{arguments.first.arguments.first}}).for({{arguments.first.receiver.arguments.first}})'
     end
   end
 

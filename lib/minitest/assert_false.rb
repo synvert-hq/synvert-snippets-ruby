@@ -29,7 +29,16 @@ Synvert::Rewriter.new 'minitest', 'assert_false' do
     # assert(!something)
     # =>
     # refute(something)
-    with_node type: 'send', receiver: nil, message: 'assert', arguments: { size: 1, first: { type: 'send', message: '!' } } do
+    with_node type: 'send',
+              receiver: nil,
+              message: 'assert',
+              arguments: {
+                size: 1,
+                first: {
+                  type: 'send',
+                  message: '!'
+                }
+              } do
       replace :message, with: 'refute'
       replace :arguments, with: '{{arguments.first.receiver}}'
     end

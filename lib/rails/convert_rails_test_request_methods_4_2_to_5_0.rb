@@ -36,7 +36,10 @@ Synvert::Rewriter.new 'rails', 'convert_rails_test_request_methods_4_2_to_5_0' d
 
     if argument_node.type == :hash
       new_value =
-        argument_node.children.reject { |pair_node| %i[format xhr].include?(pair_node.key.to_value) }.map(&:to_source)
+        argument_node
+          .children
+          .reject { |pair_node| %i[format xhr].include?(pair_node.key.to_value) }
+          .map(&:to_source)
           .join(', ')
       "#{key}: #{add_curly_brackets_if_necessary(new_value)}" if new_value.length > 0
     else
@@ -92,9 +95,7 @@ Synvert::Rewriter.new 'rails', 'convert_rails_test_request_methods_4_2_to_5_0' d
     %w[get post put patch delete].each do |message|
       with_node type: 'send', message: message do
         next unless node.arguments.size > 1
-        if node.arguments[1].type == :hash && (node.arguments[1].key?(:params) || node.arguments[1].key?(:headers))
-          next
-        end
+        next if node.arguments[1].type == :hash && (node.arguments[1].key?(:params) || node.arguments[1].key?(:headers))
 
         options = []
         options << make_up_hash_pair('params', node.arguments[1])

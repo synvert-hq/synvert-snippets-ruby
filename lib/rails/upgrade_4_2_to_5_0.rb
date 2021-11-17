@@ -66,7 +66,7 @@ Synvert::Rewriter.new 'rails', 'upgrade_4_2_to_5_0' do
                   type: 'str'
                 }
               } do
-      replace 'arguments.first', with: "{{arguments.first.to_value}}"
+      replace 'arguments.first', with: '{{arguments.first.to_value}}'
     end
   end
 
