@@ -64,7 +64,7 @@ Synvert::Rewriter.new 'rspec', 'explicit_spec_type' do
     features: 'feature'
   }.each do |directory, type|
     within_files ["spec/#{directory}/**/*_spec.rb", "engines/*/spec/#{directory}/**/*_spec.rb"] do
-      with_node({ type: 'block', caller: { type: 'send', message: 'describe' } }, { recursive: false }) do
+      with_node({ type: 'block', caller: { type: 'send', message: 'describe' } }, { stop_when_match: true }) do
         goto_node :caller do
           unless_exist_node type: 'pair', key: :type do
             insert ", type: :#{type}"
