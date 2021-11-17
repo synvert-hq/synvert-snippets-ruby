@@ -27,7 +27,7 @@ Synvert::Rewriter.new 'rails', 'fix_controller_3_2_deprecations' do
 
   if_gem 'actionpack', '>= 3.2'
 
-  within_files 'app/controllers/**/*.rb' do
+  within_files Synvert::RAILS_CONTROLLER_FILES do
     # ActionController::UnknownAction => AbstractController::ActionNotFound
     # ActionController::DoubleRenderError => AbstractController::DoubleRenderError
     {

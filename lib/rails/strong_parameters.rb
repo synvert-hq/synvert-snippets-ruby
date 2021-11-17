@@ -77,7 +77,7 @@ Synvert::Rewriter.new 'rails', 'strong_parameters' do
   end
 
   parameters = {}
-  within_files 'app/models/**/*.rb' do
+  within_files Synvert::RAILS_MODEL_FILES do
     within_node type: 'class' do
       object_name = node.name.to_source.underscore
 
@@ -95,7 +95,7 @@ Synvert::Rewriter.new 'rails', 'strong_parameters' do
     end
   end
 
-  within_file 'app/controllers/**/*.rb' do
+  within_file Synvert::RAILS_CONTROLLER_FILES do
     within_node type: 'class' do
       object_name = node.name.to_source.sub('Controller', '').singularize.underscore
       if_exist_node type: 'send', receiver: 'params', message: '[]', arguments: [object_name.to_sym] do

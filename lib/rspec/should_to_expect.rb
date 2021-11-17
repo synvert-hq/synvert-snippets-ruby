@@ -33,7 +33,7 @@ Synvert::Rewriter.new 'rspec', 'should_to_expect' do
 
   if_gem 'rspec-core', '>= 2.11'
 
-  within_files 'spec/**/*.rb' do
+  within_files Synvert::RAILS_RSPEC_FILES do
     # obj.should matcher => expect(obj).to matcher
     # obj.should_not matcher => expect(obj).not_to matcher
     { should: 'to', should_not: 'not_to' }.each do |old_message, new_message|

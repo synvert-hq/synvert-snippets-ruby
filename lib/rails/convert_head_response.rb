@@ -25,7 +25,7 @@ Synvert::Rewriter.new 'rails', 'convert_head_response' do
 
   if_gem 'actionpack', '>= 5.0'
 
-  within_file 'app/controllers/**/*.rb' do
+  within_file Synvert::RAILS_CONTROLLER_FILES do
     # render nothing: true
     # render nothing: true, status: :created
     # =>

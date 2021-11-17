@@ -27,7 +27,7 @@ Synvert::Rewriter.new 'rspec', 'collection_matcher' do
 
   if_gem 'rspec-core', '>= 2.11'
 
-  within_files 'spec/**/*_spec.rb' do
+  within_files Synvert::RAILS_RSPEC_FILES do
     # expect(collection).to have(3).items => expect(collection.size).to eq(3)
     # expect(collection).to have_exactly(3).items => expect(collection.size).to eq(3)
     # expect(collection).to have_at_least(3).items => expect(collection.size).to be >= 3

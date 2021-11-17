@@ -52,7 +52,7 @@ Synvert::Rewriter.new 'will_paginate', 'use_new_syntax' do
     end
   end
 
-  within_files '{app,lib}/**/*.rb' do
+  within_files Synvert::RAILS_APP_FILES + Synvert::RAILS_LIB_FILES do
     # Post.paginate(:conditions => {:active => true}, :order => "created_at DESC", :per_page => 10, :page => 1)
     # =>
     # Post.where(:active => true).order("created_at DESC").paginate(:per_page => 10, :page => 1)

@@ -19,7 +19,7 @@ Synvert::Rewriter.new 'rspec', 'new_hook_scope' do
 
   if_gem 'rspec-core', '>= 3.0'
 
-  within_files 'spec/**/*.rb' do
+  within_files Synvert::RAILS_RSPEC_FILES do
     # before(:each) { do_something }
     # =>
     # before(:example) { do_something }

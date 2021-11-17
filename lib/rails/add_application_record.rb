@@ -29,7 +29,7 @@ Synvert::Rewriter.new 'rails', 'add_application_record' do
     end
   EOS
 
-  within_files 'app/models/**/*.rb' do
+  within_files Synvert::RAILS_MODEL_FILES do
     # class Post < ActiveRecord::Base
     # end
     # =>

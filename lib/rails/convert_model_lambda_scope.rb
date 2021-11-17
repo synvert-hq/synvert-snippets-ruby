@@ -29,7 +29,7 @@ Synvert::Rewriter.new 'rails', 'convert_model_lambda_scope' do
 
   if_gem 'activerecord', '>= 4.0'
 
-  within_files 'app/models/**/*.rb' do
+  within_files Synvert::RAILS_MODEL_FILES do
     # scope :active, where(active: true) => scope :active, -> { where(active: true) }
     with_node type: 'send', receiver: nil, message: 'scope' do
       with_node type: 'block', caller: { type: 'send', receiver: nil, message: 'proc' } do

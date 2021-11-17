@@ -223,28 +223,28 @@ Synvert::Rewriter.new 'rails', 'upgrade_3_2_to_4_0' do
     end
   end
 
-  within_file 'config/routes.rb' do
+  within_file Synvert::RAILS_ROUTE_FILES do
     # Rack::Utils.escape('こんにちは') => 'こんにちは'
     with_node type: 'send', receiver: 'Rack::Utils', message: 'escape' do
       replace_with '{{arguments}}'
     end
   end
 
-  within_file 'config/routes.rb' do
+  within_file Synvert::RAILS_ROUTE_FILES do
     # match "/" => "root#index" => get "/" => "root#index"
     with_node type: 'send', message: 'match' do
       replace_with 'get {{arguments}}'
     end
   end
 
-  within_files 'app/models/**/*.rb' do
+  within_files Synvert::RAILS_MODEL_FILES do
     # self.serialized_attributes => self.class.serialized_attributes
     with_node type: 'send', receiver: 'self', message: 'serialized_attributes' do
       replace_with 'self.class.serialized_attributes'
     end
   end
 
-  within_files 'app/models/**/*.rb' do
+  within_files Synvert::RAILS_MODEL_FILES do
     # has_many :comments, dependent: :restrict => has_many :comments, dependent: restrict_with_exception
     %w[has_one has_many].each do |message|
       within_node type: 'send', receiver: nil, message: message do
@@ -255,7 +255,7 @@ Synvert::Rewriter.new 'rails', 'upgrade_3_2_to_4_0' do
     end
   end
 
-  within_files 'app/views/**/*.erb' do
+  within_files Synvert::RAILS_VIEW_FILES do
     # link_to 'delete', post_path(post), confirm: 'Are you sure to delete post?'
     # =>
     # link_to 'delete', post_path(post), data: { confirm: 'Are you sure to delete post?' }

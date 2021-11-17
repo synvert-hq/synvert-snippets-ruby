@@ -47,7 +47,7 @@ Synvert::Rewriter.new 'rspec', 'method_stub' do
 
   if_gem 'rspec-core', '>= 2.14'
 
-  within_files 'spec/**/*.rb' do
+  within_files Synvert::RAILS_RSPEC_FILES do
     # obj.stub!(:message) => obj.stub(:message)
     # obj.unstub!(:message) => obj.unstub(:message)
     { stub!: 'stub', unstub!: 'unstub' }.each do |old_message, new_message|
@@ -80,7 +80,7 @@ Synvert::Rewriter.new 'rspec', 'method_stub' do
 
   if_gem 'rspec-core', '>= 3.0'
 
-  within_files 'spec/**/*.rb' do
+  within_files Synvert::RAILS_RSPEC_FILES do
     # obj.stub_chain(:foo, :bar, :baz) => allow(obj).to receive_message_chain(:foo, :bar, :baz)
     with_node type: 'send', message: 'stub_chain' do
       if_exist_node type: 'send', message: 'any_instance' do

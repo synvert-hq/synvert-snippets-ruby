@@ -67,7 +67,7 @@ Synvert::Rewriter.new 'factory_bot', 'convert_factory_girl_to_factory_bot' do
     ```
   EOS
 
-  within_files '{test,spec}/**/*.rb' do
+  within_files Synvert::RAILS_TEST_FILES do
     with_node type: 'const', to_source: 'FactoryGirl' do
       replace_with 'FactoryBot'
     end

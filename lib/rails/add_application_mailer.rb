@@ -29,7 +29,7 @@ Synvert::Rewriter.new 'rails', 'add_application_mailer' do
     end
   EOS
 
-  within_files 'app/mailers/**/*.rb' do
+  within_files Synvert::RAILS_MAILER_FILES do
     # class UserMailer < ActionMailer::Base
     # end
     # =>

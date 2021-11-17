@@ -29,7 +29,7 @@ Synvert::Rewriter.new 'rails', 'add_application_job' do
     end
   EOS
 
-  within_files 'app/jobs/**/*.rb' do
+  within_files Synvert::RAILS_JOB_FILES do
     # class PostJob < ActiveJob::Base
     # end
     # =>

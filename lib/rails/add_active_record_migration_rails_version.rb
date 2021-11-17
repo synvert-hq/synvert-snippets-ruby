@@ -19,7 +19,7 @@ Synvert::Rewriter.new 'rails', 'add_active_record_migration_rails_version' do
 
   if_gem 'rails', '>= 5.0'
 
-  within_files 'db/migrate/*.rb' do
+  within_files Synvert::RAILS_MIGRATION_FILES do
     with_node type: 'class', parent_class: 'ActiveRecord::Migration' do
       replace :parent_class, with: 'ActiveRecord::Migration[4.2]'
     end

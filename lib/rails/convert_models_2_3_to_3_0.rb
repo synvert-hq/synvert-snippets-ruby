@@ -189,7 +189,7 @@ Synvert::Rewriter.new 'rails', 'convert_models_2_3_to_3_0' do
     options.join(', ')
   end
 
-  within_files '{app,lib}/**/*.rb' do
+  within_files Synvert::RAILS_APP_FILES + Synvert::RAILS_LIB_FILES do
     # named_scope :active, :conditions => {:active => true}
     # =>
     # named_scope :active, where(:active => true)
@@ -403,7 +403,7 @@ Synvert::Rewriter.new 'rails', 'convert_models_2_3_to_3_0' do
     end
   end
 
-  within_files '{app,lib,test}/**/*.rb' do
+  within_files Synvert::RAILS_APP_FILES + Synvert::RAILS_LIB_FILES + Synvert::RAILS_TEST_FILES do
     # self.errors.on(:email).present?
     # =>
     # self.errors[:email].present?

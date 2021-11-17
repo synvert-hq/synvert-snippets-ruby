@@ -17,7 +17,7 @@ Synvert::Rewriter.new 'ruby', 'new_lambda_syntax' do
 
   if_ruby '1.9.0'
 
-  within_files '**/*.rb' do
+  within_files Synvert::ALL_RUBY_FILES do
     # lambda { |a, b, c| a + b + c } => ->(a, b, c) { a + b + c }
     within_node type: 'block', caller: { type: 'send', message: 'lambda' } do
       if node.arguments.empty?

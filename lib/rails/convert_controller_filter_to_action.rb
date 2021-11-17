@@ -27,7 +27,7 @@ Synvert::Rewriter.new 'rails', 'convert_controller_filter_to_action' do
 
   if_gem 'actionpack', '>= 4.0'
 
-  within_files 'app/controllers/**/*.rb' do
+  within_files Synvert::RAILS_CONTROLLER_FILES do
     # skip_filter :load_post => skip_action_callback :load_post
     # before_filter :load_post => before_action :load_post
     # after_filter :increment_view_count => after_filter :increment_view_count

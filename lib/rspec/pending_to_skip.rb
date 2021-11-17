@@ -50,7 +50,7 @@ Synvert::Rewriter.new 'rspec', 'pending_to_skip' do
 
   if_gem 'rspec-core', '>= 3.0'
 
-  within_files 'spec/**/*.rb' do
+  within_files Synvert::RAILS_RSPEC_FILES do
     # it 'is run and expected to fail' do
     #   pending do
     #     do_something_surely_fail

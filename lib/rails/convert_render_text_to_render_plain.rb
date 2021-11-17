@@ -17,7 +17,7 @@ Synvert::Rewriter.new 'rails', 'convert_render_text_to_render_plain' do
 
   if_gem 'actionpack', '>= 5.0'
 
-  within_files 'app/controllers/**/*.rb' do
+  within_files Synvert::RAILS_CONTROLLER_FILES do
     with_node type: 'send', receiver: nil, message: 'render', arguments: { size: 1, first: { type: 'hash' } } do
       with_node type: 'hash' do
         with_node type: :sym, to_source: 'text' do

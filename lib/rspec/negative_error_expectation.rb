@@ -20,7 +20,7 @@ Synvert::Rewriter.new 'rspec', 'negative_error_expectation' do
   EOS
   if_gem 'rspec-core', '>= 2.14'
 
-  within_files 'spec/**/*.rb' do
+  within_files Synvert::RAILS_RSPEC_FILES do
     # expect { do_something }.not_to raise_error(SomeErrorClass) => expect { do_something }.not_to raise_error
     # expect { do_something }.not_to raise_error('message') => expect { do_something }.not_to raise_error
     # expect { do_something }.not_to raise_error(SomeErrorClass, 'message') => expect { do_something }.not_to raise_error

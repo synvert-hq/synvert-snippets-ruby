@@ -55,7 +55,7 @@ Synvert::Rewriter.new 'rails', 'convert_mailers_2_3_to_3_0' do
 
   mailer_methods = {}
 
-  within_files 'app/{models,mailers}/**/*.rb' do
+  within_files Synvert::RAILS_MAILER_FILES + Synvert::RAILS_MODEL_FILES do
     # class Notifier < ActionMailer::Base
     #   def signup_notification(recipient)
     #     recipients      recipient.email_address_with_name
@@ -112,7 +112,7 @@ Synvert::Rewriter.new 'rails', 'convert_mailers_2_3_to_3_0' do
     end
   end
 
-  within_files '{app,lib}/**/*.rb' do
+  within_files Synvert::RAILS_APP_FILES + Synvert::RAILS_LIB_FILES do
     # Notifier.deliver_signup_notification(recipient)
     # =>
     # Notifier.signup_notification(recipient).deliver

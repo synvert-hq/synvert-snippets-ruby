@@ -25,7 +25,7 @@ Synvert::Rewriter.new 'rails', 'use_migrations_instance_methods' do
 
   if_gem 'activerecord', '>= 3.1'
 
-  within_files 'db/migrate/*.rb' do
+  within_files Synvert::RAILS_MIGRATION_FILES do
     # def self.up => def up
     # def self.down => def down
     %w[up down].each do |name|

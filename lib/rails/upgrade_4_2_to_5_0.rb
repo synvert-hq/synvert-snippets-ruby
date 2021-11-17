@@ -70,7 +70,7 @@ Synvert::Rewriter.new 'rails', 'upgrade_4_2_to_5_0' do
     end
   end
 
-  within_files '**/*.rb' do
+  within_files Synvert::ALL_RUBY_FILES do
     # MissingSourceFile
     # =>
     # LoadError

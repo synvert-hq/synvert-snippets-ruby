@@ -60,7 +60,7 @@ Synvert::Rewriter.new 'factory_bot', 'deprecate_static_value' do
   target_methods = %i[factory transient trait]
   skip_methods = %i[association sequence before after factory callback]
 
-  within_files '{test,spec}/factories/**/*.rb' do
+  within_files Synvert::RAILS_FACTORY_FILES do
     within_node type: 'block', caller: { type: 'send', message: { in: target_methods } } do
       goto_node :body do
         within_direct_node type: 'send', receiver: nil, message: { not_in: skip_methods }, arguments: { size: 1 } do

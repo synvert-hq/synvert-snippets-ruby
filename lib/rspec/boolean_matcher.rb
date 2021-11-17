@@ -19,7 +19,7 @@ Synvert::Rewriter.new 'rspec', 'boolean_matcher' do
 
   if_gem 'rspec-core', '>= 2.99'
 
-  within_files 'spec/**/*_spec.rb' do
+  within_files Synvert::RAILS_RSPEC_FILES do
     # be_true => be_truthy
     # be_false => be_falsey
     { be_true: 'be_truthy', be_false: 'be_falsey' }.each do |old_matcher, new_matcher|

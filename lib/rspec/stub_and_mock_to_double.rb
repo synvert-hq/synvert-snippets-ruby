@@ -19,7 +19,7 @@ Synvert::Rewriter.new 'rspec', 'stub_and_mock_to_double' do
 
   if_gem 'rspec-core', '>= 2.14'
 
-  within_files 'spec/**/*.rb' do
+  within_files Synvert::RAILS_RSPEC_FILES do
     # stub('something') => double('something')
     # mock('something') => double('something')
     with_node type: 'send', receiver: nil, message: 'stub' do

@@ -27,7 +27,7 @@ Synvert::Rewriter.new 'rails', 'convert_rails_env' do
 
   if_gem 'rails', '>= 2.3'
 
-  within_files '**/*.{rb,rake}' do
+  within_files Synvert::ALL_RUBY_FILES + Synvert::ALL_RAKE_FILES do
     # RAILS_ENV == 'test'
     # =>
     # Rails.env == 'test'
@@ -39,7 +39,7 @@ Synvert::Rewriter.new 'rails', 'convert_rails_env' do
     end
   end
 
-  within_files '**/*.{rb,rake}' do
+  within_files Synvert::ALL_RUBY_FILES + Synvert::ALL_RAKE_FILES do
     # Rails.env == 'test'
     # =>
     # Rails.env.test?

@@ -38,7 +38,7 @@ Synvert::Rewriter.new 'rspec', 'remove_monkey_patches' do
 
   monkey_patches_methods = %w[describe shared_examples shared_examples_for shared_context]
 
-  within_files 'spec/**/*.rb' do
+  within_files Synvert::RAILS_RSPEC_FILES do
     # describe 'top-level example group' do
     #   describe 'nested example group' do
     #   end

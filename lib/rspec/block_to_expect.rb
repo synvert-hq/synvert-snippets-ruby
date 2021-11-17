@@ -21,7 +21,7 @@ Synvert::Rewriter.new 'rspec', 'block_to_expect' do
 
   if_gem 'rspec-core', '>= 2.11'
 
-  within_files 'spec/**/*.rb' do
+  within_files Synvert::RAILS_RSPEC_FILES do
     # lambda { do_something }.should raise_error => expect { do_something }.to raise_error
     # proc { do_something }.should raise_error => expect { do_something }.to raise_error
     # -> { do_something }.should raise_error => expect { do_something }.to raise_error

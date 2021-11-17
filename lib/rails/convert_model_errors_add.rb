@@ -19,7 +19,7 @@ Synvert::Rewriter.new 'rails', 'convert_model_errors_add' do
 
   if_gem 'activerecord', '>= 5.0'
 
-  within_files 'app/models/**/*.rb' do
+  within_files Synvert::RAILS_MODEL_FILES do
     # errors[] =
     # =>
     # errors.add

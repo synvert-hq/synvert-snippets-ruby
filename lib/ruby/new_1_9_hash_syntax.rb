@@ -17,7 +17,7 @@ Synvert::Rewriter.new 'ruby', 'new_1_9_hash_syntax' do
 
   if_ruby '1.9.0'
 
-  within_files '**/*.rb' do
+  within_files Synvert::ALL_RUBY_FILES do
     # {:foo => 'bar'} => {foo: 'bar'}
     within_node type: 'hash' do
       with_node type: 'pair' do

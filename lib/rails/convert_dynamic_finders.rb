@@ -47,7 +47,7 @@ Synvert::Rewriter.new 'rails', 'convert_dynamic_finders' do
 
   if_gem 'rails', '>= 3.0'
 
-  within_files '**/*.rb' do
+  within_files Synvert::ALL_RUBY_FILES do
     # find_all_by_... => where(...)
     with_node type: 'send', message: /^find_all_by_/ do
       hash_params = dynamic_finder_to_hash('find_all_by_')
@@ -79,7 +79,7 @@ Synvert::Rewriter.new 'rails', 'convert_dynamic_finders' do
 
   if_gem 'rails', '>= 4.0'
 
-  within_files '**/*.rb' do
+  within_files Synvert::ALL_RUBY_FILES do
     # find_or_initialize_by_... => find_or_initialize_by(...)
     with_node type: 'send', message: /^find_or_initialize_by_/ do
       hash_params = dynamic_finder_to_hash('find_or_initialize_by_')

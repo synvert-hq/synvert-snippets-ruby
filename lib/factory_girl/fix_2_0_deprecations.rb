@@ -55,7 +55,7 @@ Synvert::Rewriter.new 'factory_girl', 'fix_2_0_deprecations' do
 
   if_gem 'factory_girl', '>= 2.0'
 
-  within_files '{test,spec}/factories/**/*.rb' do
+  within_files Synvert::RAILS_FACTORY_FILES do
     # add
     # FactoryGirl.define do
     # end
@@ -70,7 +70,7 @@ Synvert::Rewriter.new 'factory_girl', 'fix_2_0_deprecations' do
     end
   end
 
-  within_files '{test,spec}/factories/**/*.rb' do
+  within_files Synvert::RAILS_FACTORY_FILES do
     # Factory.define :user do |user|
     #   user.login { Factory.next(:login) }
     #   user.sequence(:email) { |n| "user#{n}@gmail.com" }
@@ -112,7 +112,7 @@ Synvert::Rewriter.new 'factory_girl', 'fix_2_0_deprecations' do
     end
   end
 
-  within_files '{test,spec}/factories/**/*.rb' do
+  within_files Synvert::RAILS_FACTORY_FILES do
     # Factory.define :user do |user|
     #   user.admin true
     # end
@@ -136,7 +136,7 @@ Synvert::Rewriter.new 'factory_girl', 'fix_2_0_deprecations' do
     end
   end
 
-  within_files '{test,spec}/factories/**/*.rb' do
+  within_files Synvert::RAILS_FACTORY_FILES do
     # Factory.define :user do |user|
     # end
     # =>
@@ -178,7 +178,7 @@ Synvert::Rewriter.new 'factory_girl', 'fix_2_0_deprecations' do
     end
   end
 
-  within_files '{test,spec}/**/*.rb' do
+  within_files Synvert::RAILS_TEST_FILES do
     # Factory(:user) => create(:user)
     with_node type: 'send', receiver: nil, message: 'Factory' do
       replace :message, with: 'create'

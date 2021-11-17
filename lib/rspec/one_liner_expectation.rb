@@ -32,7 +32,7 @@ Synvert::Rewriter.new 'rspec', 'one_liner_expectation' do
   if_gem 'rspec-core', '>= 2.99'
 
   matcher_converters = { have: 'eq', have_exactly: 'eq', have_at_least: 'be >=', have_at_most: 'be <=' }
-  within_files 'spec/**/*.rb' do
+  within_files Synvert::RAILS_RSPEC_FILES do
     { should: 'to', should_not: 'not_to' }.each do |old_message, new_message|
       # it { should matcher } => it { is_expected.to matcher }
       # it { should_not matcher } => it { is_expected.not_to matcher }

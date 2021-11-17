@@ -26,7 +26,7 @@ Synvert::Rewriter.new 'ruby', 'define_class_from_classic_mode_to_zeitwerk_mode' 
   original_names = []
 
   # round one
-  within_files '**/*.rb' do
+  within_files Synvert::ALL_RUBY_FILES do
     # class Foo::Bar < Base
     #   def test; end
     # end
@@ -47,7 +47,7 @@ Synvert::Rewriter.new 'ruby', 'define_class_from_classic_mode_to_zeitwerk_mode' 
   end
 
   # round two
-  within_files '**/*.rb' do
+  within_files Synvert::ALL_RUBY_FILES do
     # class Foo:Bar < Base
     # end
     # =>

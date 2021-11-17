@@ -17,7 +17,7 @@ Synvert::Rewriter.new 'minitest', 'assert_false' do
     ```
   EOS
 
-  within_files 'test/**/*_test.rb' do
+  within_files Synvert::RAILS_MINITEST_FILES do
     # assert_equal(false, actual)
     # =>
     # refute(actual)

@@ -27,7 +27,7 @@ Synvert::Rewriter.new 'rspec', 'message_expectation' do
 
   if_gem 'rspec-core', '>= 2.14'
 
-  within_files 'spec/**/*.rb' do
+  within_files Synvert::RAILS_RSPEC_FILES do
     # obj.should_receive(:message) => expect(obj).to receive(:message)
     # Klass.any_instance.should_receive(:message) => expect_any_instance_of(Klass).to receive(:message)
     with_node type: 'send', message: 'should_receive' do
@@ -51,7 +51,7 @@ Synvert::Rewriter.new 'rspec', 'message_expectation' do
     end
   end
 
-  within_files 'spec/**/*.rb' do
+  within_files Synvert::RAILS_RSPEC_FILES do
     # expect(obj).to receive(:message).and_return { 1 } => expect(obj).to receive(:message) { 1 }
     with_node type: 'send',
               receiver: {

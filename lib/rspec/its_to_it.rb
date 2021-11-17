@@ -42,7 +42,7 @@ Synvert::Rewriter.new 'rspec', 'its_to_it' do
 
   if_gem 'rspec-core', '>= 2.99'
 
-  within_files 'spec/**/*.rb' do
+  within_files Synvert::RAILS_RSPEC_FILES do
     # describe 'example' do
     #   subject { { foo: 1, bar: 2 } }
     #   its(:size) { should == 2 }

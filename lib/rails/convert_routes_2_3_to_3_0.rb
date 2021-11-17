@@ -147,7 +147,7 @@ Synvert::Rewriter.new 'rails', 'convert_routes_2_3_to_3_0' do
     parent_node.body.map { |child_node| "  #{child_node.to_source.sub(parent_argument, 'map')}\n" }.join('')
   end
 
-  within_file 'config/routes.rb' do
+  within_file Synvert::RAILS_ROUTE_FILES do
     # map.namespace :admin do |admin|
     #   admin.resources :users
     # end
@@ -167,7 +167,7 @@ Synvert::Rewriter.new 'rails', 'convert_routes_2_3_to_3_0' do
     end
   end
 
-  within_file 'config/routes.rb' do
+  within_file Synvert::RAILS_ROUTE_FILES do
     # map.with_options :controller => "manage" do |manage|
     #   manage.manage_index "manage_index", :action => "index"
     #   manage.manage_intro "manage_intro", :action => "intro"
@@ -186,7 +186,7 @@ Synvert::Rewriter.new 'rails', 'convert_routes_2_3_to_3_0' do
     end
   end
 
-  within_file 'config/routes.rb' do
+  within_file Synvert::RAILS_ROUTE_FILES do
     # map.resources :posts, :collection => { :generate_pdf => :get }, :member => {:activate => :post} do |posts|
     #   posts.resources :comments
     # end
@@ -227,7 +227,7 @@ Synvert::Rewriter.new 'rails', 'convert_routes_2_3_to_3_0' do
     end
   end
 
-  within_file 'config/routes.rb' do
+  within_file Synvert::RAILS_ROUTE_FILES do
     # map.connect "/main/:id", :controller => "main", :action => "home"
     # => match "/main/:id", :to => "main#home"
     within_node type: 'send', receiver: 'map', message: 'connect' do

@@ -47,7 +47,7 @@ Synvert::Rewriter.new 'rails', 'convert_rails_test_request_methods_4_2_to_5_0' d
   # get :show, { id: user.id }, { notice: 'Welcome' }, { admin: user.admin? }
   # =>
   # get :show, params: { id: user.id }, flash: { notice: 'Welcome' }, session: { admin: user.admin? }.
-  within_files '{test,spec}/{functional,controllers}/**/*.rb' do
+  within_files Synvert::RAILS_CONTROLLER_TEST_FILES do
     %w[get post put patch delete].each do |message|
       with_node type: 'send', message: message do
         next unless node.arguments.size > 1
@@ -67,7 +67,7 @@ Synvert::Rewriter.new 'rails', 'convert_rails_test_request_methods_4_2_to_5_0' d
     end
   end
 
-  within_files '{test,spec}/{functional,controllers}/**/*.rb' do
+  within_files Synvert::RAILS_CONTROLLER_TEST_FILES do
     with_node type: 'send', message: 'xhr' do
       request_method = node.arguments[0].to_value
       action = node.arguments[1].to_value
@@ -88,7 +88,7 @@ Synvert::Rewriter.new 'rails', 'convert_rails_test_request_methods_4_2_to_5_0' d
   # get '/posts/1', user_id: user.id, { 'HTTP_AUTHORIZATION' => 'fake' }
   # =>
   # get '/posts/1', params: { user_id: user.id }, headers: { 'HTTP_AUTHORIZATION' => 'fake' }
-  within_files '{test,spec}/{integration}/**/*.rb' do
+  within_files Synvert::RAILS_INTEGRATION_TEST_FILES do
     %w[get post put patch delete].each do |message|
       with_node type: 'send', message: message do
         next unless node.arguments.size > 1

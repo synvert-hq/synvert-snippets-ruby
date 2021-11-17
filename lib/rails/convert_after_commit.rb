@@ -20,7 +20,7 @@ Synvert::Rewriter.new 'rails', 'convert_after_commit' do
 
   if_gem 'activerecord', '>= 5.0'
 
-  within_files 'app/models/**/*.rb' do
+  within_files Synvert::RAILS_MODEL_FILES do
     # after_commit :add_to_index_later, on: :create
     # after_commit :update_in_index_later, on: :update
     # after_commit :remove_from_index_later, on: :destroy

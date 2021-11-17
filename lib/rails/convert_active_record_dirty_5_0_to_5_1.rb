@@ -177,7 +177,7 @@ Synvert::Rewriter.new 'rails', 'convert_active_record_dirty_5_0_to_5_1' do
   end
 
   # round one: find all possible skip names
-  within_files 'app/{models,observers}/**/*.rb' do
+  within_files Synvert::RAILS_MODEL_FILES + Synvert::RAILS_OBSERVER_FILES do
     with_node type: 'def' do
       skip_names[node.filename] ||= []
       skip_names[node.filename] << node.name.to_s
@@ -185,7 +185,7 @@ Synvert::Rewriter.new 'rails', 'convert_active_record_dirty_5_0_to_5_1' do
   end
 
   # round two: find callbacks and do convert
-  within_files 'app/{models,observers}/**/*.rb' do
+  within_files Synvert::RAILS_MODEL_FILES + Synvert::RAILS_OBSERVER_FILES do
     find_callbacks_and_convert(before_callback_names, before_callback_changes)
     find_callbacks_and_convert(after_callback_names, after_callback_changes)
   end

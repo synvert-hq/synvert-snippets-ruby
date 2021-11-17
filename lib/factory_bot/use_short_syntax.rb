@@ -111,7 +111,7 @@ Synvert::Rewriter.new 'factory_bot', 'use_short_syntax' do
   # FactoryBot.build_list(...) => build_list(...)
   # FactoryBot.create_pair(...) => create_pair(...)
   # FactoryBot.build_pair(...) => build_pair(...)
-  within_files '{test,spec,features}/**/*.rb' do
+  within_files Synvert::RAILS_TEST_FILES do
     with_node type: 'send', receiver: 'FactoryBot', message: { in: target_methods } do
       delete :receiver, :dot
     end

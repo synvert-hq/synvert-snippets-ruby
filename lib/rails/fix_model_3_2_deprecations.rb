@@ -57,7 +57,7 @@ Synvert::Rewriter.new 'rails', 'fix_model_3_2_deprecations' do
 
   if_gem 'activerecord', '>= 3.2'
 
-  within_files 'app/models/**/*.rb' do
+  within_files Synvert::RAILS_MODEL_FILES do
     # set_table_name "project" => self.table_name = "project"
     # set_inheritance_column = "type" => self.inheritance_column = "type"
     # set_sequence_name = "seq" => self.sequence_name = "seq"

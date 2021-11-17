@@ -27,7 +27,7 @@ Synvert::Rewriter.new 'rspec', 'custom_matcher_new_syntax' do
 
   if_gem 'rspec-core', '>= 3.0'
 
-  within_files 'spec/**/*.rb' do
+  within_files Synvert::RAILS_RSPEC_FILES do
     within_node type: 'block', caller: { receiver: 'RSpec::Matchers', message: 'define' } do
       # RSpec::Matchers.define :be_awesome do
       #   match_for_should { }

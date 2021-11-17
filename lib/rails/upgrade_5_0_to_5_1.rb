@@ -14,7 +14,7 @@ Synvert::Rewriter.new 'rails', 'upgrade_5_0_to_5_1' do
 
   if_gem 'rails', '>= 5.1'
 
-  within_files '**/*.rb' do
+  within_files Synvert::ALL_RUBY_FILES do
     # HashWithIndifferentAccess
     # =>
     # ActiveSupport::HashWithIndifferentAccess

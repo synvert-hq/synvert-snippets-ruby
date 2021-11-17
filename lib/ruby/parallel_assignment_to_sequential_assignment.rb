@@ -16,7 +16,7 @@ Synvert::Rewriter.new 'ruby', 'parallel_assignment_to_sequential_assignment' do
     ```
   EOS
 
-  within_files '**/*.rb' do
+  within_files Synvert::ALL_RUBY_FILES do
     # a, b = 1, 2
     # =>
     # a = 1
