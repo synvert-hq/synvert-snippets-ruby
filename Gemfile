@@ -12,3 +12,4 @@ gem 'synvert-core', '>= 0.6.0'
 
 gem 'guard'
 gem 'guard-rspec'
+gem 'guard-bundler'
