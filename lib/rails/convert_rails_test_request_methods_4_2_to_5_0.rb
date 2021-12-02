@@ -36,8 +36,7 @@ Synvert::Rewriter.new 'rails', 'convert_rails_test_request_methods_4_2_to_5_0' d
 
     if argument_node.type == :hash
       new_value =
-        argument_node.children.reject { |pair_node| %i[format xhr].include?(pair_node.key.to_value) }.map(&:to_source)
-          .join(', ')
+        argument_node.children.reject { |pair_node| %i[format xhr].include?(pair_node.key.to_value) }.map(&:to_source).join(', ')
       "#{key}: #{add_curly_brackets_if_necessary(new_value)}" if new_value.length > 0
     else
       "#{key}: #{argument_node.to_source}"
@@ -69,11 +68,9 @@ Synvert::Rewriter.new 'rails', 'convert_rails_test_request_methods_4_2_to_5_0' d
 
   within_files Synvert::RAILS_CONTROLLER_TEST_FILES do
     with_node type: 'send', message: 'xhr' do
-      request_method = node.arguments[0].to_value
-      action = node.arguments[1].to_value
       if node.arguments.size == 2
-        replace :message, with: request_method.to_s
-        replace :arguments, with: ":#{action}, xhr: true"
+        replace :message, with: '{{arguments.first.to_string}}'
+        replace :arguments, with: '{{arguments.second}}, xhr: true'
         next
       end
       format_value = node.arguments[2].type == :hash && node.arguments[2].hash_value(:format)
@@ -82,8 +79,8 @@ Synvert::Rewriter.new 'rails', 'convert_rails_test_request_methods_4_2_to_5_0' d
       options << make_up_hash_pair('session', node.arguments[3]) if node.arguments.size > 3
       options << make_up_hash_pair('flash', node.arguments[4]) if node.arguments.size > 4
       options << "as: #{format_value.to_source}" if format_value
-      replace :message, with: request_method.to_s
-      replace :arguments, with: ":#{action}, #{options.compact.join(', ')}, xhr: true"
+      replace :message, with: '{{arguments.first.to_string}}'
+      replace :arguments, with: "{{arguments.second}}, #{options.compact.join(', ')}, xhr: true"
     end
   end
 
