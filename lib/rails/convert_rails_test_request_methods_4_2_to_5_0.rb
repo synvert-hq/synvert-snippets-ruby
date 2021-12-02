@@ -62,7 +62,7 @@ Synvert::Rewriter.new 'rails', 'convert_rails_test_request_methods_4_2_to_5_0' d
         options << make_up_hash_pair('flash', node.arguments[3]) if node.arguments.size > 3
         options << "as: #{format_value.to_source}" if format_value
         options << "xhr: #{xhr_value.to_source}" if xhr_value
-        replace_with "#{message} {{arguments.first}}, #{options.compact.join(', ')}"
+        replace :arguments, with: "{{arguments.first}}, #{options.compact.join(', ')}"
       end
     end
   end
@@ -72,7 +72,8 @@ Synvert::Rewriter.new 'rails', 'convert_rails_test_request_methods_4_2_to_5_0' d
       request_method = node.arguments[0].to_value
       action = node.arguments[1].to_value
       if node.arguments.size == 2
-        replace_with "#{request_method} :#{action}, xhr: true"
+        replace :message, with: request_method.to_s
+        replace :arguments, with: ":#{action}, xhr: true"
         next
       end
       format_value = node.arguments[2].type == :hash && node.arguments[2].hash_value(:format)
@@ -81,7 +82,8 @@ Synvert::Rewriter.new 'rails', 'convert_rails_test_request_methods_4_2_to_5_0' d
       options << make_up_hash_pair('session', node.arguments[3]) if node.arguments.size > 3
       options << make_up_hash_pair('flash', node.arguments[4]) if node.arguments.size > 4
       options << "as: #{format_value.to_source}" if format_value
-      replace_with "#{request_method} :#{action}, #{options.compact.join(', ')}, xhr: true"
+      replace :message, with: request_method.to_s
+      replace :arguments, with: ":#{action}, #{options.compact.join(', ')}, xhr: true"
     end
   end
 
@@ -92,14 +94,12 @@ Synvert::Rewriter.new 'rails', 'convert_rails_test_request_methods_4_2_to_5_0' d
     %w[get post put patch delete].each do |message|
       with_node type: 'send', message: message do
         next unless node.arguments.size > 1
-        if node.arguments[1].type == :hash && (node.arguments[1].key?(:params) || node.arguments[1].key?(:headers))
-          next
-        end
+        next if node.arguments[1].type == :hash && (node.arguments[1].key?(:params) || node.arguments[1].key?(:headers))
 
         options = []
         options << make_up_hash_pair('params', node.arguments[1])
         options << make_up_hash_pair('headers', node.arguments[2]) if node.arguments.size > 2
-        replace_with "#{message} {{arguments.first}}, #{options.compact.join(', ')}"
+        replace :arguments, with: "{{arguments.first}}, #{options.compact.join(', ')}"
       end
     end
   end
