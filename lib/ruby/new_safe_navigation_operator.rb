@@ -25,12 +25,16 @@ Synvert::Rewriter.new 'ruby', 'new_safe_navigation_operator' do
     # u&.profile&.thumbnails&.large(100, format: 'jpg')
     %w[try! try].each do |message|
       within_node type: 'send', message: message do
-        if node.arguments.size == 0
-          # Do nothing
-        elsif node.arguments.size == 1
-          replace_with '{{receiver}}&.{{arguments.first.to_value}}'
-        else
-          replace_with '{{receiver}}&.{{arguments.first.to_value}}({{arguments[1..-1]}})'
+        if node.arguments.size > 0
+          goto_node :receiver do
+            insert '&'
+          end
+          replace :message, with: '{{arguments.first.to_value}}'
+          if node.arguments.size == 1
+            delete :arguments, :parentheses
+          else
+            delete 'arguments.first'
+          end
         end
       end
     end
