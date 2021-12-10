@@ -18,6 +18,7 @@ Synvert::Rewriter.new 'rails', 'upgrade_4_2_to_5_0' do
   EOS
 
   add_snippet 'rails', 'add_active_record_migration_rails_version'
+  add_snippet 'rails', 'convert_env_to_request_env'
   add_snippet 'rails', 'convert_head_response'
   add_snippet 'rails', 'convert_render_text_to_render_plain'
   add_snippet 'rails', 'convert_rails_test_request_methods_4_2_to_5_0'

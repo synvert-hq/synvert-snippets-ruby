@@ -111,6 +111,7 @@ Rails.application.config.ssl_options = { hsts: { subdomains: true } }
     load_sub_snippets(
       %w[
         rails/add_active_record_migration_rails_version
+        rails/convert_env_to_request_env
         rails/convert_head_response
         rails/convert_render_text_to_render_plain
         rails/convert_rails_test_request_methods_4_2_to_5_0
