@@ -2,7 +2,7 @@
 
 Synvert::Rewriter.new 'minitest', 'refute_nil' do
   description <<~EOS
-    It converts minitest refute_nil.
+    Use `refute_nil` if not expecting `nil`.
 
     ```ruby
     assert(!actual.nil?)

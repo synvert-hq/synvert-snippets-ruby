@@ -2,7 +2,8 @@
 
 Synvert::Rewriter.new 'minitest', 'assert_truthy' do
   description <<~EOS
-    It converts minitest assert_truthy.
+    Use `assert` if expecting truthy value.
+
 
     ```ruby
     assert_equal(true, actual)

@@ -2,7 +2,8 @@
 
 Synvert::Rewriter.new 'minitest', 'assert_false' do
   description <<~EOS
-    It converts minitest assert_false.
+    Use `refute` if expecting false.
+
 
     ```ruby
     assert_equal(false, actual)

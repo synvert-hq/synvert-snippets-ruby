@@ -2,7 +2,8 @@
 
 Synvert::Rewriter.new 'minitest', 'assert_equal_arguments_order' do
   description <<~EOS
-    It converts minitest assert_equal arguments order.
+    `assert_equal` should always have expected value as first argument because if the assertion fails the error message would say expected "rubocop-minitest" received "rubocop" not the other way around.
+
 
     ```ruby
     assert_equal(actual, "rubocop-minitest")
