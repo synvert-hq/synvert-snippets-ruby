@@ -2,7 +2,7 @@
 
 Synvert::Rewriter.new 'minitest', 'assert_empty' do
   description <<~EOS
-    Use `refute_empty` if expecting object to be not empty.
+    Use `assert_empty` if expecting object to be empty.
 
     ```ruby
     assert(object.empty?)
