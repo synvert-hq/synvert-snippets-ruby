@@ -4,7 +4,6 @@ Synvert::Rewriter.new 'minitest', 'refute_false' do
   description <<~EOS
     Use `refute` if expecting false.
 
-
     ```ruby
     assert_equal(false, actual)
     assert(!something)

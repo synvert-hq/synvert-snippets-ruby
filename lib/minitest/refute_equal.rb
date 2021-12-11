@@ -4,7 +4,6 @@ Synvert::Rewriter.new 'minitest', 'refute_equal' do
   description <<~EOS
     Use `refute_equal`` if expected and actual should not be same.
 
-
     ```ruby
     assert("rubocop-minitest" != actual)
     assert(!"rubocop-minitest" == actual)
