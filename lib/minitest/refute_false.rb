@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-Synvert::Rewriter.new 'minitest', 'assert_false' do
+Synvert::Rewriter.new 'minitest', 'refute_false' do
   description <<~EOS
     Use `refute` if expecting false.
 
