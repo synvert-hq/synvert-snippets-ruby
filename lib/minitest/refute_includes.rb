@@ -2,7 +2,7 @@
 
 Synvert::Rewriter.new 'minitest', 'refute_incldues' do
   description <<~EOS
-    Use `refute_includes`` if the object is not included in the collection.
+    Use `refute_includes` if the object is not included in the collection.
 
     ```ruby
     refute(collection.include?(object))
