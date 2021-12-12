@@ -106,7 +106,7 @@ Synvert::Rewriter.new 'rails', 'convert_mailers_2_3_to_3_0' do
           mailer_methods[class_name] ||= []
           mailer_methods[class_name] << node.name
           args_str = args.map { |key, value| ":#{key} => #{value}" }.join(', ')
-          append "  mail(#{args_str})"
+          append "mail(#{args_str})"
         end
       end
     end
