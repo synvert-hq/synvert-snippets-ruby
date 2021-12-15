@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-Synvert::Rewriter.new 'minitest', 'assert_incldues' do
+Synvert::Rewriter.new 'minitest', 'assert_includes' do
   description <<~EOS
     Use `assert_includes` to assert if the object is included in the collection.
 
