@@ -21,7 +21,7 @@ RSpec.describe 'Convert ActiveRecord::Dirty 5.0 to 5.1' do
         before_save :call_before_save, if: -> { status_changed? || summary_changed? }
         after_create :call_after_create
         after_update :call_after_update, unless: :title_changed?
-        after_save :call_after_save, if: -> { status_changed? || summary_changed? }
+        after_save :call_after_save, if: :call_change?
         after_update :change_user, if: :user_changed?
         after_commit :publish_user_change
 
@@ -47,6 +47,10 @@ RSpec.describe 'Convert ActiveRecord::Dirty 5.0 to 5.1' do
 
         def change_user
         end
+
+        def call_change?
+          status_changed? || summary_changed?
+        end
       end
     EOS
 
@@ -57,7 +61,7 @@ RSpec.describe 'Convert ActiveRecord::Dirty 5.0 to 5.1' do
         before_save :call_before_save, if: -> { will_save_change_to_status? || will_save_change_to_summary? }
         after_create :call_after_create
         after_update :call_after_update, unless: :saved_change_to_title?
-        after_save :call_after_save, if: -> { saved_change_to_status? || saved_change_to_summary? }
+        after_save :call_after_save, if: :call_change?
         after_update :change_user, if: :user_changed?
         after_commit :publish_user_change
 
@@ -82,6 +86,10 @@ RSpec.describe 'Convert ActiveRecord::Dirty 5.0 to 5.1' do
         end
 
         def change_user
+        end
+
+        def call_change?
+          saved_change_to_status? || saved_change_to_summary?
         end
       end
     EOS
