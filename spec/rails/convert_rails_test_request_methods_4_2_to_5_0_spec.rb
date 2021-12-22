@@ -29,6 +29,10 @@ RSpec.describe 'Convert rails request methods from 4.2 to 5.0' do
           xhr :get, :test
           xhr :post, :test, foo: 'bar'
         end
+
+        def test_json
+          get :test, as: :json
+        end
       end
     EOS
 
@@ -53,6 +57,10 @@ RSpec.describe 'Convert rails request methods from 4.2 to 5.0' do
         def test_xhr
           get :test, xhr: true
           post :test, params: { foo: 'bar' }, xhr: true
+        end
+
+        def test_json
+          get :test, as: :json
         end
       end
     EOS
