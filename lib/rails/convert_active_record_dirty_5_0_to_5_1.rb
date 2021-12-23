@@ -127,7 +127,7 @@ Synvert::Rewriter.new 'rails', 'convert_active_record_dirty_5_0_to_5_1' do
           #
           # after_save :invalidate_cache, if: :status_changed?
           with_node type: 'hash' do
-            with_node type: 'sym', to_value: { not_in: [:if, :unless] } do
+            with_node type: 'sym', to_value: { not_in: %i[if unless] } do
               custom_callback_names << node.to_value
             end
 
