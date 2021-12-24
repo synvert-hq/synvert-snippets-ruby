@@ -11,6 +11,8 @@ RSpec.describe 'Convert update_attributes to update' do
         update_attributes(title: 'new')
         self.update_attributes!(title: 'new')
         self.update(title: 'new')
+
+        role&.update_attributes(admin: false)
       end
     end
   EOS
@@ -21,6 +23,8 @@ RSpec.describe 'Convert update_attributes to update' do
         update(title: 'new')
         self.update!(title: 'new')
         self.update(title: 'new')
+
+        role&.update(admin: false)
       end
     end
   EOS
