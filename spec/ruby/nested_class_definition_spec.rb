@@ -2,8 +2,8 @@
 
 require 'spec_helper'
 
-RSpec.describe 'define class from classic mode to zeitwerk mode' do
-  let(:rewriter_name) { 'ruby/define_class_from_classic_mode_to_zeitwerk_mode' }
+RSpec.describe 'nested class definition' do
+  let(:rewriter_name) { 'ruby/nested_class_definition' }
 
   context 'single module' do
     let(:test_content) { <<~EOS }

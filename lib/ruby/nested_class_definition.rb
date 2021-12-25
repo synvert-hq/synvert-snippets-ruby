@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
-Synvert::Rewriter.new 'ruby', 'define_class_from_classic_mode_to_zeitwerk_mode' do
+Synvert::Rewriter.new 'ruby', 'nested_class_definition' do
   description <<~EOS
-    It converts class defination from classic mode to zeitwerk mode.
+    It converts compact class definition to nested class definition.
 
     ```ruby
     class Foo::Bar < Base
