@@ -116,46 +116,44 @@ Synvert::Rewriter.new 'rails', 'convert_active_record_dirty_5_0_to_5_1' do
   helper_method :find_callbacks_and_convert do |callback_names, callback_changes|
     custom_callback_names = []
 
-    callback_names.each do |callback_name|
-      # find callback like
-      #
-      #     after_save :invalidate_cache, if: :status_changed?
-      with_node type: 'send', receiver: nil, message: callback_name do
-        custom_callback_names << node.arguments[0].to_value if !node.arguments.empty? && node.arguments[0].type == :sym
-        callback_changes.each do |before_name, after_name|
-          # convert ActiveRecord::Dirty api change
-          #
-          # after_save :invalidate_cache, if: :status_changed?
-          with_node type: 'hash' do
-            with_node type: 'sym', to_value: { not_in: %i[if unless] } do
-              custom_callback_names << node.to_value
-            end
-
-            with_node type: 'sym', to_value: before_name do
-              if before_name.is_a?(Regexp)
-                if !skip_names[node.filename].include?(node.to_value.to_s) && node.to_value =~ before_name
-                  replace_with ":#{after_name.sub('{{attribute}}', Regexp.last_match(1))}"
-                end
-              else
-                replace_with after_name
-              end
-            end
+    # find callback like
+    #
+    #     after_save :invalidate_cache, if: :status_changed?
+    with_node type: 'send', receiver: nil, message: { in: callback_names } do
+      custom_callback_names << node.arguments[0].to_value if !node.arguments.empty? && node.arguments[0].type == :sym
+      callback_changes.each do |before_name, after_name|
+        # convert ActiveRecord::Dirty api change
+        #
+        # after_save :invalidate_cache, if: :status_changed?
+        with_node type: 'hash' do
+          with_node type: 'sym', to_value: { not_in: %i[if unless] } do
+            custom_callback_names << node.to_value
           end
 
-          convert_send_dirty_api_change(before_name, after_name)
+          with_node type: 'sym', to_value: before_name do
+            if before_name.is_a?(Regexp)
+              if !skip_names[node.filename].include?(node.to_value.to_s) && node.to_value =~ before_name
+                replace_with ":#{after_name.sub('{{attribute}}', Regexp.last_match(1))}"
+              end
+            else
+              replace_with after_name
+            end
+          end
         end
-      end
 
-      # find callback like
-      #
-      #     before_save do
-      #       if status_chagned?
-      #       end
-      #     end
-      with_node type: 'block', caller: { type: 'send', receiver: nil, message: callback_name } do
-        callback_changes.each do |before_name, after_name|
-          convert_send_dirty_api_change(before_name, after_name)
-        end
+        convert_send_dirty_api_change(before_name, after_name)
+      end
+    end
+
+    # find callback like
+    #
+    #     before_save do
+    #       if status_chagned?
+    #       end
+    #     end
+    with_node type: 'block', caller: { type: 'send', receiver: nil, message: { in: callback_names } } do
+      callback_changes.each do |before_name, after_name|
+        convert_send_dirty_api_change(before_name, after_name)
       end
     end
 
@@ -164,16 +162,29 @@ Synvert::Rewriter.new 'rails', 'convert_active_record_dirty_5_0_to_5_1' do
     #     after_save :invalidate_cache
     #     def invalidate_cache
     #     end
-    with_node type: 'def' do
-      if callback_names.include?(node.name) || custom_callback_names.include?(node.name)
-        callback_changes.each do |before_name, after_name|
-          convert_send_dirty_api_change(before_name, after_name)
-        end
+    with_node type: 'def', name: { in: callback_names } do
+      callback_changes.each do |before_name, after_name|
+        convert_send_dirty_api_change(before_name, after_name)
       end
 
       with_node type: 'send', receiver: nil do
         custom_callback_names << node.message
       end
+    end
+
+    # find all custom callback methods
+    while custom_callback_names.present?
+      temp_callback_names = []
+      with_node type: 'def', name: { in: custom_callback_names } do
+        callback_changes.each do |before_name, after_name|
+          convert_send_dirty_api_change(before_name, after_name)
+        end
+
+        with_node type: 'send', receiver: nil do
+          temp_callback_names << node.message
+        end
+      end
+      custom_callback_names = temp_callback_names
     end
   end
 

@@ -132,4 +132,54 @@ RSpec.describe 'Convert ActiveRecord::Dirty 5.0 to 5.1' do
 
     include_examples 'convertable'
   end
+
+  context 'dirty api in method call' do
+    let(:fake_file_path) { 'app/models/post.rb' }
+
+    let(:test_content) { <<~EOS }
+      class Conference < ApplicationRecord
+        before_update :update_talk_time
+
+        private
+
+        def update_talk_time
+          return if skip_recalculation?
+
+          self.talk_time = adjusted_talk_time
+        end
+
+        def skip_recalculation?
+          return true if talk_ended.nil?
+          return true if talk_started.nil?
+          return true unless talk_ended_changed? || talk_started_changed?
+
+          false
+        end
+      end
+    EOS
+
+    let(:test_rewritten_content) { <<~EOS }
+      class Conference < ApplicationRecord
+        before_update :update_talk_time
+
+        private
+
+        def update_talk_time
+          return if skip_recalculation?
+
+          self.talk_time = adjusted_talk_time
+        end
+
+        def skip_recalculation?
+          return true if talk_ended.nil?
+          return true if talk_started.nil?
+          return true unless will_save_change_to_talk_ended? || will_save_change_to_talk_started?
+
+          false
+        end
+      end
+    EOS
+
+    include_examples 'convertable'
+  end
 end
