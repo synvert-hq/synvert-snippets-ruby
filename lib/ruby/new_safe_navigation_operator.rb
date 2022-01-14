@@ -26,9 +26,7 @@ Synvert::Rewriter.new 'ruby', 'new_safe_navigation_operator' do
     %w[try! try].each do |message|
       within_node type: 'send', message: message do
         if node.arguments.size > 0
-          goto_node :receiver do
-            insert '&'
-          end
+          insert '&', to: 'receiver'
           replace :message, with: '{{arguments.first.to_value}}'
           if node.arguments.size == 1
             delete :arguments, :parentheses
