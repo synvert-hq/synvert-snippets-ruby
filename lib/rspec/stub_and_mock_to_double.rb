@@ -22,7 +22,7 @@ Synvert::Rewriter.new 'rspec', 'stub_and_mock_to_double' do
   within_files Synvert::RAILS_RSPEC_FILES do
     # stub('something') => double('something')
     # mock('something') => double('something')
-    with_node type: 'send', receiver: nil, message: { in: ['stub', 'mock'] } do
+    with_node type: 'send', receiver: nil, message: { in: %w[stub mock] } do
       replace :message, with: 'double'
     end
   end
