@@ -49,9 +49,7 @@ Synvert::Rewriter.new 'rspec', 'message_expectation' do
         replace_with 'expect({{receiver}}).not_to receive({{arguments}})'
       end
     end
-  end
 
-  within_files Synvert::RAILS_RSPEC_FILES do
     # expect(obj).to receive(:message).and_return { 1 } => expect(obj).to receive(:message) { 1 }
     with_node type: 'send',
               receiver: {
