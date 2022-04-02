@@ -3,20 +3,10 @@
 <img src="https://synvert.xinminlabs.com/img/logo_96.png" alt="logo" width="32" height="32" />
 
 ![Main workflow](https://github.com/xinminlabs/synvert-snippets-ruby/actions/workflows/main.yml/badge.svg)
+[![AwesomeCode Status for xinminlabs/synvert-snippets-ruby](https://awesomecode.io/projects/85ed8f64-5e54-4b8f-ab2f-dbfdaf377b3b/status)](https://awesomecode.io/repos/xinminlabs/synvert-snippets-ruby)
 
-synvert-snippets list all snippets to convert ruby code based on
-synvert-core.
+Synvert snippets are used to describe how to convert ruby code based on [synvert-core-ruby](https://github.com/xinminlabs/synvert-core-ruby).
 
-## Documentation
+To use snippets to convert ruby code, you can use the CLI [synvert-ruby](https://github.com/xinminlabs/synvert-ruby).
 
-[Website][1]
-
-## Contributing
-
-1. Fork it ( https://github.com/[my-github-username]/synvert-snippets-ruby/fork )
-2. Create your feature branch (`git checkout -b my-new-feature`)
-3. Commit your changes (`git commit -am 'Add some feature'`)
-4. Push to the branch (`git push origin my-new-feature`)
-5. Create a new Pull Request
-
-[1]: https://synvert.xinminlabs.com
+To practice how to write the snippet, you can try [Synvert Playground](https://synvert-playground.xinminlabs.com/).
