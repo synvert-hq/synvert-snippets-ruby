@@ -9,4 +9,4 @@ Synvert snippets are used to describe how to rewrite ruby code based on [synvert
 
 To use snippets to convert ruby code, you need the CLI [synvert-ruby](https://github.com/xinminlabs/synvert-ruby).
 
-To practice how to write the snippet, you can try [Synvert Playground](https://synvert-playground.xinminlabs.com/).
+To practice how to write the snippet, you can try [Synvert Playground](https://synvert-playground.xinminlabs.com?language=ruby).
