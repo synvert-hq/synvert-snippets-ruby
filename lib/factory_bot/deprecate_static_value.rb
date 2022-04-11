@@ -63,7 +63,10 @@ Synvert::Rewriter.new 'factory_bot', 'deprecate_static_value' do
   within_files Synvert::RAILS_FACTORY_FILES do
     within_node type: 'block', caller: { type: 'send', message: { in: target_methods } } do
       goto_node :body do
-        within_node({ type: 'send', receiver: nil, message: { not_in: skip_methods }, arguments: { size: 1 } }, { direct: true }) do
+        within_node(
+          { type: 'send', receiver: nil, message: { not_in: skip_methods }, arguments: { size: 1 } },
+          { direct: true }
+        ) do
           if node.arguments.first.type == :hash
             new_arguments = add_curly_brackets_if_necessary(node.arguments.first.to_source)
             replace :arguments, with: "{ #{new_arguments} }"

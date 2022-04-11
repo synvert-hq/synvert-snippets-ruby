@@ -21,7 +21,13 @@ Synvert::Rewriter.new 'minitest', 'refute_instance_of' do
     # refute('rubocop-minitest'.instance_of?(String))
     # =>
     # refute_instance_of(String, 'rubocop-minitest')
-    with_node type: 'send', receiver: nil, message: 'refute', arguments: { size: 1, first: { type: 'send', message: 'instance_of?', arguments: { size: 1 } } } do
+    with_node type: 'send',
+              receiver: nil,
+              message: 'refute',
+              arguments: {
+                size: 1,
+                first: { type: 'send', message: 'instance_of?', arguments: { size: 1 } }
+              } do
       replace :message, with: 'refute_instance_of'
       replace :arguments, with: '{{arguments.first.arguments.first}}, {{arguments.first.receiver}}'
     end
@@ -29,7 +35,17 @@ Synvert::Rewriter.new 'minitest', 'refute_instance_of' do
     # assert(!'rubocop-minitest'.instance_of?(String))
     # =>
     # refute_instance_of(String, 'rubocop-minitest')
-    with_node type: 'send', receiver: nil, message: 'assert', arguments: { size: 1, first: { type: 'send', receiver: { type: 'send', message: 'instance_of?', arguments: { size: 1 } }, message: '!' } } do
+    with_node type: 'send',
+              receiver: nil,
+              message: 'assert',
+              arguments: {
+                size: 1,
+                first: {
+                  type: 'send',
+                  receiver: { type: 'send', message: 'instance_of?', arguments: { size: 1 } },
+                  message: '!'
+                }
+              } do
       replace :message, with: 'refute_instance_of'
       replace :arguments, with: '{{arguments.first.receiver.arguments.first}}, {{arguments.first.receiver.receiver}}'
     end

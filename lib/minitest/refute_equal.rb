@@ -21,7 +21,10 @@ Synvert::Rewriter.new 'minitest', 'refute_equal' do
     # assert("rubocop-minitest" != actual)
     # =>
     # refute_equal("rubocop-minitest", actual)
-    with_node type: 'send', receiver: nil, message: 'assert', arguments: { size: 1, first: { type: 'send', message: '!=' } } do
+    with_node type: 'send',
+              receiver: nil,
+              message: 'assert',
+              arguments: { size: 1, first: { type: 'send', message: '!=' } } do
       replace :message, with: 'refute_equal'
       replace :arguments, with: "{{arguments.first.receiver}}, {{arguments.first.arguments}}"
     end
@@ -29,7 +32,13 @@ Synvert::Rewriter.new 'minitest', 'refute_equal' do
     # assert(!"rubocop-minitest" == (actual))
     # =>
     # refute_equal("rubocop-minitest", actual)
-    with_node type: 'send', receiver: nil, message: 'assert', arguments: { size: 1, first: { type: 'send', message: '==', receiver: { type: 'send', message: '!' } } } do
+    with_node type: 'send',
+              receiver: nil,
+              message: 'assert',
+              arguments: {
+                size: 1,
+                first: { type: 'send', message: '==', receiver: { type: 'send', message: '!' } }
+              } do
       replace :message, with: 'refute_equal'
       replace :arguments, with: "{{arguments.first.receiver.receiver}}, {{arguments.first.arguments}}"
     end

@@ -27,7 +27,8 @@ Synvert::Rewriter.new 'rails', 'upgrade_5_0_to_5_1' do
     # Rails.appplication.config.secrets[:smtp_settings][:address]
     with_node type: 'send', message: '[]', arguments: { first: { type: 'str' } } do
       if :send == node.receiver.type && :[] == node.receiver.message &&
-           'Rails.application.config.secrets' == node.receiver.receiver.to_source
+         'Rails.application.config.secrets' == node.receiver.receiver.to_source
+
         replace 'arguments.first', with: '{{arguments.first.to_symbol}}'
       end
     end

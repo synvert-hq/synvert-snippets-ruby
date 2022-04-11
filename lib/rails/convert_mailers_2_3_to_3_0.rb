@@ -105,7 +105,8 @@ Synvert::Rewriter.new 'rails', 'convert_mailers_2_3_to_3_0' do
         if args.size > 0
           mailer_methods[class_name] ||= []
           mailer_methods[class_name] << node.name
-          args_str = args.map { |key, value| ":#{key} => #{value}" }.join(', ')
+          args_str = args.map { |key, value| ":#{key} => #{value}" }
+                         .join(', ')
           append "mail(#{args_str})"
         end
       end

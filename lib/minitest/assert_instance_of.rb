@@ -16,7 +16,13 @@ Synvert::Rewriter.new 'minitest', 'assert_instance_of' do
   EOS
 
   within_files Synvert::RAILS_MINITEST_FILES do
-    with_node type: 'send', receiver: nil, message: 'assert', arguments: { size: 1, first: { type: 'send', message: 'instance_of?', arguments: { size: 1 } } } do
+    with_node type: 'send',
+              receiver: nil,
+              message: 'assert',
+              arguments: {
+                size: 1,
+                first: { type: 'send', message: 'instance_of?', arguments: { size: 1 } }
+              } do
       replace :message, with: 'assert_instance_of'
       replace :arguments, with: '{{arguments.first.arguments.first}}, {{arguments.first.receiver}}'
     end

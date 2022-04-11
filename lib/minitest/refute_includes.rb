@@ -21,7 +21,13 @@ Synvert::Rewriter.new 'minitest', 'refute_includes' do
     # refute(collection.include?(object))
     # =>
     # refute_includes(collection, object)
-    with_node type: 'send', receiver: nil, message: 'refute', arguments: { size: 1, first: { type: 'send', message: 'include?', arguments: { size: 1 } } } do
+    with_node type: 'send',
+              receiver: nil,
+              message: 'refute',
+              arguments: {
+                size: 1,
+                first: { type: 'send', message: 'include?', arguments: { size: 1 } }
+              } do
       replace :message, with: 'refute_includes'
       replace :arguments, with: '{{arguments.first.receiver}}, {{arguments.first.arguments.first}}'
     end
@@ -29,7 +35,17 @@ Synvert::Rewriter.new 'minitest', 'refute_includes' do
     # assert(!collection.include?(object))
     # =>
     # refute_includes(collection, object)
-    with_node type: 'send', receiver: nil, message: 'assert', arguments: { size: 1, first: { type: 'send', receiver: { type: 'send', message: 'include?', arguments: { size: 1 } }, message: '!' } } do
+    with_node type: 'send',
+              receiver: nil,
+              message: 'assert',
+              arguments: {
+                size: 1,
+                first: {
+                  type: 'send',
+                  receiver: { type: 'send', message: 'include?', arguments: { size: 1 } },
+                  message: '!'
+                }
+              } do
       replace :message, with: 'refute_includes'
       replace :arguments, with: '{{arguments.first.receiver.receiver}}, {{arguments.first.receiver.arguments.first}}'
     end

@@ -38,7 +38,10 @@ Synvert::Rewriter.new 'rails', 'convert_rails_test_request_methods_4_2_to_5_0' d
 
     if argument_node.type == :hash
       new_value =
-        argument_node.children.reject { |pair_node| %i[format xhr as].include?(pair_node.key.to_value) }.map(&:to_source).join(', ')
+        argument_node.children.reject { |pair_node|
+          %i[format xhr as].include?(pair_node.key.to_value)
+        }
+                     .map(&:to_source).join(', ')
       "#{key}: #{add_curly_brackets_if_necessary(new_value)}" if new_value.length > 0
     else
       "#{key}: #{argument_node.to_source}"

@@ -146,10 +146,10 @@ Synvert::Rewriter.new 'shoulda', 'use_matcher_syntax' do
     hash_node.children.each do |pair_node|
       method = pair_node.key.to_value
       new_calls << if method == :case_sensitive
-        (pair_node.value.to_value ? 'case_sensitive' : 'case_insensitive')
-      else
-        "#{message_converts.key?(method) ? message_converts[method] : method}(#{pair_node.value.to_source})"
-      end
+                     (pair_node.value.to_value ? 'case_sensitive' : 'case_insensitive')
+                   else
+                     "#{message_converts.key?(method) ? message_converts[method] : method}(#{pair_node.value.to_source})"
+                   end
     end
     new_calls.join('.')
   end
@@ -258,8 +258,8 @@ Synvert::Rewriter.new 'shoulda', 'use_matcher_syntax' do
         should_or_should_not = message.include?('_not') ? 'should_not' : 'should'
         field = node.arguments.first.to_source
         replace_with node.arguments[1..-1].map { |node_argument|
-                        "#{should_or_should_not} allow_value(#{node_argument.to_source}).for(#{field})"
-                      }.join("\n")
+                       "#{should_or_should_not} allow_value(#{node_argument.to_source}).for(#{field})"
+                     }.join("\n")
       end
     end
   end
@@ -301,7 +301,8 @@ Synvert::Rewriter.new 'shoulda', 'use_matcher_syntax' do
     # should filter_param(:password)
     # should filter_param(:ssn)
     with_node type: 'send', message: 'should_filter_params' do
-      replace_with node.arguments.map { |node_argument| "should filter_param(#{node_argument.to_source})" }.join("\n")
+      replace_with node.arguments.map { |node_argument| "should filter_param(#{node_argument.to_source})" }
+                       .join("\n")
     end
 
     # should_assign_to :user, :posts
@@ -317,7 +318,8 @@ Synvert::Rewriter.new 'shoulda', 'use_matcher_syntax' do
         klazz = node.arguments.last.values.first
         replace_with "should assign_to({{arguments.first}}).with_kind_of(#{klazz.to_source})"
       else
-        replace_with node.arguments.map { |node_argument| "should assign_to(#{node_argument.to_source})" }.join("\n")
+        replace_with node.arguments.map { |node_argument| "should assign_to(#{node_argument.to_source})" }
+                         .join("\n")
       end
     end
 
@@ -326,9 +328,10 @@ Synvert::Rewriter.new 'shoulda', 'use_matcher_syntax' do
     # should_not assign_to(:user)
     # should_not assign_to(:posts)
     with_node type: 'send', message: 'should_not_assign_to' do
-      replace_with node.arguments.map { |node_argument| "should_not assign_to(#{node_argument.to_source})" }.join(
-                      "\n"
-                    )
+      replace_with node.arguments.map { |node_argument| "should_not assign_to(#{node_argument.to_source})" }
+                       .join(
+                         "\n"
+                       )
     end
 
     # should_respond_with :success => should respond_with(:success)

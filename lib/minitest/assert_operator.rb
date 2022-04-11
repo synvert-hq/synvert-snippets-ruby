@@ -17,7 +17,13 @@ Synvert::Rewriter.new 'minitest', 'assert_operator' do
 
   within_files Synvert::RAILS_MINITEST_FILES do
     %i[< > <= >=].each do |operator|
-      with_node type: 'send', receiver: nil, message: 'assert', arguments: { size: 1, first: { type: 'send', message: operator, arguments: { size: 1 } } } do
+      with_node type: 'send',
+                receiver: nil,
+                message: 'assert',
+                arguments: {
+                  size: 1,
+                  first: { type: 'send', message: operator, arguments: { size: 1 } }
+                } do
         replace :message, with: 'assert_operator'
         replace :arguments, with: "{{arguments.first.receiver}}, :#{operator}, {{arguments.first.arguments.first}}"
       end
