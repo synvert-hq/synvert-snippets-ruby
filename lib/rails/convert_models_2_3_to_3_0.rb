@@ -281,8 +281,8 @@ Synvert::Rewriter.new 'rails', 'convert_models_2_3_to_3_0' do
         argument_node = node.arguments.last
         if :hash == argument_node.type && keys.any? { |key| argument_node.key? key }
           replace_with add_receiver_if_necessary(
-                         "#{generate_new_queries(argument_node)}.#{message}({{arguments.first}})"
-                       )
+            "#{generate_new_queries(argument_node)}.#{message}({{arguments.first}})"
+          )
         end
       end
     end
@@ -377,8 +377,8 @@ Synvert::Rewriter.new 'rails', 'convert_models_2_3_to_3_0' do
           batch_options = generate_batch_options(argument_node)
           if batch_options.length > 0
             replace_with add_receiver_if_necessary(
-                           "#{generate_new_queries(argument_node)}.#{message}(#{batch_options})"
-                         )
+              "#{generate_new_queries(argument_node)}.#{message}(#{batch_options})"
+            )
           else
             replace_with add_receiver_if_necessary("#{generate_new_queries(argument_node)}.#{message}")
           end

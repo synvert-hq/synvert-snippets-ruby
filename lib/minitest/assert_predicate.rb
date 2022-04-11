@@ -21,7 +21,10 @@ Synvert::Rewriter.new 'minitest', 'assert_predicate' do
     # assert expected.zero?
     # =>
     # assert_predicate expected, :zero?
-    with_node type: 'send', receiver: nil, message: 'assert', arguments: { size: 1, first: { type: 'send', message: 'zero?', arguments: { size: 0 } } } do
+    with_node type: 'send',
+              receiver: nil,
+              message: 'assert',
+              arguments: { size: 1, first: { type: 'send', message: 'zero?', arguments: { size: 0 } } } do
       replace :message, with: 'assert_predicate'
       replace :arguments, with: '{{arguments.first.receiver}}, :zero?'
     end

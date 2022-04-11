@@ -60,8 +60,8 @@ Synvert::Rewriter.new 'will_paginate', 'use_new_syntax' do
       argument_node = node.arguments.last
       if :hash == argument_node.type && (ar_keys & argument_node.keys.map(&:to_value)).length > 0
         replace_with add_receiver_if_necessary(
-                       "#{generate_new_queries(argument_node)}.#{generate_will_paginate_query(argument_node)}"
-                     )
+          "#{generate_new_queries(argument_node)}.#{generate_will_paginate_query(argument_node)}"
+        )
       end
     end
 
@@ -78,10 +78,10 @@ Synvert::Rewriter.new 'will_paginate', 'use_new_syntax' do
           new_code << generate_new_queries(argument_node)
         end
         new_code << if argument_node.key? :per_page
-          "find_each(:batch_size => #{argument_node.hash_value(:per_page).to_source})"
-        else
-          'find_each'
-        end
+                      "find_each(:batch_size => #{argument_node.hash_value(:per_page).to_source})"
+                    else
+                      'find_each'
+                    end
         replace_with add_receiver_if_necessary(new_code.join('.'))
       end
     end

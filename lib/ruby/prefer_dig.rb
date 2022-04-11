@@ -16,7 +16,10 @@ Synvert::Rewriter.new 'ruby', 'prefer_dig' do
   EOS
 
   within_files Synvert::ALL_RUBY_FILES do
-    with_node({ type: 'and', right_value: { type: 'send', message: :[], arguments: { size: 1 } } }, { stop_when_match: true }) do
+    with_node(
+      { type: 'and', right_value: { type: 'send', message: :[], arguments: { size: 1 } } },
+      { stop_when_match: true }
+    ) do
       writeable_node = node.dup
       param_names = []
       while :and == writeable_node.type && :and == writeable_node.left_value.type && writeable_node.right_value.receiver == writeable_node.left_value.right_value
@@ -24,7 +27,8 @@ Synvert::Rewriter.new 'ruby', 'prefer_dig' do
         writeable_node = writeable_node.left_value
       end
       if :and == writeable_node.type && :send == writeable_node.left_value.type && writeable_node.right_value.receiver == writeable_node.left_value &&
-        :[] == writeable_node.left_value.message && writeable_node.left_value.arguments.size == 1
+         :[] == writeable_node.left_value.message && writeable_node.left_value.arguments.size == 1
+
         param_names << writeable_node.right_value.arguments.first.to_source
         writeable_node = writeable_node.left_value
 

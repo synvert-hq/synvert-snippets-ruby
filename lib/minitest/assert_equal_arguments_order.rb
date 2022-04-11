@@ -17,7 +17,10 @@ Synvert::Rewriter.new 'minitest', 'assert_equal_arguments_order' do
 
   within_files Synvert::RAILS_MINITEST_FILES do
     primitive_types = %i(str sym int float true false)
-    with_node type: 'send', receiver: nil, message: 'assert_equal', arguments: { size: 2, second: { type: { in: primitive_types } } } do
+    with_node type: 'send',
+              receiver: nil,
+              message: 'assert_equal',
+              arguments: { size: 2, second: { type: { in: primitive_types } } } do
       replace :arguments, with: "{{arguments.second}}, {{arguments.first}}"
     end
   end
