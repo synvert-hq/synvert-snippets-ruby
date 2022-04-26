@@ -21,10 +21,8 @@ Synvert::Rewriter.new 'minitest', 'assert_predicate' do
     # assert expected.zero?
     # =>
     # assert_predicate expected, :zero?
-    with_node type: 'send',
-              receiver: nil,
-              message: 'assert',
-              arguments: { size: 1, first: { type: 'send', message: 'zero?', arguments: { size: 0 } } } do
+    find_node '.send[receiver=nil][message=assert][arguments.size=1]
+                    [arguments.first=.send[message=zero?][arguments.size=0]]' do
       replace :message, with: 'assert_predicate'
       replace :arguments, with: '{{arguments.first.receiver}}, :zero?'
     end
@@ -32,7 +30,7 @@ Synvert::Rewriter.new 'minitest', 'assert_predicate' do
     # assert_equal 0, expected
     # =>
     # assert_predicate expected, :zero?
-    with_node type: 'send', receiver: nil, message: 'assert_equal', arguments: { size: 2, first: 0 } do
+    find_node '.send[receiver=nil][message=assert_equal][arguments.size=2][arguments.first=0]' do
       replace :message, with: 'assert_predicate'
       replace :arguments, with: '{{arguments.second}}, :zero?'
     end

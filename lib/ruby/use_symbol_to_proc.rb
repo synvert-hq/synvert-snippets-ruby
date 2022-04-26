@@ -25,13 +25,12 @@ Synvert::Rewriter.new 'ruby', 'use_symbol_to_proc' do
     # (1..100).map { |i| i.to_s }
     # =>
     # (1..100).map(&:to_s)
-    %w[each map].each do |message|
-      with_node type: 'block', caller: { message: message }, arguments: { size: 1 } do
-        argument_name = node.arguments.first.name.to_s
-        if_only_exist_node type: 'send', receiver: argument_name, arguments: { size: 0 } do
-          replace_with "{{caller}}(&:{{body.first.message}})"
-        end
-      end
+    find_node '.block[caller=.send[message in (each, map)]]
+                     [arguments.size=1]
+                     [body.size=1]
+                     [body.first=.send[arguments.size=0]]
+                     [body.first.receiver={{arguments.first}}]' do
+      replace_with '{{caller}}(&:{{body.first.message}})'
     end
   end
 end

@@ -36,13 +36,11 @@ Synvert::Rewriter.new 'ruby', 'nested_class_definition' do
     #     def test; end
     #   end
     # end
-    within_node type: 'class' do
+    find_node '.class[name=~/::/]' do
       original_name = node.name.to_source
-      if original_name.include?('::') && !original_names.include?(original_name)
-        original_names << original_name
-        module_name, = original_name.split('::', 2)
-        wrap with: "module #{module_name}"
-      end
+      original_names << original_name
+      module_name, = original_name.split('::', 2)
+      wrap with: "module #{module_name}"
     end
   end
 
@@ -53,7 +51,7 @@ Synvert::Rewriter.new 'ruby', 'nested_class_definition' do
     # =>
     # class Bar < Base
     # end
-    within_node type: 'class', name: { in: original_names } do
+    find_node ".class[name IN (#{original_names.join(",")})]" do
       original_name = node.name.to_source
       _, class_name = original_name.split('::', 2)
       replace :name, with: class_name
