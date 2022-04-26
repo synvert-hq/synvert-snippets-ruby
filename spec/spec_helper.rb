@@ -5,9 +5,6 @@ $LOAD_PATH.unshift(File.join(File.dirname(__FILE__), '..', 'lib'))
 require 'synvert/core'
 require 'fakefs/spec_helpers'
 
-require 'coveralls'
-Coveralls.wear!
-
 Dir[File.expand_path(File.join(File.dirname(__FILE__), 'support/*.rb'))].each { |f| require f }
 
 RSpec.configure do |config|
