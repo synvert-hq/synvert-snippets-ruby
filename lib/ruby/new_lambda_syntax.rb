@@ -5,26 +5,29 @@ Synvert::Rewriter.new 'ruby', 'new_lambda_syntax' do
     Use ruby new lambda syntax
 
     ```ruby
-    lambda { # do some thing }
+    lambda { test }
+    lambda { |a, b, c| a + b + c }
     ```
 
     =>
 
     ```ruby
-    -> { # do some thing }
+    -> { test }
+    ->(a, b, c) { a + b + c }
     ```
   EOS
 
   if_ruby '1.9.0'
 
   within_files Synvert::ALL_RUBY_FILES do
+    # lambda { test } => -> { test }
+    find_node '.block[caller=.send[receiver=nil][message=lambda]][arguments.size=0]' do
+      replace_with '-> { {{body}} }'
+    end
+
     # lambda { |a, b, c| a + b + c } => ->(a, b, c) { a + b + c }
-    within_node type: 'block', caller: { type: 'send', message: 'lambda' } do
-      if node.arguments.empty?
-        replace_with '-> { {{body}} }'
-      else
-        replace_with '->({{arguments}}) { {{body}} }'
-      end
+    find_node '.block[caller=.send[receiver=nil][message=lambda]][arguments.size > 0]' do
+      replace_with '->({{arguments}}) { {{body}} }'
     end
   end
 end

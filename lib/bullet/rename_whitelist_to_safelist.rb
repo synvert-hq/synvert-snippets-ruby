@@ -26,16 +26,16 @@ Synvert::Rewriter.new('bullet', 'rename_whitelist_to_safelist') do
   if_gem 'bullet', '>= 6.1.5'
 
   within_files Synvert::ALL_RUBY_FILES do
-    {
+    bullet_methods = {
       add_whitelist: 'add_safelist',
       delete_whitelist: 'delete_safelist',
       get_whitelist_associations: 'get_safelist_associations',
       reset_whitelist: 'reset_safelist',
       clear_whitelist: 'clear_safelist'
-    }.each do |old_method, new_method|
-      with_node type: 'send', receiver: 'Bullet', message: old_method do
-        replace :message, with: new_method
-      end
+    }
+
+    find_node ".send[receiver=Bullet][message IN (#{bullet_methods.keys.join(' ')})]" do
+      replace :message, with: bullet_methods[node.message.to_sym]
     end
   end
 end

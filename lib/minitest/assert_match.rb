@@ -16,13 +16,8 @@ Synvert::Rewriter.new 'minitest', 'assert_match' do
   EOS
 
   within_files Synvert::RAILS_MINITEST_FILES do
-    with_node type: 'send',
-              receiver: nil,
-              message: 'assert',
-              arguments: {
-                size: 1,
-                first: { type: 'send', message: 'match?', arguments: { size: 1 } }
-              } do
+    find_node '.send[receiver=nil][message=assert][arguments.size=1]
+                    [arguments.first=.send[message=match?][arguments.size=1]]' do
       replace :message, with: 'assert_match'
       replace :arguments, with: '{{arguments.first.receiver}}, {{arguments.first.arguments.first}}'
     end

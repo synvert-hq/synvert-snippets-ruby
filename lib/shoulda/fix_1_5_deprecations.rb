@@ -49,18 +49,8 @@ Synvert::Rewriter.new 'shoulda', 'fix_1_5_deprecations' do
     # should validate_format_of(:email).with('user@example.com')
     # =>
     # should allow_value('user@example.com').for(:email)
-    with_node type: 'send',
-              message: 'should',
-              arguments: {
-                first: {
-                  type: 'send',
-                  receiver: {
-                    type: 'send',
-                    message: 'validate_format_of'
-                  },
-                  message: 'with'
-                }
-              } do
+    find_node '.send[message=should][arguments.size=1]
+                    [arguments.first=.send[message=with][receiver=.send[message=validate_format_of][arguments.size=1]]]' do
       replace_with "should allow_value({{arguments.first.arguments.first}}).for({{arguments.first.receiver.arguments.first}})"
     end
   end
@@ -71,7 +61,8 @@ Synvert::Rewriter.new 'shoulda', 'fix_1_5_deprecations' do
     # should "assigns user" do
     #   assert_not_nil assigns(:user)
     # end
-    with_node type: 'send', message: 'should', arguments: { first: { type: 'send', message: 'assign_to' } } do
+    find_node '.send[message=should][arguments.size=1]
+                    [arguments.first=.send[message=assign_to][arguments.size=1]]' do
       replace_with <<~EOS
         should 'assigns {{arguments.first.arguments.first.to_value}}' do
           assert_not_nil assigns({{arguments.first.arguments.first}})
@@ -84,7 +75,8 @@ Synvert::Rewriter.new 'shoulda', 'fix_1_5_deprecations' do
     # should "no assigns user" do
     #   assert_nil assigns(:user)
     # end
-    with_node type: 'send', message: 'should_not', arguments: { first: { type: 'send', message: 'assign_to' } } do
+    find_node '.send[message=should_not][arguments.size=1]
+                    [arguments.first=.send[message=assign_to][arguments.size=1]]' do
       replace_with <<~EOS
         should 'no assigns {{arguments.first.arguments.first.to_value}}' do
           assert_nil assigns({{arguments.first.arguments.first}})
@@ -97,17 +89,8 @@ Synvert::Rewriter.new 'shoulda', 'fix_1_5_deprecations' do
     # should "assigns user" do
     #   assert_equal @user, assigns(:user)
     # end
-    with_node type: 'send',
-              message: 'should',
-              arguments: {
-                first: {
-                  type: 'block',
-                  caller: {
-                    type: 'send',
-                    message: 'assign_to'
-                  }
-                }
-              } do
+    find_node '.send[message=should][arguments.size=1]
+                    [arguments.first=.block[caller=.send[message=assign_to][arguments.size=1]]]' do
       replace_with <<~EOS
         should 'assigns {{arguments.first.caller.arguments.first.to_value}}' do
           assert_equal {{arguments.first.body.first}}, assigns({{arguments.first.caller.arguments.first}})
@@ -120,17 +103,8 @@ Synvert::Rewriter.new 'shoulda', 'fix_1_5_deprecations' do
     # should "no assigns user" do
     #   assert_not_equal @user, assigns(:user)
     # end
-    with_node type: 'send',
-              message: 'should_not',
-              arguments: {
-                first: {
-                  type: 'block',
-                  caller: {
-                    type: 'send',
-                    message: 'assign_to'
-                  }
-                }
-              } do
+    find_node '.send[message=should_not][arguments.size=1]
+                    [arguments.first=.block[caller=.send[message=assign_to][arguments.size=1]]]' do
       replace_with <<~EOS
         should 'no assigns {{arguments.first.caller.arguments.first.to_value}}' do
           assert_not_equal {{arguments.first.body.first}}, assigns({{arguments.first.caller.arguments.first}})
@@ -143,14 +117,8 @@ Synvert::Rewriter.new 'shoulda', 'fix_1_5_deprecations' do
     # should "responds with application/json" do
     #   assert_equal "application/json", response.content_type
     # end
-    within_node type: 'send',
-                message: 'should',
-                arguments: {
-                  first: {
-                    type: 'send',
-                    message: 'respond_with_content_type'
-                  }
-                } do
+    find_node '.send[message=should][arguments.size=1]
+                    [arguments.first=.send[message=respond_with_content_type][arguments.size=1]]' do
       replace_with <<~EOS
         should 'responds with {{arguments.first.arguments.first.to_value}}' do
           assert_equal {{arguments.first.arguments.first}}, response.content_type

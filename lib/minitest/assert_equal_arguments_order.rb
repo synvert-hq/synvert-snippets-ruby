@@ -16,12 +16,9 @@ Synvert::Rewriter.new 'minitest', 'assert_equal_arguments_order' do
   EOS
 
   within_files Synvert::RAILS_MINITEST_FILES do
-    primitive_types = %i(str sym int float true false)
-    with_node type: 'send',
-              receiver: nil,
-              message: 'assert_equal',
-              arguments: { size: 2, second: { type: { in: primitive_types } } } do
-      replace :arguments, with: "{{arguments.second}}, {{arguments.first}}"
+    find_node ".send[receiver=nil][message=assert_equal][arguments.size=2]
+                    [arguments.second.type IN (str sym int float true false)]" do
+      replace :arguments, with: '{{arguments.second}}, {{arguments.first}}'
     end
   end
 end

@@ -67,24 +67,14 @@ Synvert::Rewriter.new 'ruby', 'merge_to_square_brackets' do
     # enum.inject({}) { |h, e| h.merge!(e => e) }
     # =>
     # enum.inject({}) { |h, e| h[e] = e; h }
-    within_node type: 'block', caller: { type: 'send', message: 'inject' }, arguments: { size: 2 }, body: { size: 1 } do
+    find_node '.block[caller=.send[message=inject]][arguments.size=2][body.size=1]' do
       hash_name = node.arguments.first.name.to_s
       block_start_line = node.line
-      %w[merge merge!].each do |message|
-        with_node type: 'send',
-                  receiver: hash_name,
-                  message: message,
-                  arguments: {
-                    size: 1,
-                    first: {
-                      type: 'hash'
-                    }
-                  } do
-          merge_line = node.line
-          splitter = block_start_line == merge_line ? '; ' : "\n"
-          new_code = hash_node_to_square_brackets_code(node.arguments.first, splitter)
-          replace_with "#{new_code}#{splitter}#{hash_name}"
-        end
+      find_node ".send[receiver=#{hash_name}][message IN (merge merge!)][arguments.size=1][arguments.first=.hash]" do
+        merge_line = node.line
+        splitter = block_start_line == merge_line ? '; ' : "\n"
+        new_code = hash_node_to_square_brackets_code(node.arguments.first, splitter)
+        replace_with "#{new_code}#{splitter}#{hash_name}"
       end
     end
 
@@ -99,34 +89,14 @@ Synvert::Rewriter.new 'ruby', 'merge_to_square_brackets' do
     # enum.each_with_object({}) { |e, h| h.merge!(e => e) }
     # =>
     # enum.each_with_object({}) { |e, h| h[e] = e }
-    within_node type: 'block',
-                caller: {
-                  type: 'send',
-                  message: 'each_with_object'
-                },
-                arguments: {
-                  size: 2
-                },
-                body: {
-                  size: 1
-                } do
+    find_node '.block[caller=.send[message=each_with_object]][arguments.size=2][body.size=1]' do
       hash_name = node.arguments.last.name.to_s
       block_start_line = node.line
-      %w[merge merge!].each do |message|
-        with_node type: 'send',
-                  receiver: hash_name,
-                  message: message,
-                  arguments: {
-                    size: 1,
-                    first: {
-                      type: 'hash'
-                    }
-                  } do
-          merge_line = node.line
-          splitter = block_start_line == merge_line ? '; ' : "\n"
-          new_code = hash_node_to_square_brackets_code(node.arguments.first, splitter)
-          replace_with new_code
-        end
+      find_node ".send[receiver=#{hash_name}][message IN (merge merge!)][arguments.size=1][arguments.first=.hash]" do
+        merge_line = node.line
+        splitter = block_start_line == merge_line ? '; ' : "\n"
+        new_code = hash_node_to_square_brackets_code(node.arguments.first, splitter)
+        replace_with new_code
       end
     end
   end
@@ -135,17 +105,7 @@ Synvert::Rewriter.new 'ruby', 'merge_to_square_brackets' do
     # hash.merge!(e => e)
     # =>
     # hash[e] = e
-    with_node type: 'send',
-              receiver: {
-                not: nil
-              },
-              message: 'merge!',
-              arguments: {
-                size: 1,
-                first: {
-                  type: 'hash'
-                }
-              } do
+    find_node '.send[receiver!=nil][message=merge!][arguments.size=1][arguments.first=.hash]' do
       new_code = hash_node_to_square_brackets_code(node.arguments.first, "\n")
       replace_with new_code
     end

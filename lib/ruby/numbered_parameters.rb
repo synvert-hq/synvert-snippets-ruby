@@ -22,9 +22,9 @@ Synvert::Rewriter.new 'ruby', 'numbered parameters' do
   if_ruby '2.7'
 
   within_files Synvert::ALL_RUBY_FILES do
-    within_node type: 'block', arguments: { length: { not: 0 } } do
+    find_node '.block[arguments.size > 0]' do
       node.arguments.each_with_index do |argument, index|
-        with_node type: 'lvar', name: argument.name do
+        find_node ".lvar[name=#{argument.name}]" do
           replace_with "_#{index + 1}"
         end
       end

@@ -22,13 +22,8 @@ Synvert::Rewriter.new 'minitest', 'refute_kind_of' do
     # refute('rubocop-minitest'.kind_of?(String))
     # =>
     # refute_kind_of(String, 'rubocop-minitest')
-    with_node type: 'send',
-              receiver: nil,
-              message: 'refute',
-              arguments: {
-                size: 1,
-                first: { type: 'send', message: 'kind_of?', arguments: { size: 1 } }
-              } do
+    find_node '.send[receiver=nil][message=refute][arguments.size=1]
+                    [arguments.first=.send[message=kind_of?][arguments.size=1]]' do
       replace :message, with: 'refute_kind_of'
       replace :arguments, with: '{{arguments.first.arguments.first}}, {{arguments.first.receiver}}'
     end
@@ -36,17 +31,8 @@ Synvert::Rewriter.new 'minitest', 'refute_kind_of' do
     # assert(!'rubocop-minitest'.kind_of?(String))
     # =>
     # refute_kind_of(String, 'rubocop-minitest')
-    with_node type: 'send',
-              receiver: nil,
-              message: 'assert',
-              arguments: {
-                size: 1,
-                first: {
-                  type: 'send',
-                  receiver: { type: 'send', message: 'kind_of?', arguments: { size: 1 } },
-                  message: '!'
-                }
-              } do
+    find_node '.send[receiver=nil][message=assert][arguments.size=1]
+                    [arguments.first=.send[message=!][receiver=.send[message=kind_of?][arguments.size=1]]]' do
       replace :message, with: 'refute_kind_of'
       replace :arguments, with: '{{arguments.first.receiver.arguments.first}}, {{arguments.first.receiver.receiver}}'
     end

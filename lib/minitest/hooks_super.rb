@@ -38,18 +38,12 @@ Synvert::Rewriter.new 'minitest', 'hooks_super' do
   EOS
 
   within_files Synvert::RAILS_MINITEST_FILES do
-    with_node type: 'class', parent_class: 'Minitest::Test' do
-      with_node type: 'def', name: 'setup' do
-        unless_exist_node type: 'super' do
-          prepend 'super'
-        end
-      end
+    find_node '.class[parent_class=Minitest::Test] .def[name=setup]:not_has(> .super)' do
+      prepend 'super'
+    end
 
-      with_node type: 'def', name: 'teardown' do
-        unless_exist_node type: 'super' do
-          append 'super'
-        end
-      end
+    find_node '.class[parent_class=Minitest::Test] .def[name=teardown]:not_has(> .super)' do
+      append 'super'
     end
   end
 end

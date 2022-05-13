@@ -27,17 +27,15 @@ Synvert::Rewriter.new 'ruby', 'block_to_yield' do
     # def slow
     #   yield
     # end
-    within_node type: 'def', arguments: { contain: '&block' } do
+    find_node '.def[arguments INCLUDES &block]' do
       if node.arguments.size > 1
         delete 'arguments.last'
       else
         delete :arguments, :parentheses
       end
-      goto_node :body do
-        with_node type: 'send', receiver: 'block', message: 'call' do
-          delete :receiver, :dot
-          replace :message, with: 'yield'
-        end
+      find_node '.send[receiver=block][message=call]' do
+        delete :receiver, :dot
+        replace :message, with: 'yield'
       end
     end
   end

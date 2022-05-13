@@ -16,7 +16,7 @@ Synvert::Rewriter.new 'minitest', 'assert_nil' do
   EOS
 
   within_files Synvert::RAILS_MINITEST_FILES do
-    with_node type: 'send', receiver: nil, message: 'assert_equal', arguments: { size: 2, first: nil } do
+    find_node '.send[receiver=nil][message=assert_equal][arguments.size=2][arguments.first=nil]' do
       replace :message, with: 'assert_nil'
       delete 'arguments.first'
     end

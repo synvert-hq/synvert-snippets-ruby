@@ -19,13 +19,9 @@ Synvert::Rewriter.new 'ruby', 'new_1_9_hash_syntax' do
 
   within_files Synvert::ALL_RUBY_FILES do
     # {:foo => 'bar'} => {foo: 'bar'}
-    within_node type: 'hash' do
-      with_node type: 'pair' do
-        if :sym == node.key.type && node.key.to_source =~ /\A:([^'"]+)\z/
-          new_key = node.key.to_source[1..-1]
-          replace_with "#{new_key}: {{value}}"
-        end
-      end
+    find_node %q{.hash > .pair[key=.sym][key=~/\A:([^'"]+)\z/]} do
+      new_key = node.key.to_source[1..-1]
+      replace_with "#{new_key}: {{value}}"
     end
   end
 end

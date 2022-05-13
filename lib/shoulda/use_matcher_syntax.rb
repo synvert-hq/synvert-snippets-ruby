@@ -191,7 +191,7 @@ Synvert::Rewriter.new 'shoulda', 'use_matcher_syntax' do
       should_have_readonly_attributes
       should_not_have_readonly_attributes
     ].each do |message|
-      with_node type: 'send', message: message do
+      find_node ".send[message=#{message}]" do
         new_message =
           message.start_with?('should_not') ? message.sub('should_not_', 'should_not ') : message.sub('_', ' ')
         if node.arguments.size == 1
@@ -212,7 +212,7 @@ Synvert::Rewriter.new 'shoulda', 'use_matcher_syntax' do
     # should_ensure_length_in_range :password, (6..20)
     # =>
     # should ensure_length_of(:password).is_at_least(6).is_at_most(20)
-    with_node type: 'send', message: 'should_ensure_length_in_range' do
+    find_node '.send[message=should_ensure_length_in_range]' do
       range = strip_brackets(node.arguments.second.to_source).split('..')
       with_other_calls(
         node,
@@ -223,28 +223,28 @@ Synvert::Rewriter.new 'shoulda', 'use_matcher_syntax' do
     # should_ensure_length_at_least :name, 3
     # =>
     # should ensure_length_of(:name).is_at_least(3)
-    with_node type: 'send', message: 'should_ensure_length_at_least' do
+    find_node '.send[message=should_ensure_length_at_least]' do
       with_other_calls(node, 'should ensure_length_of({{arguments.first}}).is_at_least({{arguments.second}})')
     end
 
     # should_ensure_length_at_most :name, 30
     # =>
     # should ensure_length_of(:name).is_at_most(30)
-    with_node type: 'send', message: 'should_ensure_length_at_most' do
+    find_node '.send[message=should_ensure_length_at_most]' do
       with_other_calls(node, 'should ensure_length_of({{arguments.first}}).is_at_most({{arguments.second}})')
     end
 
     # should_ensure_length_is :ssn, 9
     # =>
     # should ensure_length_of(:ssn).is_equal_to(9)
-    with_node type: 'send', message: 'should_ensure_length_is' do
+    find_node '.send[message=should_ensure_length_is]' do
       with_other_calls(node, 'should ensure_length_of({{arguments.first}}).is_equal_to({{arguments.second}})')
     end
 
     # should_ensure_value_in_range :age, (0..100)
     # =>
     # should ensure_inclusion_of(:age).in_range(0..100)
-    with_node type: 'send', message: 'should_ensure_value_in_range' do
+    find_node '.send[message=should_ensure_value_in_range]' do
       range = strip_brackets(node.arguments.second.to_source)
       with_other_calls(node, "should ensure_inclusion_of({{arguments.first}}).in_range(#{range})")
     end
@@ -254,11 +254,10 @@ Synvert::Rewriter.new 'shoulda', 'use_matcher_syntax' do
     # should allow_value('isbn 1 2345 6789 0').for(:isbn)
     # should allow_value('ISBN 1-2345-6789-0').for(:isbn)
     %w[should_allow_values_for should_not_allow_values_for].each do |message|
-      with_node type: 'send', message: message do
+      find_node ".send[message=#{message}]" do
         should_or_should_not = message.include?('_not') ? 'should_not' : 'should'
-        field = node.arguments.first.to_source
         replace_with node.arguments[1..-1].map { |node_argument|
-                       "#{should_or_should_not} allow_value(#{node_argument.to_source}).for(#{field})"
+                       "#{should_or_should_not} allow_value(#{node_argument.to_source}).for({{arguments.first}})"
                      }.join("\n")
       end
     end
@@ -266,33 +265,33 @@ Synvert::Rewriter.new 'shoulda', 'use_matcher_syntax' do
 
   within_files Synvert::RAILS_CONTROLLER_TEST_FILES do
     # should_assign_to(:user) { @user } => should assign_to(:user).with(@user)
-    with_node type: 'block', caller: { type: 'send', message: 'should_assign_to' } do
+    find_node '.block[caller=.send[message=should_assign_to]]' do
       replace_with 'should assign_to({{caller.arguments}}).with({{body}})'
     end
 
     # should_set_session(:user_id) { @user.id }
     # =>
     # should set_session(:user_id).to(@user.id)
-    with_node type: 'block', caller: { type: 'send', message: 'should_set_session' } do
+    find_node '.block[caller=.send[message=should_set_session]]' do
       replace_with 'should set_session({{caller.arguments}}).to({{body}})'
     end
 
     # should_redirect_to("the user profile") { user_url(@user) }
     # =>
     # should redirect_to("the user profile") { user_url(@user) }
-    with_node type: 'block', caller: { type: 'send', message: 'should_redirect_to' } do
+    find_node '.block[caller=.send[message=should_redirect_to]]' do
       replace_with 'should redirect_to({{caller.arguments}}) { {{body}} }'
     end
 
     # should_set_the_flash_to "Thank you for placing this order."
     # =>
     # should set_the_flash.to("Thank you for placing this order.")
-    with_node type: 'send', message: 'should_set_the_flash_to' do
+    find_node '.send[message=should_set_the_flash_to]' do
       replace_with 'should set_the_flash.to({{arguments}})'
     end
 
     # should_not_set_the_flash => should_not set_the_flash
-    with_node type: 'send', message: 'should_not_set_the_flash' do
+    find_node '.send[message=should_not_set_the_flash]' do
       replace_with 'should_not set_the_flash'
     end
 
@@ -300,7 +299,7 @@ Synvert::Rewriter.new 'shoulda', 'use_matcher_syntax' do
     # =>
     # should filter_param(:password)
     # should filter_param(:ssn)
-    with_node type: 'send', message: 'should_filter_params' do
+    find_node '.send[message=should_filter_params]' do
       replace_with node.arguments.map { |node_argument| "should filter_param(#{node_argument.to_source})" }
                        .join("\n")
     end
@@ -313,7 +312,7 @@ Synvert::Rewriter.new 'shoulda', 'use_matcher_syntax' do
     # should_assign_to :user, :class => User
     # =>
     # should assign_to(:user).with_kind_of(User)
-    with_node type: 'send', message: 'should_assign_to' do
+    find_node '.send[message=should_assign_to]' do
       if node.arguments.last.type == :hash
         klazz = node.arguments.last.values.first
         replace_with "should assign_to({{arguments.first}}).with_kind_of(#{klazz.to_source})"
@@ -327,11 +326,9 @@ Synvert::Rewriter.new 'shoulda', 'use_matcher_syntax' do
     # =>
     # should_not assign_to(:user)
     # should_not assign_to(:posts)
-    with_node type: 'send', message: 'should_not_assign_to' do
+    find_node '.send[message=should_not_assign_to]' do
       replace_with node.arguments.map { |node_argument| "should_not assign_to(#{node_argument.to_source})" }
-                       .join(
-                         "\n"
-                       )
+                       .join("\n")
     end
 
     # should_respond_with :success => should respond_with(:success)
@@ -341,27 +338,20 @@ Synvert::Rewriter.new 'shoulda', 'use_matcher_syntax' do
     # should_render_template :new => should render_template(:new)
     #
     # should_render_with_layout "special" => should render_with_layout("special")
-    %w[
-      should_respond_with
-      should_respond_with_content_type
-      should_render_template
-      should_render_with_layout
-    ].each do |message|
-      with_node type: 'send', message: message do
-        new_message = message.sub('_', ' ')
-        replace_with "#{new_message}({{arguments}})"
-      end
+    find_node '.send[message IN (should_respond_with should_respond_with_content_type should_render_template should_render_with_layout)]' do
+      new_message = node.message.to_s.sub('_', ' ')
+      replace_with "#{new_message}({{arguments}})"
     end
 
     # should_render_without_layout => should_not render_layout
-    with_node type: 'send', message: 'should_render_without_layout' do
+    find_node '.send[message=should_render_without_layout]' do
       replace_with 'should_not render_with_layout'
     end
 
     # should_route :get, "/posts", :controller => :posts, :action => :index
     # =>
     # should route(:get, "/posts").to(:controller => :posts, :action => :index)
-    with_node type: 'send', message: 'should_route' do
+    find_node '.send[message=should_route]' do
       replace_with 'should route({{arguments.first}}, {{arguments.second}}).to({{arguments.last}})'
     end
   end

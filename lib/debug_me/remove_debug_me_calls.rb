@@ -11,14 +11,14 @@ Synvert::Rewriter.new 'debug_me', 'remove_debug_me_calls' do
   within_files Synvert::ALL_RUBY_FILES do
     # removes debug_me methods
     # removes all debug_me calls that have a block
-    with_node type: 'block', caller: { type: 'send', message: 'debug_me' } do
+    find_node '.block[caller=.send[message=debug_me]]' do
       remove
     end
   end
 
   within_files Synvert::ALL_RUBY_FILES do
     # removes all debug_me calls that DO NOT have a block
-    with_node type: 'send', message: 'debug_me' do
+    find_node '.send[message=debug_me]' do
       remove
     end
   end

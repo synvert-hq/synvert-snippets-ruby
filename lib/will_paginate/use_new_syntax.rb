@@ -56,7 +56,7 @@ Synvert::Rewriter.new 'will_paginate', 'use_new_syntax' do
     # Post.paginate(:conditions => {:active => true}, :order => "created_at DESC", :per_page => 10, :page => 1)
     # =>
     # Post.where(:active => true).order("created_at DESC").paginate(:per_page => 10, :page => 1)
-    within_node type: 'send', message: 'paginate', arguments: { size: 1 } do
+    find_node '.send[message=paginate][arguments.size=1]' do
       argument_node = node.arguments.last
       if :hash == argument_node.type && (ar_keys & argument_node.keys.map(&:to_value)).length > 0
         replace_with add_receiver_if_necessary(
@@ -70,7 +70,7 @@ Synvert::Rewriter.new 'will_paginate', 'use_new_syntax' do
     # =>
     # Post.where(:active => true).order("created_at DESC").find_each(:batch_size => 10) do |post|
     # end
-    within_node type: 'send', message: 'paginated_each', arguments: { size: 1 } do
+    find_node '.send[message=paginated_each][arguments.size=1]' do
       argument_node = node.arguments.last
       if :hash == argument_node.type
         new_code = []
@@ -91,7 +91,7 @@ Synvert::Rewriter.new 'will_paginate', 'use_new_syntax' do
     # =>
     # Post.find_each do |post|
     # end
-    within_node type: 'send', message: 'paginated_each', arguments: { size: 0 } do
+    find_node '.send[message=paginated_each][arguments.size=0]' do
       replace :message, with: 'find_each'
     end
   end

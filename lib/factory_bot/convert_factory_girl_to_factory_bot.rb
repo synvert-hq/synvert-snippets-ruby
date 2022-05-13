@@ -68,14 +68,14 @@ Synvert::Rewriter.new 'factory_bot', 'convert_factory_girl_to_factory_bot' do
   EOS
 
   within_files Synvert::RAILS_TEST_FILES do
-    with_node type: 'const', to_source: 'FactoryGirl' do
+    find_node '.const[name=FactoryGirl]' do
       replace_with 'FactoryBot'
     end
 
-    with_node type: 'send', receiver: nil, message: 'require', arguments: { first: "'factory_girl'" } do
+    find_node ".send[receiver=nil][message=require][arguments.size=1][arguments.first='factory_girl']" do
       replace :arguments, with: "'factory_bot'"
     end
-    with_node type: 'send', receiver: nil, message: 'require', arguments: { first: "'factory_girl_rails'" } do
+    find_node ".send[receiver=nil][message=require][arguments.size=1][arguments.first='factory_girl_rails']" do
       replace :arguments, with: "'factory_bot_rails'"
     end
   end

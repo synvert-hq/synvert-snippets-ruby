@@ -22,13 +22,8 @@ Synvert::Rewriter.new 'minitest', 'refute_operator' do
       # refute(expected > actual)
       # =>
       # refute_operator(expected, :>, actual)
-      with_node type: 'send',
-                receiver: nil,
-                message: 'refute',
-                arguments: {
-                  size: 1,
-                  first: { type: 'send', message: operator, arguments: { size: 1 } }
-                } do
+      find_node ".send[receiver=nil][message=refute][arguments.size=1]
+                      [arguments.first=.send[message=#{operator}][arguments.size=1]]" do
         replace :message, with: 'refute_operator'
         replace :arguments, with: "{{arguments.first.receiver}}, :#{operator}, {{arguments.first.arguments.first}}"
       end
@@ -36,20 +31,9 @@ Synvert::Rewriter.new 'minitest', 'refute_operator' do
       # assert(!(expected > actual))
       # =>
       # refute_operator(expected, :>, actual)
-      with_node type: 'send',
-                receiver: nil,
-                message: 'assert',
-                arguments: {
-                  size: 1,
-                  first: {
-                    type: 'send',
-                    receiver: {
-                      type: 'begin',
-                      body: { size: 1, first: { type: 'send', message: operator, arguments: { size: 1 } } }
-                    },
-                    message: '!'
-                  }
-                } do
+      find_node ".send[receiver=nil][message=assert][arguments.size=1]
+                      [arguments.first=.send[message=!]
+                        [receiver=.begin[body.size=1][body.first=.send[message=#{operator}][arguments.size=1]]]]" do
         replace :message, with: 'refute_operator'
         replace :arguments,
                 with: "{{arguments.first.receiver.body.first.receiver}}, :#{operator}, {{arguments.first.receiver.body.first.arguments.first}}"

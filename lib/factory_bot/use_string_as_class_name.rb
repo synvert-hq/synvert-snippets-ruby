@@ -24,16 +24,9 @@ Synvert::Rewriter.new 'factory_bot', 'use_string_as_class_name' do
   EOS
 
   within_files Synvert::RAILS_FACTORY_FILES do
-    within_node type: 'block',
-                caller: {
-                  type: 'send',
-                  message: 'factory',
-                  arguments: {
-                    length: 2,
-                    second: { type: 'hash', class_value: { type: 'const' } }
-                  }
-                } do
-      replace 'caller.arguments.second.class_value', with: "'{{caller.arguments.second.class_value}}'"
+    find_node '.block[caller=.send[message=factory][arguments.size=2]] <caller.arguments>
+                     .hash:has(.pair[key=class][value=.const])' do
+      replace 'class_value', with: "'{{class_value}}'"
     end
   end
 end
