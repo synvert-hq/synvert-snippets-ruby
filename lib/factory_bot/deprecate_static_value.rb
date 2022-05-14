@@ -58,7 +58,7 @@ Synvert::Rewriter.new 'factory_bot', 'deprecate_static_value' do
   if_gem 'factory_bot', '>= 4.11'
 
   within_files Synvert::RAILS_FACTORY_FILES do
-    find_node ".block[caller=.send[message IN (factory transient trait)]] <body>
+    find_node ".block[caller=.send[message IN (factory transient trait)]] body
               > .send[receiver=nil][message NOT IN (association sequence before after factory callback)][arguments.size=1]" do
       if node.arguments.first.type == :hash
         new_arguments = add_curly_brackets_if_necessary(node.arguments.first.to_source)
