@@ -29,7 +29,7 @@ Synvert::Rewriter.new 'ruby', 'new_safe_navigation_operator' do
       if node.arguments.size == 1
         delete :arguments, :parentheses
       else
-        delete 'arguments.first'
+        delete 'arguments.first', and_comma: true
       end
     end
   end

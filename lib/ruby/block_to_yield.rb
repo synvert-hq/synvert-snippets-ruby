@@ -29,7 +29,7 @@ Synvert::Rewriter.new 'ruby', 'block_to_yield' do
     # end
     find_node '.def[arguments INCLUDES &block]' do
       if node.arguments.size > 1
-        delete 'arguments.last'
+        delete 'arguments.last', and_comma: true
       else
         delete :arguments, :parentheses
       end
