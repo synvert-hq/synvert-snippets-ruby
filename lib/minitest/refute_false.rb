@@ -23,7 +23,7 @@ Synvert::Rewriter.new 'minitest', 'refute_false' do
     # refute(actual)
     with_node type: 'send', receiver: nil, message: 'assert_equal', arguments: { size: 2, first: false } do
       replace :message, with: 'refute'
-      delete 'arguments.first'
+      delete 'arguments.first', and_comma: true
     end
 
     # assert(!something)

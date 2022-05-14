@@ -18,7 +18,7 @@ Synvert::Rewriter.new 'minitest', 'assert_nil' do
   within_files Synvert::RAILS_MINITEST_FILES do
     with_node type: 'send', receiver: nil, message: 'assert_equal', arguments: { size: 2, first: nil } do
       replace :message, with: 'assert_nil'
-      delete 'arguments.first'
+      delete 'arguments.first', and_comma: true
     end
   end
 end
