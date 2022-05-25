@@ -19,7 +19,8 @@ Synvert::Rewriter.new 'minitest', 'assert_operator' do
     find_node ".send[receiver=nil][message=assert][arguments.size=1]
                     [arguments.first=.send[message IN (< > <= >=)][arguments.size=1]]" do
       replace :message, with: 'assert_operator'
-      replace :arguments, with: "{{arguments.first.receiver}}, :#{node.arguments.first.message}, {{arguments.first.arguments.first}}"
+      replace :arguments,
+              with: "{{arguments.first.receiver}}, :#{node.arguments.first.message}, {{arguments.first.arguments.first}}"
     end
   end
 end
