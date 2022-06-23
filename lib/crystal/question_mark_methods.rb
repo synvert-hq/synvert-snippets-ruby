@@ -10,6 +10,8 @@ Synvert::Rewriter.new("crystal", "#{File.basename(__FILE__).split('.')[0]}") do
     object.start_with?(param)
     object.include?(param)
     object.exist?(param)
+    object.respond_to?(param)
+    a_hash.key?(param)
     ```
 
     =>
@@ -19,6 +21,8 @@ Synvert::Rewriter.new("crystal", "#{File.basename(__FILE__).split('.')[0]}") do
     object.starts_with?(param)
     object.includes?(param)
     object.exists?(param)
+    object.responds_to?(param)
+    a_hash.has_key?(param)
     ```
   EOS
 
@@ -27,7 +31,10 @@ Synvert::Rewriter.new("crystal", "#{File.basename(__FILE__).split('.')[0]}") do
     'end_with?'   => 'ends_with?',
     'start_with?' => 'starts_with?',
     'include?'    => 'includes?',
-    'exist?'      => 'exists?'
+    'exist?'      => 'exists?',
+    'respond_to?' => 'responds_to?',
+    'key?'        => 'has_key?',
+
   }
 
   method_names.each_pair do |ruby_name, crystal_name|

@@ -16,6 +16,10 @@ RSpec.describe 'Crystal pluralize question mark methods' do
         puts "who is old?"
       elsif File.exist?(__FILE__)
         puts "yes I exist."
+      elsif a_string.respond_to?(:downcase)
+        puts 'I can do that.'
+      elsif a_hash.key?('my_key')
+        puts 'I have your key'
       else
         puts a_string.upcase
       end
@@ -31,6 +35,10 @@ RSpec.describe 'Crystal pluralize question mark methods' do
         puts "who is old?"
       elsif File.exists?(__FILE__)
         puts "yes I exist."
+      elsif a_string.responds_to?(:downcase)
+        puts 'I can do that.'
+      elsif a_hash.has_key?('my_key')
+        puts 'I have your key'
       else
         puts a_string.upcase
       end
