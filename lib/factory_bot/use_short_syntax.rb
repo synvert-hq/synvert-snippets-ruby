@@ -87,7 +87,7 @@ Synvert::Rewriter.new 'factory_bot', 'use_short_syntax' do
   # prepend World(FactoryBot::Syntax::Methods)
   within_file 'features/support/env.rb' do
     find_node ':not_has(.send[message=World][arguments.size=1][arguments.first=FactoryBot::Syntax::Methods])' do
-      prepend 'World(FactoryBot::Syntax::Methods)'
+      insert_after 'World(FactoryBot::Syntax::Methods)'
     end
   end
 

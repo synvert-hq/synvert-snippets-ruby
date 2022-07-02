@@ -89,7 +89,7 @@ Synvert::Rewriter.new 'factory_girl', 'use_short_syntax' do
   # prepend World(FactoryGirl::Syntax::Methods)
   within_file 'features/support/env.rb' do
     find_node ':not_has(.send[message=World][arguments=(FactoryGirl::Syntax::Methods)])' do
-      prepend 'World(FactoryGirl::Syntax::Methods)'
+      insert_after 'World(FactoryGirl::Syntax::Methods)'
     end
   end
 
