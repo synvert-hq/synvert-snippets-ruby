@@ -69,7 +69,7 @@ Synvert::Rewriter.new 'factory_bot', 'convert_factory_girl_to_factory_bot' do
 
   within_files Synvert::RAILS_TEST_FILES do
     find_node '.const[name=FactoryGirl]' do
-      replace_with 'FactoryBot'
+      replace :name, with: 'FactoryBot'
     end
 
     find_node ".send[receiver=nil][message=require][arguments.size=1][arguments.first='factory_girl']" do
