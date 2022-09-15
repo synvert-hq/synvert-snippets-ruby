@@ -159,7 +159,7 @@ Synvert::Rewriter.new 'rails', 'upgrade_3_2_to_4_0' do
     end
 
     # remove config.middleware.xxx(..., ActionDispatch::BestStandardsSupport)
-    with_node type: 'send', arguments: { contain: 'ActionDispatch::BestStandardsSupport' } do
+    with_node type: 'send', arguments: { includes: 'ActionDispatch::BestStandardsSupport' } do
       remove
     end
 

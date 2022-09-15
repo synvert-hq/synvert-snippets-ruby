@@ -29,7 +29,7 @@ Synvert::Rewriter.new 'ruby', 'use_symbol_to_proc' do
                      [arguments.size=1]
                      [body.size=1]
                      [body.first=.send[arguments.size=0]]
-                     [body.first.receiver={{arguments.first}}]' do
+                     [body.first.receiver="{{arguments.first}}"]' do
       replace_with '{{caller}}(&:{{body.first.message}})'
     end
   end
