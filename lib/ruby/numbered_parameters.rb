@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-Synvert::Rewriter.new 'ruby', 'numbered parameters' do
+Synvert::Rewriter.new 'ruby', 'numbered_parameters' do
   description <<~EOS
     It uses numbered parameters.
 
