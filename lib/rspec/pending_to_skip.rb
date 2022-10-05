@@ -98,7 +98,11 @@ Synvert::Rewriter.new 'rspec', 'pending_to_skip' do
       #   do_something_possibly_fail
       # end
       with_node type: 'send', message: message, arguments: { size: 2, last: { type: 'hash' } } do
-        replace 'arguments.last', with: node.arguments.last.to_source.sub('pending', 'skip')
+        goto_node 'arguments.last' do
+          with_node type: 'pair', key: :pending do
+            replace 'key', with: node.key.to_source.sub('pending', 'skip')
+          end
+        end
       end
     end
   end
