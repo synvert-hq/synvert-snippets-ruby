@@ -49,7 +49,7 @@ Synvert::Rewriter.new 'rspec', 'explicit_spec_type' do
   # describe SomeModel do
   # end
   # =>
-  # describe SomeModel, :type => :model do
+  # describe SomeModel, type: :model do
   # end
   {
     models: 'model',
@@ -61,6 +61,7 @@ Synvert::Rewriter.new 'rspec', 'explicit_spec_type' do
     api: 'request',
     routing: 'routing',
     views: 'view',
+    services: 'service',
     features: 'feature'
   }.each do |directory, type|
     within_files ["spec/#{directory}/**/*_spec.rb", "engines/*/spec/#{directory}/**/*_spec.rb"] do
