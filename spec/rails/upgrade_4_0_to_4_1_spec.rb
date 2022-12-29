@@ -75,7 +75,7 @@ RSpec.describe 'Upgrade rails from 4.0 to 4.1' do
 
   after do
     expect(rewriter.warnings.map(&:message)).to eq [
-      './app/models/post.rb#2: Using a return statement in an inline callback block causes a LocalJumpError to be raised when the callback is executed.'
+      '/app/models/post.rb#2: Using a return statement in an inline callback block causes a LocalJumpError to be raised when the callback is executed.'
     ]
   end
 
