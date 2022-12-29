@@ -7,7 +7,7 @@ require 'pp' # https://github.com/defunkt/fakefs/issues/99
 gem 'fakefs', require: 'fakefs/safe'
 gem 'rake'
 gem 'rspec'
-gem 'synvert-core', '>= 1.14.1'
+gem 'synvert-core', '>= 1.16.0'
 
 gem 'guard'
 gem 'guard-bundler'
