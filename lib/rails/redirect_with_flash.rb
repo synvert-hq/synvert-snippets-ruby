@@ -1,32 +1,32 @@
 # frozen_string_literal: true
 
 Synvert::Rewriter.new 'rails', 'redirect_with_flash' do
-  description <<-EOS
-  Fold flash setting into redirect_to.
+  description <<~EOS
+    Fold flash setting into redirect_to.
 
-  ```ruby
-  flash[:notice] = "huzzah"
-  redirect_to root_path
-  ```
+    ```ruby
+    flash[:notice] = "huzzah"
+    redirect_to root_path
+    ```
 
-  =>
+    =>
 
-  ```ruby
-  redirect_to root_path, notice: "huzzah"
-  ```
+    ```ruby
+    redirect_to root_path, notice: "huzzah"
+    ```
 
-  and
+    and
 
-  ```ruby
-  flash[:error] = "booo"
-  redirect_to root_path
-  ```
+    ```ruby
+    flash[:error] = "booo"
+    redirect_to root_path
+    ```
 
-  =>
+    =>
 
-  ```ruby
-  redirect_to root_path, flash: {error: "huzzah"}
-  ```
+    ```ruby
+    redirect_to root_path, flash: {error: "huzzah"}
+    ```
   EOS
 
   within_file Synvert::RAILS_CONTROLLER_FILES do

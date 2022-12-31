@@ -2,7 +2,7 @@
 
 Synvert::Rewriter.new 'rails', 'convert_render_text_to_render_plain' do
   description <<~EOS
-    It convert `render :text` to `render :plain`
+    It converts `render :text` to `render :plain`
 
     ```ruby
     render text: 'OK'

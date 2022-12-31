@@ -2,7 +2,7 @@
 
 Synvert::Rewriter.new 'rspec', 'message_expectation' do
   description <<~EOS
-    It convert rspec message expectation.
+    It converts rspec message expectation.
 
     ```ruby
     obj.should_receive(:message)
