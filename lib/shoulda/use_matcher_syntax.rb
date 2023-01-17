@@ -213,7 +213,7 @@ Synvert::Rewriter.new 'shoulda', 'use_matcher_syntax' do
     # =>
     # should ensure_length_of(:password).is_at_least(6).is_at_most(20)
     find_node '.send[message=should_ensure_length_in_range]' do
-      range = strip_brackets(node.arguments.second.to_source).split('..')
+      range = strip_brackets(node.arguments[1].to_source).split('..')
       with_other_calls(
         node,
         "should ensure_length_of({{arguments.first}}).is_at_least(#{range.first}).is_at_most(#{range.last})"
@@ -224,28 +224,28 @@ Synvert::Rewriter.new 'shoulda', 'use_matcher_syntax' do
     # =>
     # should ensure_length_of(:name).is_at_least(3)
     find_node '.send[message=should_ensure_length_at_least]' do
-      with_other_calls(node, 'should ensure_length_of({{arguments.first}}).is_at_least({{arguments.second}})')
+      with_other_calls(node, 'should ensure_length_of({{arguments.first}}).is_at_least({{arguments.1}})')
     end
 
     # should_ensure_length_at_most :name, 30
     # =>
     # should ensure_length_of(:name).is_at_most(30)
     find_node '.send[message=should_ensure_length_at_most]' do
-      with_other_calls(node, 'should ensure_length_of({{arguments.first}}).is_at_most({{arguments.second}})')
+      with_other_calls(node, 'should ensure_length_of({{arguments.first}}).is_at_most({{arguments.1}})')
     end
 
     # should_ensure_length_is :ssn, 9
     # =>
     # should ensure_length_of(:ssn).is_equal_to(9)
     find_node '.send[message=should_ensure_length_is]' do
-      with_other_calls(node, 'should ensure_length_of({{arguments.first}}).is_equal_to({{arguments.second}})')
+      with_other_calls(node, 'should ensure_length_of({{arguments.first}}).is_equal_to({{arguments.1}})')
     end
 
     # should_ensure_value_in_range :age, (0..100)
     # =>
     # should ensure_inclusion_of(:age).in_range(0..100)
     find_node '.send[message=should_ensure_value_in_range]' do
-      range = strip_brackets(node.arguments.second.to_source)
+      range = strip_brackets(node.arguments[1].to_source)
       with_other_calls(node, "should ensure_inclusion_of({{arguments.first}}).in_range(#{range})")
     end
 
@@ -352,7 +352,7 @@ Synvert::Rewriter.new 'shoulda', 'use_matcher_syntax' do
     # =>
     # should route(:get, "/posts").to(:controller => :posts, :action => :index)
     find_node '.send[message=should_route]' do
-      replace_with 'should route({{arguments.first}}, {{arguments.second}}).to({{arguments.last}})'
+      replace_with 'should route({{arguments.first}}, {{arguments.1}}).to({{arguments.last}})'
     end
   end
 end

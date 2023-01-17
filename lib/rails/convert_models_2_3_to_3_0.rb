@@ -338,7 +338,7 @@ Synvert::Rewriter.new 'rails', 'convert_models_2_3_to_3_0' do
     # =>
     # Post.where(:title => "test").limit(2).update_all(:title => "title")
     within_node type: 'send', message: :update_all, arguments: { size: 3 } do
-      replace_with add_receiver_if_necessary("where({{arguments.first}}).#{generate_new_queries(node.arguments.last)}.update_all({{arguments.second}})")
+      replace_with add_receiver_if_necessary("where({{arguments.first}}).#{generate_new_queries(node.arguments.last)}.update_all({{arguments.1}})")
     end
 
     # Post.delete_all("title = \'test\'")

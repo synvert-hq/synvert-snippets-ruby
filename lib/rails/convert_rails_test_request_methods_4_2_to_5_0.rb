@@ -71,7 +71,7 @@ Synvert::Rewriter.new 'rails', 'convert_rails_test_request_methods_4_2_to_5_0' d
     with_node type: 'send', message: 'xhr' do
       if node.arguments.size == 2
         replace :message, with: '{{arguments.first.to_string}}'
-        replace :arguments, with: '{{arguments.second}}, xhr: true'
+        replace :arguments, with: '{{arguments.1}}, xhr: true'
         next
       end
       format_value = node.arguments[2].type == :hash && node.arguments[2].hash_value(:format)
@@ -81,7 +81,7 @@ Synvert::Rewriter.new 'rails', 'convert_rails_test_request_methods_4_2_to_5_0' d
       options << make_up_hash_pair('flash', node.arguments[4]) if node.arguments.size > 4
       options << "as: #{format_value.to_source}" if format_value
       replace :message, with: '{{arguments.first.to_string}}'
-      replace :arguments, with: "{{arguments.second}}, #{options.compact.join(', ')}, xhr: true"
+      replace :arguments, with: "{{arguments.1}}, #{options.compact.join(', ')}, xhr: true"
     end
   end
 

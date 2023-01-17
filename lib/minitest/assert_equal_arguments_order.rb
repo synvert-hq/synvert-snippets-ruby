@@ -17,8 +17,8 @@ Synvert::Rewriter.new 'minitest', 'assert_equal_arguments_order' do
 
   within_files Synvert::RAILS_MINITEST_FILES do
     find_node ".send[receiver=nil][message=assert_equal][arguments.size=2]
-                    [arguments.second.type IN (str sym int float true false)]" do
-      replace :arguments, with: '{{arguments.second}}, {{arguments.first}}'
+                    [arguments.1.type IN (str sym int float true false)]" do
+      replace :arguments, with: '{{arguments.1}}, {{arguments.first}}'
     end
   end
 end
