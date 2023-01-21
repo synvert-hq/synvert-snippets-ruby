@@ -105,7 +105,7 @@ Synvert::Rewriter.new 'rails', 'upgrade_3_2_to_4_0' do
     #   Bundler.require(*Rails.groups(:assets => %w(development test)))
     # end
     # => Bundler.require(:default, Rails.env)
-    with_node type: 'if', condition: { type: 'defined?', arguments: ['Bundler'] } do
+    with_node type: 'if', expression: { type: 'defined?', arguments: ['Bundler'] } do
       replace_with 'Bundler.require(:default, Rails.env)'
     end
   end
