@@ -16,6 +16,16 @@ Synvert::Rewriter.new 'rails', 'upgrade_3_1_to_3_2' do
     ```ruby
     config.active_record.mass_assignment_sanitizer = :strict
     ```
+
+    TODO:
+
+    Make the following changes to your Gemfile.
+
+        group :assets do
+          gem 'sass-rails',   '~> 3.2.3'
+          gem 'coffee-rails', '~> 3.2.1'
+          gem 'uglifier',     '>= 1.0.3'
+        end
   EOS
 
   add_snippet 'rails', 'fix_controller_3_2_deprecations'
@@ -58,14 +68,4 @@ Synvert::Rewriter.new 'rails', 'upgrade_3_1_to_3_2' do
   within_files 'vendor/plugins' do
     warn 'Rails::Plugin is deprecated and will be removed in Rails 4.0. Instead of adding plugins to vendor/plugins use gems or bundler with path or git dependencies.'
   end
-
-  todo <<~EOS
-    Make the following changes to your Gemfile.
-
-        group :assets do
-          gem 'sass-rails',   '~> 3.2.3'
-          gem 'coffee-rails', '~> 3.2.1'
-          gem 'uglifier',     '>= 1.0.3'
-        end
-  EOS
 end

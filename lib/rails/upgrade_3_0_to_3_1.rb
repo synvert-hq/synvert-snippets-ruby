@@ -71,6 +71,18 @@ Synvert::Rewriter.new 'rails', 'upgrade_3_0_to_3_1' do
     def down
     end
     ```
+
+    TODO:
+
+    Make the following changes to your Gemfile.
+
+        group :assets do
+          gem 'sass-rails',   "~> 3.1.5"
+          gem 'coffee-rails', "~> 3.1.1"
+          gem 'uglifier',     ">= 1.0.3"
+        end
+
+        gem 'jquery-rails'
   EOS
 
   add_snippet 'rails', 'use_migrations_instance_methods'
@@ -235,16 +247,4 @@ Synvert::Rewriter.new 'rails', 'upgrade_3_0_to_3_1' do
       replace_with "{{receiver}}.session_store :cookie_store, key: '_#{session_store_key}-session'"
     end
   end
-
-  todo <<~EOS
-    Make the following changes to your Gemfile.
-
-        group :assets do
-          gem 'sass-rails',   "~> 3.1.5"
-          gem 'coffee-rails', "~> 3.1.1"
-          gem 'uglifier',     ">= 1.0.3"
-        end
-
-        gem 'jquery-rails'
-  EOS
 end
