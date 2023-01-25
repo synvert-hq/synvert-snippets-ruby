@@ -44,10 +44,8 @@ Synvert::Rewriter.new 'rails', 'convert_views_2_3_to_3_0' do
   # <%= form_for post do |f| %>
   # <% end %>
   within_files Synvert::RAILS_VIEW_FILES + Synvert::RAILS_HELPER_FILES do
-    %w[form_for form_tag fields_for div_for content_tag_for].each do |message|
-      with_node type: 'block', caller: { type: 'send', receiver: nil, message: message } do
-        replace_erb_stmt_with_expr
-      end
+    with_node type: 'block', caller: { type: 'send', receiver: nil, message: { in: %w[form_for form_tag fields_for div_for content_tag_for] } } do
+      replace_erb_stmt_with_expr
     end
   end
 end
