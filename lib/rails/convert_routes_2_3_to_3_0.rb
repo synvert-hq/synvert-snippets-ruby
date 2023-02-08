@@ -239,9 +239,9 @@ Synvert::Rewriter.new 'rails', 'convert_routes_2_3_to_3_0' do
           method = hash_node.key?(:method) ? hash_node.hash_value(:method).to_value : 'match'
           other_options_code = reject_keys_from_hash(hash_node, :controller, :action, :method)
           if other_options_code.length > 0
-            replace_with "#{method} {{arguments.first}}, :to => \"#{controller_action_name}\", #{other_options_code}"
+            replace_with "#{method} {{arguments.first}}, :to => #{wrap_with_quotes(controller_action_name)}, #{other_options_code}"
           else
-            replace_with "#{method} {{arguments.first}}, :to => \"#{controller_action_name}\""
+            replace_with "#{method} {{arguments.first}}, :to => #{wrap_with_quotes(controller_action_name)}"
           end
         end
       end
@@ -254,9 +254,9 @@ Synvert::Rewriter.new 'rails', 'convert_routes_2_3_to_3_0' do
       controller_action_name = extract_controller_action_name(hash_node)
       subdomain_node = extract_subdomain_node(hash_node)
       if subdomain_node
-        replace_with "root :to => \"#{controller_action_name}\", :constraints => {:subdomain => #{subdomain_node.to_source}}"
+        replace_with "root :to => #{wrap_with_quotes(controller_action_name)}, :constraints => {:subdomain => #{subdomain_node.to_source}}"
       else
-        replace_with "root :to => \"#{controller_action_name}\""
+        replace_with "root :to => #{wrap_with_quotes(controller_action_name)}"
       end
     end
 
@@ -305,7 +305,7 @@ Synvert::Rewriter.new 'rails', 'convert_routes_2_3_to_3_0' do
       options_node = node.arguments.last
       if options_node.type == :hash && options_node.key?(:controller)
         controller_name = options_node.hash_value(:controller).to_value
-        replace_with "match \"#{controller_name}(/:action(/:id))(.:format)\", {{arguments.last}}"
+        replace_with "match #{wrap_with_quotes(controller_name + "(/:action(/:id))(.:format)")}, {{arguments.last}}"
       end
     end
 
@@ -315,7 +315,7 @@ Synvert::Rewriter.new 'rails', 'convert_routes_2_3_to_3_0' do
       options_node = node.arguments.last
       if options_node.type == :hash && options_node.key?(:controller)
         controller_name = options_node.hash_value(:controller).children.last
-        replace_with "match \"#{controller_name}(/:action)(.:format)\", {{arguments.last}}"
+        replace_with "match #{wrap_with_quotes(controller_name + "(/:action)(.:format)")}, {{arguments.last}}"
       end
     end
 
@@ -340,9 +340,9 @@ Synvert::Rewriter.new 'rails', 'convert_routes_2_3_to_3_0' do
             other_options_code = reject_keys_from_hash(hash_node, :controller, :action, :method, :conditions)
             other_options_code += ":constraints => {:subdomain => #{subdomain_node.to_source}}" if subdomain_node
             if other_options_code.length > 0
-              replace_with "#{method} {{arguments.first}}, :to => \"#{controller_action_name}\", #{other_options_code}, :as => \"#{message}\""
+              replace_with "#{method} {{arguments.first}}, :to => #{wrap_with_quotes(controller_action_name)}, #{other_options_code}, :as => #{wrap_with_quotes(message.to_s)}"
             else
-              replace_with "#{method} {{arguments.first}}, :to => \"#{controller_action_name}\", :as => \"#{message}\""
+              replace_with "#{method} {{arguments.first}}, :to => #{wrap_with_quotes(controller_action_name)}, :as => #{wrap_with_quotes(message.to_s)}"
             end
           else
             replace_with 'match {{arguments}}'

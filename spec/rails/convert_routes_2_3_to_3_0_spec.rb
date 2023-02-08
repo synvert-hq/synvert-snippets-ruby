@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe 'Convert rails routes from 2.3 to 3.0' do
+  before { Synvert::Core::Configuration.single_quote = false }
+  after { Synvert::Core::Configuration.single_quote = true }
   let(:rewriter_name) { 'rails/convert_routes_2_3_to_3_0' }
   let(:fake_file_path) { 'config/routes.rb' }
   let(:test_content) { <<~EOS }
