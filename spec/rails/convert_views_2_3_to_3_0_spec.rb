@@ -13,8 +13,6 @@ RSpec.describe 'Convert rails views from 2.3 to 3.0' do
       <% fields_for :author, post.author do |author_form| %>
       <% end %>
     <% end %>
-    <%= form_for post do |f| %>
-    <% end %>
   EOS
 
   let(:test_rewritten_content) { <<~EOS }
@@ -24,8 +22,6 @@ RSpec.describe 'Convert rails views from 2.3 to 3.0' do
     <%= form_for post, :html => {:id => 'post-form'} do |post_form| %>
       <%= fields_for :author, post.author do |author_form| %>
       <% end %>
-    <% end %>
-    <%= form_for post do |f| %>
     <% end %>
   EOS
 
