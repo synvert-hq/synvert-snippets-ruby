@@ -25,7 +25,7 @@ Synvert::Rewriter.new 'rails', 'convert_rails_root' do
 
   if_gem 'rails', '>= 2.3'
 
-  within_files Synvert::ALL_RUBY_FILES + Synvert::ALL_RAKE_FILES do
+  within_files Synvert::ALL_FILES do
     # RAILS_ROOT => Rails.root
     with_node type: 'const', to_source: 'RAILS_ROOT' do
       replace_with 'Rails.root'
@@ -35,7 +35,7 @@ Synvert::Rewriter.new 'rails', 'convert_rails_root' do
     end
   end
 
-  within_files Synvert::ALL_RUBY_FILES + Synvert::ALL_RAKE_FILES do
+  within_files Synvert::ALL_FILES do
     # File.join(Rails.root, 'config/database.yml')
     # =>
     # Rails.root.join('config/database.yml')
@@ -63,7 +63,7 @@ Synvert::Rewriter.new 'rails', 'convert_rails_root' do
     end
   end
 
-  within_files Synvert::ALL_RUBY_FILES + Synvert::ALL_RAKE_FILES do
+  within_files Synvert::ALL_FILES do
     # File.exists?(Rails.root.join('config/database.yml'))
     # =>
     # Rails.root.join('config/database.yml').exist?

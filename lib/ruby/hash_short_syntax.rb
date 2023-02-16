@@ -17,7 +17,7 @@ Synvert::Rewriter.new 'ruby', 'hash_short_syntax' do
 
   if_ruby '3.1.0'
 
-  within_files Synvert::ALL_RUBY_FILES do
+  within_files Synvert::ALL_FILES do
     # {a: a} => {a:}
     find_node '.hash > .pair[key="{{value}}"]' do
       replace_with '{{key}}:'

@@ -15,7 +15,7 @@ Synvert::Rewriter.new 'ruby', 'keys_each_to_each_key' do
     ```
   EOS
 
-  within_files Synvert::ALL_RUBY_FILES do
+  within_files Synvert::ALL_FILES do
     # params.keys.each {}
     # =>
     # params.each_key {}

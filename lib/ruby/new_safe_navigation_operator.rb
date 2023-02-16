@@ -17,7 +17,7 @@ Synvert::Rewriter.new 'ruby', 'new_safe_navigation_operator' do
 
   if_ruby '2.3.0'
 
-  within_files Synvert::ALL_RUBY_FILES do
+  within_files Synvert::ALL_FILES do
     # u.try!(:profile).try!(:thumbnails).try!(:large, 100, format: 'jpg')
     # u.try(:profile).try(:thumbnails).try(:large, 100, format: 'jpg')
     # =>

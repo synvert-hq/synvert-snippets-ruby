@@ -21,7 +21,7 @@ Synvert::Rewriter.new 'ruby', 'numbered_parameters' do
 
   if_ruby '2.7'
 
-  within_files Synvert::ALL_RUBY_FILES do
+  within_files Synvert::ALL_FILES do
     find_node '.block[arguments.size > 0]' do
       node.arguments.each_with_index do |argument, index|
         find_node ".lvar[name=#{argument.name}]" do

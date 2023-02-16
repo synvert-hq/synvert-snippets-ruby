@@ -17,7 +17,7 @@ Synvert::Rewriter.new 'ruby', 'use_symbol_to_proc' do
     ```
   EOS
 
-  within_files Synvert::ALL_RUBY_FILES do
+  within_files Synvert::ALL_FILES do
     # (1..100).each { |i| i.to_s }
     # =>
     # (1..100).each(&:to_s)
