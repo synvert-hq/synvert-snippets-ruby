@@ -19,7 +19,7 @@ Synvert::Rewriter.new 'rails', 'convert_rails_test_request_methods_4_2_to_5_0' d
     integration test:
 
     ```ruby
-    get '/posts/1', user_id: user.id, { 'HTTP_AUTHORIZATION' => 'fake' }
+    get '/posts/1', { user_id: user.id }, { 'HTTP_AUTHORIZATION' => 'fake' }
     ```
 
     =>
