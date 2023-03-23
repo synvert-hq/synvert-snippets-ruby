@@ -28,15 +28,21 @@ Synvert::Rewriter.new 'rails', 'convert_after_commit' do
     # after_create_commit :add_to_index_later
     # after_update_commit :update_in_index_later
     # after_destroy_commit :remove_from_index_later
-    with_node type: 'send', receiver: nil, message: 'after_commit', arguments: { size: 2 } do
+    with_node node_type: 'send',
+              receiver: nil,
+              message: 'after_commit',
+              arguments: {
+                size: 2,
+                '1': { node_type: 'hash', on_value: { in: %i[create update destroy] } }
+              } do
+      replace :message, with: "after_{{arguments.last.hash_value(:on).to_value}}_commit"
+
       options = node.arguments.last
-      if options.key?(:on)
-        other_options = options.children.reject { |pair_node| pair_node.key.to_value == :on }
-        if other_options.empty?
-          replace_with "after_#{options.hash_value(:on).to_value}_commit {{arguments.first.to_source}}"
-        else
-          replace_with "after_#{options.hash_value(:on).to_value}_commit {{arguments.first.to_source}}, #{other_options.map(&:to_source).join(', ')}"
-        end
+      other_options = options.children.reject { |pair_node| pair_node.key.to_value == :on }
+      if other_options.empty?
+        replace :arguments, with: '{{arguments.0}}'
+      else
+        replace :arguments, with: "{{arguments.0}}, #{other_options.map(&:to_source).join(', ')}"
       end
     end
   end
