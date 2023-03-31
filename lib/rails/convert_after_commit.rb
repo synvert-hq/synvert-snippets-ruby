@@ -35,15 +35,8 @@ Synvert::Rewriter.new 'rails', 'convert_after_commit' do
                 size: 2,
                 '1': { node_type: 'hash', on_value: { in: %i[create update destroy] } }
               } do
-      replace :message, with: "after_{{arguments.last.hash_value(:on).to_value}}_commit"
-
-      options = node.arguments.last
-      other_options = options.children.reject { |pair_node| pair_node.key.to_value == :on }
-      if other_options.empty?
-        replace :arguments, with: '{{arguments.0}}'
-      else
-        replace :arguments, with: "{{arguments.0}}, #{other_options.map(&:to_source).join(', ')}"
-      end
+      replace :message, with: 'after_{{arguments.last.hash_value(:on).to_value}}_commit'
+      delete 'arguments.-1.on_pair', and_comma: true
     end
   end
 end
