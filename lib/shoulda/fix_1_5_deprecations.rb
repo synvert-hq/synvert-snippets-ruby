@@ -61,8 +61,7 @@ Synvert::Rewriter.new 'shoulda', 'fix_1_5_deprecations' do
     # should "assigns user" do
     #   assert_not_nil assigns(:user)
     # end
-    find_node '.send[message=should][arguments.size=1]
-                    [arguments.first=.send[message=assign_to][arguments.size=1]]' do
+    find_node '.send[message=should][arguments.size=1] [arguments.first=.send[message=assign_to][arguments.size=1]]' do
       replace_with <<~EOS
         should 'assigns {{arguments.first.arguments.first.to_value}}' do
           assert_not_nil assigns({{arguments.first.arguments.first}})
