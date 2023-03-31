@@ -13,7 +13,12 @@ Synvert::Rewriter.new 'rails', 'convert_to_response_parsed_body' do
               message: 'parse',
               arguments: {
                 size: 1,
-                '0': { node_type: 'send', receiver: { in: ['response', '@response'] }, message: 'body', arguments: { size: 0 } }
+                '0': {
+                  node_type: 'send',
+                  receiver: { in: ['response', '@response'] },
+                  message: 'body',
+                  arguments: { size: 0 }
+                }
               } do
       replace_with '{{arguments.0.receiver}}.parsed_body'
     end

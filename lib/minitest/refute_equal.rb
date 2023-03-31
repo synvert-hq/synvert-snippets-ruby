@@ -21,8 +21,7 @@ Synvert::Rewriter.new 'minitest', 'refute_equal' do
     # assert("rubocop-minitest" != actual)
     # =>
     # refute_equal("rubocop-minitest", actual)
-    find_node '.send[receiver=nil][message=assert][arguments.size=1]
-                    [arguments.first=.send[message=!=]]' do
+    find_node '.send[receiver=nil][message=assert][arguments.size=1] [arguments.first=.send[message=!=]]' do
       replace :message, with: 'refute_equal'
       replace :arguments, with: '{{arguments.first.receiver}}, {{arguments.first.arguments}}'
     end
