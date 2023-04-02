@@ -2,7 +2,6 @@
 
 source 'https://rubygems.org'
 
-
 gem 'fakefs', require: 'fakefs/safe'
 gem 'rake'
 gem 'rspec'
