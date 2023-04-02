@@ -20,18 +20,8 @@ Synvert::Rewriter.new 'rails', 'convert_model_errors_add' do
   if_gem 'activerecord', '>= 5.0'
 
   within_files Synvert::RAILS_MODEL_FILES do
-    # errors[] =
-    # =>
-    # errors.add
-    with_node type: 'send', receiver: 'errors', message: '[]=' do
-      replace_with 'errors.add({{arguments.first}}, {{arguments.last}})'
-    end
-
-    # self.errors[] =
-    # =>
-    # self.errors.add
-    with_node type: 'send', receiver: { type: 'send', message: 'errors' }, message: '[]=' do
-      replace_with '{{receiver}}.add({{arguments.first}}, {{arguments.last}})'
+    with_node node_type: 'send', receiver: { node_type: 'send', message: 'errors', arguments: { size: 0 } }, message: '[]=', arguments: { size: 2 } do
+      replace_with '{{receiver}}.add({{arguments.0}}, {{arguments.1}})'
     end
   end
 end
