@@ -5,7 +5,7 @@ source 'https://rubygems.org'
 gem 'fakefs', require: 'fakefs/safe'
 gem 'rake'
 gem 'rspec'
-gem 'synvert-core', '>= 1.22.2'
+gem 'synvert-core', '>= 1.23.0'
 
 gem 'guard'
 gem 'guard-bundler'
