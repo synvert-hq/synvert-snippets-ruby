@@ -72,7 +72,7 @@ GEM
       rspec-support (~> 3.12.0)
     rspec-support (3.12.0)
     shellany (0.0.1)
-    synvert-core (1.23.1)
+    synvert-core (1.24.0)
       activesupport (< 7.0.0)
       node_mutation (>= 1.14.0)
       node_query (>= 1.12.1)
@@ -94,7 +94,7 @@ DEPENDENCIES
   guard-rspec
   rake
   rspec
-  synvert-core (>= 1.23.1)
+  synvert-core (>= 1.24.0)
 
 BUNDLED WITH
    2.2.22
