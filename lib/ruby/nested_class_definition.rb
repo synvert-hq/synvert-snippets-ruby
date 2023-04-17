@@ -40,7 +40,7 @@ Synvert::Rewriter.new 'ruby', 'nested_class_definition' do
       original_name = node.name.to_source
       original_names << original_name
       module_name, = original_name.split('::', 2)
-      wrap with: "module #{module_name}"
+      wrap prefix: "module #{module_name}", suffix: 'end', newline: true
     end
   end
 
