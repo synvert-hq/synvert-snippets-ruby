@@ -19,7 +19,7 @@ Synvert::Rewriter.new 'ruby', 'map_and_flatten_to_flat_map' do
     ```
   EOS
 
-  within_files Synvert::ALL_FILES do
+  within_files Synvert::ALL_RUBY_FILES do
     # enum.map do
     #   # do something
     # end.flatten

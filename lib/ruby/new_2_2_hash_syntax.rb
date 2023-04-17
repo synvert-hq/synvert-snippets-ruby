@@ -23,7 +23,7 @@ Synvert::Rewriter.new 'ruby', 'new_2_2_hash_syntax' do
 
   if_ruby '2.2.0'
 
-  within_files Synvert::ALL_FILES do
+  within_files Synvert::ALL_RUBY_FILES do
     # {:foo => 'bar'} => {foo: 'bar'}
     # {:'foo-x' => 'bar'} => {'foo-x': 'bar'}
     # {:"foo-#{suffix}" 'bar'} => {"foo-#{suffix}": 'bar'}

@@ -54,7 +54,7 @@ Synvert::Rewriter.new 'ruby', 'merge_to_square_brackets' do
     }.join(splitter)
   end
 
-  within_files Synvert::ALL_FILES do
+  within_files Synvert::ALL_RUBY_FILES do
     # enum.inject({}) do |h, e|
     #   h.merge(e => e)
     # end
@@ -101,7 +101,7 @@ Synvert::Rewriter.new 'ruby', 'merge_to_square_brackets' do
     end
   end
 
-  within_files Synvert::ALL_FILES do
+  within_files Synvert::ALL_RUBY_FILES do
     # hash.merge!(e => e)
     # =>
     # hash[e] = e

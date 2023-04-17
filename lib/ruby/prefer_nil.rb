@@ -19,7 +19,7 @@ Synvert::Rewriter.new 'ruby', 'perfer_nil' do
     ```
   EOS
 
-  within_files Synvert::ALL_FILES do
+  within_files Synvert::ALL_RUBY_FILES do
     find_node '.send[message=!=][arguments.size=1][arguments.0=nil]' do
       replace_with '!{{receiver}}.nil?'
     end

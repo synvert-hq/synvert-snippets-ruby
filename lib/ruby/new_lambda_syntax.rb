@@ -19,7 +19,7 @@ Synvert::Rewriter.new 'ruby', 'new_lambda_syntax' do
 
   if_ruby '1.9.0'
 
-  within_files Synvert::ALL_FILES do
+  within_files Synvert::ALL_RUBY_FILES do
     # lambda { test } => -> { test }
     find_node '.block[caller=.send[receiver=nil][message=lambda]][arguments.size=0]' do
       replace_with '-> { {{body}} }'

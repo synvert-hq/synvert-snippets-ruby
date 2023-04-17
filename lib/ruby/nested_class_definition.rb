@@ -26,7 +26,7 @@ Synvert::Rewriter.new 'ruby', 'nested_class_definition' do
   original_names = []
 
   # round one
-  within_files Synvert::ALL_FILES do
+  within_files Synvert::ALL_RUBY_FILES do
     # class Foo::Bar < Base
     #   def test; end
     # end
@@ -45,7 +45,7 @@ Synvert::Rewriter.new 'ruby', 'nested_class_definition' do
   end
 
   # round two
-  within_files Synvert::ALL_FILES do
+  within_files Synvert::ALL_RUBY_FILES do
     # class Foo:Bar < Base
     # end
     # =>

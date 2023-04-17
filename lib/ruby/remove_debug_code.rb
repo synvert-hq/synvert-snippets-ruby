@@ -5,7 +5,7 @@ Synvert::Rewriter.new 'ruby', 'remove_debug_code' do
     It removes `puts` and `p` calls.
   EOS
 
-  within_files Synvert::ALL_FILES do
+  within_files Synvert::ALL_RUBY_FILES do
     # removes puts and p methods
     find_node '.send[receiver=nil][message IN (puts p)]' do
       remove
