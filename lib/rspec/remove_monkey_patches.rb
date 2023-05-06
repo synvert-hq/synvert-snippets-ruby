@@ -48,10 +48,8 @@ Synvert::Rewriter.new 'rspec', 'remove_monkey_patches' do
     #   describe 'nested example group' do
     #   end
     # end
-    monkey_patches_methods.each do |message|
-      with_node({ type: 'block', caller: { type: 'send', receiver: nil, message: message } }, { recursive: false }) do
-        insert 'RSpec.', at: 'beginning'
-      end
+    with_node({ type: 'block', caller: { type: 'send', receiver: nil, message: { in: monkey_patches_methods } } }, { recursive: false }) do
+      insert 'RSpec.', at: 'beginning'
     end
   end
 
