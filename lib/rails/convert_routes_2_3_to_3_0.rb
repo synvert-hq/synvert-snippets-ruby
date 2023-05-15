@@ -86,21 +86,21 @@ Synvert::Rewriter.new 'rails', 'convert_routes_2_3_to_3_0' do
   if_gem 'rails', '>= 2.3'
 
   helper_method :extract_controller_action_name do |hash_node|
-    controller_name = hash_node.hash_value(:controller).to_value
-    action_name = hash_node.hash_value(:action).to_value
+    controller_name = hash_node.controller_value.to_value
+    action_name = hash_node.action_value.to_value
     "#{controller_name}##{action_name}"
   end
 
   helper_method :extract_subdomain_node do |hash_node|
-    if hash_node.key?(:conditions) && hash_node.hash_value(:conditions).key?(:subdomain)
-      hash_node.hash_value(:conditions).hash_value(:subdomain)
+    if hash_node.key?(:conditions) && hash_node.conditions_value.key?(:subdomain)
+      hash_node.conditions_value.subdomain_value
     end
   end
 
   helper_method :extract_method do |hash_node|
-    method = hash_node.hash_value(:method).to_value if hash_node.key?(:method)
-    if !method && hash_node.key?(:conditions) && hash_node.hash_value(:conditions).key?(:method)
-      method = hash_node.hash_value(:conditions).hash_value(:method).to_value
+    method = hash_node.method_value.to_value if hash_node.key?(:method)
+    if !method && hash_node.key?(:conditions) && hash_node.conditions_value.key?(:method)
+      method = hash_node.conditions_value.method_value.to_value
     end
     method || 'match'
   end
@@ -207,8 +207,8 @@ Synvert::Rewriter.new 'rails', 'convert_routes_2_3_to_3_0' do
         hash_argument = node.caller.arguments.last
         new_routes = ''
         if hash_argument.type == :hash && (hash_argument.key?(:collection) || hash_argument.key?(:member))
-          collection_routes = hash_argument.hash_value(:collection)
-          member_routes = hash_argument.hash_value(:member)
+          collection_routes = hash_argument.collection_value
+          member_routes = hash_argument.member_value
           other_options_code = reject_keys_from_hash(hash_argument, :collection, :member)
           new_routes = []
           new_routes << if other_options_code.length > 0
@@ -236,7 +236,7 @@ Synvert::Rewriter.new 'rails', 'convert_routes_2_3_to_3_0' do
         hash_node = node.arguments.last
         if hash_node.key?(:action) && hash_node.key?(:controller)
           controller_action_name = extract_controller_action_name(hash_node)
-          method = hash_node.key?(:method) ? hash_node.hash_value(:method).to_value : 'match'
+          method = hash_node.key?(:method) ? hash_node.method_value.to_value : 'match'
           other_options_code = reject_keys_from_hash(hash_node, :controller, :action, :method)
           if other_options_code.length > 0
             replace_with "#{method} {{arguments.first}}, :to => #{wrap_with_quotes(controller_action_name)}, #{other_options_code}"
@@ -274,8 +274,8 @@ Synvert::Rewriter.new 'rails', 'convert_routes_2_3_to_3_0' do
       with_node type: 'send', receiver: 'map', message: message do
         hash_argument = node.arguments.last
         if hash_argument.type == :hash && (hash_argument.key?(:collection) || hash_argument.key?(:member))
-          collection_routes = hash_argument.hash_value(:collection)
-          member_routes = hash_argument.hash_value(:member)
+          collection_routes = hash_argument.collection_value
+          member_routes = hash_argument.member_value
           other_options_code = reject_keys_from_hash(hash_argument, :collection, :member)
           new_routes = []
           new_routes << if other_options_code.length > 0
@@ -304,7 +304,7 @@ Synvert::Rewriter.new 'rails', 'convert_routes_2_3_to_3_0' do
     with_node type: 'send', receiver: 'map', message: 'connect', arguments: { first: %r|(.*?)/:action/:id| } do
       options_node = node.arguments.last
       if options_node.type == :hash && options_node.key?(:controller)
-        controller_name = options_node.hash_value(:controller).to_value
+        controller_name = options_node.controller_value.to_value
         replace_with "match #{wrap_with_quotes(controller_name + "(/:action(/:id))(.:format)")}, {{arguments.last}}"
       end
     end
@@ -314,7 +314,7 @@ Synvert::Rewriter.new 'rails', 'convert_routes_2_3_to_3_0' do
     with_node type: 'send', receiver: 'map', message: 'connect', arguments: { first: %r|(.*?)/:action['"]$| } do
       options_node = node.arguments.last
       if options_node.type == :hash && options_node.key?(:controller)
-        controller_name = options_node.hash_value(:controller).children.last
+        controller_name = options_node.controller_value.children.last
         replace_with "match #{wrap_with_quotes(controller_name + "(/:action)(.:format)")}, {{arguments.last}}"
       end
     end
@@ -333,7 +333,7 @@ Synvert::Rewriter.new 'rails', 'convert_routes_2_3_to_3_0' do
               if hash_node.key?(:action)
                 extract_controller_action_name(hash_node)
               else
-                "#{hash_node.hash_value(:controller).to_value}#index"
+                "#{hash_node.controller_value.to_value}#index"
               end
             method = extract_method(hash_node)
             subdomain_node = extract_subdomain_node(hash_node)

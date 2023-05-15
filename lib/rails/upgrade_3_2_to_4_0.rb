@@ -273,7 +273,7 @@ Synvert::Rewriter.new 'rails', 'upgrade_3_2_to_4_0' do
       if node.arguments.last.key?(:confirm)
         hash = node.arguments.last
         other_arguments_str = node.arguments[0...-1].map(&:to_source).join(', ')
-        confirm = hash.hash_value(:confirm).to_source
+        confirm = hash.confirm_source
         other_options =
           hash.children.map { |pair|
             unless %i[confirm data].include?(pair.key.to_value)

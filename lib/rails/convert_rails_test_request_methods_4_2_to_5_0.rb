@@ -57,8 +57,8 @@ Synvert::Rewriter.new 'rails', 'convert_rails_test_request_methods_4_2_to_5_0' d
       next unless node.arguments[1].type == :hash
       next if node.arguments[1].key?(:params)
 
-      format_value = node.arguments[1].hash_value(:format) || node.arguments[1].hash_value(:as)
-      xhr_value = node.arguments[1].hash_value(:xhr)
+      format_value = node.arguments[1].format_value || node.arguments[1].as_value
+      xhr_value = node.arguments[1].xhr_value
       options = []
       options << make_up_hash_pair('params', node.arguments[1])
       options << make_up_hash_pair('session', node.arguments[2]) if node.arguments.size > 2
@@ -74,7 +74,7 @@ Synvert::Rewriter.new 'rails', 'convert_rails_test_request_methods_4_2_to_5_0' d
         replace :arguments, with: '{{arguments.1}}, xhr: true'
         next
       end
-      format_value = node.arguments[2].type == :hash && node.arguments[2].hash_value(:format)
+      format_value = node.arguments[2].type == :hash && node.arguments[2].format_value
       options = []
       options << make_up_hash_pair('params', node.arguments[2])
       options << make_up_hash_pair('session', node.arguments[3]) if node.arguments.size > 3

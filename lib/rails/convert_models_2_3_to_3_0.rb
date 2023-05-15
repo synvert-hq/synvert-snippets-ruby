@@ -397,7 +397,7 @@ Synvert::Rewriter.new 'rails', 'convert_models_2_3_to_3_0' do
       within_node type: 'send', message: message, arguments: { size: 1 } do
         argument_node = node.arguments.first
         if :hash == argument_node.type && argument_node.key?(:find)
-          replace_with "#{message}(#{generate_new_queries(argument_node.hash_value(:find))})"
+          replace_with "#{message}(#{generate_new_queries(argument_node.find_value.to_value)})"
         end
       end
     end
