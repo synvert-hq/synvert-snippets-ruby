@@ -103,7 +103,7 @@ Synvert::Rewriter.new 'rails', 'convert_active_record_dirty_5_0_to_5_1' do
   helper_method :convert_send_dirty_api_change do |before_name, after_name|
     with_node type: 'send', message: before_name do
       if before_name.is_a?(Regexp)
-        if !skip_names[node.filename].include?(node.to_source) && node.message.to_s =~ before_name
+        if !skip_names[file_path].include?(node.to_source) && node.message.to_s =~ before_name
           replace :message, with: after_name.sub('{{attribute}}', Regexp.last_match(1))
         end
       else
@@ -135,7 +135,7 @@ Synvert::Rewriter.new 'rails', 'convert_active_record_dirty_5_0_to_5_1' do
 
           with_node type: 'sym', to_value: before_name do
             if before_name.is_a?(Regexp)
-              if !skip_names[node.filename].include?(node.to_value.to_s) && node.to_value =~ before_name
+              if !skip_names[file_path].include?(node.to_value.to_s) && node.to_value =~ before_name
                 replace_with ":#{after_name.sub('{{attribute}}', Regexp.last_match(1))}"
               end
             else
@@ -193,8 +193,8 @@ Synvert::Rewriter.new 'rails', 'convert_active_record_dirty_5_0_to_5_1' do
   # round one: find all possible skip names
   within_files Synvert::RAILS_MODEL_FILES + Synvert::RAILS_OBSERVER_FILES do
     with_node type: 'def' do
-      skip_names[node.filename] ||= []
-      skip_names[node.filename] << node.name.to_s
+      skip_names[file_path] ||= []
+      skip_names[file_path] << node.name.to_s
     end
   end
 
