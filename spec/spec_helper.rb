@@ -2,7 +2,7 @@
 
 $LOAD_PATH.unshift(File.join(File.dirname(__FILE__), '..', 'lib'))
 
-require 'pp'
+require 'pp' # rubocop:disable Lint/RedundantRequireStatement
 require 'synvert/core'
 require 'fakefs/spec_helpers'
 
