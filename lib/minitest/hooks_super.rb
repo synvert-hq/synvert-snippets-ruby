@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 Synvert::Rewriter.new 'minitest', 'hooks_super' do
+  configure(parser: Synvert::PARSER_PARSER)
+
   description <<~EOS
     If using a module containing `setup` or `teardown` methods, be sure to call `super` in the test class `setup` or `teardown`.
 

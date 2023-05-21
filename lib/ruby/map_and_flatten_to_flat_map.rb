@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 Synvert::Rewriter.new 'ruby', 'map_and_flatten_to_flat_map' do
+  configure(parser: Synvert::PARSER_PARSER)
+
   description <<~EOS
     It converts `map` and `flatten` to `flat_map`
 

@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 Synvert::Rewriter.new 'shoulda', 'fix_2_6_deprecations' do
+  configure(parser: Synvert::PARSER_PARSER)
+
   description <<~EOS
     It fixes shoulda 2.6 deprecations.
 

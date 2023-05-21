@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 Synvert::Rewriter.new 'rails', 'upgrade_3_1_to_3_2' do
+  configure(parser: Synvert::PARSER_PARSER)
+
   description <<~EOS
     It upgrades rails from 3.1 to 3.2.
 

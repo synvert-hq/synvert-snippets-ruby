@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 Synvert::Rewriter.new 'minitest', 'refute_path_exists' do
+  configure(parser: Synvert::PARSER_PARSER)
+
   description <<~EOS
     Use `refute_path_exists` if expecting path to not exist.
 

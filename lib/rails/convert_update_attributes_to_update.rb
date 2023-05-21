@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 Synvert::Rewriter.new 'rails', 'convert_update_attributes_to_update' do
+  configure(parser: Synvert::PARSER_PARSER)
+
   description <<~EOS
     It converts `.update_attributes` to `.update`
 

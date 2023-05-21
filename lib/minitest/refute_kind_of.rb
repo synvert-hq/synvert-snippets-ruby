@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 Synvert::Rewriter.new 'minitest', 'refute_kind_of' do
+  configure(parser: Synvert::PARSER_PARSER)
+
   description <<~EOS
     Prefer `refute_kind_of(class, object)` over `refute(object.kind_of?(class))`.
 

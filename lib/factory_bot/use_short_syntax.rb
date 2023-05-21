@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 Synvert::Rewriter.new 'factory_bot', 'use_short_syntax' do
+  configure(parser: Synvert::PARSER_PARSER)
+
   description <<~EOS
     Uses FactoryBot short syntax.
 

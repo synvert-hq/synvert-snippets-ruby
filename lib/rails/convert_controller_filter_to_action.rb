@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 Synvert::Rewriter.new 'rails', 'convert_controller_filter_to_action' do
+  configure(parser: Synvert::PARSER_PARSER)
+
   description <<~EOS
     It renames before_filter callbacks to before_action
 

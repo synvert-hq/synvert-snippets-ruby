@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 Synvert::Rewriter.new 'minitest', 'refute_nil' do
+  configure(parser: Synvert::PARSER_PARSER)
+
   description <<~EOS
     Use `refute_nil` if not expecting `nil`.
 

@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 Synvert::Rewriter.new 'minitest', 'assert_match' do
+  configure(parser: Synvert::PARSER_PARSER)
+
   description <<~EOS
     Use `assert_match` if expecting matcher regex to match actual object.
 

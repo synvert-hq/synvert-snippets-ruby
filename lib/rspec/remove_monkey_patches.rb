@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 Synvert::Rewriter.new 'rspec', 'remove_monkey_patches' do
+  configure(parser: Synvert::PARSER_PARSER)
+
   description <<~EOS
     It removes monkey patching of the top level methods like describe
 

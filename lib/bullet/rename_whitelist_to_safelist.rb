@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 Synvert::Rewriter.new('bullet', 'rename_whitelist_to_safelist') do
+  configure(parser: Synvert::PARSER_PARSER)
+
   description <<~EOS
     It renames bullet whitelist to safelist.
 

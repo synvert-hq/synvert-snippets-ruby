@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 Synvert::Rewriter.new 'minitest', 'assert_equal_arguments_order' do
+  configure(parser: Synvert::PARSER_PARSER)
+
   description <<~EOS
     `assert_equal` should always have expected value as first argument because if the assertion fails the error message would say expected "rubocop-minitest" received "rubocop" not the other way around.
 

@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 Synvert::Rewriter.new 'minitest', 'refute_includes' do
+  configure(parser: Synvert::PARSER_PARSER)
+
   description <<~EOS
     Use `refute_includes` if the object is not included in the collection.
 

@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 Synvert::Rewriter.new 'ruby', 'new_1_9_hash_syntax' do
+  configure(parser: Synvert::PARSER_PARSER)
+
   description <<~EOS
     Use ruby 1.9 new hash syntax.
 

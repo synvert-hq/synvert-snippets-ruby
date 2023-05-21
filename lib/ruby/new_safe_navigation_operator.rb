@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 Synvert::Rewriter.new 'ruby', 'new_safe_navigation_operator' do
+  configure(parser: Synvert::PARSER_PARSER)
+
   description <<~EOS
     Use ruby new safe navigation operator.
 

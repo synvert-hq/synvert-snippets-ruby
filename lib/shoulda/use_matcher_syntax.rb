@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 Synvert::Rewriter.new 'shoulda', 'use_matcher_syntax' do
+  configure(parser: Synvert::PARSER_PARSER)
+
   description <<~EOS
     It converts shoulda macros to matcher syntax.
 

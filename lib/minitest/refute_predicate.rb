@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 Synvert::Rewriter.new 'minitest', 'refute_predicate' do
+  configure(parser: Synvert::PARSER_PARSER)
+
   description <<~EOS
     Use `refute_predicate` if expecting to test the predicate on the expected object and on applying predicate returns false.
 

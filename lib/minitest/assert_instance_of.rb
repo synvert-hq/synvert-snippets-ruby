@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 Synvert::Rewriter.new 'minitest', 'assert_instance_of' do
+  configure(parser: Synvert::PARSER_PARSER)
+
   description <<~EOS
     Prefer `assert_instance_of(class, object)` over `assert(object.instance_of?(class))`.
 

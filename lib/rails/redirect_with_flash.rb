@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 Synvert::Rewriter.new 'rails', 'redirect_with_flash' do
+  configure(parser: Synvert::PARSER_PARSER)
+
   description <<~EOS
     Fold flash setting into redirect_to.
 

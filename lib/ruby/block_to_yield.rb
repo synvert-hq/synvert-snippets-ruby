@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 Synvert::Rewriter.new 'ruby', 'block_to_yield' do
+  configure(parser: Synvert::PARSER_PARSER)
+
   description <<~EOS
     It converts block to yield.
 

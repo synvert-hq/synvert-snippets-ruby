@@ -3,6 +3,8 @@
 require 'securerandom'
 
 Synvert::Rewriter.new 'rails', 'upgrade_3_2_to_4_0' do
+  configure(parser: Synvert::PARSER_PARSER)
+
   description <<~EOS
     It upgrades rails from 3.2 to 4.0.
 

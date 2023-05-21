@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 Synvert::Rewriter.new 'ruby', 'hash_short_syntax' do
+  configure(parser: Synvert::PARSER_PARSER)
+
   description <<~EOS
     Use ruby 3.1 hash short syntax.
 

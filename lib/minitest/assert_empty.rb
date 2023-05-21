@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 Synvert::Rewriter.new 'minitest', 'assert_empty' do
+  configure(parser: Synvert::PARSER_PARSER)
+
   description <<~EOS
     Use `assert_empty` if expecting object to be empty.
 

@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 Synvert::Rewriter.new 'minitest', 'assert_predicate' do
+  configure(parser: Synvert::PARSER_PARSER)
+
   description <<~EOS
     Use `assert_predicate` if expecting to test the predicate on the expected object and on applying predicate returns true. The benefit of using the `assert_predicate` over the `assert` or `assert_equal` is the user friendly error message when assertion fails.
 

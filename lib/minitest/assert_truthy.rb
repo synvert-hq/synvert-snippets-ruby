@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 Synvert::Rewriter.new 'minitest', 'assert_truthy' do
+  configure(parser: Synvert::PARSER_PARSER)
+
   description <<~EOS
     Use `assert` if expecting truthy value.
 

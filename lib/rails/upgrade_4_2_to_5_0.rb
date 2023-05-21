@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 Synvert::Rewriter.new 'rails', 'upgrade_4_2_to_5_0' do
+  configure(parser: Synvert::PARSER_PARSER)
+
   description <<~EOS
     It upgrades rails 4.2 to 5.0
 

@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 Synvert::Rewriter.new 'rspec', 'one_liner_expectation' do
+  configure(parser: Synvert::PARSER_PARSER)
+
   description <<~EOS
     It convers rspec one liner expectation.
 

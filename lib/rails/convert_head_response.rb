@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 Synvert::Rewriter.new 'rails', 'convert_head_response' do
+  configure(parser: Synvert::PARSER_PARSER)
+
   description <<~EOS
     It replaces render head response in controller files.
 

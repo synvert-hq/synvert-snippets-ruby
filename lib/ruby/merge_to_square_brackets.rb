@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 Synvert::Rewriter.new 'ruby', 'merge_to_square_brackets' do
+  configure(parser: Synvert::PARSER_PARSER)
+
   description <<~EOS
     It converts `Hash#merge` and `Hash#merge!` methods to `Hash#[]=`
 

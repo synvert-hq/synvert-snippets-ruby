@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 Synvert::Rewriter.new 'rails', 'convert_env_to_request_env' do
+  configure(parser: Synvert::PARSER_PARSER)
+
   description <<~EOS
     It replaces env with request.env in controller files.
 

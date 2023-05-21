@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 Synvert::Rewriter.new 'will_paginate', 'use_new_syntax' do
+  configure(parser: Synvert::PARSER_PARSER)
+
   description <<~EOS
     It uses will_paginate new syntax.
 

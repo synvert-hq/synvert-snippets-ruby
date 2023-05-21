@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 Synvert::Rewriter.new 'ruby', 'fast_syntax' do
+  configure(parser: Synvert::PARSER_PARSER)
+
   description <<~EOS
     Use ruby fast syntax.
 

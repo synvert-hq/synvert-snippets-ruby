@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 Synvert::Rewriter.new 'rails', 'strong_parameters' do
+  configure(parser: Synvert::PARSER_PARSER)
+
   default_columns = %w[id created_at updated_at deleted_at]
 
   description <<~EOS

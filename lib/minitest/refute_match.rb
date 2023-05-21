@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 Synvert::Rewriter.new 'minitest', 'refute_match' do
+  configure(parser: Synvert::PARSER_PARSER)
+
   description <<~EOS
     Use `refute_match` if expecting matcher regex to not match actual object.
 

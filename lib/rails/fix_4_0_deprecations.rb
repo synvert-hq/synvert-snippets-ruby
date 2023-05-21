@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 Synvert::Rewriter.new 'rails', 'fix_4_0_deprecations' do
+  configure(parser: Synvert::PARSER_PARSER)
+
   description <<~EOS
     It fixes rails 4.0 deprecations.
 

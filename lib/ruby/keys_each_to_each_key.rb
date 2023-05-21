@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 Synvert::Rewriter.new 'ruby', 'keys_each_to_each_key' do
+  configure(parser: Synvert::PARSER_PARSER)
+
   description <<~EOS
     It converts `Hash#keys.each` to `Hash#each_key`
 

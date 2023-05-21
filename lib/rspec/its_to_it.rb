@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 Synvert::Rewriter.new 'rspec', 'its_to_it' do
+  configure(parser: Synvert::PARSER_PARSER)
+
   description <<~EOS
     It converts rspec its to it.
 

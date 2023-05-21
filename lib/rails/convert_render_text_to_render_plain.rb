@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 Synvert::Rewriter.new 'rails', 'convert_render_text_to_render_plain' do
+  configure(parser: Synvert::PARSER_PARSER)
+
   description <<~EOS
     It converts `render :text` to `render :plain`
 

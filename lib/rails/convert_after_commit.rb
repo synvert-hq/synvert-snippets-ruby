@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 Synvert::Rewriter.new 'rails', 'convert_after_commit' do
+  configure(parser: Synvert::PARSER_PARSER)
+
   description <<~EOS
     It converts active_record after_commit.
 

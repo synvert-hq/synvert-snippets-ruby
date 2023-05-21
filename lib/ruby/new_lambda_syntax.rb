@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 Synvert::Rewriter.new 'ruby', 'new_lambda_syntax' do
+  configure(parser: Synvert::PARSER_PARSER)
+
   description <<~EOS
     Use ruby new lambda syntax
 

@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 Synvert::Rewriter.new 'minitest', 'assert_respond_to' do
+  configure(parser: Synvert::PARSER_PARSER)
+
   description <<~EOS
     Use `assert_respond_to` if expecting object to respond to a method.
 

@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 Synvert::Rewriter.new 'rspec', 'new_config_options' do
+  configure(parser: Synvert::PARSER_PARSER)
+
   description <<~EOS
     It converts rspec configuration options.
 

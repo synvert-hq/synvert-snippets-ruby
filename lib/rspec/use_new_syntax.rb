@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 Synvert::Rewriter.new 'rspec', 'use_new_syntax' do
+  configure(parser: Synvert::PARSER_PARSER)
+
   description 'It converts rspec code to new syntax, it calls all rspec sub snippets.'
 
   add_snippet 'rspec', 'be_close_to_be_within'

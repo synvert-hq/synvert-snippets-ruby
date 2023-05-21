@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 Synvert::Rewriter.new 'ruby', 'new_2_2_hash_syntax' do
+  configure(parser: Synvert::PARSER_PARSER)
+
   description <<~'EOS'
     Use ruby 2.2 new hash syntax.
 

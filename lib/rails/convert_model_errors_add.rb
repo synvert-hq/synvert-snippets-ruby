@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 Synvert::Rewriter.new 'rails', 'convert_model_errors_add' do
+  configure(parser: Synvert::PARSER_PARSER)
+
   description <<~EOS
     It converts to activerecord `errors.add`.
 

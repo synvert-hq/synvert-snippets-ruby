@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 Synvert::Rewriter.new 'rails', 'convert_mailers_2_3_to_3_0' do
+  configure(parser: Synvert::PARSER_PARSER)
+
   description <<~EOS
     It converts rails mailers from 2.3 to 3.0.
 

@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 Synvert::Rewriter.new 'factory_bot', 'convert_factory_girl_to_factory_bot' do
+  configure(parser: Synvert::PARSER_PARSER)
+
   description <<~EOS
     It converts FactoryGirl to FactoryBot
 

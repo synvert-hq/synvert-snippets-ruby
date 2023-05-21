@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 Synvert::Rewriter.new 'rails', 'convert_active_record_dirty_5_0_to_5_1' do
+  configure(parser: Synvert::PARSER_PARSER)
+
   description <<~EOS
     It converts ActiveRecord::Dirty 5.0 to 5.1
 

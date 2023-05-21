@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 Synvert::Rewriter.new 'ruby', 'nested_class_definition' do
+  configure(parser: Synvert::PARSER_PARSER)
+
   description <<~EOS
     It converts compact class definition to nested class definition.
 

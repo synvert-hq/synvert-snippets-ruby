@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 Synvert::Rewriter.new 'minitest', 'better_syntax' do
+  configure(parser: Synvert::PARSER_PARSER)
+
   description 'It converts rspec code to better syntax, it calls all minitest sub snippets.'
 
   add_snippet 'minitest', 'assert_empty'

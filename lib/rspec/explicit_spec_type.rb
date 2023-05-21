@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 Synvert::Rewriter.new 'rspec', 'explicit_spec_type' do
+  configure(parser: Synvert::PARSER_PARSER)
+
   description <<~EOS
     It explicits spec type.
 

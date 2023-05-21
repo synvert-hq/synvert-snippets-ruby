@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 Synvert::Rewriter.new 'factory_bot', 'use_string_as_class_name' do
+  configure(parser: Synvert::PARSER_PARSER)
+
   description <<~EOS
     It uses string as class name
 

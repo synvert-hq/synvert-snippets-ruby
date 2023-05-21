@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 Synvert::Rewriter.new 'rails', 'convert_model_lambda_scope' do
+  configure(parser: Synvert::PARSER_PARSER)
+
   description <<~EOS
     It converts activerecord scope to lambda scope.
 

@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 Synvert::Rewriter.new 'ruby', 'numbered_parameters' do
+  configure(parser: Synvert::PARSER_PARSER)
+
   description <<~EOS
     It uses numbered parameters.
 

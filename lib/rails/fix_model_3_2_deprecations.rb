@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 Synvert::Rewriter.new 'rails', 'fix_model_3_2_deprecations' do
+  configure(parser: Synvert::PARSER_PARSER)
+
   description <<~EOS
     It fixes rails 3.2 model deprecations.
 

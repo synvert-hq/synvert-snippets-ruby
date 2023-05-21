@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 Synvert::Rewriter.new 'rails', 'add_application_record' do
+  configure(parser: Synvert::PARSER_PARSER)
+
   description <<~EOS
     It adds ApplicationRecord
 

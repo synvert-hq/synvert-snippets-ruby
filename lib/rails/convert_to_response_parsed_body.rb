@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 Synvert::Rewriter.new 'rails', 'convert_to_response_parsed_body' do
+  configure(parser: Synvert::PARSER_PARSER)
+
   description <<~EOS
     It converts `JSON.parse(@response.body)` to `@response.parsed_body`.
   EOS

@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 Synvert::Rewriter.new 'debug_me', 'remove_debug_me_calls' do
+  configure(parser: Synvert::PARSER_PARSER)
+
   description <<~EOS
     It removes `debug_me` calls.
 

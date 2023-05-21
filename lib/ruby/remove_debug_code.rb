@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 Synvert::Rewriter.new 'ruby', 'remove_debug_code' do
+  configure(parser: Synvert::PARSER_PARSER)
+
   description <<~EOS
     It removes `puts` and `p` calls.
   EOS

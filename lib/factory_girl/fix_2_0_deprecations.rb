@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 Synvert::Rewriter.new 'factory_girl', 'fix_2_0_deprecations' do
+  configure(parser: Synvert::PARSER_PARSER)
+
   description <<~EOS
     It fixes factory girl 2.0 deprecations
 

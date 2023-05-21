@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 Synvert::Rewriter.new 'rspec', 'stub_and_mock_to_double' do
+  configure(parser: Synvert::PARSER_PARSER)
+
   description <<~EOS
     It converts stub and mock to double.
 
