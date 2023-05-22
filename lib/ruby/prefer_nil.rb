@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-Synvert::Rewriter.new 'ruby', 'perfer_nil' do
+Synvert::Rewriter.new 'ruby', 'prefer_nil' do
   configure(parser: Synvert::PARSER_PARSER)
 
   description <<~EOS
