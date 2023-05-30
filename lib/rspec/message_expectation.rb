@@ -32,37 +32,37 @@ Synvert::Rewriter.new 'rspec', 'message_expectation' do
   within_files Synvert::RAILS_RSPEC_FILES do
     # obj.should_receive(:message) => expect(obj).to receive(:message)
     # Klass.any_instance.should_receive(:message) => expect_any_instance_of(Klass).to receive(:message)
-    with_node type: 'send', message: 'should_receive' do
-      if_exist_node type: 'send', message: 'any_instance' do
+    with_node node_type: 'send', message: 'should_receive' do
+      if_exist_node node_type: 'send', message: 'any_instance' do
         replace_with 'expect_any_instance_of({{receiver.receiver}}).to receive({{arguments}})'
       end
-      unless_exist_node type: 'send', message: 'any_instance' do
+      unless_exist_node node_type: 'send', message: 'any_instance' do
         replace_with 'expect({{receiver}}).to receive({{arguments}})'
       end
     end
 
     # obj.should_not_receive(:message) => expect(obj).to receive(:message)
     # Klass.any_instance.should_not_receive(:message) => expect_any_instance_of(Klass).to receive(:message)
-    with_node type: 'send', message: 'should_not_receive' do
-      if_exist_node type: 'send', message: 'any_instance' do
+    with_node node_type: 'send', message: 'should_not_receive' do
+      if_exist_node node_type: 'send', message: 'any_instance' do
         replace_with 'expect_any_instance_of({{receiver.receiver}}).not_to receive({{arguments}})'
       end
-      unless_exist_node type: 'send', message: 'any_instance' do
+      unless_exist_node node_type: 'send', message: 'any_instance' do
         replace_with 'expect({{receiver}}).not_to receive({{arguments}})'
       end
     end
 
     # expect(obj).to receive(:message).and_return { 1 } => expect(obj).to receive(:message) { 1 }
-    with_node type: 'send',
+    with_node node_type: 'send',
               receiver: {
-                type: 'send',
+                node_type: 'send',
                 message: 'expect'
               },
               arguments: {
                 first: {
-                  type: 'block',
+                  node_type: 'block',
                   caller: {
-                    type: 'send',
+                    node_type: 'send',
                     message: 'and_return',
                     arguments: []
                   }
@@ -72,14 +72,14 @@ Synvert::Rewriter.new 'rspec', 'message_expectation' do
     end
 
     # expect(obj).to receive(:message).and_return => expect(obj).to receive(:message)
-    with_node type: 'send',
+    with_node node_type: 'send',
               receiver: {
-                type: 'send',
+                node_type: 'send',
                 message: 'expect'
               },
               arguments: {
                 first: {
-                  type: 'send',
+                  node_type: 'send',
                   message: 'and_return',
                   arguments: []
                 }

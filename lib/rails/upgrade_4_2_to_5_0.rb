@@ -35,7 +35,7 @@ Synvert::Rewriter.new 'rails', 'upgrade_4_2_to_5_0' do
 
   within_file 'config/application.rb' do
     # remove config.raise_in_transactional_callbacks = true
-    with_node type: 'send', message: 'raise_in_transactional_callbacks=' do
+    with_node node_type: 'send', message: 'raise_in_transactional_callbacks=' do
       remove
     end
   end
@@ -44,30 +44,30 @@ Synvert::Rewriter.new 'rails', 'upgrade_4_2_to_5_0' do
     # config.static_cache_control = 'public, max-age=31536000'
     # =>
     # config.public_file_server.headers = { "Cache-Control" => 'public, max-age=31536000' }
-    with_node type: 'send', message: 'static_cache_control=' do
+    with_node node_type: 'send', message: 'static_cache_control=' do
       replace_with '{{receiver}}.public_file_server.headers = { "Cache-Control" => {{arguments}} }'
     end
 
     # config.serve_static_files = true
     # =>
     # config.public_file_server.enabled = true
-    with_node type: 'send', message: 'serve_static_files=' do
+    with_node node_type: 'send', message: 'serve_static_files=' do
       replace :message, with: 'public_file_server.enabled ='
     end
 
     # config.middleware.use "Foo::Bar"
     # =>
     # config.middleware.use Foo::Bar
-    with_node type: 'send',
+    with_node node_type: 'send',
               receiver: {
-                type: 'send',
+                node_type: 'send',
                 receiver: 'config',
                 message: 'middleware'
               },
               message: 'use',
               arguments: {
                 first: {
-                  type: 'str'
+                  node_type: 'str'
                 }
               } do
       replace 'arguments.first', with: "{{arguments.first.to_value}}"
@@ -78,7 +78,7 @@ Synvert::Rewriter.new 'rails', 'upgrade_4_2_to_5_0' do
     # MissingSourceFile
     # =>
     # LoadError
-    with_node type: 'const', to_source: 'MissingSourceFile' do
+    with_node node_type: 'const', to_source: 'MissingSourceFile' do
       replace_with 'LoadError'
     end
   end

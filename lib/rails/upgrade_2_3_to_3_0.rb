@@ -17,15 +17,15 @@ Synvert::Rewriter.new 'rails', 'upgrade_2_3_to_3_0' do
 
   filter_parameters = []
   within_file 'app/controllers/application_controller.rb' do
-    with_node type: 'send', message: 'filter_parameter_logging' do
+    with_node node_type: 'send', message: 'filter_parameter_logging' do
       filter_parameters = node.arguments.map(&:to_source)
       remove
     end
   end
 
   within_file 'config/application.rb' do
-    with_node type: 'class', parent_class: 'Rails::Application' do
-      unless_exist_node type: 'send', receiver: 'config', message: 'filter_parameters' do
+    with_node node_type: 'class', parent_class: 'Rails::Application' do
+      unless_exist_node node_type: 'send', receiver: 'config', message: 'filter_parameters' do
         append "config.filter_parameters += [#{filter_parameters.join(', ')}]"
       end
     end

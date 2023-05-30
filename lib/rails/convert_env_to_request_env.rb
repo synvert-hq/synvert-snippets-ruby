@@ -23,7 +23,7 @@ Synvert::Rewriter.new 'rails', 'convert_env_to_request_env' do
     # env["omniauth.auth"]
     # =>
     # request.env["omniauth.auth"]
-    with_node type: 'send', receiver: nil, message: 'env', arguments: { size: 0 } do
+    with_node node_type: 'send', receiver: nil, message: 'env', arguments: { size: 0 } do
       replace :message, with: 'request.env'
     end
   end

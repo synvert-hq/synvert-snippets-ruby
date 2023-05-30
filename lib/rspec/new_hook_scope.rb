@@ -30,11 +30,11 @@ Synvert::Rewriter.new 'rspec', 'new_hook_scope' do
     # =>
     # before(:context) { do_something }
     %w[before after around].each do |scope|
-      with_node type: 'send', message: scope, arguments: [:all] do
+      with_node node_type: 'send', message: scope, arguments: [:all] do
         replace :arguments, with: ':context'
       end
 
-      with_node type: 'send', message: scope, arguments: [:each] do
+      with_node node_type: 'send', message: scope, arguments: [:each] do
         replace :arguments, with: ':example'
       end
     end

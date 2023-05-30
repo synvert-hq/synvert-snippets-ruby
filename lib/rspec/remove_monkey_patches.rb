@@ -51,7 +51,7 @@ Synvert::Rewriter.new 'rspec', 'remove_monkey_patches' do
     #   end
     # end
     with_node(
-      { type: 'block', caller: { type: 'send', receiver: nil, message: { in: monkey_patches_methods } } },
+      { node_type: 'block', caller: { node_type: 'send', receiver: nil, message: { in: monkey_patches_methods } } },
       { recursive: false }
     ) do
       insert 'RSpec.', at: 'beginning'
@@ -65,8 +65,8 @@ Synvert::Rewriter.new 'rspec', 'remove_monkey_patches' do
     # RSpec.configure do |rspec|
     #   rspec.expose_dsl_globally = false
     # end
-    within_node type: 'block', caller: { type: 'send', receiver: 'RSpec', message: 'configure' } do
-      unless_exist_node type: 'send', message: 'expose_dsl_globally=' do
+    within_node node_type: 'block', caller: { node_type: 'send', receiver: 'RSpec', message: 'configure' } do
+      unless_exist_node node_type: 'send', message: 'expose_dsl_globally=' do
         append '{{arguments}}.expose_dsl_globally = false'
       end
     end

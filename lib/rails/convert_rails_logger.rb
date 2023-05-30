@@ -20,10 +20,10 @@ Synvert::Rewriter.new 'rails', 'convert_rails_logger' do
   if_gem 'rails', '>= 2.3'
 
   within_files Synvert::ALL_RUBY_FILES do
-    with_node type: 'const', to_source: 'RAILS_DEFAULT_LOGGER' do
+    with_node node_type: 'const', to_source: 'RAILS_DEFAULT_LOGGER' do
       replace_with 'Rails.logger'
     end
-    with_node type: 'const', to_source: '::RAILS_DEFAULT_LOGGER' do
+    with_node node_type: 'const', to_source: '::RAILS_DEFAULT_LOGGER' do
       replace_with 'Rails.logger'
     end
   end

@@ -75,28 +75,28 @@ Synvert::Rewriter.new 'rails', 'convert_mailers_2_3_to_3_0' do
     #     mail(:to => recipient.email_address_with_name, :subject => "New account information", :from => "system@example.com", :date => Time.now)
     #   end
     # end
-    within_node type: 'class', parent_class: 'ActionMailer::Base' do
+    within_node node_type: 'class', parent_class: 'ActionMailer::Base' do
       class_name = node.name
-      within_node type: 'def' do
+      within_node node_type: 'def' do
         args = {}
-        with_node type: 'send', receiver: nil, message: 'recipients' do
+        with_node node_type: 'send', receiver: nil, message: 'recipients' do
           args[:to] = node.arguments.first.to_source
           remove
         end
         %w[subject from cc bcc].each do |message|
-          with_node type: 'send', receiver: nil, message: message do
+          with_node node_type: 'send', receiver: nil, message: message do
             args[message.to_sym] = node.arguments.first.to_source
             remove
           end
         end
-        with_node type: 'send', receiver: nil, message: 'sent_on' do
+        with_node node_type: 'send', receiver: nil, message: 'sent_on' do
           args[:date] = node.arguments.first.to_source
           remove
         end
-        with_node type: 'send', receiver: nil, message: 'content_type' do
+        with_node node_type: 'send', receiver: nil, message: 'content_type' do
           remove
         end
-        with_node type: 'send', receiver: nil, message: 'body', arguments: { size: 1 } do
+        with_node node_type: 'send', receiver: nil, message: 'body', arguments: { size: 1 } do
           body_argument = node.arguments.first
           if :hash == body_argument.type
             replace_with body_argument.children.map { |pair_node|
@@ -119,7 +119,7 @@ Synvert::Rewriter.new 'rails', 'convert_mailers_2_3_to_3_0' do
     # Notifier.deliver_signup_notification(recipient)
     # =>
     # Notifier.signup_notification(recipient).deliver
-    with_node type: 'send', message: /^deliver_/ do
+    with_node node_type: 'send', message: /^deliver_/ do
       mailer_method = node.message.to_s.sub(/^deliver_/, '').to_sym
       if mailer_methods[node.receiver] && mailer_methods[node.receiver].include?(mailer_method)
         replace_with "{{receiver}}.#{mailer_method}({{arguments}}).deliver"
@@ -129,7 +129,7 @@ Synvert::Rewriter.new 'rails', 'convert_mailers_2_3_to_3_0' do
     # message = Notifier.create_signup_notification(recipient)
     # =>
     # message = Notifier.signup_notification(recipient)
-    with_node type: 'send', message: /^create_/ do
+    with_node node_type: 'send', message: /^create_/ do
       mailer_method = node.message.to_s.sub(/^create_/, '').to_sym
       if mailer_methods[node.receiver] && mailer_methods[node.receiver].include?(mailer_method)
         replace_with "{{receiver}}.#{mailer_method}({{arguments}})"
@@ -139,7 +139,7 @@ Synvert::Rewriter.new 'rails', 'convert_mailers_2_3_to_3_0' do
     # Notifier.deliver(message)
     # =>
     # message.deliver
-    with_node type: 'send', message: 'deliver' do
+    with_node node_type: 'send', message: 'deliver' do
       if mailer_methods[node.receiver]
         replace_with '{{arguments}}.{{message}}'
       end

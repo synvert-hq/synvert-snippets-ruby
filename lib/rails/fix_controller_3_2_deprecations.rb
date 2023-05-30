@@ -36,7 +36,7 @@ Synvert::Rewriter.new 'rails', 'fix_controller_3_2_deprecations' do
       'ActionController::UnknownAction' => 'AbstractController::ActionNotFound',
       'ActionController::DoubleRenderError' => 'AbstractController::DoubleRenderError'
     }.each do |old_const, new_const|
-      with_node type: 'const', to_source: old_const do
+      with_node node_type: 'const', to_source: old_const do
         replace_with new_const
       end
     end

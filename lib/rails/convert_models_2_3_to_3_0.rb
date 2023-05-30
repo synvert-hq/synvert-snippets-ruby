@@ -200,8 +200,8 @@ Synvert::Rewriter.new 'rails', 'convert_models_2_3_to_3_0' do
     # =>
     # default_scope where(:active => true)
     %w[named_scope default_scope].each do |message|
-      within_node type: 'send', message: message, arguments: { last: { type: 'hash' } } do
-        with_node type: 'hash' do
+      within_node node_type: 'send', message: message, arguments: { last: { node_type: 'hash' } } do
+        with_node node_type: 'hash' do
           if keys.any? { |key| node.key? key }
             replace_with generate_new_queries(node)
           end
@@ -215,9 +215,9 @@ Synvert::Rewriter.new 'rails', 'convert_models_2_3_to_3_0' do
       # default_scope :active, lambda { {:conditions => {:active => true}} }
       # =>
       # default_scope :active, lambda { where(:active => true) }
-      within_node type: 'send', message: message, arguments: { last: { type: 'block' } } do
-        within_node type: 'block' do
-          with_node type: 'hash' do
+      within_node node_type: 'send', message: message, arguments: { last: { node_type: 'block' } } do
+        within_node node_type: 'block' do
+          with_node node_type: 'hash' do
             if keys.any? { |key| node.key? key }
               replace_with generate_new_queries(node)
             end
@@ -229,14 +229,14 @@ Synvert::Rewriter.new 'rails', 'convert_models_2_3_to_3_0' do
     # named_scope :active, where(:active => true)
     # =>
     # scope :active, where(:active => true)
-    with_node type: 'send', message: 'named_scope' do
+    with_node node_type: 'send', message: 'named_scope' do
       replace :message, with: 'scope'
     end
 
     # scoped(:conditions => {:active => true})
     # =>
     # where(:active => true)
-    within_node type: 'send', message: 'scoped' do
+    within_node node_type: 'send', message: 'scoped' do
       if node.arguments.length == 1
         argument_node = node.arguments.first
         if :hash == argument_node.type && keys.any? { |key| argument_node.key? key }
@@ -248,7 +248,7 @@ Synvert::Rewriter.new 'rails', 'convert_models_2_3_to_3_0' do
     # Post.all(:joins => :comments)
     # =>
     # Post.joins(:comments).all
-    within_node type: 'send', message: 'all', arguments: { size: 1 } do
+    within_node node_type: 'send', message: 'all', arguments: { size: 1 } do
       argument_node = node.arguments.first
       if :hash == argument_node.type && keys.any? { |key| argument_node.key? key }
         replace_with add_receiver_if_necessary(generate_new_queries(argument_node))
@@ -259,7 +259,7 @@ Synvert::Rewriter.new 'rails', 'convert_models_2_3_to_3_0' do
       # Post.first(:conditions => {:title => "test"})
       # =>
       # Post.where(:title => "test").first
-      within_node type: 'send', message: message, arguments: { size: 1 } do
+      within_node node_type: 'send', message: message, arguments: { size: 1 } do
         argument_node = node.arguments.first
         if :hash == argument_node.type && keys.any? { |key| argument_node.key? key }
           replace_with add_receiver_if_necessary("#{generate_new_queries(argument_node)}.#{message}")
@@ -279,7 +279,7 @@ Synvert::Rewriter.new 'rails', 'convert_models_2_3_to_3_0' do
       # Client.where(:active => true).min("age")
       # Client.where(:active => true).max("age")
       # Client.where(:active => true).sum("orders_count")
-      within_node type: 'send', message: message, arguments: { size: 2 } do
+      within_node node_type: 'send', message: message, arguments: { size: 2 } do
         argument_node = node.arguments.last
         if :hash == argument_node.type && keys.any? { |key| argument_node.key? key }
           replace_with add_receiver_if_necessary(
@@ -292,7 +292,7 @@ Synvert::Rewriter.new 'rails', 'convert_models_2_3_to_3_0' do
     # Post.find(:all, :limit => 2)
     # =>
     # Post.where(:limit => 2)
-    with_node type: 'send', message: 'find', arguments: { size: 2, first: :all } do
+    with_node node_type: 'send', message: 'find', arguments: { size: 2, first: :all } do
       argument_node = node.arguments.last
       if :hash == argument_node.type && keys.any? { |key| argument_node.key? key }
         replace_with add_receiver_if_necessary(generate_new_queries(argument_node))
@@ -302,7 +302,7 @@ Synvert::Rewriter.new 'rails', 'convert_models_2_3_to_3_0' do
     # Post.find(:all)
     # =>
     # Post.all
-    with_node type: 'send', message: 'find', arguments: { size: 1, first: :all } do
+    with_node node_type: 'send', message: 'find', arguments: { size: 1, first: :all } do
       replace_with add_receiver_if_necessary('all')
     end
 
@@ -310,7 +310,7 @@ Synvert::Rewriter.new 'rails', 'convert_models_2_3_to_3_0' do
       # Post.find(:last, :conditions => {:title => "test"})
       # =>
       # Post.where(:title => "title").last
-      within_node type: 'send', message: 'find', arguments: { size: 2, first: message } do
+      within_node node_type: 'send', message: 'find', arguments: { size: 2, first: message } do
         argument_node = node.arguments.last
         if :hash == argument_node.type && keys.any? { |key| argument_node.key? key }
           replace_with add_receiver_if_necessary("#{generate_new_queries(argument_node)}.#{message}")
@@ -320,7 +320,7 @@ Synvert::Rewriter.new 'rails', 'convert_models_2_3_to_3_0' do
       # Post.find(:first)
       # =>
       # Post.first
-      within_node type: 'send', message: 'find', arguments: { size: 1, first: message } do
+      within_node node_type: 'send', message: 'find', arguments: { size: 1, first: message } do
         replace_with add_receiver_if_necessary(message)
       end
     end
@@ -332,14 +332,14 @@ Synvert::Rewriter.new 'rails', 'convert_models_2_3_to_3_0' do
     # Post.where(:title => "test").update_all(:title => "title")
     # Post.where("title = \'test\'").update_all("title = \'title\'")
     # Post.where("title = ?", title).update_all("title = \'title\'")
-    within_node type: 'send', message: :update_all, arguments: { size: 2 } do
+    within_node node_type: 'send', message: :update_all, arguments: { size: 2 } do
       replace_with add_receiver_if_necessary("where({{arguments.first}}).update_all({{arguments.last}})")
     end
 
     # Post.update_all({:title => "title"}, {:title => "test"}, {:limit => 2})
     # =>
     # Post.where(:title => "test").limit(2).update_all(:title => "title")
-    within_node type: 'send', message: :update_all, arguments: { size: 3 } do
+    within_node node_type: 'send', message: :update_all, arguments: { size: 3 } do
       replace_with add_receiver_if_necessary("where({{arguments.first}}).#{generate_new_queries(node.arguments.last)}.update_all({{arguments.1}})")
     end
 
@@ -355,7 +355,7 @@ Synvert::Rewriter.new 'rails', 'convert_models_2_3_to_3_0' do
     # Post.where("title = \'test\'").destroy_all
     # Post.where("title = ?", title).destroy_all
     %w[delete_all destroy_all].each do |message|
-      within_node type: 'send', message: message, arguments: { size: 1 } do
+      within_node node_type: 'send', message: message, arguments: { size: 1 } do
         replace :message, with: 'where'
         insert ".#{message}"
       end
@@ -373,7 +373,7 @@ Synvert::Rewriter.new 'rails', 'convert_models_2_3_to_3_0' do
       # =>
       # Post.where(:title => "test").find_in_batches(:batch_size => 100) do |posts|
       # end
-      within_node type: 'send', message: message, arguments: { size: 1 } do
+      within_node node_type: 'send', message: message, arguments: { size: 1 } do
         argument_node = node.arguments.first
         if :hash == argument_node.type && keys.any? { |key| argument_node.key? key }
           batch_options = generate_batch_options(argument_node)
@@ -396,7 +396,7 @@ Synvert::Rewriter.new 'rails', 'convert_models_2_3_to_3_0' do
       # with_exclusive_scope(:find => {:limit =>1}) { Post.last }
       # =>
       # with_exclusive_scope(limit(1)) { Post.last }
-      within_node type: 'send', message: message, arguments: { size: 1 } do
+      within_node node_type: 'send', message: message, arguments: { size: 1 } do
         argument_node = node.arguments.first
         if :hash == argument_node.type && argument_node.key?(:find)
           replace_with "#{message}(#{generate_new_queries(argument_node.find_value.to_value)})"
@@ -409,21 +409,21 @@ Synvert::Rewriter.new 'rails', 'convert_models_2_3_to_3_0' do
     # self.errors.on(:email).present?
     # =>
     # self.errors[:email].present?
-    with_node type: 'send', message: 'on', receiver: /errors$/ do
+    with_node node_type: 'send', message: 'on', receiver: /errors$/ do
       replace_with '{{receiver}}[{{arguments}}]'
     end
 
     # self.errors.add_to_base("error message")
     # =>
     # self.errors.add(:base, "error message")
-    with_node type: 'send', message: 'add_to_base', receiver: { type: 'send', message: 'errors' } do
+    with_node node_type: 'send', message: 'add_to_base', receiver: { node_type: 'send', message: 'errors' } do
       replace_with '{{receiver}}.add(:base, {{arguments}})'
     end
 
     # self.save(false)
     # =>
     # self.save(:validate => false)
-    with_node type: 'send', message: 'save', arguments: [false] do
+    with_node node_type: 'send', message: 'save', arguments: [false] do
       replace :arguments, with: ':validate => false'
     end
   end

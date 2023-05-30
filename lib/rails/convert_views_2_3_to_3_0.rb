@@ -35,7 +35,7 @@ Synvert::Rewriter.new 'rails', 'convert_views_2_3_to_3_0' do
 
   # <%= h user.login %> => <%= user.login %>
   within_files Synvert::RAILS_VIEW_FILES + Synvert::RAILS_HELPER_FILES do
-    with_node type: 'send', receiver: nil, message: 'h' do
+    with_node node_type: 'send', receiver: nil, message: 'h' do
       replace_with '{{arguments}}'
     end
   end
@@ -46,9 +46,9 @@ Synvert::Rewriter.new 'rails', 'convert_views_2_3_to_3_0' do
   # <%= form_for post do |f| %>
   # <% end %>
   within_files Synvert::RAILS_VIEW_FILES + Synvert::RAILS_HELPER_FILES do
-    with_node type: 'block',
+    with_node node_type: 'block',
               caller: {
-                type: 'send',
+                node_type: 'send',
                 receiver: nil,
                 message: { in: %w[form_for form_tag fields_for div_for content_tag_for] }
               } do

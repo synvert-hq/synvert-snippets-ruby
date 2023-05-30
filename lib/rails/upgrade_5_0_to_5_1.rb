@@ -20,14 +20,14 @@ Synvert::Rewriter.new 'rails', 'upgrade_5_0_to_5_1' do
     # HashWithIndifferentAccess
     # =>
     # ActiveSupport::HashWithIndifferentAccess
-    with_node type: 'const', to_source: 'HashWithIndifferentAccess' do
+    with_node node_type: 'const', to_source: 'HashWithIndifferentAccess' do
       replace_with 'ActiveSupport::HashWithIndifferentAccess'
     end
 
     # Rails.appplication.config.secrets[:smtp_settings]["address"]
     # =>
     # Rails.appplication.config.secrets[:smtp_settings][:address]
-    with_node type: 'send', message: '[]', arguments: { first: { type: 'str' } } do
+    with_node node_type: 'send', message: '[]', arguments: { first: { node_type: 'str' } } do
       if :send == node.receiver.type && :[] == node.receiver.message &&
          'Rails.application.config.secrets' == node.receiver.receiver.to_source
 

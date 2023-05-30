@@ -28,7 +28,7 @@ Synvert::Rewriter.new 'rspec', 'block_to_expect' do
     # proc { do_something }.should raise_error => expect { do_something }.to raise_error
     # -> { do_something }.should raise_error => expect { do_something }.to raise_error
     { should: 'to', should_not: 'not_to' }.each do |old_message, new_message|
-      with_node type: 'send', receiver: { type: 'block' }, message: old_message do
+      with_node node_type: 'send', receiver: { node_type: 'block' }, message: old_message do
         replace_with "expect { {{receiver.body}} }.#{new_message} {{arguments}}"
       end
     end

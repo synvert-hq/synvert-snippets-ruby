@@ -25,14 +25,14 @@ Synvert::Rewriter.new 'rails', 'convert_update_attributes_to_update' do
     # user.update_attributes(title: 'new')
     # =>
     # user.update(title: 'new')
-    with_node type: { in: ['send', 'csend'] }, message: 'update_attributes' do
+    with_node node_type: { in: ['send', 'csend'] }, message: 'update_attributes' do
       replace :message, with: 'update'
     end
 
     # user.update_attributes!(title: 'new')
     # =>
     # user.update!(title: 'new')
-    with_node type: { in: ['send', 'csend'] }, message: 'update_attributes!' do
+    with_node node_type: { in: ['send', 'csend'] }, message: 'update_attributes!' do
       replace :message, with: 'update!'
     end
   end

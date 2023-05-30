@@ -158,7 +158,7 @@ Synvert::Rewriter.new 'rails', 'convert_routes_2_3_to_3_0' do
     # namespace :admin do
     #   map.resources :users
     # end
-    with_node type: 'block', caller: { type: 'send', receiver: { not: nil }, message: 'namespace' } do
+    with_node node_type: 'block', caller: { node_type: 'send', receiver: { not: nil }, message: 'namespace' } do
       if node.arguments.length > 0
         block_argument = node.arguments.first.to_source
         new_routes = []
@@ -178,7 +178,7 @@ Synvert::Rewriter.new 'rails', 'convert_routes_2_3_to_3_0' do
     # =>
     # manage.manage_index "manage_index", :action => "index", :controller => "manage"
     # manage.manage_intro "manage_intro", :action => "intro", :controller => "manage"
-    with_node type: 'block', caller: { type: 'send', message: 'with_options' } do
+    with_node node_type: 'block', caller: { node_type: 'send', message: 'with_options' } do
       block_argument = node.arguments.first.to_source
       new_routes = []
       node.body.each do |child_node|
@@ -204,7 +204,7 @@ Synvert::Rewriter.new 'rails', 'convert_routes_2_3_to_3_0' do
     #   map.resources :comments
     # end
     %w[resource resources].each do |message|
-      within_node type: 'block', caller: { type: 'send', receiver: { not: nil }, message: message } do
+      within_node node_type: 'block', caller: { node_type: 'send', receiver: { not: nil }, message: message } do
         block_argument = node.arguments.first.to_source
         hash_argument = node.caller.arguments.last
         new_routes = ''
@@ -233,8 +233,8 @@ Synvert::Rewriter.new 'rails', 'convert_routes_2_3_to_3_0' do
   within_file Synvert::RAILS_ROUTE_FILES do
     # map.connect "/main/:id", :controller => "main", :action => "home"
     # => match "/main/:id", :to => "main#home"
-    within_node type: 'send', receiver: 'map', message: 'connect' do
-      if_exist_node type: 'hash' do
+    within_node node_type: 'send', receiver: 'map', message: 'connect' do
+      if_exist_node node_type: 'hash' do
         hash_node = node.arguments.last
         if hash_node.key?(:action) && hash_node.key?(:controller)
           controller_action_name = extract_controller_action_name(hash_node)
@@ -251,7 +251,7 @@ Synvert::Rewriter.new 'rails', 'convert_routes_2_3_to_3_0' do
 
     # map.root :controller => "home", :action => :index
     # => root :to => "home#index"
-    within_node type: 'send', receiver: 'map', message: 'root' do
+    within_node node_type: 'send', receiver: 'map', message: 'root' do
       hash_node = node.arguments.last
       controller_action_name = extract_controller_action_name(hash_node)
       subdomain_node = extract_subdomain_node(hash_node)
@@ -273,7 +273,7 @@ Synvert::Rewriter.new 'rails', 'convert_routes_2_3_to_3_0' do
     #   edn
     # end
     %w[resource resources].each do |message|
-      with_node type: 'send', receiver: 'map', message: message do
+      with_node node_type: 'send', receiver: 'map', message: message do
         hash_argument = node.arguments.last
         if hash_argument.type == :hash && (hash_argument.key?(:collection) || hash_argument.key?(:member))
           collection_routes = hash_argument.collection_value
@@ -297,13 +297,13 @@ Synvert::Rewriter.new 'rails', 'convert_routes_2_3_to_3_0' do
 
     # map.connect "/:controller/:action/:id"
     # => match "/:controller(/:action(/:id))(.:format)"
-    with_node type: 'send', receiver: 'map', message: 'connect', arguments: { first: %r|:controller/:action/:id| } do
+    with_node node_type: 'send', receiver: 'map', message: 'connect', arguments: { first: %r|:controller/:action/:id| } do
       replace_with 'match "/:controller(/:action(/:id))(.:format)"'
     end
 
     # map.connect "audio/:action/:id", :controller => "audio"
     # => match "audio(/:action(/:id))(.:format)", :controller => "audio"
-    with_node type: 'send', receiver: 'map', message: 'connect', arguments: { first: %r|(.*?)/:action/:id| } do
+    with_node node_type: 'send', receiver: 'map', message: 'connect', arguments: { first: %r|(.*?)/:action/:id| } do
       options_node = node.arguments.last
       if options_node.type == :hash && options_node.key?(:controller)
         controller_name = options_node.controller_value.to_value
@@ -313,7 +313,7 @@ Synvert::Rewriter.new 'rails', 'convert_routes_2_3_to_3_0' do
 
     # map.connect "video/:action", :controller => "video"
     # => match "video(/:action)(.:format)", :controller => "video"
-    with_node type: 'send', receiver: 'map', message: 'connect', arguments: { first: %r|(.*?)/:action['"]$| } do
+    with_node node_type: 'send', receiver: 'map', message: 'connect', arguments: { first: %r|(.*?)/:action['"]$| } do
       options_node = node.arguments.last
       if options_node.type == :hash && options_node.key?(:controller)
         controller_name = options_node.controller_value.children.last
@@ -324,7 +324,7 @@ Synvert::Rewriter.new 'rails', 'convert_routes_2_3_to_3_0' do
     # named routes
     # map.admin_signup "/admin_signup", :controller => "admin_signup", :action => "new", :method => "post"
     # => post "/admin_signup", :to => "admin_signup#new", :as => "admin_signup"
-    within_node type: 'send', receiver: 'map' do
+    within_node node_type: 'send', receiver: 'map' do
       message = node.message
       unless %i[root connect resource resources].include? message
         url = node.arguments.first.to_value

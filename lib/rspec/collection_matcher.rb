@@ -42,13 +42,13 @@ Synvert::Rewriter.new 'rspec', 'collection_matcher' do
       have_at_least: 'be >=',
       have_at_most: 'be <='
     }.each do |old_matcher, new_matcher|
-      with_node type: 'send',
+      with_node node_type: 'send',
                 message: 'to',
                 arguments: {
                   first: {
-                    type: 'send',
+                    node_type: 'send',
                     receiver: {
-                      type: 'send',
+                      node_type: 'send',
                       message: old_matcher
                     }
                   }

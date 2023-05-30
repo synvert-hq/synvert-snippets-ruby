@@ -32,18 +32,18 @@ Synvert::Rewriter.new 'rails', 'redirect_with_flash' do
   EOS
 
   within_file Synvert::RAILS_CONTROLLER_FILES do
-    within_node type: 'def' do
+    within_node node_type: 'def' do
       line = nil
       msg = nil
       remover_action = nil
       flash_type = nil
-      with_node type: 'send', receiver: 'flash', arguments: { size: 2, last: { type: :str } } do
+      with_node node_type: 'send', receiver: 'flash', arguments: { size: 2, last: { node_type: :str } } do
         line = node.line
         flash_type = node.arguments.first.to_source
         msg = node.arguments.last.to_source
         remover_action = NodeMutation::RemoveAction.new(node)
       end
-      with_node type: 'send', receiver: nil, message: :redirect_to do
+      with_node node_type: 'send', receiver: nil, message: :redirect_to do
         if line.present? && node.line == line + 1
           add_action(remover_action)
           if [':notice', ':alert'].include?(flash_type)

@@ -29,8 +29,8 @@ Synvert::Rewriter.new 'rails', 'convert_dynamic_finders' do
 
   attributes = ['id']
   within_file 'db/schema.rb' do
-    within_node type: 'block', caller: { type: 'send', message: 'create_table' } do
-      with_node type: 'send', receiver: 't' do
+    within_node node_type: 'block', caller: { node_type: 'send', message: 'create_table' } do
+      with_node node_type: 'send', receiver: 't' do
         attributes << node.arguments.first.to_value
       end
     end
@@ -52,13 +52,13 @@ Synvert::Rewriter.new 'rails', 'convert_dynamic_finders' do
 
   within_files Synvert::ALL_RUBY_FILES do
     # find_all_by_... => where(...)
-    with_node type: 'send', message: /^find_all_by_/ do
+    with_node node_type: 'send', message: /^find_all_by_/ do
       hash_params = dynamic_finder_to_hash('find_all_by_')
       replace_with add_receiver_if_necessary("where(#{hash_params})") if hash_params
     end
 
     # find_by_... => where(...).first
-    with_node type: 'send', message: /^find_by_/ do
+    with_node node_type: 'send', message: /^find_by_/ do
       if :find_by_id == node.message
         replace_with add_receiver_if_necessary('find_by(id: {{arguments}})')
       elsif :find_by_sql != node.message
@@ -68,13 +68,13 @@ Synvert::Rewriter.new 'rails', 'convert_dynamic_finders' do
     end
 
     # find_last_by_... => where(...).last
-    with_node type: 'send', message: /^find_last_by_/ do
+    with_node node_type: 'send', message: /^find_last_by_/ do
       hash_params = dynamic_finder_to_hash('find_last_by_')
       replace_with add_receiver_if_necessary("where(#{hash_params}).last") if hash_params
     end
 
     # scoped_by_... => where(...)
-    with_node type: 'send', message: /^scoped_by_/ do
+    with_node node_type: 'send', message: /^scoped_by_/ do
       hash_params = dynamic_finder_to_hash('scoped_by_')
       replace_with add_receiver_if_necessary("where(#{hash_params})") if hash_params
     end
@@ -84,13 +84,13 @@ Synvert::Rewriter.new 'rails', 'convert_dynamic_finders' do
 
   within_files Synvert::ALL_RUBY_FILES do
     # find_or_initialize_by_... => find_or_initialize_by(...)
-    with_node type: 'send', message: /^find_or_initialize_by_/ do
+    with_node node_type: 'send', message: /^find_or_initialize_by_/ do
       hash_params = dynamic_finder_to_hash('find_or_initialize_by_')
       replace_with add_receiver_if_necessary("find_or_initialize_by(#{hash_params})") if hash_params
     end
 
     # find_or_create_by_... => find_or_create_by(...)
-    with_node type: 'send', message: /^find_or_create_by_/ do
+    with_node node_type: 'send', message: /^find_or_create_by_/ do
       hash_params = dynamic_finder_to_hash('find_or_create_by_')
       replace_with add_receiver_if_necessary("find_or_create_by(#{hash_params})") if hash_params
     end

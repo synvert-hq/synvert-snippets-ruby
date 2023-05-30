@@ -117,18 +117,18 @@ Synvert::Rewriter.new 'rails', 'upgrade_3_2_to_4_0' do
     #   Bundler.require(*Rails.groups(:assets => %w(development test)))
     # end
     # => Bundler.require(:default, Rails.env)
-    with_node type: 'if', expression: { type: 'defined?', arguments: ['Bundler'] } do
+    with_node node_type: 'if', expression: { node_type: 'defined?', arguments: ['Bundler'] } do
       replace_with 'Bundler.require(:default, Rails.env)'
     end
   end
 
   within_file 'config/**/*.rb' do
     # remove config.active_record.identity_map = true
-    with_node type: 'send',
+    with_node node_type: 'send',
               receiver: {
-                type: 'send',
+                node_type: 'send',
                 receiver: {
-                  type: 'send',
+                  node_type: 'send',
                   message: 'config'
                 },
                 message: 'active_record'
@@ -138,16 +138,16 @@ Synvert::Rewriter.new 'rails', 'upgrade_3_2_to_4_0' do
     end
 
     # remove config.whiny_nils = true
-    with_node type: 'send', receiver: { type: 'send', message: 'config' }, message: 'whiny_nils=' do
+    with_node node_type: 'send', receiver: { node_type: 'send', message: 'config' }, message: 'whiny_nils=' do
       remove
     end
 
     # config.assets.compress = ... => config.assets.js_compressor = ...
-    with_node type: 'send',
+    with_node node_type: 'send',
               receiver: {
-                type: 'send',
+                node_type: 'send',
                 receiver: {
-                  type: 'send',
+                  node_type: 'send',
                   message: 'config'
                 },
                 message: 'assets'
@@ -157,11 +157,11 @@ Synvert::Rewriter.new 'rails', 'upgrade_3_2_to_4_0' do
     end
 
     # remove config.action_dispatch.best_standards_support = ...
-    with_node type: 'send',
+    with_node node_type: 'send',
               receiver: {
-                type: 'send',
+                node_type: 'send',
                 receiver: {
-                  type: 'send',
+                  node_type: 'send',
                   message: 'config'
                 },
                 message: 'action_dispatch'
@@ -171,34 +171,34 @@ Synvert::Rewriter.new 'rails', 'upgrade_3_2_to_4_0' do
     end
 
     # remove config.middleware.xxx(..., ActionDispatch::BestStandardsSupport)
-    with_node type: 'send', arguments: { includes: 'ActionDispatch::BestStandardsSupport' } do
+    with_node node_type: 'send', arguments: { includes: 'ActionDispatch::BestStandardsSupport' } do
       remove
     end
 
     # ActionController::Base.page_cache_extension = ... => ActionController::Base.default_static_extension = ...
-    with_node type: 'send', message: 'page_cache_extension=' do
+    with_node node_type: 'send', message: 'page_cache_extension=' do
       replace_with 'ActionController::Base.default_static_extension = {{arguments}}'
     end
   end
 
   within_file 'config/environments/production.rb' do
     # prepend config.eager_load = true
-    unless_exist_node type: 'send', message: 'eager_load=' do
+    unless_exist_node node_type: 'send', message: 'eager_load=' do
       prepend 'config.eager_load = true'
     end
   end
 
   within_file 'config/environments/development.rb' do
     # prepend config.eager_load = false
-    unless_exist_node type: 'send', message: 'eager_load=' do
+    unless_exist_node node_type: 'send', message: 'eager_load=' do
       prepend 'config.eager_load = false'
     end
 
     # remove config.active_record.auto_explain_threshold_in_seconds = x
-    with_node type: 'send',
+    with_node node_type: 'send',
               message: 'auto_explain_threshold_in_seconds=',
               receiver: {
-                type: 'send',
+                node_type: 'send',
                 receiver: 'config',
                 message: 'active_record'
               } do
@@ -208,7 +208,7 @@ Synvert::Rewriter.new 'rails', 'upgrade_3_2_to_4_0' do
 
   within_file 'config/environments/test.rb' do
     # prepend config.eager_load = false
-    unless_exist_node type: 'send', message: 'eager_load=' do
+    unless_exist_node node_type: 'send', message: 'eager_load=' do
       prepend 'config.eager_load = false'
     end
   end
@@ -218,8 +218,8 @@ Synvert::Rewriter.new 'rails', 'upgrade_3_2_to_4_0' do
     # ActiveSupport.on_load(:active_record) do
     #   self.include_root_in_json = false
     # end
-    with_node type: 'block', caller: { receiver: 'ActiveSupport', message: 'on_load', arguments: [:active_record] } do
-      if_only_exist_node type: 'send', receiver: 'self', message: 'include_root_in_json=', arguments: [false] do
+    with_node node_type: 'block', caller: { receiver: 'ActiveSupport', message: 'on_load', arguments: [:active_record] } do
+      if_only_exist_node node_type: 'send', receiver: 'self', message: 'include_root_in_json=', arguments: [false] do
         remove
       end
     end
@@ -227,8 +227,8 @@ Synvert::Rewriter.new 'rails', 'upgrade_3_2_to_4_0' do
 
   within_file 'config/initializers/secret_token.rb' do
     # insert Application.config.secret_key_base = '...'
-    unless_exist_node type: 'send', message: 'secret_key_base=' do
-      with_node type: 'send', message: 'secret_token=' do
+    unless_exist_node node_type: 'send', message: 'secret_key_base=' do
+      with_node node_type: 'send', message: 'secret_token=' do
         secret = SecureRandom.hex(64)
         insert_after "{{receiver}}.secret_key_base = \"#{secret}\""
       end
@@ -237,21 +237,21 @@ Synvert::Rewriter.new 'rails', 'upgrade_3_2_to_4_0' do
 
   within_file Synvert::RAILS_ROUTE_FILES do
     # Rack::Utils.escape('こんにちは') => 'こんにちは'
-    with_node type: 'send', receiver: 'Rack::Utils', message: 'escape' do
+    with_node node_type: 'send', receiver: 'Rack::Utils', message: 'escape' do
       replace_with '{{arguments}}'
     end
   end
 
   within_file Synvert::RAILS_ROUTE_FILES do
     # match "/" => "root#index" => get "/" => "root#index"
-    with_node type: 'send', message: 'match' do
+    with_node node_type: 'send', message: 'match' do
       replace_with 'get {{arguments}}'
     end
   end
 
   within_files Synvert::RAILS_MODEL_FILES do
     # self.serialized_attributes => self.class.serialized_attributes
-    with_node type: 'send', receiver: 'self', message: 'serialized_attributes' do
+    with_node node_type: 'send', receiver: 'self', message: 'serialized_attributes' do
       replace_with 'self.class.serialized_attributes'
     end
   end
@@ -259,8 +259,8 @@ Synvert::Rewriter.new 'rails', 'upgrade_3_2_to_4_0' do
   within_files Synvert::RAILS_MODEL_FILES do
     # has_many :comments, dependent: :restrict => has_many :comments, dependent: restrict_with_exception
     %w[has_one has_many].each do |message|
-      within_node type: 'send', receiver: nil, message: message do
-        with_node type: 'pair', key: 'dependent', value: :restrict do
+      within_node node_type: 'send', receiver: nil, message: message do
+        with_node node_type: 'pair', key: 'dependent', value: :restrict do
           replace_with 'dependent: :restrict_with_exception'
         end
       end
@@ -271,7 +271,7 @@ Synvert::Rewriter.new 'rails', 'upgrade_3_2_to_4_0' do
     # link_to 'delete', post_path(post), confirm: 'Are you sure to delete post?'
     # =>
     # link_to 'delete', post_path(post), data: { confirm: 'Are you sure to delete post?' }
-    within_node type: 'send', message: 'link_to', arguments: { last: { type: 'hash' } } do
+    within_node node_type: 'send', message: 'link_to', arguments: { last: { node_type: 'hash' } } do
       if node.arguments.last.key?(:confirm)
         hash = node.arguments.last
         other_arguments_str = node.arguments[0...-1].map(&:to_source).join(', ')

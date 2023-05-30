@@ -39,7 +39,7 @@ Synvert::Rewriter.new 'rspec', 'should_to_expect' do
     # obj.should matcher => expect(obj).to matcher
     # obj.should_not matcher => expect(obj).not_to matcher
     { should: 'to', should_not: 'not_to' }.each do |old_message, new_message|
-      with_node type: 'send', receiver: { type: { not: 'block' } }, message: old_message do
+      with_node node_type: 'send', receiver: { node_type: { not: 'block' } }, message: old_message do
         if node.receiver && node.arguments.size > 0
           replace_with "expect({{receiver}}).#{new_message} {{arguments}}"
         end
@@ -56,7 +56,7 @@ Synvert::Rewriter.new 'rspec', 'should_to_expect' do
         '>=' => 'be >=',
         '===' => 'be ==='
       }.each do |old_matcher, new_matcher|
-        with_node type: 'send', receiver: { type: 'send', message: old_message }, message: old_matcher do
+        with_node node_type: 'send', receiver: { node_type: 'send', message: old_message }, message: old_matcher do
           if node.receiver.receiver
             replace_with "expect({{receiver.receiver}}).#{new_message} #{new_matcher} {{arguments}}"
           end
@@ -65,7 +65,7 @@ Synvert::Rewriter.new 'rspec', 'should_to_expect' do
 
       # 'string'.should =~ /^str/ => expect('string').to match /^str/
       # [1, 2, 3].should =~ [2, 1, 3] => expect([1, 2, 3]).to match_array [2, 1, 3]
-      with_node type: 'send', receiver: { type: 'send', message: old_message }, message: '=~' do
+      with_node node_type: 'send', receiver: { node_type: 'send', message: old_message }, message: '=~' do
         if :regexp == node.arguments.first.type
           replace_with "expect({{receiver.receiver}}).#{new_message} match {{arguments}}"
         else

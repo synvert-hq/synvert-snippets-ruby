@@ -86,7 +86,7 @@ Synvert::Rewriter.new 'factory_girl', 'fix_2_0_deprecations' do
     # end
     find_node '.block[caller=.send[receiver=Factory][message=define]][arguments.size=1]' do
       argument = node.arguments.first.to_source
-      with_node type: 'block', caller: { type: 'send', receiver: argument } do
+      with_node node_type: 'block', caller: { node_type: 'send', receiver: argument } do
         delete 'caller.receiver', 'caller.dot'
       end
     end

@@ -26,8 +26,8 @@ Synvert::Rewriter.new 'rspec', 'negative_error_expectation' do
     # expect { do_something }.not_to raise_error(SomeErrorClass) => expect { do_something }.not_to raise_error
     # expect { do_something }.not_to raise_error('message') => expect { do_something }.not_to raise_error
     # expect { do_something }.not_to raise_error(SomeErrorClass, 'message') => expect { do_something }.not_to raise_error
-    within_node type: 'send', receiver: { type: 'block' }, message: 'not_to' do
-      with_node type: 'send', message: 'raise_error', arguments: { size: { gt: 0 } } do
+    within_node node_type: 'send', receiver: { node_type: 'block' }, message: 'not_to' do
+      with_node node_type: 'send', message: 'raise_error', arguments: { size: { gt: 0 } } do
         replace_with 'raise_error'
       end
     end

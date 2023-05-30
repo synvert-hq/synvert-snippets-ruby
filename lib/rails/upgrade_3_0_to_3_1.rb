@@ -93,11 +93,11 @@ Synvert::Rewriter.new 'rails', 'upgrade_3_0_to_3_1' do
 
   within_file 'config/application.rb' do
     # prepend config.assets.version = '1.0'
-    unless_exist_node type: 'send',
+    unless_exist_node node_type: 'send',
                       receiver: {
-                        type: 'send',
+                        node_type: 'send',
                         receiver: {
-                          type: 'send',
+                          node_type: 'send',
                           message: 'config'
                         },
                         message: 'assets'
@@ -107,11 +107,11 @@ Synvert::Rewriter.new 'rails', 'upgrade_3_0_to_3_1' do
     end
 
     # prepend config.assets.enabled = true
-    unless_exist_node type: 'send',
+    unless_exist_node node_type: 'send',
                       receiver: {
-                        type: 'send',
+                        node_type: 'send',
                         receiver: {
-                          type: 'send',
+                          node_type: 'send',
                           message: 'config'
                         },
                         message: 'assets'
@@ -123,11 +123,11 @@ Synvert::Rewriter.new 'rails', 'upgrade_3_0_to_3_1' do
 
   within_file 'config/environments/development.rb' do
     # remove config.action_view.debug_rjs = true
-    with_node type: 'send',
+    with_node node_type: 'send',
               receiver: {
-                type: 'send',
+                node_type: 'send',
                 receiver: {
-                  type: 'send',
+                  node_type: 'send',
                   message: 'config'
                 },
                 message: 'action_view'
@@ -137,11 +137,11 @@ Synvert::Rewriter.new 'rails', 'upgrade_3_0_to_3_1' do
     end
 
     # prepend config.assets.debug = true
-    unless_exist_node type: 'send',
+    unless_exist_node node_type: 'send',
                       receiver: {
-                        type: 'send',
+                        node_type: 'send',
                         receiver: {
-                          type: 'send',
+                          node_type: 'send',
                           message: 'config'
                         },
                         message: 'assets'
@@ -151,11 +151,11 @@ Synvert::Rewriter.new 'rails', 'upgrade_3_0_to_3_1' do
     end
 
     # prepend config.assets.compress = false
-    unless_exist_node type: 'send',
+    unless_exist_node node_type: 'send',
                       receiver: {
-                        type: 'send',
+                        node_type: 'send',
                         receiver: {
-                          type: 'send',
+                          node_type: 'send',
                           message: 'config'
                         },
                         message: 'assets'
@@ -167,11 +167,11 @@ Synvert::Rewriter.new 'rails', 'upgrade_3_0_to_3_1' do
 
   within_file 'config/environments/production.rb' do
     # prepend config.assets.digest = true
-    unless_exist_node type: 'send',
+    unless_exist_node node_type: 'send',
                       receiver: {
-                        type: 'send',
+                        node_type: 'send',
                         receiver: {
-                          type: 'send',
+                          node_type: 'send',
                           message: 'config'
                         },
                         message: 'assets'
@@ -181,11 +181,11 @@ Synvert::Rewriter.new 'rails', 'upgrade_3_0_to_3_1' do
     end
 
     # prepend config.assets.compile = false
-    unless_exist_node type: 'send',
+    unless_exist_node node_type: 'send',
                       receiver: {
-                        type: 'send',
+                        node_type: 'send',
                         receiver: {
-                          type: 'send',
+                          node_type: 'send',
                           message: 'config'
                         },
                         message: 'assets'
@@ -195,11 +195,11 @@ Synvert::Rewriter.new 'rails', 'upgrade_3_0_to_3_1' do
     end
 
     # prepend config.assets.compress = true
-    unless_exist_node type: 'send',
+    unless_exist_node node_type: 'send',
                       receiver: {
-                        type: 'send',
+                        node_type: 'send',
                         receiver: {
-                          type: 'send',
+                          node_type: 'send',
                           message: 'config'
                         },
                         message: 'assets'
@@ -211,12 +211,12 @@ Synvert::Rewriter.new 'rails', 'upgrade_3_0_to_3_1' do
 
   within_file 'config/environments/test.rb' do
     # prepend config.static_cache_control = "public, max-age=3600"
-    unless_exist_node type: 'send', receiver: { type: 'send', message: 'config' }, message: 'static_cache_control=' do
+    unless_exist_node node_type: 'send', receiver: { node_type: 'send', message: 'config' }, message: 'static_cache_control=' do
       prepend 'config.static_cache_control = "public, max-age=3600"'
     end
 
     # prepend config.serve_static_assets = true
-    unless_exist_node type: 'send', receiver: { type: 'send', message: 'config' }, message: 'serve_static_assets=' do
+    unless_exist_node node_type: 'send', receiver: { node_type: 'send', message: 'config' }, message: 'serve_static_assets=' do
       prepend 'config.serve_static_assets = true'
     end
   end
@@ -236,9 +236,9 @@ Synvert::Rewriter.new 'rails', 'upgrade_3_0_to_3_1' do
 
   within_file 'config/initializers/session_store.rb' do
     # add Application.session_store :cookie_store, key: '_xxx-session'
-    with_node type: 'send',
+    with_node node_type: 'send',
               receiver: {
-                type: 'send',
+                node_type: 'send',
                 message: 'config'
               },
               message: 'session_store',

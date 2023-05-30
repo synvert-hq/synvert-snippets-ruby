@@ -37,7 +37,7 @@ Synvert::Rewriter.new 'rails', 'add_application_mailer' do
     # =>
     # class UserMailer < ApplicationMailer
     # end
-    with_node type: 'class', name: { not: 'ApplicationMailer' }, parent_class: 'ActionMailer::Base' do
+    with_node node_type: 'class', name: { not: 'ApplicationMailer' }, parent_class: 'ActionMailer::Base' do
       replace :parent_class, with: 'ApplicationMailer'
     end
   end

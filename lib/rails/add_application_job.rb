@@ -37,7 +37,7 @@ Synvert::Rewriter.new 'rails', 'add_application_job' do
     # =>
     # class PostJob < ApplicationJob
     # end
-    with_node type: 'class', name: { not: 'ApplicationJob' }, parent_class: 'ActiveJob::Base' do
+    with_node node_type: 'class', name: { not: 'ApplicationJob' }, parent_class: 'ActiveJob::Base' do
       replace :parent_class, with: 'ApplicationJob'
     end
   end

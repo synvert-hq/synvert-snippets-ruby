@@ -33,10 +33,10 @@ Synvert::Rewriter.new 'rails', 'convert_rails_env' do
     # RAILS_ENV == 'test'
     # =>
     # Rails.env == 'test'
-    with_node type: 'const', to_source: 'RAILS_ENV' do
+    with_node node_type: 'const', to_source: 'RAILS_ENV' do
       replace_with 'Rails.env'
     end
-    with_node type: 'const', to_source: '::RAILS_ENV' do
+    with_node node_type: 'const', to_source: '::RAILS_ENV' do
       replace_with 'Rails.env'
     end
   end
@@ -45,7 +45,7 @@ Synvert::Rewriter.new 'rails', 'convert_rails_env' do
     # Rails.env == 'test'
     # =>
     # Rails.env.test?
-    with_node type: 'send', receiver: 'Rails.env', message: '==', arguments: { size: 1 } do
+    with_node node_type: 'send', receiver: 'Rails.env', message: '==', arguments: { size: 1 } do
       env = node.arguments.first.to_value
       replace_with "Rails.env.#{env}?"
     end
@@ -53,7 +53,7 @@ Synvert::Rewriter.new 'rails', 'convert_rails_env' do
     # 'development' == Rails.env
     # =>
     # Rails.env.development?
-    with_node type: 'send', arguments: { first: 'Rails.env' }, message: '==' do
+    with_node node_type: 'send', arguments: { first: 'Rails.env' }, message: '==' do
       env = node.receiver.to_value
       replace_with "Rails.env.#{env}?"
     end
@@ -61,7 +61,7 @@ Synvert::Rewriter.new 'rails', 'convert_rails_env' do
     # Rails.env != 'test'
     # =>
     # !Rails.env.test?
-    with_node type: 'send', receiver: 'Rails.env', message: '!=', arguments: { size: 1 } do
+    with_node node_type: 'send', receiver: 'Rails.env', message: '!=', arguments: { size: 1 } do
       env = node.arguments.first.to_value
       replace_with "!Rails.env.#{env}?"
     end
@@ -69,7 +69,7 @@ Synvert::Rewriter.new 'rails', 'convert_rails_env' do
     # 'development' != Rails.env
     # =>
     # !Rails.env.development?
-    with_node type: 'send', arguments: { first: 'Rails.env' }, message: '!=' do
+    with_node node_type: 'send', arguments: { first: 'Rails.env' }, message: '!=' do
       env = node.receiver.to_value
       replace_with "!Rails.env.#{env}?"
     end

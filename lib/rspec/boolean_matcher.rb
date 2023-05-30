@@ -25,7 +25,7 @@ Synvert::Rewriter.new 'rspec', 'boolean_matcher' do
     # be_true => be_truthy
     # be_false => be_falsey
     { be_true: 'be_truthy', be_false: 'be_falsey' }.each do |old_matcher, new_matcher|
-      with_node type: 'send', receiver: nil, message: old_matcher do
+      with_node node_type: 'send', receiver: nil, message: old_matcher do
         replace_with new_matcher
       end
     end

@@ -54,7 +54,7 @@ Synvert::Rewriter.new 'rails', 'convert_rails_test_request_methods_4_2_to_5_0' d
   # =>
   # get :show, params: { id: user.id }, flash: { notice: 'Welcome' }, session: { admin: user.admin? }.
   within_files Synvert::RAILS_CONTROLLER_TEST_FILES do
-    with_node type: 'send', message: { in: request_methods } do
+    with_node node_type: 'send', message: { in: request_methods } do
       next unless node.arguments.size > 1
       next unless node.arguments[1].type == :hash
       next if node.arguments[1].key?(:params)
@@ -70,7 +70,7 @@ Synvert::Rewriter.new 'rails', 'convert_rails_test_request_methods_4_2_to_5_0' d
       replace :arguments, with: "{{arguments.first}}, #{options.compact.join(', ')}"
     end
 
-    with_node type: 'send', message: 'xhr' do
+    with_node node_type: 'send', message: 'xhr' do
       if node.arguments.size == 2
         replace :message, with: '{{arguments.first.to_string}}'
         replace :arguments, with: '{{arguments.1}}, xhr: true'
@@ -91,7 +91,7 @@ Synvert::Rewriter.new 'rails', 'convert_rails_test_request_methods_4_2_to_5_0' d
   # =>
   # get '/posts/1', params: { user_id: user.id }, headers: { 'HTTP_AUTHORIZATION' => 'fake' }
   within_files Synvert::RAILS_INTEGRATION_TEST_FILES do
-    with_node type: 'send', message: { in: request_methods } do
+    with_node node_type: 'send', message: { in: request_methods } do
       next unless node.arguments.size > 1
       next if node.arguments[1].type == :hash && (node.arguments[1].key?(:params) || node.arguments[1].key?(:headers))
 

@@ -38,8 +38,8 @@ Synvert::Rewriter.new 'rspec', 'one_liner_expectation' do
     { should: 'to', should_not: 'not_to' }.each do |old_message, new_message|
       # it { should matcher } => it { is_expected.to matcher }
       # it { should_not matcher } => it { is_expected.not_to matcher }
-      with_node type: 'block', caller: { message: 'it' } do
-        if_only_exist_node type: 'send', receiver: nil, message: old_message do
+      with_node node_type: 'block', caller: { message: 'it' } do
+        if_only_exist_node node_type: 'send', receiver: nil, message: old_message do
           receiver = node.body.first.arguments.first.receiver
           unless receiver && matcher_converters.include?(receiver.message)
             matcher = node.body.first.arguments.first.to_source
@@ -60,15 +60,15 @@ Synvert::Rewriter.new 'rspec', 'one_liner_expectation' do
       #   expect(subject.players.size).to be >= 3
       # end
       matcher_converters.each do |old_matcher, new_matcher|
-        with_node type: 'block', caller: { message: 'it' } do
-          if_only_exist_node type: 'send',
+        with_node node_type: 'block', caller: { message: 'it' } do
+          if_only_exist_node node_type: 'send',
                              receiver: nil,
                              message: old_message,
                              arguments: {
                                first: {
-                                 type: 'send',
+                                 node_type: 'send',
                                  receiver: {
-                                   type: 'send',
+                                   node_type: 'send',
                                    message: old_matcher
                                  }
                                }

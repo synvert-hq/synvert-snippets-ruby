@@ -33,7 +33,7 @@ Synvert::Rewriter.new 'rails', 'convert_controller_filter_to_action' do
     # skip_filter :load_post => skip_action_callback :load_post
     # before_filter :load_post => before_action :load_post
     # after_filter :increment_view_count => after_filter :increment_view_count
-    with_node type: 'send', receiver: nil, message: /_filter$/ do
+    with_node node_type: 'send', receiver: nil, message: /_filter$/ do
       new_message =
         if node.message == :skip_filter
           'skip_action_callback'

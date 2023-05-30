@@ -43,7 +43,7 @@ Synvert::Rewriter.new 'rails', 'upgrade_4_0_to_4_1' do
 
   within_file 'test/test_helper.rb' do
     # ActiveRecord::Migration.check_pending! => require 'test_help'
-    with_node type: 'send', receiver: 'ActiveRecord::Migration', message: 'check_pending!' do
+    with_node node_type: 'send', receiver: 'ActiveRecord::Migration', message: 'check_pending!' do
       replace_with "require 'test_help'"
     end
   end
@@ -53,12 +53,12 @@ Synvert::Rewriter.new 'rails', 'upgrade_4_0_to_4_1' do
 
   within_files Synvert::ALL_RUBY_FILES do
     # MultiJson.dump(obj) => obj.to_json
-    with_node type: 'send', receiver: 'MultiJson', message: 'dump' do
+    with_node node_type: 'send', receiver: 'MultiJson', message: 'dump' do
       replace_with '{{arguments}}.to_json'
     end
 
     # MultiJson.load(str) => JSON.parse(str)
-    with_node type: 'send', receiver: 'MultiJson', message: 'load' do
+    with_node node_type: 'send', receiver: 'MultiJson', message: 'load' do
       replace_with 'JSON.parse {{arguments}}'
     end
   end
@@ -66,8 +66,8 @@ Synvert::Rewriter.new 'rails', 'upgrade_4_0_to_4_1' do
   within_files Synvert::ALL_RUBY_FILES do
     [/before_/, /after_/].each do |message_regex|
       # Warn if finding return in before_* or after_* callbacks
-      within_node type: 'block', caller: { type: 'send', message: message_regex } do
-        with_node type: 'return' do
+      within_node node_type: 'block', caller: { node_type: 'send', message: message_regex } do
+        with_node node_type: 'return' do
           warn 'Using a return statement in an inline callback block causes a LocalJumpError to be raised when the callback is executed.'
         end
       end

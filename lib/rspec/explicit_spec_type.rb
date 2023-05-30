@@ -41,8 +41,8 @@ Synvert::Rewriter.new 'rspec', 'explicit_spec_type' do
     # RSpec.configure do |rspec|
     #   rspec.infer_spec_type_from_file_location!
     # end
-    within_node type: 'block', caller: { type: 'send', receiver: 'RSpec', message: 'configure' } do
-      unless_exist_node type: 'send', message: 'infer_spec_type_from_file_location!' do
+    within_node node_type: 'block', caller: { node_type: 'send', receiver: 'RSpec', message: 'configure' } do
+      unless_exist_node node_type: 'send', message: 'infer_spec_type_from_file_location!' do
         append '{{arguments}}.infer_spec_type_from_file_location!'
       end
     end
@@ -51,7 +51,7 @@ Synvert::Rewriter.new 'rspec', 'explicit_spec_type' do
   # describe SomeModel do
   # end
   # =>
-  # describe SomeModel, type: :model do
+  # describe SomeModel, node_type: :model do
   # end
   {
     models: 'model',
@@ -67,9 +67,9 @@ Synvert::Rewriter.new 'rspec', 'explicit_spec_type' do
     features: 'feature'
   }.each do |directory, type|
     within_files ["spec/#{directory}/**/*_spec.rb", "engines/*/spec/#{directory}/**/*_spec.rb"] do
-      with_node({ type: 'block', caller: { type: 'send', message: 'describe' } }, { stop_at_first_match: true }) do
+      with_node({ node_type: 'block', caller: { node_type: 'send', message: 'describe' } }, { stop_at_first_match: true }) do
         goto_node :caller do
-          unless_exist_node type: 'pair', key: :type do
+          unless_exist_node node_type: 'pair', key: :type do
             insert ", type: :#{type}"
           end
         end

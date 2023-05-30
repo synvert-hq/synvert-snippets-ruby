@@ -13,7 +13,7 @@ Synvert::Rewriter.new 'rails', 'upgrade_5_1_to_5_2' do
 
   within_file 'config/application.rb' do
     # dalli_store => mem_cache_store
-    with_node type: 'sym', to_value: 'dalli_store' do
+    with_node node_type: 'sym', to_value: 'dalli_store' do
       replace_with ':mem_cache_store'
     end
   end

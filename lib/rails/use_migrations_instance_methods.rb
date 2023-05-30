@@ -31,7 +31,7 @@ Synvert::Rewriter.new 'rails', 'use_migrations_instance_methods' do
     # def self.up => def up
     # def self.down => def down
     %w[up down].each do |name|
-      with_node type: 'defs', name: name do
+      with_node node_type: 'defs', name: name do
         delete :self, :dot
       end
     end

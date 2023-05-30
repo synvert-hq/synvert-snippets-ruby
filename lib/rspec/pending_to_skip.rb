@@ -63,7 +63,7 @@ Synvert::Rewriter.new 'rspec', 'pending_to_skip' do
     #   skip
     #   do_something_surely_fail
     # end
-    with_node type: 'block', caller: { type: 'send', receiver: nil, message: 'pending', arguments: { size: 0 } } do
+    with_node node_type: 'block', caller: { node_type: 'send', receiver: nil, message: 'pending', arguments: { size: 0 } } do
       replace_with "skip\n{{body}}"
     end
 
@@ -76,7 +76,7 @@ Synvert::Rewriter.new 'rspec', 'pending_to_skip' do
     #   skip
     #   do_something_possibly_fail
     # end
-    with_node type: 'send', receiver: nil, message: 'pending', arguments: { size: 0 } do
+    with_node node_type: 'send', receiver: nil, message: 'pending', arguments: { size: 0 } do
       replace_with 'skip'
     end
 
@@ -87,7 +87,7 @@ Synvert::Rewriter.new 'rspec', 'pending_to_skip' do
     # skip 'is skipped' do
     #   do_something_possibly_fail
     # end
-    with_node type: 'send', receiver: nil, message: 'pending', arguments: { size: 1, first: { type: 'str' } } do
+    with_node node_type: 'send', receiver: nil, message: 'pending', arguments: { size: 1, first: { node_type: 'str' } } do
       replace :message, with: 'skip'
     end
 
@@ -99,9 +99,9 @@ Synvert::Rewriter.new 'rspec', 'pending_to_skip' do
       # it 'is skipped', :skip => true do
       #   do_something_possibly_fail
       # end
-      with_node type: 'send', message: message, arguments: { size: 2, last: { type: 'hash' } } do
+      with_node node_type: 'send', message: message, arguments: { size: 2, last: { node_type: 'hash' } } do
         goto_node 'arguments.last' do
-          with_node type: 'pair', key: :pending do
+          with_node node_type: 'pair', key: :pending do
             replace 'key', with: node.key.to_source.sub('pending', 'skip')
           end
         end

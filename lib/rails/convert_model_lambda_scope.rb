@@ -33,8 +33,8 @@ Synvert::Rewriter.new 'rails', 'convert_model_lambda_scope' do
 
   within_files Synvert::RAILS_MODEL_FILES do
     # scope :active, where(active: true) => scope :active, -> { where(active: true) }
-    with_node type: 'send', receiver: nil, message: 'scope' do
-      with_node type: 'block', caller: { type: 'send', receiver: nil, message: 'proc' } do
+    with_node node_type: 'send', receiver: nil, message: 'scope' do
+      with_node node_type: 'block', caller: { node_type: 'send', receiver: nil, message: 'proc' } do
         if node.arguments.length > 0
           replace_with '->({{arguments}}) { {{body}} }'
         else
@@ -42,7 +42,7 @@ Synvert::Rewriter.new 'rails', 'convert_model_lambda_scope' do
         end
       end
 
-      with_node type: 'block', caller: { type: 'send', receiver: 'Proc', message: 'new' } do
+      with_node node_type: 'block', caller: { node_type: 'send', receiver: 'Proc', message: 'new' } do
         if node.arguments.length > 0
           replace_with '->({{arguments}}) { {{body}} }'
         else
@@ -50,20 +50,20 @@ Synvert::Rewriter.new 'rails', 'convert_model_lambda_scope' do
         end
       end
 
-      unless_exist_node type: 'block', caller: { type: 'send', message: 'lambda' } do
+      unless_exist_node node_type: 'block', caller: { node_type: 'send', message: 'lambda' } do
         replace_with 'scope {{arguments.first}}, -> { {{arguments.last}} }'
       end
     end
 
     # default_scope order("updated_at DESC") => default_scope -> { order("updated_at DESC") }
-    with_node type: 'send', receiver: nil, message: 'default_scope' do
-      unless_exist_node type: 'block', caller: { type: 'send', message: 'lambda' } do
+    with_node node_type: 'send', receiver: nil, message: 'default_scope' do
+      unless_exist_node node_type: 'block', caller: { node_type: 'send', message: 'lambda' } do
         replace_with 'default_scope -> { {{arguments.last}} }'
       end
     end
 
     # default_scope { order("updated_at DESC") } => default_scope -> { order("updated_at DESC") }
-    with_node type: 'block', caller: { type: 'send', receiver: nil, message: 'default_scope' } do
+    with_node node_type: 'block', caller: { node_type: 'send', receiver: nil, message: 'default_scope' } do
       replace_with 'default_scope -> { {{body}} }'
     end
   end

@@ -17,19 +17,19 @@ Synvert::Rewriter.new 'rails', 'upgrade_4_1_to_4_2' do
     # config.serve_static_assets = false
     # =>
     # config.serve_static_files = false
-    with_node type: 'send', message: 'serve_static_assets=' do
+    with_node node_type: 'send', message: 'serve_static_assets=' do
       replace :message, with: 'serve_static_files ='
     end
   end
 
   within_file 'config/application.rb' do
     # append config.active_record.raise_in_transactional_callbacks = true
-    with_node type: 'class', parent_class: 'Rails::Application' do
-      unless_exist_node type: 'send',
+    with_node node_type: 'class', parent_class: 'Rails::Application' do
+      unless_exist_node node_type: 'send',
                         receiver: {
-                          type: 'send',
+                          node_type: 'send',
                           receiver: {
-                            type: 'send',
+                            node_type: 'send',
                             message: 'config'
                           },
                           message: 'active_record'

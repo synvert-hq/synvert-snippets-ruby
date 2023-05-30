@@ -30,7 +30,7 @@ Synvert::Rewriter.new 'rspec', 'custom_matcher_new_syntax' do
   if_gem 'rspec-core', '>= 3.0'
 
   within_files Synvert::RAILS_RSPEC_FILES do
-    within_node type: 'block', caller: { receiver: 'RSpec::Matchers', message: 'define' } do
+    within_node node_type: 'block', caller: { receiver: 'RSpec::Matchers', message: 'define' } do
       # RSpec::Matchers.define :be_awesome do
       #   match_for_should { }
       #   match_for_should_not { }
@@ -50,7 +50,7 @@ Synvert::Rewriter.new 'rspec', 'custom_matcher_new_syntax' do
         failure_message_for_should: 'failure_message',
         failure_message_for_should_not: 'failure_message_when_negated'
       }.each do |old_message, new_message|
-        with_node type: 'block', caller: { receiver: nil, message: old_message } do
+        with_node node_type: 'block', caller: { receiver: nil, message: old_message } do
           replace :caller, with: new_message
         end
       end

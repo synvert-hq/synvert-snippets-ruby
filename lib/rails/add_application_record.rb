@@ -37,7 +37,7 @@ Synvert::Rewriter.new 'rails', 'add_application_record' do
     # =>
     # class Post < ApplicationRecord
     # end
-    with_node type: 'class', name: { not: 'ApplicationRecord' }, parent_class: 'ActiveRecord::Base' do
+    with_node node_type: 'class', name: { not: 'ApplicationRecord' }, parent_class: 'ActiveRecord::Base' do
       replace :parent_class, with: 'ApplicationRecord'
     end
   end

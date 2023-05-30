@@ -54,11 +54,11 @@ Synvert::Rewriter.new 'rspec', 'new_config_options' do
   if_gem 'rspec-core', '>= 2.99'
 
   within_file 'spec/spec_helper.rb' do
-    within_node type: 'block', caller: { type: 'send', receiver: 'RSpec', message: 'configure' } do
+    within_node node_type: 'block', caller: { node_type: 'send', receiver: 'RSpec', message: 'configure' } do
       config_name = node.arguments.first.to_source
 
       # remove config.treat_symbols_as_metadata_keys_with_true_values = true
-      with_node type: 'send', receiver: config_name, message: 'treat_symbols_as_metadata_keys_with_true_values=' do
+      with_node node_type: 'send', receiver: config_name, message: 'treat_symbols_as_metadata_keys_with_true_values=' do
         remove
       end
 
@@ -87,7 +87,7 @@ Synvert::Rewriter.new 'rspec', 'new_config_options' do
         'filename_pattern' => 'pattern',
         'warnings' => 'warnings?'
       }.each do |old_message, new_message|
-        with_node type: 'send', receiver: config_name, message: old_message do
+        with_node node_type: 'send', receiver: config_name, message: old_message do
           replace :message, with: new_message
         end
       end
@@ -114,7 +114,7 @@ Synvert::Rewriter.new 'rspec', 'new_config_options' do
         'output=' => 'output_stream =',
         'filename_pattern=' => 'pattern ='
       }.each do |old_message, new_message|
-        with_node type: 'send', receiver: config_name, message: old_message do
+        with_node node_type: 'send', receiver: config_name, message: old_message do
           replace :message, with: new_message
         end
       end
@@ -126,7 +126,7 @@ Synvert::Rewriter.new 'rspec', 'new_config_options' do
       # RSpec.configure do |c|
       #   c.color_enabled?(output)
       # end
-      with_node type: 'send', receiver: config_name, message: 'color?' do
+      with_node node_type: 'send', receiver: config_name, message: 'color?' do
         replace :message, with: 'color_enabled?'
       end
     end
