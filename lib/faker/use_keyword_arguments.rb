@@ -281,11 +281,10 @@ Synvert::Rewriter.new 'faker', 'use_keyword_arguments' do
       class_name = node.receiver.to_source
       methods = FAKER_USE_KEYWORD_ARGUMENTS_MAPPING[class_name]
       next unless methods
+
       methods.each do |method_name, keyword_names_array|
         keyword_names_array.each do |keyword_names|
-          with_node node_type: 'send',
-                    message: method_name,
-                    arguments: { size: keyword_names.size } do
+          with_node node_type: 'send', message: method_name, arguments: { size: keyword_names.size } do
             new_arguments = keyword_names.map.with_index { |keyword_name, index|
               keyword_name == 'options' ? "options: #{add_curly_brackets_if_necessary(node.arguments[index].to_source)}" : "#{keyword_name}: {{arguments.#{index}}}"
             }.join(', ')
