@@ -77,13 +77,13 @@ GEM
       prettier_print (>= 1.2.0)
     syntax_tree_ext (0.3.1)
       syntax_tree
-    synvert-core (1.27.0)
+    synvert-core (1.27.1)
       activesupport (< 7.0.0)
-      node_mutation (>= 1.18.0)
+      node_mutation (>= 1.18.2)
       node_query (>= 1.13.2)
       parallel
       parser
-      parser_node_ext (>= 1.1.0)
+      parser_node_ext (>= 1.1.1)
       syntax_tree
       syntax_tree_ext (>= 0.3.1)
     thor (1.2.1)
