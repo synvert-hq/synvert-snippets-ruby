@@ -277,11 +277,13 @@ Synvert::Rewriter.new 'faker', 'use_keyword_arguments' do
   }
 
   within_files Synvert::ALL_RUBY_FILES do
-    FAKER_USE_KEYWORD_ARGUMENTS_MAPPING.each do |class_name, methods|
+    with_node node_type: 'send', receiver: /\AFaker::/ do
+      class_name = node.receiver.to_source
+      methods = FAKER_USE_KEYWORD_ARGUMENTS_MAPPING[class_name]
+      next unless methods
       methods.each do |method_name, keyword_names_array|
         keyword_names_array.each do |keyword_names|
           with_node node_type: 'send',
-                    receiver: class_name,
                     message: method_name,
                     arguments: { size: keyword_names.size } do
             new_arguments = keyword_names.map.with_index { |keyword_name, index|
