@@ -297,7 +297,10 @@ Synvert::Rewriter.new 'rails', 'convert_routes_2_3_to_3_0' do
 
     # map.connect "/:controller/:action/:id"
     # => match "/:controller(/:action(/:id))(.:format)"
-    with_node node_type: 'send', receiver: 'map', message: 'connect', arguments: { first: %r|:controller/:action/:id| } do
+    with_node node_type: 'send',
+              receiver: 'map',
+              message: 'connect',
+              arguments: { first: %r|:controller/:action/:id| } do
       replace_with 'match "/:controller(/:action(/:id))(.:format)"'
     end
 

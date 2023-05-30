@@ -47,7 +47,13 @@ Synvert::Rewriter.new 'faker', 'use_keyword_arguments' do
       'alphanumeric' => [['number']]
     },
     'Faker::Avatar' => {
-      'image' => [['slug'], ['slug', 'size'], ['slug', 'size', 'format'], ['slug', 'size', 'format', 'set'], ['slug', 'size', 'format', 'set', 'bgset']]
+      'image' => [
+        ['slug'],
+        ['slug', 'size'],
+        ['slug', 'size', 'format'],
+        ['slug', 'size', 'format', 'set'],
+        ['slug', 'size', 'format', 'set', 'bgset']
+      ]
     },
     'Faker::Bank' => {
       'account_number' => [['digits']],
@@ -96,10 +102,18 @@ Synvert::Rewriter.new 'faker', 'use_keyword_arguments' do
       'vat_number' => [['country']]
     },
     'Faker::Hipster' => {
-      'paragraph' => [['sentence_count'], ['sentence_count', 'supplemental'], ['sentence_count', 'supplemental', 'random_sentences_to_add']],
+      'paragraph' => [
+        ['sentence_count'],
+        ['sentence_count', 'supplemental'],
+        ['sentence_count', 'supplemental', 'random_sentences_to_add']
+      ],
       'paragraph_by_chars' => [['characters'], ['characters', 'supplemental']],
       'paragraphs' => [['number'], ['number', 'supplemental']],
-      'sentence' => [['word_count'], ['word_count', 'supplemental'], ['word_count', 'supplemental', 'random_words_to_add']],
+      'sentence' => [
+        ['word_count'],
+        ['word_count', 'supplemental'],
+        ['word_count', 'supplemental', 'random_words_to_add']
+      ],
       'sentences' => [['number'], ['number', 'supplemental']],
       'words' => [['number'], ['number', 'supplemental'], ['number', 'supplemental', 'spaces_allowed']]
     },
@@ -109,7 +123,12 @@ Synvert::Rewriter.new 'faker', 'use_keyword_arguments' do
       'fix_umlauts' => [['string']],
       'free_email' => [['name']],
       'mac_address' => [['prefix']],
-      'password' => [['min_length'], ['min_length', 'max_length'], ['min_length', 'max_length', 'mix_case'], ['min_length', 'max_length', 'mix_case', 'special_characters']],
+      'password' => [
+        ['min_length'],
+        ['min_length', 'max_length'],
+        ['min_length', 'max_length', 'mix_case'],
+        ['min_length', 'max_length', 'mix_case', 'special_characters']
+      ],
       'safe_email' => [['name']],
       'slug' => [['words'], ['words', 'glue']],
       'url' => [['host'], ['host', 'path'], ['host', 'path', 'scheme']],
@@ -128,23 +147,47 @@ Synvert::Rewriter.new 'faker', 'use_keyword_arguments' do
     },
     'Faker::Lorem' => {
       'characters' => [['number']],
-      'paragraph' => [['sentence_count'], ['sentence_count', 'supplemental'], ['sentence_count', 'supplemental', 'random_sentences_to_add']],
+      'paragraph' => [
+        ['sentence_count'],
+        ['sentence_count', 'supplemental'],
+        ['sentence_count', 'supplemental', 'random_sentences_to_add']
+      ],
       'paragraph_by_chars' => [['number'], ['number', 'supplemental']],
       'paragraphs' => [['number'], ['number', 'supplemental']],
-      'question' => [['word_count'], ['word_count', 'supplemental'], ['word_count', 'supplemental', 'random_words_to_add']],
+      'question' => [
+        ['word_count'],
+        ['word_count', 'supplemental'],
+        ['word_count', 'supplemental', 'random_words_to_add']
+      ],
       'questions' => [['number'], ['number', 'supplemental']],
-      'sentence' => [['word_count'], ['word_count', 'supplemental'], ['word_count', 'supplemental', 'random_words_to_add']],
+      'sentence' => [
+        ['word_count'],
+        ['word_count', 'supplemental'],
+        ['word_count', 'supplemental', 'random_words_to_add']
+      ],
       'sentences' => [['number'], ['number', 'supplemental']],
       'words' => [['number'], ['number', 'supplemental']]
     },
     'Faker::LoremFlickr' => {
-      'colorized_image' => [['size'], ['size', 'color'], ['size', 'color', 'search_terms'], ['size', 'color', 'search_terms', 'match_all']],
+      'colorized_image' => [
+        ['size'],
+        ['size', 'color'],
+        ['size', 'color', 'search_terms'],
+        ['size', 'color', 'search_terms', 'match_all']
+      ],
       'grayscale_image' => [['size'], ['size', 'search_terms'], ['size', 'search_terms', 'match_all']],
       'image' => [['size'], ['size', 'search_terms'], ['size', 'search_terms', 'match_all']],
       'pixelated_image' => [['size'], ['size', 'search_terms'], ['size', 'search_terms', 'match_all']]
     },
     'Faker::LoremPixel' => {
-      'image' => [['size'], ['size', 'is_gray'], ['size', 'is_gray', 'category'], ['size', 'is_gray', 'category', 'number'], ['size', 'is_gray', 'category', 'number', 'text'], ['size', 'is_gray', 'category', 'number', 'text', 'secure']]
+      'image' => [
+        ['size'],
+        ['size', 'is_gray'],
+        ['size', 'is_gray', 'category'],
+        ['size', 'is_gray', 'category', 'number'],
+        ['size', 'is_gray', 'category', 'number', 'text'],
+        ['size', 'is_gray', 'category', 'number', 'text', 'secure']
+      ]
     },
     'Faker::Markdown' => {
       'sandwich' => [['sentences'], ['sentences', 'repeat']]
@@ -182,7 +225,13 @@ Synvert::Rewriter.new 'faker', 'use_keyword_arguments' do
       'subscriber_number' => [['length']]
     },
     'Faker::Placeholdit' => {
-      'image' => [['size'], ['size', 'format'], ['size', 'format', 'background_color'], ['size', 'format', 'background_color', 'text_color'], ['size', 'format', 'background_color', 'text_color', 'text']]
+      'image' => [
+        ['size'],
+        ['size', 'format'],
+        ['size', 'format', 'background_color'],
+        ['size', 'format', 'background_color', 'text_color'],
+        ['size', 'format', 'background_color', 'text_color', 'text']
+      ]
     },
     'Faker::Relationship' => {
       'familial' => [['connection']]
@@ -231,7 +280,10 @@ Synvert::Rewriter.new 'faker', 'use_keyword_arguments' do
     FAKER_USE_KEYWORD_ARGUMENTS_MAPPING.each do |class_name, methods|
       methods.each do |method_name, keyword_names_array|
         keyword_names_array.each do |keyword_names|
-          with_node node_type: 'send', receiver: class_name, message: method_name, arguments: { size: keyword_names.size } do
+          with_node node_type: 'send',
+                    receiver: class_name,
+                    message: method_name,
+                    arguments: { size: keyword_names.size } do
             new_arguments = keyword_names.map.with_index { |keyword_name, index|
               keyword_name == 'options' ? "options: #{add_curly_brackets_if_necessary(node.arguments[index].to_source)}" : "#{keyword_name}: {{arguments.#{index}}}"
             }.join(', ')

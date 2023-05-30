@@ -211,12 +211,16 @@ Synvert::Rewriter.new 'rails', 'upgrade_3_0_to_3_1' do
 
   within_file 'config/environments/test.rb' do
     # prepend config.static_cache_control = "public, max-age=3600"
-    unless_exist_node node_type: 'send', receiver: { node_type: 'send', message: 'config' }, message: 'static_cache_control=' do
+    unless_exist_node node_type: 'send',
+                      receiver: { node_type: 'send', message: 'config' },
+                      message: 'static_cache_control=' do
       prepend 'config.static_cache_control = "public, max-age=3600"'
     end
 
     # prepend config.serve_static_assets = true
-    unless_exist_node node_type: 'send', receiver: { node_type: 'send', message: 'config' }, message: 'serve_static_assets=' do
+    unless_exist_node node_type: 'send',
+                      receiver: { node_type: 'send', message: 'config' },
+                      message: 'serve_static_assets=' do
       prepend 'config.serve_static_assets = true'
     end
   end

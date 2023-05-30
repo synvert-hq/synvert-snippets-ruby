@@ -218,7 +218,8 @@ Synvert::Rewriter.new 'rails', 'upgrade_3_2_to_4_0' do
     # ActiveSupport.on_load(:active_record) do
     #   self.include_root_in_json = false
     # end
-    with_node node_type: 'block', caller: { receiver: 'ActiveSupport', message: 'on_load', arguments: [:active_record] } do
+    with_node node_type: 'block',
+              caller: { receiver: 'ActiveSupport', message: 'on_load', arguments: [:active_record] } do
       if_only_exist_node node_type: 'send', receiver: 'self', message: 'include_root_in_json=', arguments: [false] do
         remove
       end

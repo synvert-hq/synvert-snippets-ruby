@@ -63,7 +63,8 @@ Synvert::Rewriter.new 'rspec', 'pending_to_skip' do
     #   skip
     #   do_something_surely_fail
     # end
-    with_node node_type: 'block', caller: { node_type: 'send', receiver: nil, message: 'pending', arguments: { size: 0 } } do
+    with_node node_type: 'block',
+              caller: { node_type: 'send', receiver: nil, message: 'pending', arguments: { size: 0 } } do
       replace_with "skip\n{{body}}"
     end
 
@@ -87,7 +88,10 @@ Synvert::Rewriter.new 'rspec', 'pending_to_skip' do
     # skip 'is skipped' do
     #   do_something_possibly_fail
     # end
-    with_node node_type: 'send', receiver: nil, message: 'pending', arguments: { size: 1, first: { node_type: 'str' } } do
+    with_node node_type: 'send',
+              receiver: nil,
+              message: 'pending',
+              arguments: { size: 1, first: { node_type: 'str' } } do
       replace :message, with: 'skip'
     end
 
