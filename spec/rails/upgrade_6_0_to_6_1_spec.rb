@@ -2,22 +2,20 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Upgrade rails from 5.1 to 5.2' do
-  let(:rewriter_name) { 'rails/upgrade_5_1_to_5_2' }
+RSpec.describe 'Upgrade rails from 6.0 to 6.1' do
+  let(:rewriter_name) { 'rails/upgrade_6_0_to_6_1' }
   let(:fake_file_path) { 'config/application.rb' }
   let(:test_content) { <<~EOS }
     module Synvert
       class Application < Rails::Application
-        config.load_defaults 5.1
-        config.cache_store = :dalli_store, 'cache-1.example.com', 'cache-2.example.com'
+        config.load_defaults 6.0
       end
     end
   EOS
   let(:test_rewritten_content) { <<~EOS }
     module Synvert
       class Application < Rails::Application
-        config.load_defaults 5.2
-        config.cache_store = :mem_cache_store, 'cache-1.example.com', 'cache-2.example.com'
+        config.load_defaults 6.1
       end
     end
   EOS

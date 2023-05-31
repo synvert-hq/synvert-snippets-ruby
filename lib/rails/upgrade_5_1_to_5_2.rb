@@ -11,6 +11,8 @@ Synvert::Rewriter.new 'rails', 'upgrade_5_1_to_5_2' do
 
   if_gem 'rails', '>= 5.2'
 
+  call_helper 'rails/set_load_defaults', options: { rails_version: '5.2' }
+
   within_file 'config/application.rb' do
     # dalli_store => mem_cache_store
     with_node node_type: 'sym', to_value: 'dalli_store' do

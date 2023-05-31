@@ -9,6 +9,10 @@ def load_sub_snippets(sub_snippets)
   sub_snippets.each { |sub_snippet| require(sub_snippet) }
 end
 
+def load_helpers(helpers)
+  helpers.each { |helper| require(helper) }
+end
+
 shared_examples 'convertable' do
   # it needs to define rewriter_name, fake_file_path (optional), test_content and test_rewritten_content
   let!(:rewriter) { load_snippet(rewriter_name) }

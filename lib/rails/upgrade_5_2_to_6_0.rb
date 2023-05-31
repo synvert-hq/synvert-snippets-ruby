@@ -10,4 +10,6 @@ Synvert::Rewriter.new 'rails', 'upgrade_5_2_to_6_0' do
   add_snippet 'rails', 'convert_update_attributes_to_update'
 
   if_gem 'rails', '>= 6.0'
+
+  call_helper 'rails/set_load_defaults', options: { rails_version: '6.0' }
 end

@@ -33,6 +33,8 @@ Synvert::Rewriter.new 'rails', 'upgrade_4_2_to_5_0' do
 
   if_gem 'rails', '>= 5.0'
 
+  call_helper 'rails/set_load_defaults', options: { rails_version: '5.0' }
+
   within_file 'config/application.rb' do
     # remove config.raise_in_transactional_callbacks = true
     with_node node_type: 'send', message: 'raise_in_transactional_callbacks=' do
