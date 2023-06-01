@@ -29,7 +29,8 @@ Synvert::Rewriter.new 'rails', 'deprecate_errors_as_hash' do
                 message: '[]',
                 arguments: { size: 1 }
               },
-              message: '<<', arguments: { size: 1 } do
+              message: '<<',
+              arguments: { size: 1 } do
       replace_with '{{receiver.receiver}}.add({{receiver.arguments.0}}, {{arguments.0}})'
     end
 
