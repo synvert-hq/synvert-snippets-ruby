@@ -9,6 +9,7 @@ Synvert::Rewriter.new 'rails', 'deprecate_errors_as_hash' do
     ```ruby
     book.errors[:title] << 'is not interesting enough.'
     book.errors.values
+    book.errors.keys
     ```
 
     =>
@@ -16,6 +17,7 @@ Synvert::Rewriter.new 'rails', 'deprecate_errors_as_hash' do
     ```ruby
     book.errors.add(:title, 'is not interesting enough.')
     book.errors.map(&:full_message)
+    book.errors.map(&:attrobite)
     ```
   EOS
 
@@ -39,6 +41,13 @@ Synvert::Rewriter.new 'rails', 'deprecate_errors_as_hash' do
               message: 'values',
               arguments: { size: 0 } do
       replace_with '{{receiver}}.map(&:message)'
+    end
+
+    with_node node_type: 'send',
+              receiver: { node_type: 'send', message: 'errors', arguments: { size: 0 } },
+              message: 'keys',
+              arguments: { size: 0 } do
+      replace_with '{{receiver}}.map(&:attribute)'
     end
   end
 end
