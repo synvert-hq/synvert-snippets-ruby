@@ -33,6 +33,10 @@ RSpec.describe 'Convert rails request methods from 4.2 to 5.0' do
         def test_json
           get :test, as: :json
         end
+
+        def test_update
+          put :update, **params, format: :json
+        end
       end
     EOS
 
@@ -61,6 +65,10 @@ RSpec.describe 'Convert rails request methods from 4.2 to 5.0' do
 
         def test_json
           get :test, as: :json
+        end
+
+        def test_update
+          put :update, **params, format: :json
         end
       end
     EOS

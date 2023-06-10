@@ -40,10 +40,9 @@ Synvert::Rewriter.new 'rails', 'convert_rails_test_request_methods_4_2_to_5_0' d
 
     if argument_node.type == :hash
       new_value =
-        argument_node.children.reject { |pair_node|
+        argument_node.pairs.reject { |pair_node|
           %i[format xhr as].include?(pair_node.key.to_value)
-        }
-                     .map(&:to_source).join(', ')
+        }.map(&:to_source).join(', ')
       "#{key}: #{add_curly_brackets_if_necessary(new_value)}" if new_value.length > 0
     else
       "#{key}: #{argument_node.to_source}"
@@ -58,6 +57,7 @@ Synvert::Rewriter.new 'rails', 'convert_rails_test_request_methods_4_2_to_5_0' d
       next unless node.arguments.size > 1
       next unless node.arguments[1].type == :hash
       next if node.arguments[1].key?(:params)
+      next if node.arguments[1].kwsplats.any? # we are not able to handle kwsplat here
 
       format_value = node.arguments[1].format_value || node.arguments[1].as_value
       xhr_value = node.arguments[1].xhr_value
