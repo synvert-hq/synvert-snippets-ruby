@@ -47,14 +47,16 @@ GEM
       nenv (~> 0.1)
       shellany (~> 0.0)
     parallel (1.23.0)
-    parser (3.2.2.1)
+    parser (3.2.2.3)
       ast (~> 2.4.1)
-    parser_node_ext (1.1.1)
+      racc
+    parser_node_ext (1.2.0)
       parser
     prettier_print (1.2.1)
     pry (0.14.2)
       coderay (~> 1.1)
       method_source (~> 1.0)
+    racc (1.7.0)
     rake (13.0.3)
     rb-fsevent (0.11.2)
     rb-inotify (0.10.1)
