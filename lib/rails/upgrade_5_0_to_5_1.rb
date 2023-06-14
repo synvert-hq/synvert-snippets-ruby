@@ -16,7 +16,7 @@ Synvert::Rewriter.new 'rails', 'upgrade_5_0_to_5_1' do
 
   if_gem 'rails', '>= 5.1'
 
-  call_helper 'rails/set_load_defaults', options: { rails_version: '5.1' }
+  call_helper 'rails/set_load_defaults', rails_version: '5.1'
 
   within_files Synvert::ALL_RUBY_FILES do
     # HashWithIndifferentAccess

@@ -12,5 +12,5 @@ Synvert::Rewriter.new 'rails', 'upgrade_6_0_to_6_1' do
 
   if_gem 'rails', '>= 6.1'
 
-  call_helper 'rails/set_load_defaults', options: { rails_version: '6.1' }
+  call_helper 'rails/set_load_defaults', rails_version: '6.1'
 end
