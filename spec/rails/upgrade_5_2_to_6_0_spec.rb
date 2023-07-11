@@ -21,6 +21,7 @@ RSpec.describe 'Upgrade rails from 5.2 to 6.0' do
   EOS
   before do
     load_sub_snippets(%w[rails/convert_update_attributes_to_update])
+    load_sub_snippets(%w[rails/prefer_nor_conditions])
     load_helpers(%w[helpers/set_rails_load_defaults.rb])
   end
 
