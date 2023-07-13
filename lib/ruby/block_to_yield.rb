@@ -21,7 +21,7 @@ Synvert::Rewriter.new 'ruby', 'block_to_yield' do
     ```
   EOS
 
-  within_files Synvert::ALL_RUBY_FILES do
+  within_files Synvert::ALL_RUBY_FILES + Synvert::ALL_RAKE_FILES do
     # def slow(&block)
     #   block.call
     # end

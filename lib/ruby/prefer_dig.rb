@@ -17,7 +17,7 @@ Synvert::Rewriter.new 'ruby', 'prefer_dig' do
     ```
   EOS
 
-  within_files Synvert::ALL_RUBY_FILES do
+  within_files Synvert::ALL_RUBY_FILES + Synvert::ALL_RAKE_FILES do
     find_node '.and[right_value=.send[message=[]][arguments.size=1]]' do
       writeable_node = node.dup
       param_names = []

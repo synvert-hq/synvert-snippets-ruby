@@ -17,7 +17,7 @@ Synvert::Rewriter.new 'ruby', 'gsub_to_tr' do
     ```
   EOS
 
-  within_files Synvert::ALL_RUBY_FILES do
+  within_files Synvert::ALL_RUBY_FILES + Synvert::ALL_RAKE_FILES do
     # 'slug from title'.gsub(' ', '_')
     # =>
     # 'slug from title'.tr(' ', '_')

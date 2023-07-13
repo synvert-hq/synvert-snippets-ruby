@@ -17,7 +17,7 @@ Synvert::Rewriter.new 'ruby', 'kernel_open_to_uri_open' do
     ```
   EOS
 
-  within_files Synvert::ALL_RUBY_FILES do
+  within_files Synvert::ALL_RUBY_FILES + Synvert::ALL_RAKE_FILES do
     # open('http://test.com')
     # =>
     # URI.open('http://test.com')

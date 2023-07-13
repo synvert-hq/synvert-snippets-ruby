@@ -37,7 +37,7 @@ Synvert::Rewriter.new 'rails', 'fix_4_0_deprecations' do
 
   if_gem 'rails', '>= 4.0'
 
-  within_files Synvert::ALL_RUBY_FILES do
+  within_files Synvert::ALL_RUBY_FILES + Synvert::ALL_RAKE_FILES do
     {
       'ActiveRecord::Fixtures' => 'ActiveRecord::FixtureSet',
       'ActiveRecord::TestCase' => 'ActiveSupport::TestCase',

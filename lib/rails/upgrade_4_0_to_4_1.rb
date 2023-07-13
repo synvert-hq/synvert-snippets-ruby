@@ -51,7 +51,7 @@ Synvert::Rewriter.new 'rails', 'upgrade_4_0_to_4_1' do
   add_file 'config/initializers/cookies_serializer.rb',
            'Rails.application.config.action_dispatch.cookies_serializer = :json'
 
-  within_files Synvert::ALL_RUBY_FILES do
+  within_files Synvert::ALL_RUBY_FILES + Synvert::ALL_RAKE_FILES do
     # MultiJson.dump(obj) => obj.to_json
     with_node node_type: 'send', receiver: 'MultiJson', message: 'dump' do
       replace_with '{{arguments}}.to_json'
@@ -63,7 +63,7 @@ Synvert::Rewriter.new 'rails', 'upgrade_4_0_to_4_1' do
     end
   end
 
-  within_files Synvert::ALL_RUBY_FILES do
+  within_files Synvert::ALL_RUBY_FILES + Synvert::ALL_RAKE_FILES do
     [/before_/, /after_/].each do |message_regex|
       # Warn if finding return in before_* or after_* callbacks
       within_node node_type: 'block', caller: { node_type: 'send', message: message_regex } do

@@ -23,7 +23,7 @@ Synvert::Rewriter.new 'rails', 'deprecate_errors_as_hash' do
 
   if_gem 'activemodel', '>= 6.1'
 
-  within_files Synvert::ALL_RUBY_FILES do
+  within_files Synvert::ALL_RUBY_FILES + Synvert::ALL_RAKE_FILES do
     with_node node_type: 'send',
               receiver: {
                 node_type: 'send',

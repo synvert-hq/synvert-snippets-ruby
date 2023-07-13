@@ -276,7 +276,7 @@ Synvert::Rewriter.new 'faker', 'use_keyword_arguments' do
     }
   }
 
-  within_files Synvert::ALL_RUBY_FILES do
+  within_files Synvert::ALL_RUBY_FILES + Synvert::ALL_RAKE_FILES do
     with_node node_type: 'send', receiver: /\AFaker::/ do
       class_name = node.receiver.to_source
       methods = FAKER_USE_KEYWORD_ARGUMENTS_MAPPING[class_name]

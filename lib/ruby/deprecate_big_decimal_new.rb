@@ -17,7 +17,7 @@ Synvert::Rewriter.new 'ruby', 'deprecate_big_decimal_new' do
     ```
   EOS
 
-  within_files Synvert::ALL_RUBY_FILES do
+  within_files Synvert::ALL_RUBY_FILES + Synvert::ALL_RAKE_FILES do
     find_node '.send[receiver=BigDecimal][message=new]' do
       delete :dot, :message
     end

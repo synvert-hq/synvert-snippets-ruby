@@ -18,7 +18,7 @@ Synvert::Rewriter.new 'rails', 'upgrade_5_0_to_5_1' do
 
   call_helper 'rails/set_load_defaults', rails_version: '5.1'
 
-  within_files Synvert::ALL_RUBY_FILES do
+  within_files Synvert::ALL_RUBY_FILES + Synvert::ALL_RAKE_FILES do
     # HashWithIndifferentAccess
     # =>
     # ActiveSupport::HashWithIndifferentAccess

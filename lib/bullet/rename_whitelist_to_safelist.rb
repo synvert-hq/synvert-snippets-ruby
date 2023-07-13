@@ -27,7 +27,7 @@ Synvert::Rewriter.new('bullet', 'rename_whitelist_to_safelist') do
 
   if_gem 'bullet', '>= 6.1.5'
 
-  within_files Synvert::ALL_RUBY_FILES do
+  within_files Synvert::ALL_RUBY_FILES + Synvert::ALL_RAKE_FILES do
     bullet_methods = {
       add_whitelist: 'add_safelist',
       delete_whitelist: 'delete_safelist',

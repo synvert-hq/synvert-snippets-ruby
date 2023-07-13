@@ -21,7 +21,7 @@ Synvert::Rewriter.new 'rails', 'convert_update_attributes_to_update' do
 
   if_gem 'activerecord', '>= 6.0'
 
-  within_files Synvert::ALL_RUBY_FILES do
+  within_files Synvert::ALL_RUBY_FILES + Synvert::ALL_RAKE_FILES do
     # user.update_attributes(title: 'new')
     # =>
     # user.update(title: 'new')
