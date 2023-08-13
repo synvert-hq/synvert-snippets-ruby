@@ -14,6 +14,7 @@ Synvert::Rewriter.new 'minitest', 'better_syntax' do
   add_snippet 'minitest', 'assert_path_exists'
   add_snippet 'minitest', 'assert_predicate'
   add_snippet 'minitest', 'assert_respond_to'
+  add_snippet 'minitest', 'assert_same'
   add_snippet 'minitest', 'assert_silent'
   add_snippet 'minitest', 'assert_truthy'
   add_snippet 'minitest', 'hooks_super'
