@@ -30,4 +30,5 @@ Synvert::Rewriter.new 'minitest', 'better_syntax' do
   add_snippet 'minitest', 'refute_path_exists'
   add_snippet 'minitest', 'refute_predicate'
   add_snippet 'minitest', 'refute_respond_to'
+  add_snippet 'minitest', 'refute_same'
 end
