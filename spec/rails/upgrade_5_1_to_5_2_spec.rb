@@ -21,7 +21,10 @@ RSpec.describe 'Upgrade rails from 5.1 to 5.2' do
       end
     end
   EOS
-  before { load_helpers(%w[helpers/set_rails_load_defaults.rb]) }
+  before {
+    load_sub_snippets(%w[rails/test_request_methods_use_keyword_arguments])
+    load_helpers(%w[helpers/set_rails_load_defaults.rb])
+  }
 
   include_examples 'convertable'
 end
