@@ -24,16 +24,20 @@ Synvert::Rewriter.new 'minitest', 'refute_false' do
     # =>
     # refute(actual)
     find_node '.send[receiver=nil][message=assert_equal][arguments.size=2][arguments.first=false]' do
-      replace :message, with: 'refute'
-      delete 'arguments.first', and_comma: true
+      group do
+        replace :message, with: 'refute'
+        delete 'arguments.first', and_comma: true
+      end
     end
 
     # assert(!something)
     # =>
     # refute(something)
     find_node '.send[receiver=nil][message=assert][arguments.size=1][arguments.first=.send[receiver=.send[receiver=nil]][message=!]]' do
-      replace :message, with: 'refute'
-      replace :arguments, with: '{{arguments.first.receiver}}'
+      group do
+        replace :message, with: 'refute'
+        replace :arguments, with: '{{arguments.first.receiver}}'
+      end
     end
   end
 end

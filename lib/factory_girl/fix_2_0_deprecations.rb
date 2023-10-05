@@ -126,9 +126,11 @@ Synvert::Rewriter.new 'factory_girl', 'fix_2_0_deprecations' do
     # factory :user do
     # end
     find_node '.block[caller=.send[receiver=Factory][message=define]][arguments.size=1]' do
-      delete :arguments, :pipes
-      delete 'caller.receiver', 'caller.dot'
-      replace 'caller.message', with: 'factory'
+      group do
+        delete :arguments, :pipes
+        delete 'caller.receiver', 'caller.dot'
+        replace 'caller.message', with: 'factory'
+      end
     end
 
     # Factory.sequence :login do |n|

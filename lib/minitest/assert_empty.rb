@@ -20,8 +20,10 @@ Synvert::Rewriter.new 'minitest', 'assert_empty' do
   within_files Synvert::RAILS_MINITEST_FILES do
     find_node '.send[receiver=nil][message=assert][arguments.size=1]
                     [arguments.first=.send[message=empty?][arguments.size=0]]' do
-      replace :message, with: 'assert_empty'
-      replace :arguments, with: '{{arguments.first.receiver}}'
+      group do
+        replace :message, with: 'assert_empty'
+        replace :arguments, with: '{{arguments.first.receiver}}'
+      end
     end
   end
 end

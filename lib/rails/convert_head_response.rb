@@ -43,13 +43,12 @@ Synvert::Rewriter.new 'rails', 'convert_head_response' do
                   nothing_value: true
                 }
               } do
-      replace :message, with: 'head'
-      goto_node 'arguments.0' do
-        with_node node_type: 'hash', status_value: nil do
-          replace_with ':ok'
-        end
-        with_node node_type: 'hash', status_value: { not: nil } do
-          replace_with '{{status_source}}'
+      group do
+        replace :message, with: 'head'
+        if node.arguments.first.status_value.nil?
+          replace 'arguments.0', with: ':ok'
+        else
+          replace 'arguments.0', with: '{{arguments.0.status_source}}'
         end
       end
     end
@@ -60,13 +59,10 @@ Synvert::Rewriter.new 'rails', 'convert_head_response' do
     # head 406
     # head :ok, location: '/foo'
     with_node node_type: 'send', receiver: nil, message: 'head', arguments: { size: 1, first: { node_type: 'hash' } } do
-      goto_node 'arguments.0' do
-        with_node node_type: 'hash', location_value: { not: nil } do
-          replace_with ':ok, {{to_source}}'
-        end
-        with_node node_type: 'hash', status_value: { not: nil } do
-          replace_with '{{status_source}}'
-        end
+      if !node.arguments.first.location_value.nil?
+        replace 'arguments.0', with: ':ok, {{arguments.0.to_source}}'
+      elsif !node.arguments.first.status_value.nil?
+        replace 'arguments.0', with: '{{arguments.0.status_source}}'
       end
     end
   end

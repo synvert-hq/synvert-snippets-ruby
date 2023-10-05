@@ -36,8 +36,10 @@ Synvert::Rewriter.new 'ruby', 'block_to_yield' do
         delete :arguments, :parentheses
       end
       find_node '.send[receiver=block][message=call]' do
-        delete :receiver, :dot
-        replace :message, with: 'yield'
+        group do
+          delete :receiver, :dot
+          replace :message, with: 'yield'
+        end
       end
     end
   end

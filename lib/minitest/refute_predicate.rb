@@ -25,8 +25,10 @@ Synvert::Rewriter.new 'minitest', 'refute_predicate' do
     # refute_predicate(expected, :zero?)
     find_node '.send[receiver=nil][message=refute][arguments.size=1]
                     [arguments.first=.send[message=zero?][arguments.size=0]]' do
-      replace :message, with: 'refute_predicate'
-      replace :arguments, with: '{{arguments.first.receiver}}, :zero?'
+      group do
+        replace :message, with: 'refute_predicate'
+        replace :arguments, with: '{{arguments.first.receiver}}, :zero?'
+      end
     end
 
     # assert(!expected.zero?)
@@ -34,8 +36,10 @@ Synvert::Rewriter.new 'minitest', 'refute_predicate' do
     # refute_predicate(expected, :zero?)
     find_node '.send[receiver=nil][message=assert][arguments.size=1]
                     [arguments.first=.send[message=!][receiver=.send[message=zero?][arguments.size=0]]]' do
-      replace :message, with: 'refute_predicate'
-      replace :arguments, with: '{{arguments.first.receiver.receiver}}, :zero?'
+      group do
+        replace :message, with: 'refute_predicate'
+        replace :arguments, with: '{{arguments.first.receiver.receiver}}, :zero?'
+      end
     end
   end
 end

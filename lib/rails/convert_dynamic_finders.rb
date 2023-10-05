@@ -53,43 +53,51 @@ Synvert::Rewriter.new 'rails', 'convert_dynamic_finders' do
   within_files Synvert::ALL_RUBY_FILES + Synvert::ALL_RAKE_FILES do
     # find_all_by_... => where(...)
     with_node node_type: 'send', message: /^find_all_by_/ do
-      hash_params = dynamic_finder_to_hash('find_all_by_')
-      if hash_params
-        replace :message, with: 'where'
-        replace :arguments, with: hash_params
+      group do
+        hash_params = dynamic_finder_to_hash('find_all_by_')
+        if hash_params
+          replace :message, with: 'where'
+          replace :arguments, with: hash_params
+        end
       end
     end
 
     # find_by_... => where(...).first
     with_node node_type: 'send', message: /^find_by_/ do
-      if :find_by_id == node.message
-        replace :message, with: 'find_by'
-        replace :arguments, with: 'id: {{arguments}}'
-      elsif :find_by_sql != node.message
-        hash_params = dynamic_finder_to_hash('find_by_')
-        if hash_params
+      group do
+        if :find_by_id == node.message
           replace :message, with: 'find_by'
-          replace :arguments, with: hash_params
+          replace :arguments, with: 'id: {{arguments}}'
+        elsif :find_by_sql != node.message
+          hash_params = dynamic_finder_to_hash('find_by_')
+          if hash_params
+            replace :message, with: 'find_by'
+            replace :arguments, with: hash_params
+          end
         end
       end
     end
 
     # find_last_by_... => where(...).last
     with_node node_type: 'send', message: /^find_last_by_/ do
-      hash_params = dynamic_finder_to_hash('find_last_by_')
-      if hash_params
-        replace :message, with: 'where'
-        replace :arguments, with: hash_params
-        insert '.last', at: 'end'
+      group do
+        hash_params = dynamic_finder_to_hash('find_last_by_')
+        if hash_params
+          replace :message, with: 'where'
+          replace :arguments, with: hash_params
+          insert '.last', at: 'end'
+        end
       end
     end
 
     # scoped_by_... => where(...)
     with_node node_type: 'send', message: /^scoped_by_/ do
-      hash_params = dynamic_finder_to_hash('scoped_by_')
-      if hash_params
-        replace :message, with: 'where'
-        replace :arguments, with: hash_params
+      group do
+        hash_params = dynamic_finder_to_hash('scoped_by_')
+        if hash_params
+          replace :message, with: 'where'
+          replace :arguments, with: hash_params
+        end
       end
     end
   end
@@ -99,19 +107,23 @@ Synvert::Rewriter.new 'rails', 'convert_dynamic_finders' do
   within_files Synvert::ALL_RUBY_FILES + Synvert::ALL_RAKE_FILES do
     # find_or_initialize_by_... => find_or_initialize_by(...)
     with_node node_type: 'send', message: /^find_or_initialize_by_/ do
-      hash_params = dynamic_finder_to_hash('find_or_initialize_by_')
-      if hash_params
-        replace :message, with: 'find_or_initialize_by'
-        replace :arguments, with: hash_params
+      group do
+        hash_params = dynamic_finder_to_hash('find_or_initialize_by_')
+        if hash_params
+          replace :message, with: 'find_or_initialize_by'
+          replace :arguments, with: hash_params
+        end
       end
     end
 
     # find_or_create_by_... => find_or_create_by(...)
     with_node node_type: 'send', message: /^find_or_create_by_/ do
-      hash_params = dynamic_finder_to_hash('find_or_create_by_')
-      if hash_params
-        replace :message, with: 'find_or_create_by'
-        replace :arguments, with: hash_params
+      group do
+        hash_params = dynamic_finder_to_hash('find_or_create_by_')
+        if hash_params
+          replace :message, with: 'find_or_create_by'
+          replace :arguments, with: hash_params
+        end
       end
     end
   end

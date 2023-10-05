@@ -24,7 +24,7 @@ Synvert::Rewriter.new 'rails', 'convert_render_text_to_render_plain' do
               receiver: nil,
               message: 'render',
               arguments: { size: 1, first: { node_type: 'hash' } } do
-      with_node node_type: 'hash' do
+      goto_node 'arguments.0' do
         with_node node_type: :sym, to_source: 'text' do
           replace_with 'plain'
         end

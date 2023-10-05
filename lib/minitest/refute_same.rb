@@ -23,8 +23,10 @@ Synvert::Rewriter.new 'minitest', 'refute_same' do
     find_node '.send[receiver=nil][message=refute][arguments.size=1]
                     [arguments.0=.send[message=equal?][arguments.size=1]
                                       [arguments.0=.send[receiver=nil][arguments.size=0]]]' do
-      replace :arguments, with: '{{arguments.0.receiver}}, {{arguments.0.arguments.0}}'
-      replace :message, with: 'refute_same'
+      group do
+        replace :arguments, with: '{{arguments.0.receiver}}, {{arguments.0.arguments.0}}'
+        replace :message, with: 'refute_same'
+      end
     end
   end
 
@@ -32,8 +34,10 @@ Synvert::Rewriter.new 'minitest', 'refute_same' do
     find_node '.send[receiver=nil][message=assert][arguments.size=1]
                     [arguments.0=.send[receiver=.send[message=equal?][arguments.size=1]
                                       [arguments.0=.send[receiver=nil][arguments.size=0]]][message=!][arguments.size=0]]' do
-      replace :arguments, with: '{{arguments.0.receiver.receiver}}, {{arguments.0.receiver.arguments.0}}'
-      replace :message, with: 'refute_same'
+      group do
+        replace :arguments, with: '{{arguments.0.receiver.receiver}}, {{arguments.0.receiver.arguments.0}}'
+        replace :message, with: 'refute_same'
+      end
     end
   end
 end

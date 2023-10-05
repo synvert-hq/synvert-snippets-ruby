@@ -30,8 +30,10 @@ Synvert::Rewriter.new 'ruby', 'map_and_flatten_to_flat_map' do
     #   # do something
     # end
     find_node '.send [receiver=.block [caller=.send[message=map]]] [message=flatten] [arguments.size=0]' do
-      delete :message, :dot
-      replace 'receiver.caller.message', with: 'flat_map'
+      group do
+        delete :message, :dot
+        replace 'receiver.caller.message', with: 'flat_map'
+      end
     end
   end
 end

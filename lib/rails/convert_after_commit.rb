@@ -37,8 +37,10 @@ Synvert::Rewriter.new 'rails', 'convert_after_commit' do
                 size: 2,
                 '1': { node_type: 'hash', on_value: { in: %i[create update destroy] } }
               } do
-      replace :message, with: 'after_{{arguments.last.on_value.to_value}}_commit'
-      delete 'arguments.-1.on_pair', and_comma: true
+      group do
+        replace :message, with: 'after_{{arguments.-1.on_value.to_value}}_commit'
+        delete 'arguments.-1.on_pair', and_comma: true
+      end
     end
   end
 end

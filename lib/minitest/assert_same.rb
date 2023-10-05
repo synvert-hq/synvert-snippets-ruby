@@ -21,8 +21,10 @@ Synvert::Rewriter.new 'minitest', 'assert_same' do
     find_node '.send[receiver=nil][message=assert][arguments.size=1]
                     [arguments.0=.send[message=equal?][arguments.size=1]
                                       [arguments.0=.send[receiver=nil][arguments.size=0]]]' do
-      replace :arguments, with: '{{arguments.0.receiver}}, {{arguments.0.arguments.0}}'
-      replace :message, with: 'assert_same'
+      group do
+        replace :arguments, with: '{{arguments.0.receiver}}, {{arguments.0.arguments.0}}'
+        replace :message, with: 'assert_same'
+      end
     end
   end
 end

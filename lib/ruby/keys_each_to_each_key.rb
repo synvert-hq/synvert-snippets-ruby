@@ -22,8 +22,10 @@ Synvert::Rewriter.new 'ruby', 'keys_each_to_each_key' do
     # =>
     # params.each_key {}
     find_node '.send[receiver=.send[message=keys][arguments.size=0]][message=each][arguments.size=0]' do
-      replace :receiver, with: '{{receiver.receiver}}'
-      replace :message, with: 'each_key'
+      group do
+        replace :receiver, with: '{{receiver.receiver}}'
+        replace :message, with: 'each_key'
+      end
     end
   end
 end

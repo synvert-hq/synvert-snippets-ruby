@@ -25,8 +25,10 @@ Synvert::Rewriter.new 'minitest', 'refute_includes' do
     # refute_includes(collection, object)
     find_node '.send[receiver=nil][message=refute][arguments.size=1]
                     [arguments.first=.send[message=include?][arguments.size=1]]' do
-      replace :message, with: 'refute_includes'
-      replace :arguments, with: '{{arguments.first.receiver}}, {{arguments.first.arguments.first}}'
+      group do
+        replace :message, with: 'refute_includes'
+        replace :arguments, with: '{{arguments.first.receiver}}, {{arguments.first.arguments.first}}'
+      end
     end
 
     # assert(!collection.include?(object))
@@ -34,8 +36,10 @@ Synvert::Rewriter.new 'minitest', 'refute_includes' do
     # refute_includes(collection, object)
     find_node '.send[receiver=nil][message=assert][arguments.size=1]
                     [arguments.first=.send[message=!][receiver=.send[message=include?][arguments.size=1]]]' do
-      replace :message, with: 'refute_includes'
-      replace :arguments, with: '{{arguments.first.receiver.receiver}}, {{arguments.first.receiver.arguments.first}}'
+      group do
+        replace :message, with: 'refute_includes'
+        replace :arguments, with: '{{arguments.first.receiver.receiver}}, {{arguments.first.receiver.arguments.first}}'
+      end
     end
   end
 end

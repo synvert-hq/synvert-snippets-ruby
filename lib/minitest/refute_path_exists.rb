@@ -25,8 +25,10 @@ Synvert::Rewriter.new 'minitest', 'refute_path_exists' do
     # refute_path_exists(path)
     find_node '.send[receiver=nil][message=refute][arguments.size=1]
                     [arguments.first=.send[receiver=File][message=exist?][arguments.size=1]]' do
-      replace :message, with: 'refute_path_exists'
-      replace :arguments, with: '{{arguments.first.arguments.first}}'
+      group do
+        replace :message, with: 'refute_path_exists'
+        replace :arguments, with: '{{arguments.first.arguments.first}}'
+      end
     end
 
     # assert(!File.exist?(path))
@@ -34,8 +36,10 @@ Synvert::Rewriter.new 'minitest', 'refute_path_exists' do
     # refute_path_exists(path)
     find_node '.send[receiver=nil][message=assert][arguments.size=1]
                     [arguments.first=.send[message=!][receiver=.send[receiver=File][message=exist?][arguments.size=1]]]' do
-      replace :message, with: 'refute_path_exists'
-      replace :arguments, with: '{{arguments.first.receiver.arguments.first}}'
+      group do
+        replace :message, with: 'refute_path_exists'
+        replace :arguments, with: '{{arguments.first.receiver.arguments.first}}'
+      end
     end
   end
 end

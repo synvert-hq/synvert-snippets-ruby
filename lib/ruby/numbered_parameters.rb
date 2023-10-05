@@ -25,12 +25,14 @@ Synvert::Rewriter.new 'ruby', 'numbered_parameters' do
 
   within_files Synvert::ALL_RUBY_FILES + Synvert::ALL_RAKE_FILES do
     find_node '.block[arguments.size > 0]' do
-      node.arguments.each_with_index do |argument, index|
-        find_node ".lvar[name=#{argument.name}]" do
-          replace_with "_#{index + 1}"
+      group do
+        node.arguments.each_with_index do |argument, index|
+          find_node ".lvar[name=#{argument.name}]" do
+            replace_with "_#{index + 1}"
+          end
         end
+        delete :arguments, :pipes
       end
-      delete :arguments, :pipes
     end
   end
 end
