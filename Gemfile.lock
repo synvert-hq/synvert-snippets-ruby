@@ -41,7 +41,7 @@ GEM
     method_source (1.0.0)
     minitest (5.20.0)
     nenv (0.3.0)
-    node_mutation (1.21.3)
+    node_mutation (1.21.6)
     node_query (1.13.12)
     notiffany (0.1.3)
       nenv (~> 0.1)
