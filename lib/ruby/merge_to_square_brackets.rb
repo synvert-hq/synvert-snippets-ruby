@@ -71,9 +71,9 @@ Synvert::Rewriter.new 'ruby', 'merge_to_square_brackets' do
     # enum.inject({}) { |h, e| h[e] = e; h }
     find_node '.block[caller=.send[message=inject]][arguments.size=2][body.size=1]' do
       hash_name = node.arguments.first.name.to_s
-      block_start_line = NodeMutation.adapter.get_start_loc(node).line
+      block_start_line = mutation_adapter.get_start_loc(node).line
       find_node ".send[receiver=#{hash_name}][message IN (merge merge!)][arguments.size=1][arguments.first=.hash]" do
-        merge_line = NodeMutation.adapter.get_start_loc(node).line
+        merge_line = mutation_adapter.get_start_loc(node).line
         splitter = block_start_line == merge_line ? '; ' : "\n"
         new_code = hash_node_to_square_brackets_code(node.arguments.first, splitter)
         replace_with "#{new_code}#{splitter}#{hash_name}"
@@ -93,9 +93,9 @@ Synvert::Rewriter.new 'ruby', 'merge_to_square_brackets' do
     # enum.each_with_object({}) { |e, h| h[e] = e }
     find_node '.block[caller=.send[message=each_with_object]][arguments.size=2][body.size=1]' do
       hash_name = node.arguments.last.name.to_s
-      block_start_line = NodeMutation.adapter.get_start_loc(node).line
+      block_start_line = mutation_adapter.get_start_loc(node).line
       find_node ".send[receiver=#{hash_name}][message IN (merge merge!)][arguments.size=1][arguments.first=.hash]" do
-        merge_line = NodeMutation.adapter.get_start_loc(node).line
+        merge_line = mutation_adapter.get_start_loc(node).line
         splitter = block_start_line == merge_line ? '; ' : "\n"
         new_code = hash_node_to_square_brackets_code(node.arguments.first, splitter)
         replace_with new_code

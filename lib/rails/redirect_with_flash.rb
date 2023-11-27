@@ -38,13 +38,13 @@ Synvert::Rewriter.new 'rails', 'redirect_with_flash' do
       remover_action = nil
       flash_type = nil
       with_node node_type: 'send', receiver: 'flash', arguments: { size: 2, last: { node_type: :str } } do
-        line = NodeMutation.adapter.get_start_loc(node).line
+        line = mutation_adapter.get_start_loc(node).line
         flash_type = node.arguments.first.to_source
         msg = node.arguments.last.to_source
-        remover_action = NodeMutation::RemoveAction.new(node)
+        remover_action = NodeMutation::RemoveAction.new(node, adapter: mutation_adapter)
       end
       with_node node_type: 'send', receiver: nil, message: :redirect_to do
-        if line.present? && NodeMutation.adapter.get_start_loc(node).line == line + 1
+        if line.present? && mutation_adapter.get_start_loc(node).line == line + 1
           add_action(remover_action)
           if [':notice', ':alert'].include?(flash_type)
             replace_with "{{message}} {{arguments}}, #{flash_type[1..-1]}: #{msg}"
