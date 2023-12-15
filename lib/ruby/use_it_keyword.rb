@@ -19,7 +19,7 @@ Synvert::Rewriter.new 'ruby', 'use_it_keyword' do
     ```
   EOS
 
-  if_ruby '3.3'
+  if_ruby '3.4'
 
   within_files Synvert::ALL_RUBY_FILES + Synvert::ALL_RAKE_FILES do
     find_node '.block[arguments.size=1]' do

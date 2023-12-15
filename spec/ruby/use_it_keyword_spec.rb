@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-if Gem::Version.new(RUBY_VERSION) >= Gem::Version.new('3.3')
+if Gem::Version.new(RUBY_VERSION) >= Gem::Version.new('3.4')
   RSpec.describe 'Ruby uses it keyword' do
     let(:rewriter_name) { 'ruby/it_keyword' }
     let(:test_content) { <<~EOS }
