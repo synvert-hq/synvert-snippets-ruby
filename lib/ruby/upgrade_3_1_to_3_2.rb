@@ -7,4 +7,5 @@ Synvert::Rewriter.new 'ruby', 'upgrade_3_1_to_3_2' do
 
   add_snippet 'ruby', 'deprecate_dir_exists'
   add_snippet 'ruby', 'deprecate_file_exists'
+  add_snippet 'ruby', 'deprecate_fixnum_and_bignum'
 end
