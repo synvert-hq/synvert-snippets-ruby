@@ -5,5 +5,7 @@ Synvert::Rewriter.new 'ruby', 'upgrade_2_5_to_2_6' do
     It upgrades ruby 2.5 to 2.6
   EOS
 
+  add_snippet 'ruby', 'deprecate_dir_exists'
+  add_snippet 'ruby', 'deprecate_file_exists'
   add_snippet 'ruby', 'deprecate_big_decimal_new'
 end
