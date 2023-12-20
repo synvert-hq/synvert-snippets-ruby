@@ -72,7 +72,8 @@ Synvert::Rewriter.new 'rails', 'convert_after_commit' do
           replace :message, with: 'after_{{arguments.-1.on_value.elements.0.to_value}}_commit'
           delete 'arguments.-1.on_pair', and_comma: true
         end
-        if node.arguments[1].on_value.elements.size == 2 && (node.arguments[1].on_value.elements.map(&:to_value) & %i[create update]).size == 2
+        if node.arguments[1].on_value.elements.size == 2 &&
+          (node.arguments[1].on_value.elements.map(&:to_value) & %i[create update]).size == 2
           replace :message, with: 'after_save_commit'
           delete 'arguments.-1.on_pair', and_comma: true
         end
