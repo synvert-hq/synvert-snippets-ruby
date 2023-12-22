@@ -7,10 +7,12 @@ RSpec.describe 'Uses ruby 3.1 hash short synax' do
 
   let(:test_content) { <<~EOS }
     some_method(a: a, b: b, c: c, d: d + 4)
+    some_method(:a => a, :b => b, :c => c, :d => d + 4)
   EOS
 
   let(:test_rewritten_content) { <<~EOS }
     some_method(a:, b:, c:, d: d + 4)
+    some_method(:a => a, :b => b, :c => c, :d => d + 4)
   EOS
 
   include_examples 'convertable'
