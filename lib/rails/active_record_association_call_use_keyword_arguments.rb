@@ -25,7 +25,7 @@ Synvert::Rewriter.new 'rails', 'active_record_association_call_use_keyword_argum
   within_files Synvert::RAILS_MODEL_FILES do
     with_node node_type: 'Command',
               message: { in: association_call_methods },
-              arguments: { node_type: 'Args', parts: { '-1': { node_type: 'HashLiteral'} } } do
+              arguments: { node_type: 'Args', parts: { '-1': { node_type: 'HashLiteral' } } } do
       replace 'arguments.parts.-1', with: '{{arguments.parts.-1.strip_curly_braces}}'
     end
   end
