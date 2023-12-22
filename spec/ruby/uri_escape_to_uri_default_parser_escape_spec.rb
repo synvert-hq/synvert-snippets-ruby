@@ -7,9 +7,11 @@ RSpec.describe 'Uses URI::DEFAULT_PARSER.escape instead of URI.escape' do
 
   let(:test_content) { <<~EOS }
     URI.escape(url)
+    URI.encode(url)
   EOS
 
   let(:test_rewritten_content) { <<~EOS }
+    URI::DEFAULT_PARSER.escape(url)
     URI::DEFAULT_PARSER.escape(url)
   EOS
 
