@@ -9,6 +9,7 @@ Synvert::Rewriter.new 'rails', 'upgrade_5_1_to_5_2' do
     1. it replaces `dalli_store` with `mem_cache_store`
   EOS
 
+  add_snippet 'rails', 'active_record_association_call_use_keyword_arguments'
   add_snippet 'rails', 'test_request_methods_use_keyword_arguments'
 
   if_gem 'rails', '>= 5.2'
