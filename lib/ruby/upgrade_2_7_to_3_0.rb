@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-Synvert::Rewriter.new 'ruby', 'upgrade_2_7_to_3.0' do
+Synvert::Rewriter.new 'ruby', 'upgrade_2_7_to_3_0' do
   description <<~EOS
     It upgrades ruby 2.7 to 3.0
   EOS
