@@ -23,12 +23,12 @@ Synvert::Rewriter.new 'ruby', 'uri_escape_to_uri_default_parser_escape' do
 
   within_files Synvert::ALL_RUBY_FILES + Synvert::ALL_RAKE_FILES do
     # URI.escape(url) => URI::DEFAULT_PARSER.escape(url)
-    find_node '.send[receiver=URI][message=escape][arguments.size=1]' do
+    find_node '.send[receiver=URI][message=escape]' do
       replace :receiver, with: 'URI::DEFAULT_PARSER'
     end
 
     # URI.encode(url) => URI::DEFAULT_PARSER.escape(url)
-    find_node '.send[receiver=URI][message=encode][arguments.size=1]' do
+    find_node '.send[receiver=URI][message=encode]' do
       group do
         replace :receiver, with: 'URI::DEFAULT_PARSER'
         replace :message, with: 'escape'
