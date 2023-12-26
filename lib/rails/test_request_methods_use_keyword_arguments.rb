@@ -42,7 +42,7 @@ Synvert::Rewriter.new 'rails', 'test_request_methods_use_keyword_arguments' do
   within_files Synvert::RAILS_CONTROLLER_TEST_FILES + Synvert::RAILS_INTEGRATION_TEST_FILES do
     with_node node_type: 'send',
               message: { in: request_methods },
-              arguments: { size: 2, '-1': { node_type: { in: ['lvar', 'ivar'] } } } do
+              arguments: { size: 2, '-1': { node_type: { in: %w[lvar ivar send] } } } do
       insert '**', to: 'arguments.-1', at: 'beginning'
     end
   end
