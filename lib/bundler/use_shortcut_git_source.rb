@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-Synvert::Rewriter.new 'bundler', 'use-shortcut-git-source' do
+Synvert::Rewriter.new 'bundler', 'use_shortcut_git_source' do
   configure(parser: Synvert::PARSER_PARSER)
 
   description <<~EOS

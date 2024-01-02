@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe 'Deprecate calling redis inside Redis#pipelined' do
-  let(:rewriter_name) { 'redis/deprecate-calling-redis-inside-pipelined' }
+  let(:rewriter_name) { 'redis/deprecate_calling_redis_inside_pipelined' }
   let(:fake_file_path) { 'app/models/user.rb' }
   let(:test_content) { <<~EOS }
     redis.pipelined do

@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe 'Bundler uses shortcut git source' do
-  let(:rewriter_name) { 'bundler/use-shortcut-git-source' }
+  let(:rewriter_name) { 'bundler/use_shortcut_git_source' }
   let(:fake_file_path) { 'Gemfile' }
   let(:test_content) { <<~EOS }
     # frozen_string_literal: true
