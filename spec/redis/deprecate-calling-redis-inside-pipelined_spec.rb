@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Convert Foo to Bar' do
+RSpec.describe 'Deprecate calling redis inside Redis#pipelined' do
   let(:rewriter_name) { 'redis/deprecate-calling-redis-inside-pipelined' }
   let(:fake_file_path) { 'app/models/user.rb' }
   let(:test_content) { <<~EOS }
