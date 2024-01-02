@@ -1,0 +1,28 @@
+# frozen_string_literal: true
+
+require 'spec_helper'
+
+RSpec.describe 'Convert Foo to Bar' do
+  let(:rewriter_name) { 'redis/deprecate-calling-redis-inside-pipelined' }
+  let(:fake_file_path) { 'app/models/user.rb' }
+  let(:test_content) { <<~EOS }
+    redis.pipelined do
+      redis.get("key")
+    end
+
+    redis.pipelined do |pipeline|
+      pipeline.get("key")
+    end
+  EOS
+  let(:test_rewritten_content) { <<~EOS }
+    redis.pipelined do |pipeline|
+      pipeline.get("key")
+    end
+
+    redis.pipelined do |pipeline|
+      pipeline.get("key")
+    end
+  EOS
+
+  include_examples 'convertable'
+end
