@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 Synvert::Rewriter.new 'bundler', 'use-shortcut-git-source' do
+  configure(parser: Synvert::PARSER_PARSER)
+
   description <<~EOS
     This script is designed to optimize the way Git sources are specified in a Gemfile.
 
