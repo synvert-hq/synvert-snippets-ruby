@@ -26,7 +26,10 @@ Synvert::Rewriter.new 'rails', 'migrate-ujs-to-turbo' do
     # link_to "Destroy", post_path(post), data: { turbo_method: :delete }
     find_node '.send[receiver=nil][message=link_to][arguments.size=3][arguments.2=.hash[method_value=:delete][data_value=.hash[confirm_value!=nil]]]' do
       delete 'arguments.2.method_pair', and_comma: true
-      insert 'turbo_method: {{arguments.2.method_source}}', to: 'arguments.2.data_value.pairs.0', at: 'beginning', and_comma: true
+      insert 'turbo_method: {{arguments.2.method_source}}',
+             to: 'arguments.2.data_value.pairs.0',
+             at: 'beginning',
+             and_comma: true
       replace 'arguments.2.data_value.confirm_pair.key', with: 'turbo_confirm'
     end
 
