@@ -20,7 +20,11 @@ RSpec.describe 'Upgrade rails from 6.0 to 6.1' do
     end
   EOS
   before do
-    load_sub_snippets(%w[rails/rename_errors_keys_to_attribute_names rails/deprecate_errors_as_hash])
+    load_sub_snippets(%w[
+      rails/convert_update_attributes_to_update
+      rails/deprecate_errors_as_hash
+      rails/rename_errors_keys_to_attribute_names
+    ])
     load_helpers(%w[helpers/set_rails_load_defaults.rb])
   end
 
