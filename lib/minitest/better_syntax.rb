@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 Synvert::Rewriter.new 'minitest', 'better_syntax' do
-  description 'It converts rspec code to better syntax, it calls all minitest sub snippets.'
+  description 'It converts minitest code to better syntax, it calls all minitest sub snippets.'
 
   add_snippet 'minitest', 'assert_empty'
   add_snippet 'minitest', 'assert_equal_arguments_order'
