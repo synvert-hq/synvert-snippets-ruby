@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-Synvert::Rewriter.new 'minitest', 'better_syntax' do
+Synvert::Rewriter.new 'minitest', 'use_better_syntax' do
   description 'It converts minitest code to better syntax, it calls all minitest sub snippets.'
 
   add_snippet 'minitest', 'assert_empty'
