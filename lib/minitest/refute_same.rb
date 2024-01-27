@@ -28,9 +28,7 @@ Synvert::Rewriter.new 'minitest', 'refute_same' do
         replace :message, with: 'refute_same'
       end
     end
-  end
 
-  within_files Synvert::RAILS_MINITEST_FILES do
     find_node '.send[receiver=nil][message=assert][arguments.size=1]
                     [arguments.0=.send[receiver=.send[message=equal?][arguments.size=1]
                                       [arguments.0=.send[receiver=nil][arguments.size=0]]][message=!][arguments.size=0]]' do
