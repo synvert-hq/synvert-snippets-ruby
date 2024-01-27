@@ -53,7 +53,7 @@ Synvert::Rewriter.new 'ruby', 'nested_class_definition' do
     # =>
     # class Bar < Base
     # end
-    find_node ".class[name IN (#{original_names.join(",")})]" do
+    find_node ".class[name IN (#{original_names.join(' ')})]" do
       original_name = node.name.to_source
       _, class_name = original_name.split('::', 2)
       replace :name, with: class_name
