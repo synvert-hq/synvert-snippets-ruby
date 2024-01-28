@@ -2,8 +2,8 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Upgrade rails from 3.0 to 3.1' do
-  let(:rewriter_name) { 'rails/upgrade_3_0_to_3_1' }
+RSpec.describe 'Upgrade rails configs from 3.0 to 3.1' do
+  let(:rewriter_name) { 'rails/convert_configs_3_0_to_3_1' }
   let(:application_content) { <<~EOS }
     Synvert::Application.configure do
     end
@@ -97,10 +97,6 @@ RSpec.describe 'Upgrade rails from 3.0 to 3.1' do
       wrap_parameters_rewritten_content
     ]
   }
-
-  before do
-    load_sub_snippets(%w[rails/use_migrations_instance_methods])
-  end
 
   include_examples 'convertable with multiple files'
 end
