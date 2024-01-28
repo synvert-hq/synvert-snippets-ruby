@@ -1,10 +1,10 @@
 # frozen_string_literal: true
 
-Synvert::Rewriter.new 'rails', 'fix_4_0_deprecations' do
+Synvert::Rewriter.new 'rails', 'convert_constants_3_2_to_4_0' do
   configure(parser: Synvert::PARSER_PARSER)
 
   description <<~EOS
-    It fixes rails 4.0 deprecations.
+    It converts rails constants from 3.2 to 4.0.
 
     ```ruby
     ActiveRecord::Fixtures
