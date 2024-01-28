@@ -6,15 +6,17 @@ Synvert::Rewriter.new 'rails', 'convert_configs_4_2_to_5_0' do
   description <<~EOS
     It converts rails configs 4.2 to 5.0
 
-    1. it replaces `config.static_cache_control = ...` with `config.public_file_server.headers = ...` in config files.
+    1. it sets `config.load_defaults 5.0` in config/application.rb.
 
-    2. it replaces `config.serve_static_files = ...` with `config.public_file_server.enabled = ...` in config files.
+    2. it replaces `config.static_cache_control = ...` with `config.public_file_server.headers = ...` in config files.
 
-    3. it replaces `middleware.use "Foo::Bar"` with `middleware.use Foo::Bar` in config files.
+    3. it replaces `config.serve_static_files = ...` with `config.public_file_server.enabled = ...` in config files.
 
-    4. it adds config/initializers/new_framework_defaults.rb.
+    4. it replaces `middleware.use "Foo::Bar"` with `middleware.use Foo::Bar` in config files.
 
-    5. it removes `raise_in_transactional_callbacks=` in config/application.rb.
+    5. it adds config/initializers/new_framework_defaults.rb.
+
+    6. it removes `raise_in_transactional_callbacks=` in config/application.rb.
   EOS
 
   if_gem 'rails', '>= 5.0'
