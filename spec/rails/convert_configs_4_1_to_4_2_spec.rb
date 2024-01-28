@@ -2,8 +2,8 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Upgrade rails from 4.1 to 4.2' do
-  let(:rewriter_name) { 'rails/upgrade_4_1_to_4_2' }
+RSpec.describe 'Convert rails configs from 4.1 to 4.2' do
+  let(:rewriter_name) { 'rails/convert_configs_4_1_to_4_2' }
   let(:application_content) { <<~EOS }
     module Synvert
       class Application < Rails::Application
