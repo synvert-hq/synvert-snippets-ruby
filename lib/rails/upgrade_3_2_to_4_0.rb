@@ -104,7 +104,7 @@ Synvert::Rewriter.new 'rails', 'upgrade_3_2_to_4_0' do
         gem 'uglifier', '>= 1.3.0'
   EOS
 
-  add_snippet 'rails', 'convert_dynamic_finders'
+  add_snippet 'rails', 'convert_dynamic_finders_for_rails_4'
   add_snippet 'rails', 'strong_parameters'
   add_snippet 'rails', 'convert_controller_filter_to_action'
   add_snippet 'rails', 'convert_model_lambda_scope'

@@ -40,6 +40,7 @@ RSpec.describe 'Upgrade rails from 2.3 to 3.0' do
         rails/convert_rails_env
         rails/convert_rails_root
         rails/convert_rails_logger
+        rails/convert_dynamic_finders_for_rails_3
         rails/convert_mailers_2_3_to_3_0
         rails/convert_models_2_3_to_3_0
         rails/convert_routes_2_3_to_3_0

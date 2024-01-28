@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-Synvert::Rewriter.new 'rails', 'convert_dynamic_finders' do
+Synvert::Rewriter.new 'rails', 'convert_dynamic_finders_for_rails_3' do
   configure(parser: Synvert::PARSER_PARSER)
 
   description <<~EOS
@@ -96,32 +96,6 @@ Synvert::Rewriter.new 'rails', 'convert_dynamic_finders' do
         hash_params = dynamic_finder_to_hash('scoped_by_')
         if hash_params
           replace :message, with: 'where'
-          replace :arguments, with: hash_params
-        end
-      end
-    end
-  end
-
-  if_gem 'rails', '>= 4.0'
-
-  within_files Synvert::ALL_RUBY_FILES + Synvert::ALL_RAKE_FILES do
-    # find_or_initialize_by_... => find_or_initialize_by(...)
-    with_node node_type: 'send', message: /^find_or_initialize_by_/ do
-      group do
-        hash_params = dynamic_finder_to_hash('find_or_initialize_by_')
-        if hash_params
-          replace :message, with: 'find_or_initialize_by'
-          replace :arguments, with: hash_params
-        end
-      end
-    end
-
-    # find_or_create_by_... => find_or_create_by(...)
-    with_node node_type: 'send', message: /^find_or_create_by_/ do
-      group do
-        hash_params = dynamic_finder_to_hash('find_or_create_by_')
-        if hash_params
-          replace :message, with: 'find_or_create_by'
           replace :arguments, with: hash_params
         end
       end

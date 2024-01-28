@@ -5,6 +5,7 @@ Synvert::Rewriter.new 'rails', 'upgrade_2_3_to_3_0' do
 
   description 'It converts rails from 2.3 to 3.0.'
 
+  add_snippet 'rails', 'convert_dynamic_finders_for_rails_3'
   add_snippet 'rails', 'convert_mailers_2_3_to_3_0'
   add_snippet 'rails', 'convert_models_2_3_to_3_0'
   add_snippet 'rails', 'convert_rails_env'

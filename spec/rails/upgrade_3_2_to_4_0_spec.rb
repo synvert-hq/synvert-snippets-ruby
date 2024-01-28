@@ -215,7 +215,7 @@ RSpec.describe 'Upgrade rails from 3.2 to 4.0' do
     load_sub_snippets(
       %w[
         rails/strong_parameters
-        rails/convert_dynamic_finders
+        rails/convert_dynamic_finders_for_rails_4
         rails/convert_controller_filter_to_action
         rails/convert_model_lambda_scope
         rails/fix_4_0_deprecations
