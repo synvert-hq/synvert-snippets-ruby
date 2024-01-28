@@ -7,6 +7,8 @@ Synvert::Rewriter.new 'rails', 'deprecate_ar_migration_check_pending' do
     It removes `ActiveRecord::Migration.check_pending!` in `test/test_helper.rb`
   EOS
 
+  if_gem 'rails', '>= 4.1'
+
   within_file 'test/test_helper.rb' do
     # ActiveRecord::Migration.check_pending! => require 'test_help'
     with_node node_type: 'send', receiver: 'ActiveRecord::Migration', message: 'check_pending!' do
