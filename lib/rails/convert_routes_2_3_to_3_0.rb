@@ -150,7 +150,7 @@ Synvert::Rewriter.new 'rails', 'convert_routes_2_3_to_3_0' do
                .join('')
   end
 
-  within_file Synvert::RAILS_ROUTE_FILES do
+  within_files Synvert::RAILS_ROUTE_FILES do
     # map.namespace :admin do |admin|
     #   admin.resources :users
     # end
@@ -168,9 +168,7 @@ Synvert::Rewriter.new 'rails', 'convert_routes_2_3_to_3_0' do
         replace_with new_routes.join
       end
     end
-  end
 
-  within_file Synvert::RAILS_ROUTE_FILES do
     # map.with_options :controller => "manage" do |manage|
     #   manage.manage_index "manage_index", :action => "index"
     #   manage.manage_intro "manage_intro", :action => "intro"
@@ -187,9 +185,7 @@ Synvert::Rewriter.new 'rails', 'convert_routes_2_3_to_3_0' do
       end
       replace_with new_routes.join
     end
-  end
 
-  within_file Synvert::RAILS_ROUTE_FILES do
     # map.resources :posts, :collection => { :generate_pdf => :get }, :member => {:activate => :post} do |posts|
     #   posts.resources :comments
     # end
@@ -228,23 +224,19 @@ Synvert::Rewriter.new 'rails', 'convert_routes_2_3_to_3_0' do
         replace_with new_routes.join
       end
     end
-  end
 
-  within_file Synvert::RAILS_ROUTE_FILES do
     # map.connect "/main/:id", :controller => "main", :action => "home"
     # => match "/main/:id", :to => "main#home"
-    within_node node_type: 'send', receiver: 'map', message: 'connect' do
-      if_exist_node node_type: 'hash' do
-        hash_node = node.arguments.last
-        if hash_node.key?(:action) && hash_node.key?(:controller)
-          controller_action_name = extract_controller_action_name(hash_node)
-          method = hash_node.key?(:method) ? hash_node.method_value.to_value : 'match'
-          other_options_code = reject_keys_from_hash(hash_node, :controller, :action, :method)
-          if other_options_code.length > 0
-            replace_with "#{method} {{arguments.first}}, :to => #{wrap_with_quotes(controller_action_name)}, #{other_options_code}"
-          else
-            replace_with "#{method} {{arguments.first}}, :to => #{wrap_with_quotes(controller_action_name)}"
-          end
+    within_node node_type: 'send', receiver: 'map', message: 'connect', arguments: { last: { node_type: 'hash' } } do
+      hash_node = node.arguments.last
+      if hash_node.key?(:action) && hash_node.key?(:controller)
+        controller_action_name = extract_controller_action_name(hash_node)
+        method = hash_node.key?(:method) ? hash_node.method_value.to_value : 'match'
+        other_options_code = reject_keys_from_hash(hash_node, :controller, :action, :method)
+        if other_options_code.length > 0
+          replace_with "#{method} {{arguments.first}}, :to => #{wrap_with_quotes(controller_action_name)}, #{other_options_code}"
+        else
+          replace_with "#{method} {{arguments.first}}, :to => #{wrap_with_quotes(controller_action_name)}"
         end
       end
     end
@@ -327,12 +319,12 @@ Synvert::Rewriter.new 'rails', 'convert_routes_2_3_to_3_0' do
     # named routes
     # map.admin_signup "/admin_signup", :controller => "admin_signup", :action => "new", :method => "post"
     # => post "/admin_signup", :to => "admin_signup#new", :as => "admin_signup"
-    within_node node_type: 'send', receiver: 'map' do
+    within_node node_type: 'send', receiver: 'map', arguments: { size: 2, last: { node_type: 'hash' } } do
       message = node.message
       unless %i[root connect resource resources].include? message
         url = node.arguments.first.to_value
         hash_node = node.arguments.last
-        if hash_node.type == :hash && hash_node.key?(:controller)
+        if hash_node.key?(:controller)
           if hash_node.key?(:action) || url !~ /:action/
             controller_action_name =
               if hash_node.key?(:action)
