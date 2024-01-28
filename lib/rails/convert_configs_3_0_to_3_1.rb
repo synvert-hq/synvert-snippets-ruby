@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-Synvert::Rewriter.new 'rails', 'upgrade_3_0_to_3_1' do
+Synvert::Rewriter.new 'rails', 'convert_configs_3_0_to_3_1' do
   configure(parser: Synvert::PARSER_PARSER)
 
   description <<~EOS
@@ -73,18 +73,6 @@ Synvert::Rewriter.new 'rails', 'upgrade_3_0_to_3_1' do
     def down
     end
     ```
-
-    TODO:
-
-    Make the following changes to your Gemfile.
-
-        group :assets do
-          gem 'sass-rails',   "~> 3.1.5"
-          gem 'coffee-rails', "~> 3.1.1"
-          gem 'uglifier',     ">= 1.0.3"
-        end
-
-        gem 'jquery-rails'
   EOS
 
   if_gem 'rails', '>= 3.1'

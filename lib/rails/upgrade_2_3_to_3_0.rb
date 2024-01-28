@@ -3,7 +3,7 @@
 Synvert::Rewriter.new 'rails', 'upgrade_2_3_to_3_0' do
   configure(parser: Synvert::PARSER_PARSER)
 
-  description 'It converts rails from 2.3 to 3.0.'
+  description 'It upgrades rails from 2.3 to 3.0.'
 
   add_snippet 'rails', 'convert_configs_2_3_to_3_0'
   add_snippet 'rails', 'convert_dynamic_finders_for_rails_3'

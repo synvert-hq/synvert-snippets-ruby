@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Upgrade rails configs from 2.3 to 3.0' do
+RSpec.describe 'Convert rails configs from 2.3 to 3.0' do
   let(:rewriter_name) { 'rails/convert_configs_2_3_to_3_0' }
   let(:application_controller_content) { <<~EOS }
     class ApplicationController < ActionController::Base

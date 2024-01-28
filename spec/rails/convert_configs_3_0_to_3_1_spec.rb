@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Upgrade rails configs from 3.0 to 3.1' do
+RSpec.describe 'Convert rails configs from 3.0 to 3.1' do
   let(:rewriter_name) { 'rails/convert_configs_3_0_to_3_1' }
   let(:application_content) { <<~EOS }
     Synvert::Application.configure do
