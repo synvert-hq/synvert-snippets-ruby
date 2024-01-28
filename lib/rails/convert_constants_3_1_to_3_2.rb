@@ -1,28 +1,20 @@
 # frozen_string_literal: true
 
-Synvert::Rewriter.new 'rails', 'fix_controller_3_2_deprecations' do
+Synvert::Rewriter.new 'rails', 'convert_constants_3_1_to_3_2' do
   configure(parser: Synvert::PARSER_PARSER)
 
   description <<~EOS
-    It fixes rails 3.2 controller deprecations.
+    It converts rails constants from 3.1 to 3.2.
 
     ```ruby
     ActionController::UnknownAction
-    ```
-
-    =>
-
-    ```ruby
-    AbstractController::ActionNotFound
-    ```
-
-    ```ruby
     ActionController::DoubleRenderError
     ```
 
     =>
 
     ```ruby
+    AbstractController::ActionNotFound
     AbstractController::DoubleRenderError
     ```
   EOS

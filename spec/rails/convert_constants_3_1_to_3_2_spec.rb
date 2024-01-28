@@ -2,8 +2,8 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Fix rails controller 3.2 deprecations' do
-  let(:rewriter_name) { 'rails/fix_controller_3_2_deprecations' }
+RSpec.describe 'Convert rails constants from 3.1 to  3.2' do
+  let(:rewriter_name) { 'rails/convert_constants_3_1_to_3_2' }
   let(:fake_file_path) { 'app/controllers/application_controller.rb' }
   let(:test_content) { <<~EOS }
     class ApplicationController < ActionController::Base

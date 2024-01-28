@@ -6,7 +6,7 @@ Synvert::Rewriter.new 'rails', 'upgrade_3_1_to_3_2' do
   description 'It upgrades rails from 3.1 to 3.2.'
 
   add_snippet 'rails', 'convert_configs_3_1_to_3_2'
-  add_snippet 'rails', 'fix_controller_3_2_deprecations'
+  add_snippet 'rails', 'convert_constants_3_1_to_3_2'
   add_snippet 'rails', 'fix_model_3_2_deprecations'
 
   within_files 'vendor/plugins' do
