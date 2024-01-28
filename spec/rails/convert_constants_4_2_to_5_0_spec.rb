@@ -2,8 +2,8 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Deprecate MissingSourceFile' do
-  let(:rewriter_name) { 'rails/deprecate_missing_source_file' }
+RSpec.describe 'Convert rails constants from 4.2 to 5.0' do
+  let(:rewriter_name) { 'rails/convert_constants_4_2_to_5_0' }
   let(:fake_file_paths) { 'app/controllers/posts_controller.rb' }
   let(:test_content) { <<~EOS }
     class PostsController < ApplicationController

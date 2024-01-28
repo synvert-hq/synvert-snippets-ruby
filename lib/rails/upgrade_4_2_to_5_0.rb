@@ -7,6 +7,7 @@ Synvert::Rewriter.new 'rails', 'upgrade_4_2_to_5_0' do
 
   add_snippet 'rails', 'add_active_record_migration_rails_version'
   add_snippet 'rails', 'convert_configs_4_2_to_5_0'
+  add_snippet 'rails', 'convert_constants_4_2_to_5_0'
   add_snippet 'rails', 'convert_env_to_request_env'
   add_snippet 'rails', 'convert_head_response'
   add_snippet 'rails', 'convert_render_text_to_render_plain'
@@ -17,5 +18,4 @@ Synvert::Rewriter.new 'rails', 'upgrade_4_2_to_5_0' do
   add_snippet 'rails', 'add_application_mailer'
   add_snippet 'rails', 'convert_after_commit'
   add_snippet 'rails', 'convert_model_errors_add'
-  add_snippet 'rails', 'deprecate_missing_source_file'
 end

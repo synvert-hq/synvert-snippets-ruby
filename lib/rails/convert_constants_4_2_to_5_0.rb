@@ -1,9 +1,13 @@
 # frozen_string_literal: true
 
-Synvert::Rewriter.new 'rails', 'deprecate_missing_source_file' do
+Synvert::Rewriter.new 'rails', 'convert_constants_4_2_to_5_0' do
   configure(parser: Synvert::PARSER_PARSER)
 
-  description 'It replaces `MissingSourceFile` with `LoadError`.'
+  description <<~EOS
+    It converts rails constants from 4.2 to 5.0.
+
+    It replaces `MissingSourceFile` with `LoadError`.
+  EOS
 
   if_gem 'rails', '>= 5.0'
 
