@@ -85,7 +85,7 @@ Synvert::Rewriter.new 'rails', 'convert_routes_2_3_to_3_0' do
     ```
   EOS
 
-  if_gem 'rails', '>= 2.3'
+  if_gem 'rails', '>= 3.0'
 
   helper_method :extract_controller_action_name do |hash_node|
     controller_name = hash_node.controller_value.to_value

@@ -53,7 +53,7 @@ Synvert::Rewriter.new 'rails', 'convert_mailers_2_3_to_3_0' do
     ```
   EOS
 
-  if_gem 'rails', '>= 2.3'
+  if_gem 'rails', '>= 3.0'
 
   mailer_methods = {}
 
