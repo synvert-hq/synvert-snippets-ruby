@@ -33,19 +33,17 @@ Synvert::Rewriter.new 'rails', 'convert_views_2_3_to_3_0' do
 
   if_gem 'actionview', '>= 3.0'
 
-  # <%= h user.login %> => <%= user.login %>
   within_files Synvert::RAILS_VIEW_FILES + Synvert::RAILS_HELPER_FILES do
+    # <%= h user.login %> => <%= user.login %>
     with_node node_type: 'send', receiver: nil, message: 'h' do
       replace_with '{{arguments}}'
     end
-  end
 
-  # <% form_for post do |f| %>
-  # <% end %>
-  # =>
-  # <%= form_for post do |f| %>
-  # <% end %>
-  within_files Synvert::RAILS_VIEW_FILES + Synvert::RAILS_HELPER_FILES do
+    # <% form_for post do |f| %>
+    # <% end %>
+    # =>
+    # <%= form_for post do |f| %>
+    # <% end %>
     with_node node_type: 'block',
               caller: {
                 node_type: 'send',
