@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-Synvert::Rewriter.new 'rails', 'deprecate_ar_migration_check_pending' do
+Synvert::Rewriter.new 'rails', 'deprecate_active_record_migration_check_pending' do
   configure(parser: Synvert::PARSER_PARSER)
 
   description <<~EOS
