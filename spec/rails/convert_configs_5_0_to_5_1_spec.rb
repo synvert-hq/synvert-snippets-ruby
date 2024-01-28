@@ -19,11 +19,7 @@ RSpec.describe 'Convert rails configs from 5.0 to 5.1' do
       end
     end
   EOS
-
-  before do
-    load_sub_snippets(%w[rails/convert_active_record_dirty_5_0_to_5_1])
-    load_helpers(%w[helpers/set_rails_load_defaults])
-  end
+  before { load_helpers(%w[helpers/set_rails_load_defaults]) }
 
   include_examples 'convertable'
 end
