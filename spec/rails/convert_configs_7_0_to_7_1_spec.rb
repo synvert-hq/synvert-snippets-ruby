@@ -2,19 +2,19 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Convert rails configs from 6.1 to 7.0' do
-  let(:rewriter_name) { 'rails/convert_configs_6_1_to_7_0' }
+RSpec.describe 'Convert rails configs from 7.0 to 7.1' do
+  let(:rewriter_name) { 'rails/convert_configs_7_0_to_7_1' }
   let(:application_content) { <<~EOS }
     module Synvert
       class Application < Rails::Application
-        config.load_defaults 6.1
+        config.load_defaults 7.0
       end
     end
   EOS
   let(:application_rewritten_content) { <<~EOS }
     module Synvert
       class Application < Rails::Application
-        config.load_defaults 7.0
+        config.load_defaults 7.1
       end
     end
   EOS
