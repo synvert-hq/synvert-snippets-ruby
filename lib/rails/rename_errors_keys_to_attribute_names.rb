@@ -4,7 +4,7 @@ Synvert::Rewriter.new 'rails', 'rename_errors_keys_to_attribute_names' do
   configure(parser: Synvert::PARSER_PARSER)
 
   description <<~EOS
-    It upgrades rails 6.0 to 6.1
+    It renames `errors#keys` to `erros#attribute_names`
   EOS
 
   if_gem 'rails', '>= 6.1'
