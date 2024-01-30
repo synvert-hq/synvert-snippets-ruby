@@ -75,7 +75,7 @@ Synvert::Rewriter.new 'rails', 'convert_configs_3_0_to_3_1' do
     ```
   EOS
 
-  if_gem 'rails', '>= 3.1'
+  if_gem 'rails', '~> 3.1.0'
 
   within_file 'config/application.rb' do
     # prepend config.assets.version = '1.0'

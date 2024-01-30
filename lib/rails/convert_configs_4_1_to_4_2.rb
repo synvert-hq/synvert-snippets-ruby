@@ -11,7 +11,7 @@ Synvert::Rewriter.new 'rails', 'convert_configs_4_1_to_4_2' do
     2. it inserts `config.active_record.raise_in_transactional_callbacks = true` in config/application.rb
   EOS
 
-  if_gem 'rails', '>= 4.2'
+  if_gem 'rails', '~> 4.2.0'
 
   within_files 'config/environments/*.rb' do
     # config.serve_static_assets = false

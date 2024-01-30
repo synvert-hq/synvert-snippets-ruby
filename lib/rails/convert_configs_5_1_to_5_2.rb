@@ -11,7 +11,7 @@ Synvert::Rewriter.new 'rails', 'convert_configs_5_1_to_5_2' do
     2. it replaces `dalli_store` with `mem_cache_store`
   EOS
 
-  if_gem 'rails', '>= 5.2'
+  if_gem 'rails', '~> 5.2.0'
 
   call_helper 'rails/set_load_defaults', rails_version: '5.2'
 

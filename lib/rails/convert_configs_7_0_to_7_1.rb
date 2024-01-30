@@ -12,7 +12,7 @@ Synvert::Rewriter.new 'rails', 'convert_configs_7_0_to_7_1' do
         and `config.action_dispatch.show_exceptions = false` with `config.action_dispatch.show_exceptions = :none`.
   EOS
 
-  if_gem 'rails', '>= 7.1'
+  if_gem 'rails', '~> 7.1.0'
 
   call_helper 'rails/set_load_defaults', rails_version: '7.1'
 

@@ -48,7 +48,7 @@ Synvert::Rewriter.new 'rails', 'convert_configs_3_2_to_4_0' do
     12. it removes `config.whiny_nils = true`.
   EOS
 
-  if_gem 'rails', '>= 4.0'
+  if_gem 'rails', '~> 4.0.0'
 
   within_file 'config/application.rb' do
     # if defined?(Bundler)

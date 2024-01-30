@@ -9,7 +9,7 @@ Synvert::Rewriter.new 'rails', 'convert_configs_6_1_to_7_0' do
     It sets `config.load_defaults 7.0` in config/application.rb.
   EOS
 
-  if_gem 'rails', '>= 7.0'
+  if_gem 'rails', '~> 7.0.0'
 
   call_helper 'rails/set_load_defaults', rails_version: '7.0'
 

@@ -19,7 +19,7 @@ Synvert::Rewriter.new 'rails', 'convert_configs_4_2_to_5_0' do
     6. it removes `raise_in_transactional_callbacks=` in config/application.rb.
   EOS
 
-  if_gem 'rails', '>= 5.0'
+  if_gem 'rails', '~> 5.0.0'
 
   call_helper 'rails/set_load_defaults', rails_version: '5.0'
 

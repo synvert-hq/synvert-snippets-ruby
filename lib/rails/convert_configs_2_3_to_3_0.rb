@@ -5,7 +5,7 @@ Synvert::Rewriter.new 'rails', 'convert_configs_2_3_to_3_0' do
 
   description 'It converts rails configs from 2.3 to 3.0.'
 
-  if_gem 'rails', '>= 3.0'
+  if_gem 'rails', '~> 3.0.0'
 
   filter_parameters = []
   within_file 'app/controllers/application_controller.rb' do

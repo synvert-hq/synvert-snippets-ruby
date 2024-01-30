@@ -20,7 +20,7 @@ Synvert::Rewriter.new 'rails', 'convert_configs_3_1_to_3_2' do
     ```
   EOS
 
-  if_gem 'rails', '>= 3.2'
+  if_gem 'rails', '~> 3.2.0'
 
   within_file 'config/environments/development.rb' do
     # prepend config.active_record.auto_explain_threshold_in_seconds = 0.5
