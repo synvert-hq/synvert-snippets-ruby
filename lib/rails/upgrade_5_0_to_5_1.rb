@@ -14,7 +14,7 @@ Synvert::Rewriter.new 'rails', 'upgrade_5_0_to_5_1' do
 
   add_snippet 'rails', 'application_secrets_use_symbol_keys'
   add_snippet 'rails', 'convert_active_record_dirty_5_0_to_5_1'
-  add_snippet 'rails', 'convert_rails_constants_5_0_to_5_1'
+  add_snippet 'rails', 'convert_constants_5_0_to_5_1'
 
   call_helper 'rails/set_load_defaults', rails_version: '5.1'
 end
