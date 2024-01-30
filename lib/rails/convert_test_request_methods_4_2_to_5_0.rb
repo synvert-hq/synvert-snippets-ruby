@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-Synvert::Rewriter.new 'rails', 'convert_rails_test_request_methods_4_2_to_5_0' do
+Synvert::Rewriter.new 'rails', 'convert_test_request_methods_4_2_to_5_0' do
   configure(parser: Synvert::PARSER_PARSER)
 
   description <<~EOS

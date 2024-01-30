@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe 'Convert rails request methods from 4.2 to 5.0' do
-  let(:rewriter_name) { 'rails/convert_rails_test_request_methods_4_2_to_5_0' }
+  let(:rewriter_name) { 'rails/convert_test_request_methods_4_2_to_5_0' }
 
   context 'functional test' do
     let(:fake_file_path) { 'test/functional/posts_controller_test.rb' }
