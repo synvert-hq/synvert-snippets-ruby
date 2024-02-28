@@ -4,7 +4,7 @@ require 'spec_helper'
 
 if Gem::Version.new(RUBY_VERSION) >= Gem::Version.new('3.4')
   RSpec.describe 'Ruby uses it keyword' do
-    let(:rewriter_name) { 'ruby/it_keyword' }
+    let(:rewriter_name) { 'ruby/use_it_keyword' }
     let(:test_content) { <<~EOS }
       squared_numbers = (1...10).map { |num| num ** 2 }
       squared_numbers = (1...10).map { _1 ** 2 }
