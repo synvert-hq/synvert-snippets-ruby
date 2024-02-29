@@ -64,24 +64,14 @@ Synvert::Rewriter.new 'rails', 'strong_parameters' do
     end
   end
 
-  attributes = {}
-  within_file 'db/schema.rb' do
-    within_node node_type: 'block', caller: { node_type: 'send', message: 'create_table' } do
-      object_name = node.caller.arguments.first.to_value.singularize
-      attributes[object_name] = []
-      with_node node_type: 'send', receiver: 't', message: { not: 'index' } do
-        attribute_name = node.arguments.first.to_value
-        unless default_columns.include?(attribute_name)
-          attributes[object_name] << ":#{attribute_name}"
-        end
-      end
-    end
-  end
+  call_helper 'rails/parse'
+  rails_tables = load_data :rails_tables
 
   parameters = {}
   within_files Synvert::RAILS_MODEL_FILES do
     within_node node_type: 'class' do
       object_name = node.name.to_source.underscore
+      table_columns = rails_tables.present? ? rails_tables[object_name.tableize][:columns].map { |column| column[:name] } - default_columns : []
 
       # assign and remove attr_accessible ...
       with_node node_type: 'send', message: 'attr_accessible' do
@@ -91,11 +81,12 @@ Synvert::Rewriter.new 'rails', 'strong_parameters' do
 
       # assign and remove attr_protected ...
       with_node node_type: 'send', message: 'attr_protected' do
-        parameters[object_name] = attributes[object_name] - node.arguments.map(&:to_source)
+        parameters[object_name] = table_columns.map { |column| ":#{column}" } - node.arguments.map(&:to_source)
         remove
       end
     end
   end
+
 
   within_file Synvert::RAILS_CONTROLLER_FILES do
     within_node node_type: 'class' do

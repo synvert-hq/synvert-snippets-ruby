@@ -4,6 +4,7 @@ require 'spec_helper'
 
 RSpec.describe 'rails strong_parameters snippet' do
   let(:rewriter_name) { 'rails/strong_parameters' }
+  before { load_helpers(%w[helpers/parse_rails]) }
 
   context 'config/application' do
     let(:fake_file_path) { 'config/application.rb' }
@@ -36,7 +37,7 @@ RSpec.describe 'rails strong_parameters snippet' do
           t.datetime "updated_at"
           t.integer  "role",                      default: 0,     null: false
           t.boolean  "admin",                     default: false, null: false
-          t.index    [:email, :role]
+          t.index    [:email, :role], name: "index_users_on_email_and_role"
         end
       end
     EOS

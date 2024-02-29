@@ -25,6 +25,8 @@ RSpec.describe 'Convert dynamic finders for rails 4' do
       FileUtils.mkdir_p 'db'
       File.write('db/schema.rb', schema_content)
     end
+
+    load_helpers(%w[helpers/parse_rails])
   end
 
   context 'model' do

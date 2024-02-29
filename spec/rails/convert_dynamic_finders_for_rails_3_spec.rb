@@ -78,6 +78,7 @@ RSpec.describe 'Convert dynamic finders for rails 3' do
         end
       end
     EOS
+    before { load_helpers(%w[helpers/parse_rails]) }
 
     include_examples 'convertable'
   end
