@@ -82,7 +82,7 @@ GEM
       prettier_print (>= 1.2.0)
     syntax_tree_ext (0.7.2)
       syntax_tree
-    synvert-core (1.33.3)
+    synvert-core (1.34.0)
       activesupport (< 7.0.0)
       node_mutation (>= 1.23.2)
       node_query (>= 1.15.1)
