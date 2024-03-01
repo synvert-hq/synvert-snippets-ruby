@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 Synvert::Rewriter.new 'ruby', 'prefer_nil' do
-  configure(parser: Synvert::PARSER_PARSER)
+  configure(parser: Synvert::PRISM_PARSER)
 
   description <<~EOS
     It prefers .nil?
@@ -22,11 +22,10 @@ Synvert::Rewriter.new 'ruby', 'prefer_nil' do
   EOS
 
   within_files Synvert::ALL_RUBY_FILES + Synvert::ALL_RAKE_FILES do
-    find_node '.send[message=!=][arguments.size=1][arguments.0=nil]' do
+    find_node '.call_node[receiver=.call_node[receiver=nil]][name=!=][arguments=.arguments_node[arguments.size=1][arguments.0=.nil_node]]' do
       replace_with '!{{receiver}}.nil?'
     end
-
-    find_node '.send[message===][arguments.size=1][arguments.0=nil]' do
+    find_node '.call_node[receiver=.call_node[receiver=nil]][name===][arguments=.arguments_node[arguments.size=1][arguments.0=.nil_node]]' do
       replace_with '{{receiver}}.nil?'
     end
   end
