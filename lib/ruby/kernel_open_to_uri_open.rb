@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 Synvert::Rewriter.new 'ruby', 'kernel_open_to_uri_open' do
-  configure(parser: Synvert::PARSER_PARSER)
+  configure(parser: Synvert::PRISM_PARSER)
 
   description <<~EOS
     It converts `Kernel#open` to `URI.open`
@@ -23,8 +23,8 @@ Synvert::Rewriter.new 'ruby', 'kernel_open_to_uri_open' do
     # open('http://test.com')
     # =>
     # URI.open('http://test.com')
-    find_node '.send[receiver=nil][message=open]' do
-      insert 'URI.', at: 'beginning'
+    find_node ".call_node[receiver=nil][name=open][arguments=.arguments_node[arguments.size=1]]" do
+      insert 'URI.', to: 'name', at: 'beginning'
     end
   end
 end
