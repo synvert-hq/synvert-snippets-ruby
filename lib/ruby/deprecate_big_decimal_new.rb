@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 Synvert::Rewriter.new 'ruby', 'deprecate_big_decimal_new' do
-  configure(parser: Synvert::PARSER_PARSER)
+  configure(parser: Synvert::PRISM_PARSER)
 
   description <<~EOS
     It converts BigDecimal.new to BigDecimal
@@ -20,8 +20,8 @@ Synvert::Rewriter.new 'ruby', 'deprecate_big_decimal_new' do
   if_ruby '2.6.0'
 
   within_files Synvert::ALL_RUBY_FILES + Synvert::ALL_RAKE_FILES do
-    find_node '.send[receiver=BigDecimal][message=new]' do
-      delete :dot, :message
+    find_node ".call_node[receiver=BigDecimal][name=new][arguments=.arguments_node[arguments.size=1]]" do
+      delete :message, :call_operator
     end
   end
 end
