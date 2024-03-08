@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 Synvert::Rewriter.new 'ruby', 'new_2_2_hash_syntax' do
-  configure(parser: Synvert::PARSER_PARSER)
+  configure(parser: Synvert::PRISM_PARSER)
 
   description <<~'EOS'
     Use ruby 2.2 new hash syntax.
@@ -29,16 +29,16 @@ Synvert::Rewriter.new 'ruby', 'new_2_2_hash_syntax' do
     # {:foo => 'bar'} => {foo: 'bar'}
     # {:'foo-x' => 'bar'} => {'foo-x': 'bar'}
     # {:"foo-#{suffix}" 'bar'} => {"foo-#{suffix}": 'bar'}
-    find_node '.hash > .pair' do
+    find_node '.hash_node > .assoc_node' do
       case node.key.type
-      when :sym
+      when :symbol_node
         case node.key.to_source
         when /\A:"([^"'\\]*)"\z/
           replace_with "'#{Regexp.last_match(1)}': {{value}}"
         when /\A:(.+)\z/
           replace_with "#{Regexp.last_match(1)}: {{value}}"
         end
-      when :dsym
+      when :interpolated_symbol_node
         if new_key = node.key.to_source[/\A:(.+)/, 1]
           replace_with "#{new_key}: {{value}}"
         end
