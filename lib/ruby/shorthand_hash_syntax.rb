@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 Synvert::Rewriter.new 'ruby', 'shorthand_hash_syntax' do
-  configure(parser: Synvert::SYNTAX_TREE_PARSER)
+  configure(parser: Synvert::PRISM_PARSER)
 
   description <<~EOS
     Use ruby 3.1 hash shorthand syntax.
@@ -25,15 +25,15 @@ Synvert::Rewriter.new 'ruby', 'shorthand_hash_syntax' do
     # { a: a, b: b, c: c, d: d + 4 }
     # =>
     # { a:, b:, c:, d: d + 4 }
-    find_node '.HashLiteral .Assoc[key.node_type=Label][key.value="{{value.value}}:"]' do
-      replace_with '{{key.value}}'
+    find_node '.hash_node .assoc_node[key=.symbol_node][key.unescaped="{{value}}"]' do
+      replace_with '{{key}}'
     end
 
     # some_method(a: a, b: b, c: c, d: d + 4)
     # =>
     # some_method(a:, b:, c:, d: d + 4)
-    find_node '.CallNode .ArgParen .BareAssocHash .Assoc[key.node_type=Label][key.value="{{value.value}}:"]' do
-      replace_with '{{key.value}}'
+    find_node '.call_node[opening!=nil] .arguments_node .keyword_hash_node .assoc_node[key=.symbol_node][key.unescaped="{{value}}"][operator=nil]' do
+      replace_with '{{key}}'
     end
   end
 end
