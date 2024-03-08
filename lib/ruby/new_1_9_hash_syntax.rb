@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 Synvert::Rewriter.new 'ruby', 'new_1_9_hash_syntax' do
-  configure(parser: Synvert::PARSER_PARSER)
+  configure(parser: Synvert::PRISM_PARSER)
 
   description <<~EOS
     Use ruby 1.9 new hash syntax.
@@ -21,9 +21,8 @@ Synvert::Rewriter.new 'ruby', 'new_1_9_hash_syntax' do
 
   within_files Synvert::ALL_RUBY_FILES + Synvert::ALL_RAKE_FILES do
     # {:foo => 'bar'} => {foo: 'bar'}
-    find_node %q{.hash > .pair[key=.sym][key=~/\A:([^'"]+)\z/]} do
-      new_key = node.key.to_source[1..-1]
-      replace_with "#{new_key}: {{value}}"
+    find_node %q{.hash_node .assoc_node[key=.symbol_node][key=~/\A:([^'"]+)\z/][operator = =>]} do
+      replace_with "{{key.unescaped}}: {{value}}"
     end
   end
 end
