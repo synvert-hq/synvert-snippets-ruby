@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 Synvert::Rewriter.new 'rails', 'test_request_methods_use_keyword_arguments' do
-  configure(parser: Synvert::PARSER_PARSER)
+  configure(parser: Synvert::PRISM_PARSER)
 
   description <<~EOS
     It converts rails test request methods to use keyword arguments
@@ -40,10 +40,10 @@ Synvert::Rewriter.new 'rails', 'test_request_methods_use_keyword_arguments' do
   # =>
   # get :show, **options
   within_files Synvert::RAILS_CONTROLLER_TEST_FILES + Synvert::RAILS_INTEGRATION_TEST_FILES do
-    with_node node_type: 'send',
-              message: { in: request_methods },
-              arguments: { size: 2, '-1': { node_type: { in: %w[lvar ivar send] } } } do
-      insert '**', to: 'arguments.-1', at: 'beginning'
+    with_node node_type: 'call_node',
+              name: { in: request_methods },
+              arguments: { node_type: 'arguments_node', arguments: { size: 2, '-1': { node_type: { in: %w[local_variable_read_node instance_variable_read_node call_node] } } } } do
+      insert '**', to: 'arguments.arguments.-1', at: 'beginning'
     end
   end
 end
