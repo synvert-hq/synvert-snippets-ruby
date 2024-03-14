@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 Synvert::Rewriter.new 'rails', 'convert_configs_3_0_to_3_1' do
-  configure(parser: Synvert::PARSER_PARSER)
+  configure(parser: Synvert::PRISM_PARSER)
 
   description <<~EOS
     It upgrade rails configs from 3.0 to 3.1.
@@ -79,134 +79,110 @@ Synvert::Rewriter.new 'rails', 'convert_configs_3_0_to_3_1' do
 
   within_file 'config/application.rb' do
     # prepend config.assets.version = '1.0'
-    unless_exist_node node_type: 'send',
+    unless_exist_node node_type: 'call_node',
                       receiver: {
-                        node_type: 'send',
-                        receiver: {
-                          node_type: 'send',
-                          message: 'config'
-                        },
-                        message: 'assets'
+                        node_type: 'call_node',
+                        receiver: 'config',
+                        name: 'assets'
                       },
-                      message: 'version=' do
+                      name: 'version=' do
       prepend "config.assets.version = '1.0'"
     end
 
     # prepend config.assets.enabled = true
-    unless_exist_node node_type: 'send',
+    unless_exist_node node_type: 'call_node',
                       receiver: {
-                        node_type: 'send',
-                        receiver: {
-                          node_type: 'send',
-                          message: 'config'
-                        },
-                        message: 'assets'
+                        node_type: 'call_node',
+                        receiver: 'config',
+                        name: 'assets'
                       },
-                      message: 'enabled=' do
+                      name: 'enabled=' do
       prepend 'config.assets.enabled = true'
     end
   end
 
   within_file 'config/environments/development.rb' do
     # remove config.action_view.debug_rjs = true
-    with_node node_type: 'send',
+    with_node node_type: 'call_node',
               receiver: {
-                node_type: 'send',
-                receiver: {
-                  node_type: 'send',
-                  message: 'config'
-                },
-                message: 'action_view'
+                node_type: 'call_node',
+                receiver: 'config',
+                name: 'action_view'
               },
-              message: 'debug_rjs=' do
+              name: 'debug_rjs=' do
       remove
     end
 
     # prepend config.assets.debug = true
-    unless_exist_node node_type: 'send',
+    unless_exist_node node_type: 'call_node',
                       receiver: {
-                        node_type: 'send',
-                        receiver: {
-                          node_type: 'send',
-                          message: 'config'
-                        },
-                        message: 'assets'
+                        node_type: 'call_node',
+                        receiver: 'config',
+                        name: 'assets'
                       },
-                      message: 'debug=' do
+                      name: 'debug=' do
       prepend 'config.assets.debug = true'
     end
 
     # prepend config.assets.compress = false
-    unless_exist_node node_type: 'send',
+    unless_exist_node node_type: 'call_node',
                       receiver: {
-                        node_type: 'send',
-                        receiver: {
-                          node_type: 'send',
-                          message: 'config'
-                        },
-                        message: 'assets'
+                        node_type: 'call_node',
+                        receiver: 'config',
+                        name: 'assets'
                       },
-                      message: 'compress=' do
+                      name: 'compress=' do
       prepend 'config.assets.compress = false'
     end
   end
 
   within_file 'config/environments/production.rb' do
     # prepend config.assets.digest = true
-    unless_exist_node node_type: 'send',
+    unless_exist_node node_type: 'call_node',
                       receiver: {
-                        node_type: 'send',
-                        receiver: {
-                          node_type: 'send',
-                          message: 'config'
-                        },
-                        message: 'assets'
+                        node_type: 'call_node',
+                        receiver: 'config',
+                        name: 'assets'
                       },
-                      message: 'digest=' do
+                      name: 'digest=' do
       prepend 'config.assets.digest = true'
     end
 
     # prepend config.assets.compile = false
-    unless_exist_node node_type: 'send',
+    unless_exist_node node_type: 'call_node',
                       receiver: {
-                        node_type: 'send',
-                        receiver: {
-                          node_type: 'send',
-                          message: 'config'
-                        },
-                        message: 'assets'
+                        node_type: 'call_node',
+                        receiver: 'config',
+                        name: 'assets'
                       },
-                      message: 'compile=' do
+                      name: 'compile=' do
       prepend 'config.assets.compile = false'
     end
 
     # prepend config.assets.compress = true
-    unless_exist_node node_type: 'send',
+    unless_exist_node node_type: 'call_node',
                       receiver: {
-                        node_type: 'send',
-                        receiver: {
-                          node_type: 'send',
-                          message: 'config'
-                        },
-                        message: 'assets'
+                        node_type: 'call_node',
+                        receiver: 'config',
+                        name: 'assets'
                       },
-                      message: 'compress=' do
+                      name: 'compress=' do
       prepend 'config.assets.compress = true'
     end
   end
 
   within_file 'config/environments/test.rb' do
     # prepend config.static_cache_control = "public, max-age=3600"
-    unless_exist_node node_type: 'send',
-                      receiver: { node_type: 'send', message: 'config' },
-                      message: 'static_cache_control=' do
+    unless_exist_node node_type: 'call_node',
+                      receiver: 'config',
+                      name: 'static_cache_control=' do
       prepend 'config.static_cache_control = "public, max-age=3600"'
     end
 
     # prepend config.serve_static_assets = true
-    unless_exist_node node_type: 'send',
-                      receiver: { node_type: 'send', message: 'config' },
-                      message: 'serve_static_assets=' do
+    unless_exist_node node_type: 'call_node',
+                      receiver: 'config',
+                      name: 'serve_static_assets=' do
       prepend 'config.serve_static_assets = true'
     end
   end
@@ -226,14 +202,18 @@ Synvert::Rewriter.new 'rails', 'convert_configs_3_0_to_3_1' do
 
   within_file 'config/initializers/session_store.rb' do
     # add Application.session_store :cookie_store, key: '_xxx-session'
-    with_node node_type: 'send',
+    with_node node_type: 'call_node',
               receiver: {
-                node_type: 'send',
-                message: 'config'
+                node_type: 'call_node',
+                name: 'config'
               },
-              message: 'session_store',
+              name: 'session_store',
               arguments: {
-                first: :cookie_store
+                node_type: 'arguments_node',
+                arguments: {
+                  size: 2,
+                  first: :cookie_store
+                }
               } do
       session_store_key = node.receiver.receiver.to_source.split(':').first.underscore
       replace_with "{{receiver}}.session_store :cookie_store, key: '_#{session_store_key}-session'"
