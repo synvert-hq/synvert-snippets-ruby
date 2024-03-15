@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 Synvert::Rewriter.new 'rails', 'convert_configs_4_1_to_4_2' do
-  configure(parser: Synvert::PARSER_PARSER)
+  configure(parser: Synvert::PRISM_PARSER)
 
   description <<~EOS
     It converts rails configs from 4.1 to 4.2
@@ -17,24 +17,21 @@ Synvert::Rewriter.new 'rails', 'convert_configs_4_1_to_4_2' do
     # config.serve_static_assets = false
     # =>
     # config.serve_static_files = false
-    with_node node_type: 'send', message: 'serve_static_assets=' do
-      replace :message, with: 'serve_static_files ='
+    with_node node_type: 'call_node', name: 'serve_static_assets=' do
+      replace :message, with: 'serve_static_files'
     end
   end
 
   within_file 'config/application.rb' do
     # append config.active_record.raise_in_transactional_callbacks = true
-    with_node node_type: 'class', parent_class: 'Rails::Application' do
-      unless_exist_node node_type: 'send',
+    with_node node_type: 'class_node', superclass: 'Rails::Application' do
+      unless_exist_node node_type: 'call_node',
                         receiver: {
-                          node_type: 'send',
-                          receiver: {
-                            node_type: 'send',
-                            message: 'config'
-                          },
-                          message: 'active_record'
+                          node_type: 'call_node',
+                          receiver: 'config',
+                          name: 'active_record'
                         },
-                        message: 'raise_in_transactional_callbacks=' do
+                        name: 'raise_in_transactional_callbacks=' do
         append 'config.active_record.raise_in_transactional_callbacks = true'
       end
     end
