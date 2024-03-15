@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 Synvert::Rewriter.new 'rails', 'convert_constants_3_1_to_3_2' do
-  configure(parser: Synvert::PARSER_PARSER)
+  configure(parser: Synvert::PRISM_PARSER)
 
   description <<~EOS
     It converts rails constants from 3.1 to 3.2.
@@ -28,7 +28,7 @@ Synvert::Rewriter.new 'rails', 'convert_constants_3_1_to_3_2' do
       'ActionController::UnknownAction' => 'AbstractController::ActionNotFound',
       'ActionController::DoubleRenderError' => 'AbstractController::DoubleRenderError'
     }.each do |old_const, new_const|
-      with_node node_type: 'const', to_source: old_const do
+      with_node node_type: 'constant_path_node', to_source: old_const do
         replace_with new_const
       end
     end
