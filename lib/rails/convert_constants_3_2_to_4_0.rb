@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 Synvert::Rewriter.new 'rails', 'convert_constants_3_2_to_4_0' do
-  configure(parser: Synvert::PARSER_PARSER)
+  configure(parser: Synvert::PRISM_PARSER)
 
   description <<~EOS
     It converts rails constants from 3.2 to 4.0.
@@ -50,7 +50,7 @@ Synvert::Rewriter.new 'rails', 'convert_constants_3_2_to_4_0' do
       'ActionController::Response' => 'ActionDispatch::Response',
       'ActionController::Routing' => 'ActionDispatch::Routing'
     }.each do |deprecated, favor|
-      with_node to_source: deprecated do
+      with_node node_type: 'constant_path_node', to_source: deprecated do
         replace_with favor
       end
     end
