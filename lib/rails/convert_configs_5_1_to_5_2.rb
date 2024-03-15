@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 Synvert::Rewriter.new 'rails', 'convert_configs_5_1_to_5_2' do
-  configure(parser: Synvert::PARSER_PARSER)
+  configure(parser: Synvert::PRISM_PARSER)
 
   description <<~EOS
     It converts rails configs from 5.1 to 5.2
@@ -17,7 +17,7 @@ Synvert::Rewriter.new 'rails', 'convert_configs_5_1_to_5_2' do
 
   within_file 'config/**/*.rb' do
     # dalli_store => mem_cache_store
-    with_node node_type: 'sym', to_value: 'dalli_store' do
+    with_node node_type: 'symbol_node', to_value: :dalli_store do
       replace_with ':mem_cache_store'
     end
   end
