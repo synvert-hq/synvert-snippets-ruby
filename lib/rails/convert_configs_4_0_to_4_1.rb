@@ -3,7 +3,7 @@
 require 'securerandom'
 
 Synvert::Rewriter.new 'rails', 'convert_configs_4_0_to_4_1' do
-  configure(parser: Synvert::PARSER_PARSER)
+  configure(parser: Synvert::PRISM_PARSER)
 
   description <<~EOS
     It converts rails configs from 4.0 to 4.1.
