@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 Synvert::Rewriter.new 'rails', 'convert_configs_7_0_to_7_1' do
-  configure(parser: Synvert::PARSER_PARSER)
+  configure(parser: Synvert::PRISM_PARSER)
 
   description <<~EOS
     It converts rails configs from 7.0 to 7.1
@@ -17,12 +17,18 @@ Synvert::Rewriter.new 'rails', 'convert_configs_7_0_to_7_1' do
   call_helper 'rails/set_load_defaults', rails_version: '7.1'
 
   within_files 'config/environments/*.rb' do
-    find_node '.send[receiver=.send[receiver=.send[receiver=nil][message=config][arguments.size=0]][message=action_dispatch][arguments.size=0]][message=show_exceptions=][arguments.size=1][arguments.0=true]' do
-      replace :arguments, with: ':all'
+    with_node node_type: 'call_node',
+              receiver: { node_type: 'call_node', receiver: 'config', name: 'action_dispatch' },
+              name: 'show_exceptions=',
+              arguments: { node_type: 'arguments_node', arguments: { size: 1, first: true } } do
+      replace 'arguments.arguments', with: ':all'
     end
 
-    find_node '.send[receiver=.send[receiver=.send[receiver=nil][message=config][arguments.size=0]][message=action_dispatch][arguments.size=0]][message=show_exceptions=][arguments.size=1][arguments.0=false]' do
-      replace :arguments, with: ':none'
+    with_node node_type: 'call_node',
+              receiver: { node_type: 'call_node', receiver: 'config', name: 'action_dispatch' },
+              name: 'show_exceptions=',
+              arguments: { node_type: 'arguments_node', arguments: { size: 1, first: false } } do
+      replace 'arguments.arguments', with: ':none'
     end
   end
 end
