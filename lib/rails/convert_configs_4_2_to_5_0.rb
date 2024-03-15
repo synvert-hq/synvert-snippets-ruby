@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 Synvert::Rewriter.new 'rails', 'convert_configs_4_2_to_5_0' do
-  configure(parser: Synvert::PARSER_PARSER)
+  configure(parser: Synvert::PRISM_PARSER)
 
   description <<~EOS
     It converts rails configs 4.2 to 5.0
@@ -25,7 +25,7 @@ Synvert::Rewriter.new 'rails', 'convert_configs_4_2_to_5_0' do
 
   within_file 'config/application.rb' do
     # remove config.raise_in_transactional_callbacks = true
-    with_node node_type: 'send', message: 'raise_in_transactional_callbacks=' do
+    with_node node_type: 'call_node', name: 'raise_in_transactional_callbacks=' do
       remove
     end
   end
@@ -34,37 +34,33 @@ Synvert::Rewriter.new 'rails', 'convert_configs_4_2_to_5_0' do
     # config.static_cache_control = 'public, max-age=31536000'
     # =>
     # config.public_file_server.headers = { "Cache-Control" => 'public, max-age=31536000' }
-    with_node node_type: 'send', message: 'static_cache_control=' do
+    with_node node_type: 'call_node', name: 'static_cache_control=' do
       replace_with '{{receiver}}.public_file_server.headers = { "Cache-Control" => {{arguments}} }'
     end
 
     # config.serve_static_files = true
     # =>
     # config.public_file_server.enabled = true
-    with_node node_type: 'send', message: 'serve_static_files=' do
-      replace :message, with: 'public_file_server.enabled ='
+    with_node node_type: 'call_node', name: 'serve_static_files=' do
+      replace :message, with: 'public_file_server.enabled'
     end
 
     # config.middleware.use "Foo::Bar"
     # =>
     # config.middleware.use Foo::Bar
-    with_node node_type: 'send',
+    with_node node_type: 'call_node',
               receiver: {
-                node_type: 'send',
+                node_type: 'call_node',
                 receiver: 'config',
-                message: 'middleware'
+                name: 'middleware'
               },
-              message: 'use',
-              arguments: {
-                first: {
-                  node_type: 'str'
-                }
-              } do
-      replace 'arguments.first', with: "{{arguments.first.to_value}}"
+              name: 'use',
+              arguments: { node_type: 'arguments_node', arguments: { size: { gt: 0 }, first: { node_type: 'string_node' } } } do
+      replace 'arguments.arguments.first', with: "{{arguments.arguments.first.to_value}}"
     end
   end
 
-  new_code = <<~EOS
+  new_code = <<~EOS.strip
     # Be sure to restart your server when you modify this file.
     #
     # This file contains migration options to ease your Rails 5.0 upgrade.
@@ -90,5 +86,5 @@ Synvert::Rewriter.new 'rails', 'convert_configs_4_2_to_5_0' do
     # Configure SSL options to enable HSTS with subdomains. Previous versions had false.
     Rails.application.config.ssl_options = { hsts: { subdomains: true } }
   EOS
-  add_file 'config/initializers/new_framework_defaults.rb', new_code.strip
+  add_file 'config/initializers/new_framework_defaults.rb', new_code
 end
