@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 Synvert::Rewriter.new 'rails', 'active_record_association_call_use_keyword_arguments' do
-  configure(parser: Synvert::SYNTAX_TREE_PARSER)
+  configure(parser: Synvert::PRISM_PARSER)
 
   description <<~EOS
     It converts active_record association call to use keyword arguments
@@ -23,10 +23,11 @@ Synvert::Rewriter.new 'rails', 'active_record_association_call_use_keyword_argum
   association_call_methods = %i[belongs_to has_one has_many has_and_belongs_to_many]
 
   within_files Synvert::RAILS_MODEL_FILES do
-    with_node node_type: 'Command',
+    with_node node_type: 'call_node',
+              receiver: nil,
               message: { in: association_call_methods },
-              arguments: { node_type: 'Args', parts: { '-1': { node_type: 'HashLiteral' } } } do
-      replace 'arguments.parts.-1', with: '{{arguments.parts.-1.strip_curly_braces}}'
+              arguments: { node_type: 'arguments_node', arguments: { size: 2, last: { node_type: 'hash_node' } } } do
+      replace 'arguments.arguments.-1', with: '{{arguments.arguments.-1.elements}}'
     end
   end
 end
