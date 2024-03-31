@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 Synvert::Rewriter.new 'rails', 'add_application_job' do
-  configure(parser: Synvert::PARSER_PARSER)
+  configure(parser: Synvert::PRISM_PARSER)
 
   description <<~EOS
     It adds ApplicationJob
@@ -37,8 +37,8 @@ Synvert::Rewriter.new 'rails', 'add_application_job' do
     # =>
     # class PostJob < ApplicationJob
     # end
-    with_node node_type: 'class', name: { not: 'ApplicationJob' }, parent_class: 'ActiveJob::Base' do
-      replace :parent_class, with: 'ApplicationJob'
+    with_node node_type: 'class_node', name: { not: 'ApplicationJob' }, superclass: 'ActiveJob::Base' do
+      replace :superclass, with: 'ApplicationJob'
     end
   end
 end
