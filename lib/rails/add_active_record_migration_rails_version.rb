@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 Synvert::Rewriter.new 'rails', 'add_active_record_migration_rails_version' do
-  configure(parser: Synvert::PARSER_PARSER)
+  configure(parser: Synvert::PRISM_PARSER)
 
   description <<~EOS
     It adds default ActiveRecord::Migration rails version.
@@ -22,8 +22,8 @@ Synvert::Rewriter.new 'rails', 'add_active_record_migration_rails_version' do
   if_gem 'rails', '>= 5.0'
 
   within_files Synvert::RAILS_MIGRATION_FILES do
-    with_node node_type: 'class', parent_class: 'ActiveRecord::Migration' do
-      replace :parent_class, with: 'ActiveRecord::Migration[4.2]'
+    with_node node_type: 'class_node', superclass: 'ActiveRecord::Migration' do
+      replace :superclass, with: '{{superclass}}[4.2]'
     end
   end
 end
