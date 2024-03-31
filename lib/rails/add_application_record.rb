@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 Synvert::Rewriter.new 'rails', 'add_application_record' do
-  configure(parser: Synvert::PARSER_PARSER)
+  configure(parser: Synvert::PRISM_PARSER)
 
   description <<~EOS
     It adds ApplicationRecord
@@ -37,8 +37,8 @@ Synvert::Rewriter.new 'rails', 'add_application_record' do
     # =>
     # class Post < ApplicationRecord
     # end
-    with_node node_type: 'class', name: { not: 'ApplicationRecord' }, parent_class: 'ActiveRecord::Base' do
-      replace :parent_class, with: 'ApplicationRecord'
+    with_node node_type: 'class_node', name: { not: 'ApplicationRecord' }, superclass: 'ActiveRecord::Base' do
+      replace :superclass, with: 'ApplicationRecord'
     end
   end
 end
