@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 Synvert::Rewriter.new 'rails', 'convert_env_to_request_env' do
-  configure(parser: Synvert::PARSER_PARSER)
+  configure(parser: Synvert::PRISM_PARSER)
 
   description <<~EOS
     It replaces env with request.env in controller files.
@@ -23,7 +23,7 @@ Synvert::Rewriter.new 'rails', 'convert_env_to_request_env' do
     # env["omniauth.auth"]
     # =>
     # request.env["omniauth.auth"]
-    with_node node_type: 'send', receiver: nil, message: 'env', arguments: { size: 0 } do
+    with_node node_type: 'call_node', receiver: nil, name: 'env', arguments: nil do
       replace :message, with: 'request.env'
     end
   end
