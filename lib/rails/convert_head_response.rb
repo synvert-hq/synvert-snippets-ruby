@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 Synvert::Rewriter.new 'rails', 'convert_head_response' do
-  configure(parser: Synvert::PARSER_PARSER)
+  configure(parser: Synvert::PRISM_PARSER)
 
   description <<~EOS
     It replaces render head response in controller files.
@@ -33,37 +33,38 @@ Synvert::Rewriter.new 'rails', 'convert_head_response' do
     # =>
     # head :ok
     # head :created
-    with_node node_type: 'send',
+    with_node node_type: 'call_node',
               receiver: nil,
-              message: 'render',
-              arguments: {
-                size: 1,
-                first: {
-                  node_type: 'hash',
-                  nothing_value: true
-                }
-              } do
+              name: 'render',
+              arguments: { node_type: 'arguments_node', arguments: { size: 1, first: { node_type: 'keyword_hash_node', nothing_value: true } } } do
       group do
         replace :message, with: 'head'
-        if node.arguments.first.status_value.nil?
-          replace 'arguments.0', with: ':ok'
+        if node.arguments.arguments.first.status_value.nil?
+          replace 'arguments.arguments.0', with: ':ok'
         else
-          replace 'arguments.0', with: '{{arguments.0.status_source}}'
+          replace 'arguments.arguments.0', with: '{{arguments.arguments.0.status_source}}'
         end
       end
     end
 
-    # head status: 406
     # head location: '/foo'
     # =>
-    # head 406
     # head :ok, location: '/foo'
-    with_node node_type: 'send', receiver: nil, message: 'head', arguments: { size: 1, first: { node_type: 'hash' } } do
-      if !node.arguments.first.location_value.nil?
-        replace 'arguments.0', with: ':ok, {{arguments.0.to_source}}'
-      elsif !node.arguments.first.status_value.nil?
-        replace 'arguments.0', with: '{{arguments.0.status_source}}'
-      end
+    with_node node_type: 'call_node',
+              receiver: nil,
+              name: 'head',
+              arguments: { node_type: 'arguments_node', arguments: { size: 1, first: { node_type: 'keyword_hash_node', location_value: { not: nil } } } } do
+      replace 'arguments.arguments.0', with: ':ok, {{arguments.arguments.0.to_source}}'
+    end
+
+    # head status: 406
+    # =>
+    # head 406
+    with_node node_type: 'call_node',
+              receiver: nil,
+              name: 'head',
+              arguments: { node_type: 'arguments_node', arguments: { size: 1, first: { node_type: 'keyword_hash_node', status_value: { not: nil } } } } do
+      replace 'arguments.arguments.0', with: '{{arguments.arguments.0.status_source}}'
     end
   end
 end
