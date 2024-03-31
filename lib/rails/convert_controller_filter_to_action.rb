@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 Synvert::Rewriter.new 'rails', 'convert_controller_filter_to_action' do
-  configure(parser: Synvert::PARSER_PARSER)
+  configure(parser: Synvert::PRISM_PARSER)
 
   description <<~EOS
     It renames before_filter callbacks to before_action
@@ -33,12 +33,12 @@ Synvert::Rewriter.new 'rails', 'convert_controller_filter_to_action' do
     # skip_filter :load_post => skip_action_callback :load_post
     # before_filter :load_post => before_action :load_post
     # after_filter :increment_view_count => after_filter :increment_view_count
-    with_node node_type: 'send', receiver: nil, message: /_filter$/ do
+    with_node node_type: 'call_node', receiver: nil, name: /_filter\z/ do
       new_message =
-        if node.message == :skip_filter
+        if node.name == :skip_filter
           'skip_action_callback'
         else
-          node.message.to_s.sub('filter', 'action')
+          node.name.to_s.sub('filter', 'action')
         end
       replace :message, with: new_message
     end
