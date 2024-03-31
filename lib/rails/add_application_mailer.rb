@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 Synvert::Rewriter.new 'rails', 'add_application_mailer' do
-  configure(parser: Synvert::PARSER_PARSER)
+  configure(parser: Synvert::PRISM_PARSER)
 
   description <<~EOS
     It adds ApplicationMailer
@@ -37,8 +37,8 @@ Synvert::Rewriter.new 'rails', 'add_application_mailer' do
     # =>
     # class UserMailer < ApplicationMailer
     # end
-    with_node node_type: 'class', name: { not: 'ApplicationMailer' }, parent_class: 'ActionMailer::Base' do
-      replace :parent_class, with: 'ApplicationMailer'
+    with_node node_type: 'class_node', name: { not: 'ApplicationMailer' }, superclass: 'ActionMailer::Base' do
+      replace :superclass, with: 'ApplicationMailer'
     end
   end
 end
