@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 Synvert::Rewriter.new 'rails', 'convert_model_errors_add' do
-  configure(parser: Synvert::PARSER_PARSER)
+  configure(parser: Synvert::PRISM_PARSER)
 
   description <<~EOS
     It converts to activerecord `errors.add`.
@@ -22,11 +22,11 @@ Synvert::Rewriter.new 'rails', 'convert_model_errors_add' do
   if_gem 'activerecord', '>= 5.0'
 
   within_files Synvert::RAILS_MODEL_FILES do
-    with_node node_type: 'send',
-              receiver: { node_type: 'send', message: 'errors', arguments: { size: 0 } },
-              message: '[]=',
-              arguments: { size: 2 } do
-      replace_with '{{receiver}}.add({{arguments.0}}, {{arguments.1}})'
+    with_node node_type: 'call_node',
+              receiver: { node_type: 'call_node', name: 'errors', arguments: nil },
+              name: '[]=',
+              arguments: { node_type: 'arguments_node', arguments: { size: 2 } } do
+      replace_with '{{receiver}}.add({{arguments.arguments.0}}, {{arguments.arguments.1}})'
     end
   end
 end
