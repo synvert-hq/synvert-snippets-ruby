@@ -53,8 +53,8 @@ GEM
     parser_node_ext (1.2.2)
       parser
     prettier_print (1.2.1)
-    prism (0.24.0)
-    prism_ext (0.2.3)
+    prism (0.25.0)
+    prism_ext (0.3.0)
       prism
     pry (0.14.2)
       coderay (~> 1.1)
