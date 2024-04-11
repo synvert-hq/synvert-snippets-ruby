@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 Synvert::Rewriter.new 'rails', 'use_migrations_instance_methods' do
-  configure(parser: Synvert::PARSER_PARSER)
+  configure(parser: Synvert::PRISM_PARSER)
 
   description <<~EOS
     It uses instance methods rather than class methods in migrations.
@@ -30,10 +30,8 @@ Synvert::Rewriter.new 'rails', 'use_migrations_instance_methods' do
   within_files Synvert::RAILS_MIGRATION_FILES do
     # def self.up => def up
     # def self.down => def down
-    %w[up down].each do |name|
-      with_node node_type: 'defs', name: name do
-        delete :self, :dot
-      end
+    with_node node_type: 'def_node', name: { in: ['up', 'down'] }, receiver: { node_type: 'self_node' } do
+      delete :receiver, :operator
     end
   end
 end
