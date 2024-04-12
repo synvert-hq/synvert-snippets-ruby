@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 Synvert::Rewriter.new 'rails', 'convert_views_2_3_to_3_0' do
-  configure(parser: Synvert::PARSER_PARSER)
+  configure(parser: Synvert::PRISM_PARSER)
 
   description <<~EOS
     1. remove `h` helper, rails 3 uses it by default.
@@ -35,7 +35,7 @@ Synvert::Rewriter.new 'rails', 'convert_views_2_3_to_3_0' do
 
   within_files Synvert::RAILS_VIEW_FILES + Synvert::RAILS_HELPER_FILES do
     # <%= h user.login %> => <%= user.login %>
-    with_node node_type: 'send', receiver: nil, message: 'h' do
+    with_node node_type: 'call_node', receiver: nil, name: 'h' do
       replace_with '{{arguments}}'
     end
 
@@ -44,12 +44,10 @@ Synvert::Rewriter.new 'rails', 'convert_views_2_3_to_3_0' do
     # =>
     # <%= form_for post do |f| %>
     # <% end %>
-    with_node node_type: 'block',
-              caller: {
-                node_type: 'send',
-                receiver: nil,
-                message: { in: %w[form_for form_tag fields_for div_for content_tag_for] }
-              } do
+    with_node node_type: 'call_node',
+              receiver: nil,
+              name: { in: %w[form_for form_tag fields_for div_for content_tag_for] },
+              block: { node_type: 'block_node' } do
       replace_erb_stmt_with_expr
     end
   end
