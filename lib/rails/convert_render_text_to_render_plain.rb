@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 Synvert::Rewriter.new 'rails', 'convert_render_text_to_render_plain' do
-  configure(parser: Synvert::PARSER_PARSER)
+  configure(parser: Synvert::PRISM_PARSER)
 
   description <<~EOS
     It converts `render :text` to `render :plain`
@@ -20,18 +20,15 @@ Synvert::Rewriter.new 'rails', 'convert_render_text_to_render_plain' do
   if_gem 'actionpack', '>= 5.0'
 
   within_files Synvert::RAILS_CONTROLLER_FILES do
-    with_node node_type: 'send',
+    with_node node_type: 'call_node',
               receiver: nil,
-              message: 'render',
-              arguments: { size: 1, first: { node_type: 'hash' } } do
-      goto_node 'arguments.0' do
-        with_node node_type: :sym, to_source: 'text' do
-          replace_with 'plain'
-        end
-        with_node node_type: :sym, to_source: ':text' do
-          replace_with ':plain'
-        end
-      end
+              name: 'render',
+              arguments: {
+                node_type: 'arguments_node',
+                arguments: { size: 1, first: { node_type: 'keyword_hash_node', text_value: { not: nil } } }
+              } do
+      old_key = node.arguments.arguments.first.text_element.key.to_source
+      replace 'arguments.arguments.0.text_element.key', with: old_key.sub('text', 'plain')
     end
   end
 end
