@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 Synvert::Rewriter.new 'rails', 'fix_model_3_2_deprecations' do
-  configure(parser: Synvert::PARSER_PARSER)
+  configure(parser: Synvert::PRISM_PARSER)
 
   description <<~EOS
     It fixes rails 3.2 model deprecations.
@@ -65,11 +65,8 @@ Synvert::Rewriter.new 'rails', 'fix_model_3_2_deprecations' do
     # set_sequence_name = "seq" => self.sequence_name = "seq"
     # set_primary_key = "id" => self.primary_key = "id"
     # set_locking_column = "lock" => self.locking_column = "lock"
-    %w[set_table_name set_inheritance_column set_sequence_name set_primary_key set_locking_column].each do |message|
-      with_node node_type: 'send', message: message do
-        new_message = message.sub('set_', '')
-        replace :message, with: "self.#{new_message} ="
-      end
+    with_node node_type: 'call_node', name: { in: %w[set_table_name set_inheritance_column set_sequence_name set_primary_key set_locking_column] } do
+      replace :message, with: "self.#{node.name.to_s.sub('set_', '')} ="
     end
   end
 end
