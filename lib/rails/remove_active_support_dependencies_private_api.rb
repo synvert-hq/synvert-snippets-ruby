@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 Synvert::Rewriter.new 'rails', 'remove_active_support_dependencies_private_api' do
-  configure(parser: Synvert::PARSER_PARSER)
+  configure(parser: Synvert::PRISM_PARSER)
 
   description <<~EOS
     It removes active support dependencies private api.
@@ -22,8 +22,11 @@ Synvert::Rewriter.new 'rails', 'remove_active_support_dependencies_private_api' 
   if_gem 'active_support', '>= 7.0'
 
   within_files Synvert::ALL_RUBY_FILES + Synvert::ALL_RAKE_FILES do
-    find_node '.send[receiver=ActiveSupport::Dependencies][message IN (constantize safe_constantize)][arguments.size=1][arguments.0="User"]' do
-      replace_with '{{arguments.0}}.{{message}}'
+    with_node node_type: 'call_node',
+              receiver: 'ActiveSupport::Dependencies',
+              name: { in: ['constantize', 'safe_constantize'] },
+              arguments: { node_type: 'arguments_node', arguments: { size: 1 } } do
+      replace_with '{{arguments.arguments.0}}.{{message}}'
     end
   end
 end
