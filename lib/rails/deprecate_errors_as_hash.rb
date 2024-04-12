@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 Synvert::Rewriter.new 'rails', 'deprecate_errors_as_hash' do
-  configure(parser: Synvert::PARSER_PARSER)
+  configure(parser: Synvert::PRISM_PARSER)
 
   description <<~EOS
     It deprecates errors as hash.
@@ -26,45 +26,45 @@ Synvert::Rewriter.new 'rails', 'deprecate_errors_as_hash' do
   if_gem 'activemodel', '>= 6.1'
 
   within_files Synvert::ALL_RUBY_FILES + Synvert::ALL_RAKE_FILES do
-    with_node node_type: 'send',
+    with_node node_type: 'call_node',
               receiver: {
-                node_type: 'send',
-                receiver: { node_type: 'send', message: 'errors', arguments: { size: 0 } },
-                message: '[]',
-                arguments: { size: 1 }
+                node_type: 'call_node',
+                receiver: { node_type: 'call_node', message: 'errors', arguments: nil },
+                name: '[]',
+                arguments: { node_type: 'arguments_node', arguments: { size: 1 } }
               },
-              message: '<<',
-              arguments: { size: 1 } do
-      replace_with '{{receiver.receiver}}.add({{receiver.arguments.0}}, {{arguments.0}})'
+              name: '<<',
+              arguments: { node_type: 'arguments_node', arguments: { size: 1 } } do
+      replace_with '{{receiver.receiver}}.add({{receiver.arguments.arguments.0}}, {{arguments.arguments.0}})'
     end
 
-    with_node node_type: 'send',
-              receiver: { node_type: 'send', message: 'errors', arguments: { size: 0 } },
-              message: 'values',
-              arguments: { size: 0 } do
+    with_node node_type: 'call_node',
+              receiver: { node_type: 'call_node', name: 'errors', arguments: nil },
+              name: 'values',
+              arguments: nil do
       replace_with '{{receiver}}.map(&:message)'
     end
 
-    with_node node_type: 'send',
-              receiver: { node_type: 'send', message: 'errors', arguments: { size: 0 } },
-              message: 'keys',
-              arguments: { size: 0 } do
+    with_node node_type: 'call_node',
+              receiver: { node_type: 'call_node', name: 'errors', arguments: nil },
+              name: 'keys',
+              arguments: nil do
       replace_with '{{receiver}}.map(&:attribute)'
     end
 
-    with_node node_type: 'send',
+    with_node node_type: 'call_node',
               receiver: {
-                node_type: 'send',
+                node_type: 'call_node',
                 receiver: {
-                  node_type: 'send',
-                  message: 'errors',
-                  arguments: { size: 0 }
+                  node_type: 'call_node',
+                  name: 'errors',
+                  arguments: nil
                 },
-                message: 'messages',
-                arguments: { size: 0 }
+                name: 'messages',
+                arguments: nil
               },
-              message: 'delete',
-              arguments: { size: 1 } do
+              name: 'delete',
+              arguments: { node_type: 'arguments_node', arguments: { size: 1 } } do
       replace :receiver, with: '{{receiver.receiver}}'
     end
   end
