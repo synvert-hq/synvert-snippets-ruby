@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 Synvert::Rewriter.new 'rails', 'deprecate_active_record_migration_check_pending' do
-  configure(parser: Synvert::PARSER_PARSER)
+  configure(parser: Synvert::PRISM_PARSER)
 
   description <<~EOS
     It removes `ActiveRecord::Migration.check_pending!` in `test/test_helper.rb`
@@ -11,7 +11,7 @@ Synvert::Rewriter.new 'rails', 'deprecate_active_record_migration_check_pending'
 
   within_file 'test/test_helper.rb' do
     # ActiveRecord::Migration.check_pending! => require 'test_help'
-    with_node node_type: 'send', receiver: 'ActiveRecord::Migration', message: 'check_pending!' do
+    with_node node_type: 'call_node', receiver: 'ActiveRecord::Migration', name: 'check_pending!' do
       remove
     end
   end
