@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 Synvert::Rewriter.new 'rails', 'convert_dynamic_finders_for_rails_3' do
-  configure(parser: Synvert::PARSER_PARSER)
+  configure(parser: Synvert::PRISM_PARSER)
 
   description <<~EOS
     It converts rails dynamic finders to arel syntax.
@@ -32,12 +32,11 @@ Synvert::Rewriter.new 'rails', 'convert_dynamic_finders_for_rails_3' do
   table_columns = rails_tables.present? ? rails_tables.values.flat_map { |value| value[:columns] }.map { |column| column[:name] } + ['id'] : []
 
   helper_method :dynamic_finder_to_hash do |prefix|
-    fields = node.message.to_s[prefix.length..-1].split('_and_')
+    fields = node.name.to_s[prefix.length..-1].split('_and_')
     return nil if (fields - table_columns).present?
 
-    if fields.length == node.arguments.length && :hash != node.arguments.first.type
-      fields.length.times.map { |i| fields[i] + ': ' + node.arguments[i].to_source }
-            .join(', ')
+    if fields.length == node.arguments.arguments.length && :hash_node != node.arguments.arguments.first.type
+      fields.length.times.map { |i| fields[i] + ': ' + node.arguments.arguments[i].to_source }.join(', ')
     else
       '{{arguments}}'
     end
@@ -47,7 +46,7 @@ Synvert::Rewriter.new 'rails', 'convert_dynamic_finders_for_rails_3' do
 
   within_files Synvert::ALL_RUBY_FILES + Synvert::ALL_RAKE_FILES do
     # find_all_by_... => where(...)
-    with_node node_type: 'send', message: /^find_all_by_/ do
+    with_node node_type: 'call_node', name: /^find_all_by_/ do
       group do
         hash_params = dynamic_finder_to_hash('find_all_by_')
         if hash_params
@@ -58,12 +57,12 @@ Synvert::Rewriter.new 'rails', 'convert_dynamic_finders_for_rails_3' do
     end
 
     # find_by_... => where(...).first
-    with_node node_type: 'send', message: /^find_by_/ do
+    with_node node_type: 'call_node', name: /^find_by_/ do
       group do
-        if :find_by_id == node.message
+        if :find_by_id == node.name
           replace :message, with: 'find_by'
           replace :arguments, with: 'id: {{arguments}}'
-        elsif :find_by_sql != node.message
+        elsif :find_by_sql != node.name
           hash_params = dynamic_finder_to_hash('find_by_')
           if hash_params
             replace :message, with: 'find_by'
@@ -74,7 +73,7 @@ Synvert::Rewriter.new 'rails', 'convert_dynamic_finders_for_rails_3' do
     end
 
     # find_last_by_... => where(...).last
-    with_node node_type: 'send', message: /^find_last_by_/ do
+    with_node node_type: 'call_node', message: /^find_last_by_/ do
       group do
         hash_params = dynamic_finder_to_hash('find_last_by_')
         if hash_params
@@ -86,7 +85,7 @@ Synvert::Rewriter.new 'rails', 'convert_dynamic_finders_for_rails_3' do
     end
 
     # scoped_by_... => where(...)
-    with_node node_type: 'send', message: /^scoped_by_/ do
+    with_node node_type: 'call_node', message: /^scoped_by_/ do
       group do
         hash_params = dynamic_finder_to_hash('scoped_by_')
         if hash_params
