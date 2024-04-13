@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 Synvert::Rewriter.new 'rails', 'convert_model_lambda_scope' do
-  configure(parser: Synvert::PARSER_PARSER)
+  configure(parser: Synvert::PRISM_PARSER)
 
   description <<~EOS
     It converts activerecord scope to lambda scope.
@@ -33,38 +33,80 @@ Synvert::Rewriter.new 'rails', 'convert_model_lambda_scope' do
 
   within_files Synvert::RAILS_MODEL_FILES do
     # scope :active, where(active: true) => scope :active, -> { where(active: true) }
-    with_node node_type: 'send', receiver: nil, message: 'scope' do
-      with_node node_type: 'block', caller: { node_type: 'send', receiver: nil, message: 'proc' } do
-        if node.arguments.length > 0
-          replace_with '->({{arguments}}) { {{body}} }'
-        else
-          replace_with '-> { {{body}} }'
-        end
+    with_node node_type: 'call_node',
+              receiver: nil,
+              name: 'scope',
+              arguments: {
+                node_type: 'arguments_node',
+                arguments: {
+                  size: 2,
+                  last: {
+                    node_type: 'call_node',
+                    name: { not_in: ['new', 'proc', 'lambda'] }
+                  }
+                }
+              } do
+      goto_node 'arguments.arguments.last' do
+        wrap prefix: '-> { ', suffix: ' }'
       end
+    end
 
-      with_node node_type: 'block', caller: { node_type: 'send', receiver: 'Proc', message: 'new' } do
-        if node.arguments.length > 0
-          replace_with '->({{arguments}}) { {{body}} }'
-        else
-          replace_with '-> { {{body}} }'
-        end
+    with_node node_type: 'call_node',
+              receiver: nil,
+              name: 'scope',
+              arguments: {
+                node_type: 'arguments_node',
+                arguments: {
+                  size: 2,
+                  last: {
+                    node_type: 'call_node',
+                    receiver: 'Proc',
+                    name: 'new'
+                  }
+                }
+              } do
+      if node.arguments.arguments.last.block.parameters
+        replace 'arguments.arguments.last', with: '->({{arguments.arguments.last.block.parameters.parameters}}) { {{arguments.arguments.last.block.body}} }'
+      else
+        replace 'arguments.arguments.last', with: '-> { {{arguments.arguments.last.block.body}} }'
       end
+    end
 
-      unless_exist_node node_type: 'block', caller: { node_type: 'send', message: 'lambda' } do
-        replace_with 'scope {{arguments.first}}, -> { {{arguments.last}} }'
+    with_node node_type: 'call_node',
+              receiver: nil,
+              name: 'scope',
+              arguments: {
+                node_type: 'arguments_node',
+                arguments: {
+                  size: 2,
+                  last: {
+                    node_type: 'call_node',
+                    receiver: nil,
+                    name: { in: ['proc', 'lambda'] }
+                  }
+                }
+              } do
+      if node.arguments.arguments.last.block.parameters
+        replace 'arguments.arguments.last', with: '->({{arguments.arguments.last.block.parameters.parameters}}) { {{arguments.arguments.last.block.body}} }'
+      else
+        replace 'arguments.arguments.last', with: '-> { {{arguments.arguments.last.block.body}} }'
       end
     end
 
     # default_scope order("updated_at DESC") => default_scope -> { order("updated_at DESC") }
-    with_node node_type: 'send', receiver: nil, message: 'default_scope' do
-      unless_exist_node node_type: 'block', caller: { node_type: 'send', message: 'lambda' } do
-        replace_with 'default_scope -> { {{arguments.last}} }'
-      end
+    with_node node_type: 'call_node',
+              receiver: nil,
+              name: 'default_scope',
+              arguments: { node_type: 'arguments_node', arguments: { size: 1, first: { node_type: 'call_node' } } } do
+      replace_with 'default_scope -> { {{arguments.arguments.first}} }'
     end
 
     # default_scope { order("updated_at DESC") } => default_scope -> { order("updated_at DESC") }
-    with_node node_type: 'block', caller: { node_type: 'send', receiver: nil, message: 'default_scope' } do
-      replace_with 'default_scope -> { {{body}} }'
+    with_node node_type: 'call_node',
+              receiver: nil,
+              name: 'default_scope',
+              block: { node_type: 'block_node' } do
+      replace_with 'default_scope -> { {{block.body.body}} }'
     end
   end
 end
