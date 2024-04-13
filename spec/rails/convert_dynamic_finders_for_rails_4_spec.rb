@@ -36,7 +36,7 @@ RSpec.describe 'Convert dynamic finders for rails 4' do
         def active_users
           User.find_or_create_by_email_and_login(parmas)
           User.find_or_create_by_label(label)
-          User.find_or_initialize_by_account_id(:account_id => account_id)
+          User.find_or_initialize_by_account_id(account_id)
           User.find_or_initialize_by_label(label)
         end
       end
@@ -47,7 +47,7 @@ RSpec.describe 'Convert dynamic finders for rails 4' do
         def active_users
           User.find_or_create_by(parmas)
           User.find_or_create_by_label(label)
-          User.find_or_initialize_by(:account_id => account_id)
+          User.find_or_initialize_by(account_id: account_id)
           User.find_or_initialize_by_label(label)
         end
       end
