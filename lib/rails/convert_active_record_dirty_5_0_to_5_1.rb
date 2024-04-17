@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 Synvert::Rewriter.new 'rails', 'convert_active_record_dirty_5_0_to_5_1' do
-  configure(parser: Synvert::PARSER_PARSER)
+  configure(parser: Synvert::PRISM_PARSER)
 
   description <<~EOS
     It converts ActiveRecord::Dirty 5.0 to 5.1
@@ -103,7 +103,7 @@ Synvert::Rewriter.new 'rails', 'convert_active_record_dirty_5_0_to_5_1' do
   #   end
   # end
   helper_method :convert_send_dirty_api_change do |before_name, after_name|
-    with_node node_type: 'send', message: before_name do
+    with_node node_type: 'call_node', name: before_name do
       if before_name.is_a?(Regexp)
         skip_names[file_path] ||= []
         if !skip_names[file_path].include?(node.to_source) && node.message.to_s =~ before_name
@@ -122,21 +122,21 @@ Synvert::Rewriter.new 'rails', 'convert_active_record_dirty_5_0_to_5_1' do
     # find callback like
     #
     #     after_save :invalidate_cache, if: :status_changed?
-    with_node node_type: 'send',
+    with_node node_type: 'call_node',
               receiver: nil,
-              message: { in: callback_names },
-              arguments: { size: { gt: 0 }, first: { node_type: 'sym' } } do
-      custom_callback_names << node.arguments[0].to_value
+              name: { in: callback_names },
+              arguments: { node_type: 'arguments_node', arguments: { first: { node_type: 'symbol_node' } } } do
+      custom_callback_names << node.arguments.arguments.first.to_value
       callback_changes.each do |before_name, after_name|
         # convert ActiveRecord::Dirty api change
         #
         # after_save :invalidate_cache, if: :status_changed?
-        with_node node_type: 'hash' do
-          with_node node_type: 'sym', to_value: { not_in: %i[if unless] } do
+        with_node node_type: 'keyword_hash_node' do
+          with_node node_type: 'symbol_node', to_value: { not_in: %i[if unless] } do
             custom_callback_names << node.to_value
           end
 
-          with_node node_type: 'sym', to_value: before_name do
+          with_node node_type: 'symbol_node', to_value: before_name do
             if before_name.is_a?(Regexp)
               skip_names[file_path] ||= []
               if !skip_names[file_path].include?(node.to_value.to_s) && node.to_value =~ before_name
@@ -157,7 +157,7 @@ Synvert::Rewriter.new 'rails', 'convert_active_record_dirty_5_0_to_5_1' do
     #       if status_chagned?
     #       end
     #     end
-    with_node node_type: 'block', caller: { node_type: 'send', receiver: nil, message: { in: callback_names } } do
+    with_node node_type: 'call_node', receiver: nil, name: { in: callback_names }, block: { node_type: 'block_node' } do
       callback_changes.each do |before_name, after_name|
         convert_send_dirty_api_change(before_name, after_name)
       end
@@ -168,26 +168,26 @@ Synvert::Rewriter.new 'rails', 'convert_active_record_dirty_5_0_to_5_1' do
     #     after_save :invalidate_cache
     #     def invalidate_cache
     #     end
-    with_node node_type: 'def', name: { in: callback_names } do
+    with_node node_type: 'def_node', name: { in: callback_names } do
       callback_changes.each do |before_name, after_name|
         convert_send_dirty_api_change(before_name, after_name)
       end
 
-      with_node node_type: 'send', receiver: nil do
-        custom_callback_names << node.message
+      with_node node_type: 'call_node', receiver: nil do
+        custom_callback_names << node.name
       end
     end
 
     # find all custom callback methods
     while custom_callback_names.present?
       temp_callback_names = []
-      with_node node_type: 'def', name: { in: custom_callback_names } do
+      with_node node_type: 'def_node', name: { in: custom_callback_names } do
         callback_changes.each do |before_name, after_name|
           convert_send_dirty_api_change(before_name, after_name)
         end
 
-        with_node node_type: 'send', receiver: nil do
-          temp_callback_names << node.message
+        with_node node_type: 'call_node', receiver: nil do
+          temp_callback_names << node.name
         end
       end
       custom_callback_names = temp_callback_names
@@ -196,7 +196,7 @@ Synvert::Rewriter.new 'rails', 'convert_active_record_dirty_5_0_to_5_1' do
 
   # round one: find all possible skip names
   within_files Synvert::RAILS_MODEL_FILES + Synvert::RAILS_OBSERVER_FILES do
-    with_node node_type: 'def' do
+    with_node node_type: 'def_node' do
       skip_names[file_path] ||= []
       skip_names[file_path] << node.name.to_s
     end
