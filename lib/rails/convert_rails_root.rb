@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 Synvert::Rewriter.new 'rails', 'convert_rails_root' do
-  configure(parser: Synvert::PARSER_PARSER)
+  configure(parser: Synvert::PRISM_PARSER)
 
   description <<~EOS
     It converts RAILS_ROOT to Rails.root.
@@ -29,10 +29,7 @@ Synvert::Rewriter.new 'rails', 'convert_rails_root' do
 
   within_files Synvert::ALL_RUBY_FILES + Synvert::ALL_RAKE_FILES do
     # RAILS_ROOT => Rails.root
-    with_node node_type: 'const', to_source: 'RAILS_ROOT' do
-      replace_with 'Rails.root'
-    end
-    with_node node_type: 'const', to_source: '::RAILS_ROOT' do
+    with_node node_type: 'constant_read_node', name: 'RAILS_ROOT' do
       replace_with 'Rails.root'
     end
   end
@@ -41,16 +38,16 @@ Synvert::Rewriter.new 'rails', 'convert_rails_root' do
     # File.join(Rails.root, 'config/database.yml')
     # =>
     # Rails.root.join('config/database.yml')
-    with_node node_type: 'send', receiver: 'File', message: 'join', arguments: { first: 'Rails.root' } do
-      other_arguments = node.arguments[1..-1].map(&:to_source).join(', ')
+    with_node node_type: 'call_node', receiver: 'File', name: 'join', arguments: { node_type: 'arguments_node', arguments: { first: 'Rails.root' } } do
+      other_arguments = node.arguments.arguments[1..-1].map(&:to_source).join(', ')
       replace_with "Rails.root.join(#{other_arguments})"
     end
 
     # Rails.root + '/config/database.yml'
     # =>
     # Rails.root.join('config/database.yml')
-    with_node node_type: 'send', receiver: 'Rails.root', message: '+' do
-      other_argument_str = node.arguments.first.to_source
+    with_node node_type: 'call_node', receiver: 'Rails.root', name: '+' do
+      other_argument_str = node.arguments.arguments.first.to_source
       other_argument_str[1] = '' if '/' == other_argument_str[1]
       replace_with "Rails.root.join(#{other_argument_str})"
     end
@@ -58,7 +55,8 @@ Synvert::Rewriter.new 'rails', 'convert_rails_root' do
     # "#{Rails.root}/config/database.yml"
     # =>
     # Rails.root.join('config/database.yml')
-    with_node node_type: 'dstr', children: { first: { node_type: 'begin', children: { first: 'Rails.root' } } } do
+    with_node node_type: 'interpolated_string_node',
+              parts: { first: { node_type: 'embedded_statements_node', statements: { body: { first: 'Rails.root' } } } } do
       source = node.to_source
       source[1..14] = ''
       replace_with "Rails.root.join(#{source})"
@@ -69,18 +67,21 @@ Synvert::Rewriter.new 'rails', 'convert_rails_root' do
     # File.exists?(Rails.root.join('config/database.yml'))
     # =>
     # Rails.root.join('config/database.yml').exist?
-    with_node node_type: 'send',
+    with_node node_type: 'call_node',
               receiver: 'File',
-              message: 'exists?',
+              name: 'exists?',
               arguments: {
-                size: 1,
-                first: {
-                  node_type: 'send',
-                  receiver: 'Rails.root',
-                  message: 'join'
+                node_type: 'arguments_node',
+                arguments: {
+                  size: 1,
+                  first: {
+                    node_type: 'call_node',
+                    receiver: 'Rails.root',
+                    name: 'join'
+                  }
                 }
               } do
-      replace_with '{{arguments.first}}.exist?'
+      replace_with '{{arguments.arguments.first}}.exist?'
     end
   end
 end

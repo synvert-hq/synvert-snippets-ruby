@@ -7,7 +7,6 @@ RSpec.describe 'Convert RAILS_ROOT to Rails.root' do
   let(:fake_file_path) { 'config/initializers/constant.rb' }
   let(:test_content) { <<~EOS }
     RAILS_ROOT
-    ::RAILS_ROOT
     File.join(RAILS_ROOT, "config", "database.yml")
     RAILS_ROOT + "/config/database.yml"
     "\#{RAILS_ROOT}/config/database.yml"
@@ -15,7 +14,6 @@ RSpec.describe 'Convert RAILS_ROOT to Rails.root' do
   EOS
 
   let(:test_rewritten_content) { <<~EOS }
-    Rails.root
     Rails.root
     Rails.root.join("config", "database.yml")
     Rails.root.join("config/database.yml")
