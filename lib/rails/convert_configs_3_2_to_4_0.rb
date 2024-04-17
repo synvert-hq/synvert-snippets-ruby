@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require 'securerandom'
+
 Synvert::Rewriter.new 'rails', 'convert_configs_3_2_to_4_0' do
   configure(parser: Synvert::PRISM_PARSER)
 
