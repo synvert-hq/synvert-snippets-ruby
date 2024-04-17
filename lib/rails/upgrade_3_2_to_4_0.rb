@@ -1,10 +1,6 @@
 # frozen_string_literal: true
 
-require 'securerandom'
-
 Synvert::Rewriter.new 'rails', 'upgrade_3_2_to_4_0' do
-  configure(parser: Synvert::PARSER_PARSER)
-
   description 'It upgrades rails from 3.2 to 4.0.'
 
   add_snippet 'rails', 'convert_configs_3_2_to_4_0'

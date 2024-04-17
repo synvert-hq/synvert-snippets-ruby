@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
 Synvert::Rewriter.new 'rails', 'upgrade_5_1_to_5_2' do
-  configure(parser: Synvert::PARSER_PARSER)
-
   description 'It upgrades rails 5.1 to 5.2.'
 
   add_snippet 'rails', 'convert_configs_5_1_to_5_2'

@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
 Synvert::Rewriter.new 'rails', 'upgrade_2_3_to_3_0' do
-  configure(parser: Synvert::PARSER_PARSER)
-
   description 'It upgrades rails from 2.3 to 3.0.'
 
   add_snippet 'rails', 'convert_configs_2_3_to_3_0'
