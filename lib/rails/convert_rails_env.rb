@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 Synvert::Rewriter.new 'rails', 'convert_rails_env' do
-  configure(parser: Synvert::PARSER_PARSER)
+  configure(parser: Synvert::PRISM_PARSER)
 
   description <<~EOS
     It converts RAILS_ENV to Rails.env.
@@ -33,10 +33,7 @@ Synvert::Rewriter.new 'rails', 'convert_rails_env' do
     # RAILS_ENV == 'test'
     # =>
     # Rails.env == 'test'
-    with_node node_type: 'const', to_source: 'RAILS_ENV' do
-      replace_with 'Rails.env'
-    end
-    with_node node_type: 'const', to_source: '::RAILS_ENV' do
+    with_node node_type: 'constant_read_node', name: 'RAILS_ENV' do
       replace_with 'Rails.env'
     end
   end
@@ -45,33 +42,29 @@ Synvert::Rewriter.new 'rails', 'convert_rails_env' do
     # Rails.env == 'test'
     # =>
     # Rails.env.test?
-    with_node node_type: 'send', receiver: 'Rails.env', message: '==', arguments: { size: 1 } do
-      env = node.arguments.first.to_value
-      replace_with "Rails.env.#{env}?"
+    with_node node_type: 'call_node', receiver: 'Rails.env', name: '==', arguments: { node_type: 'arguments_node', arguments: { size: 1 } } do
+      replace_with "Rails.env.{{arguments.arguments.0.to_value}}?"
     end
 
     # 'development' == Rails.env
     # =>
     # Rails.env.development?
-    with_node node_type: 'send', arguments: { first: 'Rails.env' }, message: '==' do
-      env = node.receiver.to_value
-      replace_with "Rails.env.#{env}?"
+    with_node node_type: 'call_node', name: '==', arguments: { node_type: 'arguments_node', arguments: { size: 1, first: 'Rails.env' } } do
+      replace_with "Rails.env.{{receiver.to_value}}?"
     end
 
     # Rails.env != 'test'
     # =>
     # !Rails.env.test?
-    with_node node_type: 'send', receiver: 'Rails.env', message: '!=', arguments: { size: 1 } do
-      env = node.arguments.first.to_value
-      replace_with "!Rails.env.#{env}?"
+    with_node node_type: 'call_node', receiver: 'Rails.env', name: '!=', arguments: { node_type: 'arguments_node', arguments: { size: 1 } } do
+      replace_with "!Rails.env.{{arguments.arguments.0.to_value}}?"
     end
 
     # 'development' != Rails.env
     # =>
     # !Rails.env.development?
-    with_node node_type: 'send', arguments: { first: 'Rails.env' }, message: '!=' do
-      env = node.receiver.to_value
-      replace_with "!Rails.env.#{env}?"
+    with_node node_type: 'call_node', name: '!=', arguments: { node_type: 'arguments_node', arguments: { size: 1, first: 'Rails.env' } } do
+      replace_with "!Rails.env.{{receiver.to_value}}?"
     end
   end
 end

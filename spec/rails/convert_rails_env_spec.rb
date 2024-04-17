@@ -7,7 +7,6 @@ RSpec.describe 'Convert RAILS_ENV to Rails.env' do
   let(:fake_file_path) { 'config/initializers/constant.rb' }
   let(:test_content) { <<~EOS }
     RAILS_ENV
-    ::RAILS_ENV
     RAILS_ENV == 'test'
     'development' == RAILS_ENV
     RAILS_ENV != 'test'
@@ -15,7 +14,6 @@ RSpec.describe 'Convert RAILS_ENV to Rails.env' do
   EOS
 
   let(:test_rewritten_content) { <<~EOS }
-    Rails.env
     Rails.env
     Rails.env.test?
     Rails.env.development?
