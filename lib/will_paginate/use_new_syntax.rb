@@ -79,7 +79,7 @@ Synvert::Rewriter.new 'will_paginate', 'use_new_syntax' do
         if (ar_keys & argument_node.keys.map(&:to_value)).length > 0
           new_code << generate_new_queries(argument_node)
         end
-        new_code << if argument_node.key? :per_page
+        new_code << if argument_node.keys.map(&:to_value).include?(:per_page)
                       "find_each(:batch_size => #{argument_node.per_page_source})"
                     else
                       'find_each'
