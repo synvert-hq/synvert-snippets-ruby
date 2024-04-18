@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 Synvert::Rewriter.new 'rails', 'convert_constants_4_2_to_5_0' do
-  configure(parser: Synvert::PARSER_PARSER)
+  configure(parser: Synvert::PRISM_PARSER)
 
   description <<~EOS
     It converts rails constants from 4.2 to 5.0.
@@ -15,7 +15,7 @@ Synvert::Rewriter.new 'rails', 'convert_constants_4_2_to_5_0' do
     # MissingSourceFile
     # =>
     # LoadError
-    with_node node_type: 'const', to_source: 'MissingSourceFile' do
+    with_node node_type: 'constant_read_node', name: 'MissingSourceFile' do
       replace_with 'LoadError'
     end
   end
