@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe 'Add ApplicationMailer' do
-  let(:rewriter_name) { 'rails/add_application_job' }
+  let(:rewriter_name) { 'rails/add_application_mailer' }
 
   context 'add application_job' do
     let(:fake_file_path) { 'app/mailers/application_mailer.rb' }
