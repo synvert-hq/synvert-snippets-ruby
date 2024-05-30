@@ -114,7 +114,7 @@ Synvert::Rewriter.new 'rails', 'convert_mailers_2_3_to_3_0' do
     # Notifier.deliver_signup_notification(recipient)
     # =>
     # Notifier.signup_notification(recipient).deliver
-    with_node node_type: 'call_node', name: /^deliver_/ do
+    with_node node_type: 'call_node', receiver: { not: nil }, name: /^deliver_/ do
       mailer_method = node.name.to_s.sub(/^deliver_/, '').to_sym
       if mailer_methods[node.receiver.name] && mailer_methods[node.receiver.name].include?(mailer_method)
         replace_with "{{receiver}}.#{mailer_method}({{arguments}}).deliver"
@@ -124,7 +124,7 @@ Synvert::Rewriter.new 'rails', 'convert_mailers_2_3_to_3_0' do
     # message = Notifier.create_signup_notification(recipient)
     # =>
     # message = Notifier.signup_notification(recipient)
-    with_node node_type: 'call_node', name: /^create_/ do
+    with_node node_type: 'call_node', receiver: { not: nil }, name: /^create_/ do
       mailer_method = node.name.to_s.sub(/^create_/, '').to_sym
       if mailer_methods[node.receiver.name] && mailer_methods[node.receiver.name].include?(mailer_method)
         replace_with "{{receiver}}.#{mailer_method}({{arguments}})"
@@ -134,7 +134,7 @@ Synvert::Rewriter.new 'rails', 'convert_mailers_2_3_to_3_0' do
     # Notifier.deliver(message)
     # =>
     # message.deliver
-    with_node node_type: 'call_node', name: 'deliver', arguments: { node_type: 'arguments_node', arguments: { size: 1 } } do
+    with_node node_type: 'call_node', receiver: { not: nil }, name: 'deliver', arguments: { node_type: 'arguments_node', arguments: { size: 1 } } do
       if mailer_methods[node.receiver.name]
         replace_with '{{arguments}}.{{message}}'
       end
