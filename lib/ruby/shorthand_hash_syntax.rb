@@ -25,7 +25,7 @@ Synvert::Rewriter.new 'ruby', 'shorthand_hash_syntax' do
     # { a: a, b: b, c: c, d: d + 4 }
     # =>
     # { a:, b:, c:, d: d + 4 }
-    find_node '.hash_node .assoc_node[key=.symbol_node][key.unescaped="{{value}}"]' do
+    find_node '.hash_node .assoc_node[key=.symbol_node][key.unescaped="{{value}}"][operator=nil]' do
       replace_with '{{key}}'
     end
 
