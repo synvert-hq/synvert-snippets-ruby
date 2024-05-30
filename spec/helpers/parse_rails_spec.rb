@@ -29,18 +29,20 @@ RSpec.describe 'rails/parse helper', fakefs: true do
 
     rewriter.process
 
-    expect(rewriter.load_data(:rails_tables)).to eq({
-      "users" => {
-        columns: [
-          { name: "name", type: "string" },
-          { name: "email", type: "string" },
-          { name: "created_at", type: "datetime" },
-          { name: "updated_at", type: "datetime" }
-        ],
-        indices: [
-          { columns: ["email"], name: "index_users_on_email" }
-        ]
+    expect(rewriter.load_data(:rails_tables)).to eq(
+      {
+        "users" => {
+          columns: [
+            { name: "name", type: "string" },
+            { name: "email", type: "string" },
+            { name: "created_at", type: "datetime" },
+            { name: "updated_at", type: "datetime" }
+          ],
+          indices: [
+            { columns: ["email"], name: "index_users_on_email" }
+          ]
+        }
       }
-    })
+    )
   end
 end
