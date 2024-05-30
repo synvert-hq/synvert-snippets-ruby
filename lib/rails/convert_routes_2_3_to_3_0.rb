@@ -89,7 +89,7 @@ Synvert::Rewriter.new 'rails', 'convert_routes_2_3_to_3_0' do
 
   helper_method :extract_controller_action_name do |hash_node|
     controller_name = hash_node.controller_value.to_value
-    action_name = hash_node.action_value.to_value
+    action_name = hash_node.action_value&.to_value || 'index'
     "#{controller_name}##{action_name}"
   end
 
@@ -179,6 +179,8 @@ Synvert::Rewriter.new 'rails', 'convert_routes_2_3_to_3_0' do
     with_node node_type: 'call_node', name: 'with_options', block: { node_type: 'block_node' } do
       new_routes = []
       node.block.body.body.each do |child_node|
+        next if child_node.arguments.nil?
+
         url = child_node.arguments.arguments.first.to_value
         hash_node = child_node.arguments.arguments.last
         if hash_node.action_value || url !~ /:action/
@@ -217,17 +219,16 @@ Synvert::Rewriter.new 'rails', 'convert_routes_2_3_to_3_0' do
                 name: { in: ['resource', 'resources'] },
                 arguments: { node_type: 'arguments_node', arguments: { size: 2, last: { node_type: 'keyword_hash_node' } } } do
       hash_argument = node.arguments.arguments.last
-      new_routes = ''
+      new_routes = []
       if !hash_argument.collection_value.nil? || !hash_argument.member_value.nil?
         collection_routes = hash_argument.collection_value
         member_routes = hash_argument.member_value
         other_options_code = reject_keys_from_hash(hash_argument, :collection, :member)
-        new_routes = []
-        new_routes << if other_options_code.length > 0
-                        "{{message}} {{arguments.arguments.first}}, #{other_options_code} do\n"
-                      else
-                        "{{message}} {{arguments.arguments.first}} do\n"
-                      end
+        if other_options_code.length > 0
+          new_routes << "{{message}} {{arguments.arguments.first}}, #{other_options_code} do\n"
+        else
+          new_routes << "{{message}} {{arguments.arguments.first}} do\n"
+        end
         new_routes << generate_new_collection_routes(collection_routes) if collection_routes
         new_routes << generate_new_member_routes(member_routes) if member_routes
       else
