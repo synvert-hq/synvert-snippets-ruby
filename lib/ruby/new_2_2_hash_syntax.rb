@@ -29,7 +29,7 @@ Synvert::Rewriter.new 'ruby', 'new_2_2_hash_syntax' do
     # {:foo => 'bar'} => {foo: 'bar'}
     # {:'foo-x' => 'bar'} => {'foo-x': 'bar'}
     # {:"foo-#{suffix}" 'bar'} => {"foo-#{suffix}": 'bar'}
-    find_node '.hash_node > .assoc_node' do
+    find_node '.hash_node > .assoc_node[operator!=nil]' do
       case node.key.type
       when :symbol_node
         case node.key.to_source
