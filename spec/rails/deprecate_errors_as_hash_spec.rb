@@ -22,7 +22,7 @@ RSpec.describe 'Deprecate errors as hash' do
         @post = Post.create(post_params)
         @post.errors.add(:title, 'is not interesting enough.')
         @post.errors.delete(:comments)
-        render json: { fields: @post.errors.map(&:attribute), errors: @post.errors.map(&:message) }
+        render json: { fields: @post.errors.map(&:attribute_names), errors: @post.errors.map(&:message) }
       end
     end
   EOS
