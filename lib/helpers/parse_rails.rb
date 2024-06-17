@@ -56,9 +56,9 @@ Synvert::Helper.new 'rails/parse' do |options|
       add_callback :call_node, at: 'start' do |node|
         if node.receiver.nil? && %i[belongs_to has_one has_many has_and_belongs_to_many].include?(node.name)
           association_name = node.arguments.arguments.first.to_value
-          option_elements = node.arguments.arguments.second&.elements
           options = {}
-          if option_elements
+          if node.arguments.arguments.length > 1 && node.arguments.arguments.last.is_a?(Prism::KeywordHashNode)
+            option_elements = node.arguments.arguments.last.elements
             %i[foreign_key foreign_type polymorphic].each do |option_key|
               option_element = option_elements.find { |element| element.key.value == option_key.to_s }
               options[option_key] = option_element.value.to_value if option_element

@@ -22,7 +22,7 @@ Synvert::Rewriter.new 'rails_best_practices', 'always_add_db_index' do
     rails_tables.each do |table_name, table_info|
       belongs_to_associations = rails_models[:associations].select do |association|
         # find all belongs_to associations
-        association[:class_name].tableize == table_name || association[:type] == 'belongs_to'
+        association[:class_name].tableize == table_name && association[:type] == 'belongs_to'
       end
       polymorphic_belongs_to_associations = belongs_to_associations.select do |association|
         next false unless association[:polymorphic]
