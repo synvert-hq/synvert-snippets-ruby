@@ -43,4 +43,34 @@ RSpec.describe 'rails/parse helper', fakefs: true do
       }
     })
   end
+
+  it 'saves associations' do
+    rewriter =
+      Synvert::Rewriter.new 'test', 'rails_parse_helper' do
+        call_helper 'rails/parse'
+      end
+
+    FileUtils.mkdir_p('app/models')
+    File.write('app/models/user.rb', <<~EOF)
+      class User < ApplicationRecord
+        belongs_to :organization
+        has_many :posts, dependent: :destroy
+      end
+    EOF
+    File.write('app/models/picture.rb', <<~EOF)
+      class Picture < ApplicationRecord
+        belongs_to :imageable, polymorphic: true
+      end
+    EOF
+
+    rewriter.process
+
+    expect(rewriter.load_data(:rails_models)).to eq({
+      associations: [
+        { class_name: "Picture", name: "imageable", type: "belongs_to", polymorphic: true },
+        { class_name: "User", name: "organization", type: "belongs_to" },
+        { class_name: "User", name: "posts", type: "has_many" }
+      ]
+    })
+  end
 end
