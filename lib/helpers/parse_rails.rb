@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+MODEL_ASSOCIATIONS = %i[belongs_to has_one has_many has_and_belongs_to_many].freeze
+
 Synvert::Helper.new 'rails/parse' do |options|
   configure(parser: Synvert::PRISM_PARSER)
 
@@ -54,7 +56,7 @@ Synvert::Helper.new 'rails/parse' do |options|
       end
 
       add_callback :call_node, at: 'start' do |node|
-        if node.receiver.nil? && %i[belongs_to has_one has_many has_and_belongs_to_many].include?(node.name)
+        if node.receiver.nil? && MODEL_ASSOCIATIONS.include?(node.name)
           association_name = node.arguments.arguments.first.to_value
           options = {}
           if node.arguments.arguments.length > 1 && node.arguments.arguments.last.is_a?(Prism::KeywordHashNode)
