@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Rails always add db index' do
+RSpec.describe 'Rails Best Practices always add db index' do
   before { load_helpers(%w[helpers/parse_rails]) }
 
   context 'index exists' do
@@ -100,9 +100,7 @@ RSpec.describe 'Rails always add db index' do
         belongs_to :imageable, polymorphic: true
       end
     EOF
-    let(:warnings) { [
-      '/db/schema.rb#6: always add db index pictures => ["imageable_type", "imageable_id"]',
-    ] }
+    let(:warnings) { ['/db/schema.rb#6: always add db index pictures => ["imageable_type", "imageable_id"]'] }
 
     include_examples 'warnable'
   end
@@ -124,9 +122,7 @@ RSpec.describe 'Rails always add db index' do
         belongs_to :commentor, foreign_key: :user_id
       end
     EOF
-    let(:warnings) { [
-      '/db/schema.rb#6: always add db index comments => ["user_id"]'
-    ] }
+    let(:warnings) { ['/db/schema.rb#6: always add db index comments => ["user_id"]'] }
 
     include_examples 'warnable'
   end

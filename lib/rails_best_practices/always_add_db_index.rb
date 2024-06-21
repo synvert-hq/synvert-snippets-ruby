@@ -2,6 +2,9 @@
 
 Synvert::Rewriter.new 'rails_best_practices', 'always_add_db_index' do
   description <<~EOS
+    Review db/schema.rb file to make sure every reference key has a database index.
+
+    See the best practice details here https://rails-bestpractices.com/posts/2010/07/24/always-add-db-index/
   EOS
 
   call_helper 'rails/parse'
