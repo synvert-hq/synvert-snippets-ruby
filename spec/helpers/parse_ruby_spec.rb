@@ -47,48 +47,50 @@ RSpec.describe 'ruby/parse helper', fakefs: true do
 
     rewriter.process
 
-    expect(rewriter.load_data(:ruby_definitions)).to eq({
-      classes: [],
-      modules: [
-        {
-          name: "Synvert",
-          classes: [
-            {
-              name: "Admin",
-              superclass: "User",
-              singleton: {},
-              classes: [],
-              modules: [],
-              methods: [{ name: "user_type" }],
-              static_methods: [],
-              constants: [],
-              included_modules: [],
-              ancestors: ["User", "Trackable"]
-            },
-            {
-              name: "User",
-              superclass: nil,
-              singleton: {
-                methods: [
-                  { name: 'system' },
-                  { name: 'bot' }
-                ]
+    expect(rewriter.load_data(:ruby_definitions)).to eq(
+      {
+        classes: [],
+        modules: [
+          {
+            name: "Synvert",
+            classes: [
+              {
+                name: "Admin",
+                superclass: "User",
+                singleton: {},
+                classes: [],
+                modules: [],
+                methods: [{ name: "user_type" }],
+                static_methods: [],
+                constants: [],
+                included_modules: [],
+                ancestors: ["User", "Trackable"]
               },
-              classes: [],
-              modules: [],
-              methods: [{ name: "user_type" }],
-              static_methods: [{ name: 'authenticate?' }],
-              constants: [{ name: "ROLES" }],
-              included_modules: ["Trackable"],
-              ancestors: ["Trackable"]
-            }
-          ],
-          modules: [],
-          methods: [],
-          static_methods: [],
-          constants: []
-        }
-      ]
-    })
+              {
+                name: "User",
+                superclass: nil,
+                singleton: {
+                  methods: [
+                    { name: 'system' },
+                    { name: 'bot' }
+                  ]
+                },
+                classes: [],
+                modules: [],
+                methods: [{ name: "user_type" }],
+                static_methods: [{ name: 'authenticate?' }],
+                constants: [{ name: "ROLES" }],
+                included_modules: ["Trackable"],
+                ancestors: ["Trackable"]
+              }
+            ],
+            modules: [],
+            methods: [],
+            static_methods: [],
+            constants: []
+          }
+        ]
+      }
+    )
   end
 end

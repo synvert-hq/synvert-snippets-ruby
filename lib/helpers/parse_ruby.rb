@@ -35,7 +35,17 @@ Synvert::Helper.new 'ruby/parse' do |options|
         if existing_class
           new_context = existing_class
         else
-          new_context = { name: name, superclass: superclass, modules: [], classes: [], methods: [], static_methods: [], singleton: {}, constants: [], included_modules: [] }
+          new_context = {
+            name: name,
+            superclass: superclass,
+            modules: [],
+            classes: [],
+            methods: [],
+            static_methods: [],
+            singleton: {},
+            constants: [],
+            included_modules: []
+          }
           current_context[:classes] << new_context
         end
 
@@ -96,6 +106,7 @@ Synvert::Helper.new 'ruby/parse' do |options|
     def find_class(name, definitions)
       definitions[:classes].each do |klass|
         return klass if klass[:name] == name
+
         found = find_class(name, klass)
         return found if found
       end
