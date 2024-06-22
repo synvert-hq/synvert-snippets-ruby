@@ -48,7 +48,16 @@ Synvert::Helper.new 'ruby/parse' do |options|
           new_context = existing_module
         else
           full_name = [current_context[:full_name], name].compact.join('::')
-          new_context = { name: name, full_name: full_name, modules: [], classes: [], methods: [], static_methods: [], singleton: [], constants: [] }
+          new_context = {
+            name: name,
+            full_name: full_name,
+            modules: [],
+            classes: [],
+            methods: [],
+            static_methods: [],
+            singleton: [],
+            constants: []
+          }
           current_context[:modules] << new_context
         end
 
@@ -68,7 +77,18 @@ Synvert::Helper.new 'ruby/parse' do |options|
           new_context = existing_class
         else
           full_name = [current_context[:full_name], name].compact.join('::')
-          new_context = { name: name, full_name: full_name, superclass: superclass, modules: [], classes: [], methods: [], static_methods: [], singleton: {}, constants: [], included_modules: [] }
+          new_context = {
+            name: name,
+            full_name: full_name,
+            superclass: superclass,
+            modules: [],
+            classes: [],
+            methods: [],
+            static_methods: [],
+            singleton: {},
+            constants: [],
+            included_modules: []
+          }
           current_context[:classes] << new_context
         end
 
