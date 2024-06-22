@@ -14,8 +14,6 @@ RSpec.describe 'ruby/parse helper', fakefs: true do
     File.write('app/models/user.rb', <<~EOF)
       module Synvert
         class User
-          include Trackable
-
           ROLES = %w[user admin].freeze
 
           class << self
@@ -44,6 +42,14 @@ RSpec.describe 'ruby/parse helper', fakefs: true do
         end
       end
     EOF
+    FileUtils.mkdir_p('config/initializers')
+    File.write('config/initializers/trackable.rb', <<~EOF)
+      Rails.config.application.after_initialize do
+        Synvert::User.class_eval do
+          include Trackable
+        end
+      end
+    EOF
 
     rewriter.process
 
@@ -52,29 +58,35 @@ RSpec.describe 'ruby/parse helper', fakefs: true do
       modules: [
         {
           name: "Synvert",
+          full_name: "Synvert",
           classes: [
             {
               name: "Admin",
+              full_name: "Synvert::Admin",
               superclass: "User",
               singleton: {},
               classes: [],
+              constants: [],
               modules: [],
               methods: [{ name: "user_type" }],
               static_methods: [],
               constants: [],
               included_modules: [],
-              ancestors: ["User", "Trackable"]
+              ancestors: ["Synvert::User", "Trackable"]
             },
             {
               name: "User",
+              full_name: "Synvert::User",
               superclass: nil,
               singleton: {
+                constants: [],
                 methods: [
                   { name: 'system' },
                   { name: 'bot' }
                 ]
               },
               classes: [],
+              constants: [],
               modules: [],
               methods: [{ name: "user_type" }],
               static_methods: [{ name: 'authenticate?' }],
@@ -85,10 +97,12 @@ RSpec.describe 'ruby/parse helper', fakefs: true do
           ],
           modules: [],
           methods: [],
+          singleton: [],
           static_methods: [],
           constants: []
         }
-      ]
+      ],
+      constants: []
     })
   end
 end

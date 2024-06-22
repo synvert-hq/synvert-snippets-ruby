@@ -5,9 +5,40 @@ Synvert::Helper.new 'ruby/parse' do |options|
 
   # Set number_of_workers to 1 to skip parallel.
   with_configurations(number_of_workers: 1) do
-    definitions = { modules: [], classes: [] }
+    definitions = { modules: [], classes: [], constants: [] }
     current_context = definitions
     context_stack = []
+
+    helper_method :find_in_definitions do |names, definitions|
+      return nil if names.empty? || definitions.nil?
+
+      if names.length > 1
+        # The first name is a module, find it and search within its definitions
+        mod_name = names.shift
+        definitions[:modules].each do |mod|
+          if mod[:name] == mod_name
+            return find_in_definitions(names, mod) # Recurse with the rest of the names
+          end
+        end
+      else
+        # The last name is a class, find it in the current definitions
+        class_name = names.first
+        definitions[:classes].each do |klass|
+          return klass if klass[:name] == class_name
+        end
+        definitions[:modules].each do |mod|
+          found = find_in_definitions([class_name], mod)
+          return found if found
+        end
+      end
+
+      nil
+    end
+
+    helper_method :find_class do |full_name, definitions|
+      names = full_name.split('::')
+      find_in_definitions(names, definitions)
+    end
 
     within_file Synvert::ALL_RUBY_FILES do
       add_callback :module_node, at: 'start' do |node|
@@ -16,7 +47,8 @@ Synvert::Helper.new 'ruby/parse' do |options|
         if existing_module
           new_context = existing_module
         else
-          new_context = { name: name, modules: [], classes: [], methods: [], static_methods: [], constants: [] }
+          full_name = [current_context[:full_name], name].compact.join('::')
+          new_context = { name: name, full_name: full_name, modules: [], classes: [], methods: [], static_methods: [], singleton: [], constants: [] }
           current_context[:modules] << new_context
         end
 
@@ -35,7 +67,8 @@ Synvert::Helper.new 'ruby/parse' do |options|
         if existing_class
           new_context = existing_class
         else
-          new_context = { name: name, superclass: superclass, modules: [], classes: [], methods: [], static_methods: [], singleton: {}, constants: [], included_modules: [] }
+          full_name = [current_context[:full_name], name].compact.join('::')
+          new_context = { name: name, full_name: full_name, superclass: superclass, modules: [], classes: [], methods: [], static_methods: [], singleton: {}, constants: [], included_modules: [] }
           current_context[:classes] << new_context
         end
 
@@ -52,7 +85,7 @@ Synvert::Helper.new 'ruby/parse' do |options|
         if !existing_singleton.empty?
           new_context = existing_singleton
         else
-          new_context = { methods: [] }
+          new_context = { methods: [], constants: [] }
           current_context[:singleton] = new_context
         end
 
@@ -71,6 +104,11 @@ Synvert::Helper.new 'ruby/parse' do |options|
       add_callback :call_node, at: 'start' do |node|
         if node.receiver.nil? && node.name == :include
           current_context[:included_modules] << node.arguments.arguments.first.to_source
+        end
+
+        if node.name == :class_eval
+          klass_definition = find_class(node.receiver.to_source, definitions)
+          current_context = klass_definition if klass_definition
         end
       end
 
@@ -93,16 +131,32 @@ Synvert::Helper.new 'ruby/parse' do |options|
       end
     end
 
-    def find_class(name, definitions)
-      definitions[:classes].each do |klass|
-        return klass if klass[:name] == name
-        found = find_class(name, klass)
-        return found if found
-      end
+    def find_class(full_name, definitions)
+      names = full_name.split('::')
+      find_in_definitions(names, definitions)
+    end
 
-      definitions[:modules].each do |mod|
-        found = find_class(name, mod)
-        return found if found
+    def find_in_definitions(names, definitions)
+      return nil if names.empty? || definitions.nil?
+
+      if names.length > 1
+        # The first name is a module, find it and search within its definitions
+        mod_name = names.shift
+        definitions[:modules].each do |mod|
+          if mod[:name] == mod_name
+            return find_in_definitions(names, mod) # Recurse with the rest of the names
+          end
+        end
+      else
+        # The last name is a class, find it in the current definitions
+        class_name = names.first
+        definitions[:classes].each do |klass|
+          return klass if klass[:name] == class_name
+        end
+        definitions[:modules].each do |mod|
+          found = find_in_definitions([class_name], mod)
+          return found if found
+        end
       end
 
       nil
@@ -113,8 +167,8 @@ Synvert::Helper.new 'ruby/parse' do |options|
         ancestors = []
         superclass = klass[:superclass]
         while superclass
-          ancestors << superclass
           superclass_class = find_class(superclass, definitions)
+          ancestors << superclass_class[:full_name]
           if superclass_class
             ancestors.concat(superclass_class[:included_modules]) if superclass_class[:included_modules]
             superclass = superclass_class[:superclass]
