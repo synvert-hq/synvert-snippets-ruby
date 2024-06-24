@@ -19,9 +19,12 @@ Synvert::Rewriter.new 'ruby', 'prefer-endless-method' do
     ```
   EOS
 
+  if_ruby '3.0'
+
   within_files Synvert::ALL_RUBY_FILES + Synvert::ALL_RAKE_FILES do
     find_node '.def_node[body!=nil][body.body.length=1]' do
-      replace_with 'def {{name}} = {{body}}'
+      new_body = dedent(node.body.to_source)
+      replace_with "def {{name}}{{lparen}}{{parameters}}{{rparen}} = #{new_body}"
     end
   end
 end
