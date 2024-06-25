@@ -7,7 +7,7 @@ Synvert::Helper.new 'ruby/parse' do |options|
   with_configurations(number_of_workers: 1) do
     definitions = { modules: [], classes: [], constants: [] }
     current_context = definitions
-    context_stack = []
+    context_stack = [current_context]
 
     helper_method :find_in_definitions do |names, definitions|
       return nil if names.empty? || definitions.nil?
@@ -48,16 +48,17 @@ Synvert::Helper.new 'ruby/parse' do |options|
           new_context = existing_module
         else
           full_name = [current_context[:full_name], name].compact.join('::')
-          new_context = { name: name, full_name: full_name, modules: [], classes: [], methods: [], static_methods: [], singleton: [], constants: [] }
+          new_context = { name: name, full_name: full_name, type: "module", modules: [], classes: [], methods: [], static_methods: [], singleton: {}, constants: [] }
           current_context[:modules] << new_context
         end
 
-        context_stack.push(current_context)
+        context_stack.push(new_context)
         current_context = new_context
       end
 
       add_callback :module_node, at: 'end' do |node|
-        current_context = context_stack.pop
+        context_stack.pop
+        current_context = context_stack.last
       end
 
       add_callback :class_node, at: 'start' do |node|
@@ -68,16 +69,17 @@ Synvert::Helper.new 'ruby/parse' do |options|
           new_context = existing_class
         else
           full_name = [current_context[:full_name], name].compact.join('::')
-          new_context = { name: name, full_name: full_name, superclass: superclass, modules: [], classes: [], methods: [], static_methods: [], singleton: {}, constants: [], included_modules: [] }
+          new_context = { name: name, full_name: full_name, type: "class", superclass: superclass, modules: [], classes: [], methods: [], static_methods: [], singleton: {}, constants: [], included_modules: [] }
           current_context[:classes] << new_context
         end
 
-        context_stack.push(current_context)
+        context_stack.push(new_context)
         current_context = new_context
       end
 
       add_callback :class_node, at: 'end' do |node|
-        current_context = context_stack.pop
+        context_stack.pop
+        current_context = context_stack.last
       end
 
       add_callback :singleton_class_node, at: 'start' do |node|
@@ -85,16 +87,17 @@ Synvert::Helper.new 'ruby/parse' do |options|
         if !existing_singleton.empty?
           new_context = existing_singleton
         else
-          new_context = { methods: [], constants: [] }
+          new_context = { type: 'singleton', methods: [], constants: [] }
           current_context[:singleton] = new_context
         end
 
-        context_stack.push(current_context)
+        context_stack.push(new_context)
         current_context = new_context
       end
 
       add_callback :singleton_class_node, at: 'end' do |node|
-        current_context = context_stack.pop
+        context_stack.pop
+        current_context = context_stack.last
       end
 
       add_callback :constant_write_node do |node|
@@ -102,19 +105,29 @@ Synvert::Helper.new 'ruby/parse' do |options|
       end
 
       add_callback :call_node, at: 'start' do |node|
-        if node.receiver.nil? && node.name == :include
+        if node.receiver.nil? && node.name == :include && current_context[:type] == "class" && !node.arguments.nil? && %i[constant_read_node constant_path_node].include?(node.arguments.arguments.first.type)
           current_context[:included_modules] << node.arguments.arguments.first.to_source
         end
+      end
 
-        if node.name == :class_eval
-          klass_definition = find_class(node.receiver.to_source, definitions)
-          current_context = klass_definition if klass_definition
+      add_callback :call_node, at: 'start' do |node|
+        # we can't handle the class_eval / included / class_methods
+        if !node.receiver.nil? && %i[class_eval included class_methods].include?(node.name)
+          throw(:abort)
         end
       end
 
       add_callback :def_node, at: 'start' do |node|
-        name = node.name.to_s
+        # we can't handle `def self.inclueded` method
+        if !node.receiver.nil? && node.name == :included
+          throw(:abort)
+        end
+      end
 
+      add_callback :def_node, at: 'start' do |node|
+        throw(:abort) unless context_stack.last[:type]
+
+        name = node.name.to_s
         new_context = { name: name }
         if node.receiver.nil?
           current_context[:methods] << new_context
@@ -122,12 +135,13 @@ Synvert::Helper.new 'ruby/parse' do |options|
           current_context[:static_methods] << new_context
         end
 
-        context_stack.push(current_context)
+        context_stack.push(new_context)
         current_context = new_context
       end
 
       add_callback :def_node, at: 'end' do |node|
-        current_context = context_stack.pop
+        context_stack.pop
+        current_context = context_stack.last
       end
     end
 
@@ -168,11 +182,12 @@ Synvert::Helper.new 'ruby/parse' do |options|
         superclass = klass[:superclass]
         while superclass
           superclass_class = find_class(superclass, definitions)
-          ancestors << superclass_class[:full_name]
           if superclass_class
+            ancestors << superclass_class[:full_name]
             ancestors.concat(superclass_class[:included_modules]) if superclass_class[:included_modules]
             superclass = superclass_class[:superclass]
           else
+            ancestors << superclass
             superclass = nil
           end
         end

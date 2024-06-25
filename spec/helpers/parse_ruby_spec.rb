@@ -14,6 +14,8 @@ RSpec.describe 'ruby/parse helper', fakefs: true do
     File.write('app/models/user.rb', <<~EOF)
       module Synvert
         class User
+          include Trackable
+
           ROLES = %w[user admin].freeze
 
           class << self
@@ -42,14 +44,6 @@ RSpec.describe 'ruby/parse helper', fakefs: true do
         end
       end
     EOF
-    FileUtils.mkdir_p('config/initializers')
-    File.write('config/initializers/trackable.rb', <<~EOF)
-      Rails.config.application.after_initialize do
-        Synvert::User.class_eval do
-          include Trackable
-        end
-      end
-    EOF
 
     rewriter.process
 
@@ -59,11 +53,13 @@ RSpec.describe 'ruby/parse helper', fakefs: true do
         {
           name: "Synvert",
           full_name: "Synvert",
+          type: "module",
           classes: [
             {
               name: "Admin",
               full_name: "Synvert::Admin",
               superclass: "User",
+              type: "class",
               singleton: {},
               classes: [],
               constants: [],
@@ -77,8 +73,10 @@ RSpec.describe 'ruby/parse helper', fakefs: true do
             {
               name: "User",
               full_name: "Synvert::User",
+              type: "class",
               superclass: nil,
               singleton: {
+                type: 'singleton',
                 constants: [],
                 methods: [
                   { name: 'system' },
@@ -97,7 +95,7 @@ RSpec.describe 'ruby/parse helper', fakefs: true do
           ],
           modules: [],
           methods: [],
-          singleton: [],
+          singleton: {},
           static_methods: [],
           constants: []
         }
