@@ -37,4 +37,52 @@ RSpec.describe 'Prefer endless method' do
 
     include_examples 'convertable'
   end
+
+  context 'heredoc' do
+    let(:test_content) { <<~EOS }
+      def sample_gemfile_lock_content
+        <<~GEMFILE_LOCK
+          GEM
+            remote: https://rubygems.org/
+        GEMFILE_LOCK
+      end
+    EOS
+    let(:test_rewritten_content) { <<~EOS }
+      def sample_gemfile_lock_content = <<~GEMFILE_LOCK
+        GEM
+          remote: https://rubygems.org/
+      GEMFILE_LOCK
+    EOS
+
+    include_examples 'convertable'
+  end
+
+  context 'def inside class' do
+    let(:test_content) { <<~EOS }
+      class User
+        def generate_invitation_token
+          loop do
+            token = SecureRandom.hex(10)
+            unless Membership.exists?(invitation_token: token)
+              self.invitation_token = token
+              break
+            end
+          end
+        end
+      end
+    EOS
+    let(:test_rewritten_content) { <<~EOS }
+      class User
+        def generate_invitation_token = loop do
+          token = SecureRandom.hex(10)
+          unless Membership.exists?(invitation_token: token)
+            self.invitation_token = token
+            break
+          end
+        end
+      end
+    EOS
+
+    include_examples 'convertable'
+  end
 end
