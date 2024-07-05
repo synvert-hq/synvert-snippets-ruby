@@ -85,4 +85,34 @@ RSpec.describe 'Prefer endless method' do
 
     include_examples 'convertable'
   end
+
+  context 'do not process if end_keyword is nil' do
+    let(:test_content) { <<~EOS }
+      def current_user
+        @current_user ||= User.find(session[:user_id]) if session[:user_id]
+      end
+    EOS
+    let(:test_rewritten_content) { <<~EOS }
+      def current_user
+        @current_user ||= User.find(session[:user_id]) if session[:user_id]
+      end
+    EOS
+
+    include_examples 'convertable'
+  end
+
+  context 'do not process for multi_write_node' do
+    let(:test_content) { <<~EOS }
+      def index
+        @pagy, @builds = pagy(@organization.builds)
+      end
+    EOS
+    let(:test_rewritten_content) { <<~EOS }
+      def index
+        @pagy, @builds = pagy(@organization.builds)
+      end
+    EOS
+
+    include_examples 'convertable'
+  end
 end
