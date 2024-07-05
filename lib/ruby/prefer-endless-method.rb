@@ -28,8 +28,10 @@ Synvert::Rewriter.new 'ruby', 'prefer-endless-method' do
         break
       end
       break if first_body_node.type == :multi_write_node
+
       body_column = mutation_adapter.get_start_loc(first_body_node).column
-      new_body = node.body.body.first.to_source.split("\n").map { |line| line.sub(/^ {#{body_column}}/, '') }.join("\n")
+      new_body = node.body.body.first.to_source.split("\n").map { |line| line.sub(/^ {#{body_column}}/, '') }
+                     .join("\n")
       replace_with "def {{name}}{{lparen}}{{parameters}}{{rparen}} = #{new_body}"
     end
   end
