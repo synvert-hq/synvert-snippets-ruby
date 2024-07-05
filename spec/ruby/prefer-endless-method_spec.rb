@@ -115,4 +115,85 @@ RSpec.describe 'Prefer endless method' do
 
     include_examples 'convertable'
   end
+
+  context 'do not process for class_variable_or_write_node, instance_variable_or_write_node' do
+    let(:test_content) { <<~EOS }
+      def class_logger
+        @@logger ||= nil
+      end
+
+      def instance_logger
+        @logger ||= nil
+      end
+    EOS
+    let(:test_rewritten_content) { <<~EOS }
+      def class_logger
+        @@logger ||= nil
+      end
+
+      def instance_logger
+        @logger ||= nil
+      end
+    EOS
+
+    include_examples 'convertable'
+  end
+
+  context 'do not process for or_node' do
+    let(:test_content) { <<~EOS }
+      def new_rating=(new_rating)
+        self.rating = NEW_TO_OLD_MAPPER[new_rating] or raise "Unknown new rating"
+      end
+    EOS
+    let(:test_rewritten_content) { <<~EOS }
+      def new_rating=(new_rating)
+        self.rating = NEW_TO_OLD_MAPPER[new_rating] or raise "Unknown new rating"
+      end
+    EOS
+
+    include_examples 'convertable'
+  end
+
+  context 'do not process if name ends with =' do
+    let(:test_content) { <<~EOS }
+      def remove_item_ids=(item_ids)
+        Item.where(id: item_ids).destroy_all
+      end
+    EOS
+    let(:test_rewritten_content) { <<~EOS }
+      def remove_item_ids=(item_ids)
+        Item.where(id: item_ids).destroy_all
+      end
+    EOS
+
+    include_examples 'convertable'
+  end
+
+  context 'do not process if parameter without parentheses' do
+    let(:test_content) { <<~EOS }
+      def initialize item
+        @item = item
+      end
+    EOS
+    let(:test_rewritten_content) { <<~EOS }
+      def initialize item
+        @item = item
+      end
+    EOS
+
+    include_examples 'convertable'
+  end
+
+  context 'class method' do
+    let(:test_content) { <<~EOS }
+      def self.enqueue(item_id)
+        Resque.enqueue(self, item_id:)
+      end
+    EOS
+    let(:test_rewritten_content) { <<~EOS }
+      def self.enqueue(item_id) = Resque.enqueue(self, item_id:)
+    EOS
+
+    include_examples 'convertable'
+  end
 end
