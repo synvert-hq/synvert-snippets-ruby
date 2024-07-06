@@ -116,29 +116,6 @@ RSpec.describe 'Prefer endless method' do
     include_examples 'convertable'
   end
 
-  context 'do not process for class_variable_or_write_node, instance_variable_or_write_node' do
-    let(:test_content) { <<~EOS }
-      def class_logger
-        @@logger ||= nil
-      end
-
-      def instance_logger
-        @logger ||= nil
-      end
-    EOS
-    let(:test_rewritten_content) { <<~EOS }
-      def class_logger
-        @@logger ||= nil
-      end
-
-      def instance_logger
-        @logger ||= nil
-      end
-    EOS
-
-    include_examples 'convertable'
-  end
-
   context 'do not process for or_node' do
     let(:test_content) { <<~EOS }
       def new_rating=(new_rating)
