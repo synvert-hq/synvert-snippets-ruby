@@ -154,6 +154,38 @@ RSpec.describe 'Prefer endless method' do
     include_examples 'convertable'
   end
 
+  context 'do not process for hash_node' do
+    let(:test_content) { <<~EOS }
+      def query
+        { foo: 'bar' }
+      end
+    EOS
+    let(:test_rewritten_content) { <<~EOS }
+      def query
+        { foo: 'bar' }
+      end
+    EOS
+
+    include_examples 'convertable'
+  end
+
+  context 'do not process for call_node without parentheses' do
+    let(:test_content) { <<~EOS }
+      def should_be_ignored
+        should 'be ignored' do
+        end
+      end
+    EOS
+    let(:test_rewritten_content) { <<~EOS }
+      def should_be_ignored
+        should 'be ignored' do
+        end
+      end
+    EOS
+
+    include_examples 'convertable'
+  end
+
   context 'do not process if name ends with =' do
     let(:test_content) { <<~EOS }
       def remove_item_ids=(item_ids)
