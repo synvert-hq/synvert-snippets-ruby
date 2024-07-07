@@ -23,7 +23,7 @@ Synvert::Rewriter.new 'ruby', 'prefer-endless-method' do
 
   within_files Synvert::ALL_RUBY_FILES + Synvert::ALL_RAKE_FILES do
     find_node '.def_node[body!=nil][body.body.length=1]' do
-      break if node.name.to_s.end_with?('=')
+      break if node.name.to_s.match?(/[a-zA-Z]/) && node.name.to_s.end_with?('=')
       break if !node.parameters.nil? && node.lparen.nil? && node.rparen.nil?
 
       first_body_node = node.body.body.first

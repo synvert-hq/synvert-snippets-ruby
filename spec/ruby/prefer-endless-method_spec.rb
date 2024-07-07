@@ -118,13 +118,13 @@ RSpec.describe 'Prefer endless method' do
 
   context 'do not process for or_node' do
     let(:test_content) { <<~EOS }
-      def new_rating=(new_rating)
-        self.rating = NEW_TO_OLD_MAPPER[new_rating] or raise "Unknown new rating"
+      def new_rating(old_rating)
+        NEW_TO_OLD_MAPPER[old_rating] or raise "Unknown new rating"
       end
     EOS
     let(:test_rewritten_content) { <<~EOS }
-      def new_rating=(new_rating)
-        self.rating = NEW_TO_OLD_MAPPER[new_rating] or raise "Unknown new rating"
+      def new_rating(old_rating)
+        NEW_TO_OLD_MAPPER[old_rating] or raise "Unknown new rating"
       end
     EOS
 
@@ -173,6 +173,19 @@ RSpec.describe 'Prefer endless method' do
       def remove_item_ids=(item_ids)
         Item.where(id: item_ids).destroy_all
       end
+    EOS
+
+    include_examples 'convertable'
+  end
+
+  context 'process for operator method' do
+    let(:test_content) { <<~EOS }
+      def ==(other)
+        true
+      end
+    EOS
+    let(:test_rewritten_content) { <<~EOS }
+      def ==(other) = true
     EOS
 
     include_examples 'convertable'
