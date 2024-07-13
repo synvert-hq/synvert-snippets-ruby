@@ -218,4 +218,31 @@ RSpec.describe 'Prefer endless method' do
 
     include_examples 'convertable'
   end
+
+  context 'do not process for endless method' do
+    let(:test_content) { <<~EOS }
+      class user
+        def generate_invitation_token = loop do
+          token = securerandom.hex(10)
+          unless membership.exists?(invitation_token: token)
+            self.invitation_token = token
+            break
+          end
+        end
+      end
+    EOS
+    let(:test_rewritten_content) { <<~EOS }
+      class user
+        def generate_invitation_token = loop do
+          token = securerandom.hex(10)
+          unless membership.exists?(invitation_token: token)
+            self.invitation_token = token
+            break
+          end
+        end
+      end
+    EOS
+
+    include_examples 'convertable'
+  end
 end

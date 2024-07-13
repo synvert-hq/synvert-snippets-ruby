@@ -22,7 +22,7 @@ Synvert::Rewriter.new 'ruby', 'prefer-endless-method' do
   if_ruby '3.0'
 
   within_files Synvert::ALL_RUBY_FILES + Synvert::ALL_RAKE_FILES do
-    find_node '.def_node[body!=nil][body.body.length=1]' do
+    find_node '.def_node[end_keyword!=nil][body!=nil][body.body.length=1]' do
       break if node.name.to_s.match?(/[a-zA-Z]/) && node.name.to_s.end_with?('=')
       break if !node.parameters.nil? && node.lparen.nil? && node.rparen.nil?
 
