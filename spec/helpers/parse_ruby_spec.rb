@@ -48,55 +48,57 @@ RSpec.describe 'ruby/parse helper', fakefs: true do
     rewriter.process
 
     definitions = rewriter.load_data(:ruby_definitions)
-    expect(definitions.to_h).to eq({
-      classes: [],
-      modules: [
-        {
-          name: "Synvert",
-          classes: [
-            {
-              name: "Admin",
-              superclass: "User",
-              classes: [],
-              modules: [],
-              methods: [{ name: "user_type" }],
-              static_methods: [],
-              constants: [],
-              included_modules: [],
-              singleton: nil,
-              ancestors: ["Synvert::User", "Trackable"]
-            },
-            {
-              name: "User",
-              superclass: nil,
-              singleton: {
+    expect(definitions.to_h).to eq(
+      {
+        classes: [],
+        modules: [
+          {
+            name: "Synvert",
+            classes: [
+              {
+                name: "Admin",
+                superclass: "User",
+                classes: [],
+                modules: [],
+                methods: [{ name: "user_type" }],
+                static_methods: [],
                 constants: [],
-                methods: [
-                  { name: 'system' },
-                  { name: 'bot' }
-                ],
-                ancestors: []
+                included_modules: [],
+                singleton: nil,
+                ancestors: ["Synvert::User", "Trackable"]
               },
-              classes: [],
-              modules: [],
-              methods: [{ name: "user_type" }],
-              static_methods: [{ name: 'authenticate?' }],
-              constants: [{ name: "ROLES" }],
-              included_modules: ["Trackable"],
-              ancestors: ["Trackable"]
-            }
-          ],
-          modules: [],
-          methods: [],
-          static_methods: [],
-          constants: [],
-          singleton: nil,
-          ancestors: []
-        }
-      ],
-      constants: [],
-      methods: []
-    })
+              {
+                name: "User",
+                superclass: nil,
+                singleton: {
+                  constants: [],
+                  methods: [
+                    { name: 'system' },
+                    { name: 'bot' }
+                  ],
+                  ancestors: []
+                },
+                classes: [],
+                modules: [],
+                methods: [{ name: "user_type" }],
+                static_methods: [{ name: 'authenticate?' }],
+                constants: [{ name: "ROLES" }],
+                included_modules: ["Trackable"],
+                ancestors: ["Trackable"]
+              }
+            ],
+            modules: [],
+            methods: [],
+            static_methods: [],
+            constants: [],
+            singleton: nil,
+            ancestors: []
+          }
+        ],
+        constants: [],
+        methods: []
+      }
+    )
   end
 
   it 'finds classes by superclass' do

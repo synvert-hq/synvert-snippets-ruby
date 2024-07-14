@@ -149,7 +149,12 @@ class RootDefinition < BaseDefinition
   end
 
   def to_h
-    { modules: @modules.map(&:to_h), classes: @classes.map(&:to_h), constants: @constants, methods: @methods.map(&:to_h) }
+    {
+      modules: @modules.map(&:to_h),
+      classes: @classes.map(&:to_h),
+      constants: @constants,
+      methods: @methods.map(&:to_h)
+    }
   end
 end
 
@@ -176,7 +181,7 @@ class ModuleDefinition < BaseDefinition
       methods: @methods.map(&:to_h),
       static_methods: @static_methods.map(&:to_h),
       constants: @constants,
-      singleton: @singleton &.to_h,
+      singleton: @singleton&.to_h,
       ancestors: @ancestors
     }
   end
@@ -288,7 +293,10 @@ Synvert::Helper.new 'ruby/parse' do |options|
       end
 
       add_callback :call_node, at: 'start' do |node|
-        if node.receiver.nil? && node.name == :include && definitions.current_node_type == "class" && !node.arguments.nil? && %i[constant_read_node constant_path_node].include?(node.arguments.arguments.first.type)
+        if node.receiver.nil? && node.name == :include && definitions.current_node_type == "class" && !node.arguments.nil? && %i[
+          constant_read_node constant_path_node
+        ].include?(node.arguments.arguments.first.type)
+
           definitions.add_included_module(node.arguments.arguments.first.to_source)
         end
       end
