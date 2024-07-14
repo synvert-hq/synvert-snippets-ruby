@@ -4,14 +4,14 @@ require 'spec_helper'
 require 'helpers/parse_ruby'
 
 RSpec.describe 'ruby/parse helper', fakefs: true do
-  it 'saves definitions data' do
+  it 'saves/loads definitions data' do
     rewriter =
       Synvert::Rewriter.new 'test', 'ruby_parse_helper' do
         call_helper 'ruby/parse'
       end
 
-    FileUtils.mkdir_p('app/models')
-    File.write('app/models/user.rb', <<~EOF)
+    FileUtils.mkdir_p('app/models/synvert')
+    File.write('app/models/synvert/user.rb', <<~EOF)
       module Synvert
         class User
           include Trackable
@@ -35,7 +35,7 @@ RSpec.describe 'ruby/parse helper', fakefs: true do
         end
       end
     EOF
-    File.write('app/models/admin.rb', <<~EOF)
+    File.write('app/models/synvert/admin.rb', <<~EOF)
       module Synvert
         class Admin < User
           def user_type
@@ -47,44 +47,37 @@ RSpec.describe 'ruby/parse helper', fakefs: true do
 
     rewriter.process
 
-    expect(rewriter.load_data(:ruby_definitions)).to eq({
+    definitions = rewriter.load_data(:ruby_definitions)
+    expect(definitions.to_h).to eq({
       classes: [],
       modules: [
         {
           name: "Synvert",
-          full_name: "Synvert",
-          type: "module",
           classes: [
             {
               name: "Admin",
-              full_name: "Synvert::Admin",
               superclass: "User",
-              type: "class",
-              singleton: {},
               classes: [],
-              constants: [],
               modules: [],
               methods: [{ name: "user_type" }],
               static_methods: [],
               constants: [],
               included_modules: [],
+              singleton: nil,
               ancestors: ["Synvert::User", "Trackable"]
             },
             {
               name: "User",
-              full_name: "Synvert::User",
-              type: "class",
               superclass: nil,
               singleton: {
-                type: 'singleton',
                 constants: [],
                 methods: [
                   { name: 'system' },
                   { name: 'bot' }
-                ]
+                ],
+                ancestors: []
               },
               classes: [],
-              constants: [],
               modules: [],
               methods: [{ name: "user_type" }],
               static_methods: [{ name: 'authenticate?' }],
@@ -95,12 +88,43 @@ RSpec.describe 'ruby/parse helper', fakefs: true do
           ],
           modules: [],
           methods: [],
-          singleton: {},
           static_methods: [],
-          constants: []
+          constants: [],
+          singleton: nil,
+          ancestors: []
         }
       ],
-      constants: []
+      constants: [],
+      methods: []
     })
+  end
+
+  it 'finds classes by superclass' do
+    rewriter =
+      Synvert::Rewriter.new 'test', 'ruby_parse_helper' do
+        call_helper 'ruby/parse'
+      end
+
+    FileUtils.mkdir_p('app/jobs/synvert')
+    File.write('app/jobs/application.rb', <<~EOF)
+      class ApplicationJob < ActiveJob::Base
+      end
+    EOF
+    File.write('app/jobs/synvert_job.rb', <<~EOF)
+      class SynvertJob < ApplicationJob
+      end
+    EOF
+    File.write('app/jobs/synvert/user_job.rb', <<~EOF)
+      module Synvert
+        class UserJob < SynvertJob
+        end
+      end
+    EOF
+
+    rewriter.process
+
+    definitions = rewriter.load_data(:ruby_definitions)
+    classes = definitions.find_classes_by_superclass('ApplicationJob')
+    expect(classes.map(&:full_name)).to eq(['SynvertJob', 'Synvert::UserJob'])
   end
 end
