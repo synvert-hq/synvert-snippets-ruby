@@ -1,5 +1,89 @@
 # frozen_string_literal: true
 
+# ruby/parser helper parses ruby files and saves the :ruby_definitions to data.
+# The :ruby_definitions is an object of RubyDefinitions,
+# which contains all the classes, modules, methods, constants, ancestors,
+# and provides some methods, such as find_classes_by_superclass.
+Synvert::Helper.new 'ruby/parse' do |options|
+  configure(parser: Synvert::PRISM_PARSER)
+
+  # Set number_of_workers to 1 to skip parallel.
+  with_configurations(number_of_workers: 1) do
+    definitions = RubyDefinitions.new
+
+    within_file Synvert::ALL_RUBY_FILES do
+      add_callback :module_node, at: 'start' do |node|
+        name = node.constant_path.to_source
+        definitions.add_module(name)
+      end
+
+      add_callback :module_node, at: 'end' do |node|
+        definitions.pop
+      end
+
+      add_callback :class_node, at: 'start' do |node|
+        name = node.constant_path.to_source
+        superclass = node.superclass&.to_source
+        definitions.add_class(name, superclass)
+      end
+
+      add_callback :class_node, at: 'end' do |node|
+        definitions.pop
+      end
+
+      add_callback :singleton_class_node, at: 'start' do |node|
+        definitions.add_singleton
+      end
+
+      add_callback :singleton_class_node, at: 'end' do |node|
+        definitions.pop
+      end
+
+      add_callback :constant_write_node do |node|
+        definitions.add_constants(node.name.to_s)
+      end
+
+      add_callback :call_node, at: 'start' do |node|
+        if node.receiver.nil? && node.name == :include && definitions.current_node_type == "class" && !node.arguments.nil? && %i[constant_read_node constant_path_node].include?(node.arguments.arguments.first.type)
+          definitions.add_included_module(node.arguments.arguments.first.to_source)
+        end
+      end
+
+      add_callback :call_node, at: 'start' do |node|
+        # we can't handle the class_eval / included / class_methods
+        if !node.receiver.nil? && %i[class_eval included class_methods].include?(node.name)
+          throw(:abort)
+        end
+      end
+
+      add_callback :def_node, at: 'start' do |node|
+        # we can't handle `def self.inclueded` method
+        if !node.receiver.nil? && node.name == :included
+          throw(:abort)
+        end
+      end
+
+      add_callback :def_node, at: 'start' do |node|
+        throw(:abort) if definitions.is_root?
+
+        name = node.name.to_s
+        if node.receiver.nil?
+          definitions.add_method(name)
+        else
+          definitions.add_static_method(name)
+        end
+      end
+
+      add_callback :def_node, at: 'end' do |node|
+        definitions.pop
+      end
+    end
+
+    definitions.setup_ancestors
+    save_data :ruby_definitions, definitions
+  end
+end
+
 class RubyDefinitions
   attr_reader :node
 
@@ -245,85 +329,5 @@ class MethodDefinition
 
   def to_h
     { name: @name }
-  end
-end
-
-Synvert::Helper.new 'ruby/parse' do |options|
-  configure(parser: Synvert::PRISM_PARSER)
-
-  # Set number_of_workers to 1 to skip parallel.
-  with_configurations(number_of_workers: 1) do
-    definitions = RubyDefinitions.new
-
-    within_file Synvert::ALL_RUBY_FILES do
-      add_callback :module_node, at: 'start' do |node|
-        name = node.constant_path.to_source
-        definitions.add_module(name)
-      end
-
-      add_callback :module_node, at: 'end' do |node|
-        definitions.pop
-      end
-
-      add_callback :class_node, at: 'start' do |node|
-        name = node.constant_path.to_source
-        superclass = node.superclass&.to_source
-        definitions.add_class(name, superclass)
-      end
-
-      add_callback :class_node, at: 'end' do |node|
-        definitions.pop
-      end
-
-      add_callback :singleton_class_node, at: 'start' do |node|
-        definitions.add_singleton
-      end
-
-      add_callback :singleton_class_node, at: 'end' do |node|
-        definitions.pop
-      end
-
-      add_callback :constant_write_node do |node|
-        definitions.add_constants(node.name.to_s)
-      end
-
-      add_callback :call_node, at: 'start' do |node|
-        if node.receiver.nil? && node.name == :include && definitions.current_node_type == "class" && !node.arguments.nil? && %i[constant_read_node constant_path_node].include?(node.arguments.arguments.first.type)
-          definitions.add_included_module(node.arguments.arguments.first.to_source)
-        end
-      end
-
-      add_callback :call_node, at: 'start' do |node|
-        # we can't handle the class_eval / included / class_methods
-        if !node.receiver.nil? && %i[class_eval included class_methods].include?(node.name)
-          throw(:abort)
-        end
-      end
-
-      add_callback :def_node, at: 'start' do |node|
-        # we can't handle `def self.inclueded` method
-        if !node.receiver.nil? && node.name == :included
-          throw(:abort)
-        end
-      end
-
-      add_callback :def_node, at: 'start' do |node|
-        throw(:abort) if definitions.is_root?
-
-        name = node.name.to_s
-        if node.receiver.nil?
-          definitions.add_method(name)
-        else
-          definitions.add_static_method(name)
-        end
-      end
-
-      add_callback :def_node, at: 'end' do |node|
-        definitions.pop
-      end
-    end
-
-    definitions.setup_ancestors
-    save_data :ruby_definitions, definitions
   end
 end
