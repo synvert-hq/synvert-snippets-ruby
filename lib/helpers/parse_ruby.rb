@@ -3,7 +3,7 @@
 # ruby/parser helper parses ruby files and saves the :ruby_definitions to data.
 # The :ruby_definitions is an object of RubyDefinitions,
 # which contains all the classes, modules, methods, constants, ancestors,
-# and provides some methods, such as find_classes_by_superclass.
+# and provides some methods, such as find_classes_by_ancestor.
 Synvert::Helper.new 'ruby/parse' do |options|
   configure(parser: Synvert::PRISM_PARSER)
 
@@ -87,7 +87,7 @@ end
 class RubyDefinitions
   attr_reader :node
 
-  delegate :setup_ancestors, :find_classes_by_superclass, :to_h, to: :@root
+  delegate :setup_ancestors, :find_classes_by_ancestor, :to_h, to: :@root
 
   def initialize
     @root = RootDefinition.new
@@ -155,10 +155,10 @@ class RubyDefinitions
 end
 
 class BaseDefinition
-  def find_classes_by_superclass(superclass)
+  def find_classes_by_ancestor(superclass)
     @classes.select { |klass| klass.ancestors.include?(superclass) } +
-      @classes.flat_map { |klass| klass.find_classes_by_superclass(superclass) } +
-      @modules.flat_map { |mod| mod.find_classes_by_superclass(superclass) }
+      @classes.flat_map { |klass| klass.find_classes_by_ancestor(superclass) } +
+      @modules.flat_map { |mod| mod.find_classes_by_ancestor(superclass) }
   end
 
   def full_name

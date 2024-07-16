@@ -31,9 +31,9 @@ Synvert::Rewriter.new 'rails', 'perform_job_in_after_commit_callback' do
 
   call_helper 'ruby/parse'
   definitions = load_data :ruby_definitions
-  job_classes = definitions.find_classes_by_superclass('ApplicationJob').map(&:full_name) +
-                definitions.find_classes_by_superclass('Sidekiq::Job').map(&:full_name)
-  mailer_classes = definitions.find_classes_by_superclass('ApplicationMailer').map(&:name)
+  job_classes = definitions.find_classes_by_ancestor('ApplicationJob').map(&:full_name) +
+                definitions.find_classes_by_ancestor('Sidekiq::Job').map(&:full_name)
+  mailer_classes = definitions.find_classes_by_ancestor('ApplicationMailer').map(&:name)
 
   within_files Synvert::RAILS_MODEL_FILES do
     find_node '.class_node' do

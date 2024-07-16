@@ -124,7 +124,7 @@ RSpec.describe 'ruby/parse helper', fakefs: true do
     rewriter.process
 
     definitions = rewriter.load_data(:ruby_definitions)
-    classes = definitions.find_classes_by_superclass('ApplicationJob')
+    classes = definitions.find_classes_by_ancestor('ApplicationJob')
     expect(classes.map(&:full_name)).to eq(['SynvertJob', 'Synvert::UserJob'])
   end
 end
