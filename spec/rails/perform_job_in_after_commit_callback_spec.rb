@@ -62,11 +62,15 @@ RSpec.describe 'Rails perform job in after_commit callback' do
         after_save :update_cache
 
         def send_notification
-          NotificationJob.perform_async(self)
+          notify_user
         end
 
         def update_cache
           Cache.update(self)
+        end
+
+        def notify_user
+          NotificationJob.perform_async(self)
         end
       end
     EOF
@@ -83,11 +87,15 @@ RSpec.describe 'Rails perform job in after_commit callback' do
         after_save :update_cache
 
         def send_notification
-          NotificationJob.perform_async(self)
+          notify_user
         end
 
         def update_cache
           Cache.update(self)
+        end
+
+        def notify_user
+          NotificationJob.perform_async(self)
         end
       end
     EOF
