@@ -172,4 +172,37 @@ RSpec.describe 'ruby/parse helper', fakefs: true do
     class_definition = definitions.find_class_by_full_name('User')
     expect(class_definition.find_method_by_name('deactivate').name).to eq('deactivate')
   end
+
+  it 'check if call method' do
+    rewriter =
+      Synvert::Rewriter.new 'test', 'ruby_parse_helper' do
+        call_helper 'ruby/parse'
+      end
+
+    FileUtils.mkdir_p('app/models')
+    File.write('app/models/user.rb', <<~EOF)
+      class User < ApplicationRecord
+        def activate
+          update(:active: true)
+          send_notification
+        end
+
+        def deactivate
+          update(:active: false)
+          send_notification
+        end
+
+        def send_notificaiton
+        end
+      end
+    EOF
+
+    rewriter.process
+
+    definitions = rewriter.load_data(:ruby_definitions)
+    class_definition = definitions.find_class_by_full_name('User')
+    method_definition = class_definition.find_method_by_name('deactivate')
+    expect(method_definition.call_method?('send_notification')).to be_truthy
+    expect(method_definition.call_method?('activate')).to be_falsey
+  end
 end
