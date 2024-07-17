@@ -336,6 +336,10 @@ class MethodDefinition
       local_calls.any? { |local_call_method_name| parent.find_method_by_name(local_call_method_name)&.call_method?(method_name)  }
   end
 
+  def call_any_method?(method_names)
+    method_names.any? { |method_name| call_method?(method_name)  }
+  end
+
   def to_h
     { name: @name }
   end
