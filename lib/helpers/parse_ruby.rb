@@ -87,7 +87,7 @@ end
 class RubyDefinitions
   attr_reader :node
 
-  delegate :setup_ancestors, :find_classes_by_ancestor, :to_h, to: :@root
+  delegate :setup_ancestors, :find_class_by_full_name, :find_classes_by_ancestor, :to_h, to: :@root
 
   def initialize
     @root = RootDefinition.new
@@ -176,10 +176,10 @@ class BaseDefinition
       ancestors = []
       superclass = klass.superclass
       while superclass
-        superclass_class = find_class(superclass)
+        superclass_class = find_class_by_full_name(superclass)
         this = self
         while !superclass_class && !this.is_a?(RootDefinition)
-          superclass_class = this.parent.find_class(superclass)
+          superclass_class = this.parent.find_class_by_full_name(superclass)
           this = this.parent
         end
         if superclass_class
@@ -202,13 +202,13 @@ class BaseDefinition
     end
   end
 
-  def find_class(full_name)
+  def find_class_by_full_name(full_name)
     names = full_name.split('::')
     if names.length > 1
       mod_name = names.shift
       modules.each do |mod|
         if mod.name == mod_name
-          return mod.find_class(names.join('::'))
+          return mod.find_class_by_full_name(names.join('::'))
         end
       end
     else
