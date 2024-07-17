@@ -161,6 +161,10 @@ class BaseDefinition
       @modules.flat_map { |mod| mod.find_classes_by_ancestor(superclass) }
   end
 
+  def find_method_by_name(name)
+    methods.find { |method_definition| method_definition.name == name  }
+  end
+
   def full_name
     names = [name]
     this = self

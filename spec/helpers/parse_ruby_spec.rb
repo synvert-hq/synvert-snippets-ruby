@@ -99,7 +99,7 @@ RSpec.describe 'ruby/parse helper', fakefs: true do
     })
   end
 
-  it 'finds classes by full_name' do
+  it 'finds class by full_name' do
     rewriter =
       Synvert::Rewriter.new 'test', 'ruby_parse_helper' do
         call_helper 'ruby/parse'
@@ -147,5 +147,29 @@ RSpec.describe 'ruby/parse helper', fakefs: true do
     definitions = rewriter.load_data(:ruby_definitions)
     classes = definitions.find_classes_by_ancestor('ApplicationJob')
     expect(classes.map(&:full_name)).to eq(['SynvertJob', 'Synvert::UserJob'])
+  end
+
+  it 'finds method by name' do
+    rewriter =
+      Synvert::Rewriter.new 'test', 'ruby_parse_helper' do
+        call_helper 'ruby/parse'
+      end
+
+    FileUtils.mkdir_p('app/models')
+    File.write('app/models/user.rb', <<~EOF)
+      class User < ApplicationRecord
+        def activate
+        end
+
+        def deactivate
+        end
+      end
+    EOF
+
+    rewriter.process
+
+    definitions = rewriter.load_data(:ruby_definitions)
+    class_definition = definitions.find_class_by_full_name('User')
+    expect(class_definition.find_method_by_name('deactivate').name).to eq('deactivate')
   end
 end
