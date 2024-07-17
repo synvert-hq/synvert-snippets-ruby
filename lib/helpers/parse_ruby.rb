@@ -56,6 +56,12 @@ Synvert::Helper.new 'ruby/parse' do |options|
         end
       end
 
+      add_callback :call_node, at: 'start' do |node|
+        if node.receiver.nil? && definitions.current_node_type == "method"
+          definitions.node.local_calls.push(node.name.to_s)
+        end
+      end
+
       add_callback :def_node, at: 'start' do |node|
         # we can't handle `def self.inclueded` method
         if !node.receiver.nil? && node.name == :included
@@ -324,11 +330,12 @@ class SingletonDefinition
 end
 
 class MethodDefinition
-  attr_reader :parent, :name
+  attr_reader :parent, :name, :local_calls
 
   def initialize(parent:, name:)
     @parent = parent
     @name = name
+    @local_calls = []
   end
 
   def call_method?(method_name)
@@ -341,6 +348,6 @@ class MethodDefinition
   end
 
   def to_h
-    { name: @name }
+    { name: @name, local_calls: local_calls }
   end
 end

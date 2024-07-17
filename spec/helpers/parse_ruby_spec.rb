@@ -27,6 +27,8 @@ RSpec.describe 'ruby/parse helper', fakefs: true do
           end
 
           def self.authenticate?(email, password)
+            user = find_by(email:)
+            user.valid_password?(password)
           end
 
           def user_type
@@ -59,7 +61,7 @@ RSpec.describe 'ruby/parse helper', fakefs: true do
               superclass: "User",
               classes: [],
               modules: [],
-              methods: [{ name: "user_type" }],
+              methods: [{ name: "user_type", local_calls: [] }],
               static_methods: [],
               constants: [],
               included_modules: [],
@@ -72,15 +74,18 @@ RSpec.describe 'ruby/parse helper', fakefs: true do
               singleton: {
                 constants: [],
                 methods: [
-                  { name: 'system' },
-                  { name: 'bot' }
+                  { name: 'system', local_calls: [] },
+                  { name: 'bot', local_calls: [] }
                 ],
                 ancestors: []
               },
               classes: [],
               modules: [],
-              methods: [{ name: "user_type" }],
-              static_methods: [{ name: 'authenticate?' }],
+              methods: [{ name: "user_type", local_calls: [] }],
+              static_methods: [{
+                name: 'authenticate?',
+                local_calls: ['find_by']
+              }],
               constants: [{ name: "ROLES" }],
               included_modules: ["Trackable"],
               ancestors: ["Trackable"]
