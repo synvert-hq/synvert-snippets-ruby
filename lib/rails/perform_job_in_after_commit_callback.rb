@@ -29,8 +29,7 @@ Synvert::Rewriter.new 'rails', 'perform_job_in_after_commit_callback' do
     ```
   EOS
 
-  call_helper 'ruby/parse'
-  definitions = load_data :ruby_definitions
+  definitions = call_helper 'ruby/parse'
   job_classes = definitions.find_classes_by_ancestor('ApplicationJob').map(&:full_name) +
                 definitions.find_classes_by_ancestor('Sidekiq::Job').map(&:full_name)
   mailer_classes = definitions.find_classes_by_ancestor('ApplicationMailer').map(&:name)

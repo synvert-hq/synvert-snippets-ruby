@@ -58,14 +58,14 @@ Synvert::Rewriter.new 'rails', 'strong_parameters' do
     end
   end
 
-  call_helper 'rails/parse'
-  rails_tables = load_data :rails_tables
+  definitions = call_helper 'rails/parse'
 
   parameters = {}
   within_files Synvert::RAILS_MODEL_FILES do
     within_node node_type: 'class_node' do
       object_name = node.name.to_s.underscore
-      table_columns = rails_tables.present? ? rails_tables[object_name.tableize][:columns].map { |column| column[:name] } - default_columns : []
+      table_definition = definitions.find_table_definition_by_table_name(object_name.tableize)
+      table_columns = table_definition.present? ? table_definition.get_column_names - default_columns : []
 
       # assign and remove attr_accessible ...
       with_node node_type: 'call_node', name: 'attr_accessible' do

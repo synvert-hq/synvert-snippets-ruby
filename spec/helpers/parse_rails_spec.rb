@@ -70,14 +70,14 @@ RSpec.describe 'rails/parse helper', fakefs: true do
       {
         name: 'Picture',
         associations: [
-          { name: 'imageable', type: 'belongs_to', polymorphic: true },
+          { name: 'imageable', type: 'belongs_to', options: { polymorphic: true } },
         ]
       },
       {
         name: 'User',
         associations: [
-          { name: 'organization', type: 'belongs_to' },
-          { name: 'posts', type: 'has_many' }
+          { name: 'organization', type: 'belongs_to', options: {} },
+          { name: 'posts', type: 'has_many', options: {} }
         ]
       }
     ])

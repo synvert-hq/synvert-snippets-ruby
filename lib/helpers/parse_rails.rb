@@ -54,7 +54,7 @@ end
 class RailsDefinitions
   attr_reader :table_definitions, :model_definitions
 
-  delegate :add_table_column, :add_table_index, to: :@table_definitions
+  delegate :add_table_column, :add_table_index, :find_table_definition_by_table_name, to: :@table_definitions
   delegate :add_model_association, to: :@model_definitions
 
   def initialize
@@ -64,6 +64,10 @@ class RailsDefinitions
 end
 
 class TableDefinitions
+  include Enumerable
+
+  delegate :each, to: :@table_definitions
+
   def initialize
     @table_definitions = []
   end
@@ -79,12 +83,16 @@ class TableDefinitions
   end
 
   def find_or_create_table_definition(table_name)
-    table_definition = @table_definitions.find { |table| table.name == table_name  }
+    table_definition = find_table_definition_by_table_name(table_name)
     return table_definition if table_definition
 
     table_definition = TableDefinition.new(name: table_name)
     @table_definitions << table_definition
     return table_definition
+  end
+
+  def find_table_definition_by_table_name(table_name)
+    @table_definitions.find { |table| table.name == table_name  }
   end
 
   def to_h
@@ -93,7 +101,7 @@ class TableDefinitions
 end
 
 class TableDefinition
-  attr_reader :name
+  attr_reader :name, :columns
 
   def initialize(name:)
     @name = name
@@ -109,6 +117,14 @@ class TableDefinition
     @indices << IndexDefinition.new(name: name, columns: columns)
   end
 
+  def find_index_definition_by_column_names(column_names)
+    @indices.find { |index_definition| index_definition.columns == column_names  }
+  end
+
+  def get_column_names
+    @columns.map(&:name)
+  end
+
   def to_h
     {
       name: @name,
@@ -119,6 +135,8 @@ class TableDefinition
 end
 
 class ColumnDefinition
+  attr_reader :name
+
   def initialize(name:, type:)
     @name = name
     @type = type
@@ -130,6 +148,8 @@ class ColumnDefinition
 end
 
 class IndexDefinition
+  attr_reader :columns
+
   def initialize(name:, columns:)
     @name = name
     @columns = columns
@@ -141,6 +161,10 @@ class IndexDefinition
 end
 
 class ModelDefinitions
+  include Enumerable
+
+  delegate :each, to: :@model_definitions
+
   def initialize
     @model_definitions = []
   end
@@ -165,7 +189,7 @@ class ModelDefinitions
 end
 
 class ModelDefinition
-  attr_reader :name
+  attr_reader :name, :associations
 
   def initialize(name:)
     @name = name
@@ -182,6 +206,8 @@ class ModelDefinition
 end
 
 class AssociationDefinition
+  attr_reader :name, :type, :options
+
   def initialize(name:, type:, **options)
     @name = name
     @type = type
@@ -189,7 +215,6 @@ class AssociationDefinition
   end
 
   def to_h
-    { name: @name, type: @type, **@options }
+    { name: @name, type: @type, options: @options }
   end
 end
-
