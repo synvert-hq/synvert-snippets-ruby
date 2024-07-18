@@ -7,10 +7,10 @@
 Synvert::Helper.new 'ruby/parse' do |options|
   configure(parser: Synvert::PRISM_PARSER)
 
+  definitions = RubyDefinitions.new
+
   # Set number_of_workers to 1 to skip parallel.
   with_configurations(number_of_workers: 1) do
-    definitions = RubyDefinitions.new
-
     within_file Synvert::ALL_RUBY_FILES do
       add_callback :module_node, at: 'start' do |node|
         name = node.constant_path.to_source
@@ -84,10 +84,10 @@ Synvert::Helper.new 'ruby/parse' do |options|
         definitions.pop
       end
     end
-
-    definitions.setup_ancestors
-    save_data :ruby_definitions, definitions
   end
+
+  definitions.setup_ancestors
+  definitions
 end
 
 class RubyDefinitions

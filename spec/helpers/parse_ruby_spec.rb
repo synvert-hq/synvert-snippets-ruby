@@ -4,7 +4,7 @@ require 'spec_helper'
 require 'helpers/parse_ruby'
 
 RSpec.describe 'ruby/parse helper', fakefs: true do
-  it 'saves/loads definitions data' do
+  it 'gets definitions data' do
     rewriter =
       Synvert::Rewriter.new 'test', 'ruby_parse_helper' do
         call_helper 'ruby/parse'
@@ -47,9 +47,8 @@ RSpec.describe 'ruby/parse helper', fakefs: true do
       end
     EOF
 
-    rewriter.process
+    definitions = rewriter.process
 
-    definitions = rewriter.load_data(:ruby_definitions)
     expect(definitions.to_h).to eq({
       classes: [],
       modules: [
@@ -118,9 +117,8 @@ RSpec.describe 'ruby/parse helper', fakefs: true do
       end
     EOF
 
-    rewriter.process
+    definitions = rewriter.process
 
-    definitions = rewriter.load_data(:ruby_definitions)
     class_definition = definitions.find_class_by_full_name('Synvert::UserJob')
     expect(class_definition.name).to eq('UserJob')
   end
@@ -147,9 +145,8 @@ RSpec.describe 'ruby/parse helper', fakefs: true do
       end
     EOF
 
-    rewriter.process
+    definitions = rewriter.process
 
-    definitions = rewriter.load_data(:ruby_definitions)
     classes = definitions.find_classes_by_ancestor('ApplicationJob')
     expect(classes.map(&:full_name)).to eq(['SynvertJob', 'Synvert::UserJob'])
   end
@@ -171,9 +168,8 @@ RSpec.describe 'ruby/parse helper', fakefs: true do
       end
     EOF
 
-    rewriter.process
+    definitions = rewriter.process
 
-    definitions = rewriter.load_data(:ruby_definitions)
     class_definition = definitions.find_class_by_full_name('User')
     expect(class_definition.find_method_by_name('deactivate').name).to eq('deactivate')
   end
@@ -202,9 +198,8 @@ RSpec.describe 'ruby/parse helper', fakefs: true do
       end
     EOF
 
-    rewriter.process
+    definitions = rewriter.process
 
-    definitions = rewriter.load_data(:ruby_definitions)
     class_definition = definitions.find_class_by_full_name('User')
     method_definition = class_definition.find_method_by_name('deactivate')
     expect(method_definition.call_method?('send_notification')).to be_truthy
@@ -235,9 +230,8 @@ RSpec.describe 'ruby/parse helper', fakefs: true do
       end
     EOF
 
-    rewriter.process
+    definitions = rewriter.process
 
-    definitions = rewriter.load_data(:ruby_definitions)
     class_definition = definitions.find_class_by_full_name('User')
     method_definition = class_definition.find_method_by_name('deactivate')
     expect(method_definition.call_any_method?(['send_notification', 'activate'])).to be_truthy
