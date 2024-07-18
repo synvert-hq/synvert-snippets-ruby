@@ -4,7 +4,7 @@ require 'spec_helper'
 require 'helpers/parse_rails'
 
 RSpec.describe 'rails/parse helper', fakefs: true do
-  it 'saves tables data' do
+  it 'gets table definitions' do
     rewriter =
       Synvert::Rewriter.new 'test', 'rails_parse_helper' do
         call_helper 'rails/parse'
@@ -27,10 +27,11 @@ RSpec.describe 'rails/parse helper', fakefs: true do
       end
     EOF
 
-    rewriter.process
+    definitions = rewriter.process
 
-    expect(rewriter.load_data(:rails_tables)).to eq({
-      "users" => {
+    expect(definitions.table_definitions.to_h).to eq([
+      {
+        name: "users",
         columns: [
           { name: "name", type: "string" },
           { name: "email", type: "string" },
@@ -38,13 +39,13 @@ RSpec.describe 'rails/parse helper', fakefs: true do
           { name: "updated_at", type: "datetime" }
         ],
         indices: [
-          { columns: ["email"], name: "index_users_on_email" }
+          { name: "index_users_on_email", columns: ["email"] }
         ]
       }
-    })
+    ])
   end
 
-  it 'saves associations' do
+  it 'gets model definitions' do
     rewriter =
       Synvert::Rewriter.new 'test', 'rails_parse_helper' do
         call_helper 'rails/parse'
@@ -63,12 +64,22 @@ RSpec.describe 'rails/parse helper', fakefs: true do
       end
     EOF
 
-    rewriter.process
+    definitions = rewriter.process
 
-    expect(rewriter.load_data(:rails_models)[:associations]).to eq([
-      { class_name: "Picture", name: "imageable", type: "belongs_to", polymorphic: true },
-      { class_name: "User", name: "organization", type: "belongs_to" },
-      { class_name: "User", name: "posts", type: "has_many" }
+    expect(definitions.model_definitions.to_h).to eq([
+      {
+        name: 'Picture',
+        associations: [
+          { name: 'imageable', type: 'belongs_to', polymorphic: true },
+        ]
+      },
+      {
+        name: 'User',
+        associations: [
+          { name: 'organization', type: 'belongs_to' },
+          { name: 'posts', type: 'has_many' }
+        ]
+      }
     ])
   end
 end
