@@ -41,7 +41,7 @@ Synvert::Rewriter.new 'rails', 'enqueue_job_in_after_commit_callback' do
 
       find_node node_type: 'call_node', receiver: nil, name: { in: %i[after_create after_update after_save] } do
         callback_names_with_actions[node.arguments.arguments.first.to_value.to_s] =
-          NodeMutation::ReplaceAction.new(node, :name, with: '{{name}}_commit', adapter: mutation_adapter)
+          NodeMutation::InsertAction.new(node, '_commit', to: :name, adapter: mutation_adapter)
       end
 
       find_node node_type: 'def_node' do
