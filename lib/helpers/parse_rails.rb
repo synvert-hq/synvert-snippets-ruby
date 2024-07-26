@@ -10,7 +10,7 @@ Synvert::Helper.new 'rails/parse' do |options|
   # Set number_of_workers to 1 to skip parallel.
   with_configurations(number_of_workers: 1) do
     within_file 'db/schema.rb' do
-      within_node node_type: 'call_node', name: 'create_table'  do
+      within_node node_type: 'call_node', name: 'create_table' do
         table_name = node.arguments.arguments.first.to_value
         with_node node_type: 'call_node', receiver: 't', message: { not: 'index' } do
           column_name = node.arguments.arguments.first.to_value
@@ -92,7 +92,7 @@ class TableDefinitions
   end
 
   def find_table_definition_by_table_name(table_name)
-    @table_definitions.find { |table| table.name == table_name  }
+    @table_definitions.find { |table| table.name == table_name }
   end
 
   def to_h
@@ -118,7 +118,7 @@ class TableDefinition
   end
 
   def find_index_definition_by_column_names(column_names)
-    @indices.find { |index_definition| index_definition.columns == column_names  }
+    @indices.find { |index_definition| index_definition.columns == column_names }
   end
 
   def get_column_names
@@ -175,7 +175,7 @@ class ModelDefinitions
   end
 
   def find_or_create_model_definition(model_name)
-    model_definition = @model_definitions.find { |model_definition| model_definition.name == model_name  }
+    model_definition = @model_definitions.find { |model_definition| model_definition.name == model_name }
     return model_definition if model_definition
 
     model_definition = ModelDefinition.new(name: model_name)
