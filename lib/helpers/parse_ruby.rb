@@ -50,6 +50,9 @@ Synvert::Helper.new 'ruby/parse' do |options|
         if node.receiver.nil? && node.name == :prepend && definitions.current_node_type == "class" && !node.arguments.nil? && %i[constant_read_node constant_path_node].include?(node.arguments.arguments.first.type)
           definitions.add_prepend_module(node.arguments.arguments.first.to_source)
         end
+        if node.receiver.nil? && node.name == :extend && definitions.current_node_type == "class" && !node.arguments.nil? && %i[constant_read_node constant_path_node].include?(node.arguments.arguments.first.type)
+          definitions.add_extend_module(node.arguments.arguments.first.to_source)
+        end
       end
 
       add_callback :call_node, at: 'start' do |node|
@@ -140,6 +143,10 @@ class RubyDefinitions
 
   def add_prepend_module(name)
     @node.prepend_modules.push(name)
+  end
+
+  def add_extend_module(name)
+    @node.extend_modules.push(name)
   end
 
   def add_method(name)
@@ -286,7 +293,7 @@ class ModuleDefinition < BaseDefinition
 end
 
 class ClassDefinition < BaseDefinition
-  attr_reader :parent, :name, :superclass, :modules, :classes, :methods, :static_methods, :constants, :include_modules, :prepend_modules
+  attr_reader :parent, :name, :superclass, :modules, :classes, :methods, :static_methods, :constants, :include_modules, :prepend_modules, :extend_modules
   attr_accessor :singleton, :ancestors
 
   def initialize(parent:, name:, superclass:)
@@ -300,6 +307,7 @@ class ClassDefinition < BaseDefinition
     @constants = []
     @include_modules = []
     @prepend_modules = []
+    @extend_modules = []
     @ansestors = []
   end
 
@@ -314,6 +322,7 @@ class ClassDefinition < BaseDefinition
       constants: @constants,
       include_modules: @include_modules,
       prepend_modules: @prepend_modules,
+      extend_modules: @extend_modules,
       singleton: @singleton&.to_h,
       ancestors: @ancestors
     }
