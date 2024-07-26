@@ -2,10 +2,10 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Rails perform job in after_commit callback' do
+RSpec.describe 'Rails enqueue job in after_commit callback' do
   before { load_helpers(%w[helpers/parse_ruby]) }
 
-  let(:rewriter_name) { 'rails/perform_job_in_after_commit_callback' }
+  let(:rewriter_name) { 'rails/enqueue_job_in_after_commit_callback' }
 
   context 'ApplicationJob' do
     let(:fake_file_paths) { ['app/jobs/notification_job.rb', 'app/models/user.rb'] }

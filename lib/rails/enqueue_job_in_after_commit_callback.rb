@@ -1,10 +1,10 @@
 # frozen_string_literal: true
 
-Synvert::Rewriter.new 'rails', 'perform_job_in_after_commit_callback' do
+Synvert::Rewriter.new 'rails', 'enqueue_job_in_after_commit_callback' do
   configure(parser: Synvert::PRISM_PARSER)
 
   description <<~EOS
-    It prefers performing a job in after_commit callback.
+    It prefers enqueuing a job in after_commit callback.
 
     ```ruby
     class User < ApplicationRecord
