@@ -63,7 +63,7 @@ RSpec.describe 'ruby/parse helper', fakefs: true do
               methods: [{ name: "user_type", local_calls: [] }],
               static_methods: [],
               constants: [],
-              included_modules: [],
+              include_modules: [],
               singleton: nil,
               ancestors: ["Synvert::User", "Trackable"]
             },
@@ -86,7 +86,7 @@ RSpec.describe 'ruby/parse helper', fakefs: true do
                 local_calls: ['find_by']
               }],
               constants: [{ name: "ROLES" }],
-              included_modules: ["Trackable"],
+              include_modules: ["Trackable"],
               ancestors: ["Trackable"]
             }
           ],

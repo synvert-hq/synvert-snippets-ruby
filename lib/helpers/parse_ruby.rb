@@ -45,7 +45,7 @@ Synvert::Helper.new 'ruby/parse' do |options|
 
       add_callback :call_node, at: 'start' do |node|
         if node.receiver.nil? && node.name == :include && definitions.current_node_type == "class" && !node.arguments.nil? && %i[constant_read_node constant_path_node].include?(node.arguments.arguments.first.type)
-          definitions.add_included_module(node.arguments.arguments.first.to_source)
+          definitions.add_include_module(node.arguments.arguments.first.to_source)
         end
       end
 
@@ -131,8 +131,8 @@ class RubyDefinitions
     @node.constants.push(name: name)
   end
 
-  def add_included_module(name)
-    @node.included_modules.push(name)
+  def add_include_module(name)
+    @node.include_modules.push(name)
   end
 
   def add_method(name)
@@ -194,14 +194,14 @@ class BaseDefinition
         end
         if superclass_class
           ancestors << superclass_class.full_name
-          ancestors.concat(superclass_class.included_modules) if superclass_class.included_modules
+          ancestors.concat(superclass_class.include_modules) if superclass_class.include_modules
           superclass = superclass_class.superclass
         else
           ancestors << superclass
           superclass = nil
         end
       end
-      ancestors.concat(klass.included_modules) if klass.included_modules
+      ancestors.concat(klass.include_modules) if klass.include_modules
       klass.ancestors = ancestors
 
       klass.setup_ancestors
@@ -277,7 +277,7 @@ class ModuleDefinition < BaseDefinition
 end
 
 class ClassDefinition < BaseDefinition
-  attr_reader :parent, :name, :superclass, :modules, :classes, :methods, :static_methods, :constants, :included_modules
+  attr_reader :parent, :name, :superclass, :modules, :classes, :methods, :static_methods, :constants, :include_modules
   attr_accessor :singleton, :ancestors
 
   def initialize(parent:, name:, superclass:)
@@ -289,7 +289,7 @@ class ClassDefinition < BaseDefinition
     @methods = []
     @static_methods = []
     @constants = []
-    @included_modules = []
+    @include_modules = []
     @ansestors = []
   end
 
@@ -302,7 +302,7 @@ class ClassDefinition < BaseDefinition
       methods: @methods.map(&:to_h),
       static_methods: @static_methods.map(&:to_h),
       constants: @constants,
-      included_modules: @included_modules,
+      include_modules: @include_modules,
       singleton: @singleton&.to_h,
       ancestors: @ancestors
     }
