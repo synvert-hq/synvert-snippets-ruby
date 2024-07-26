@@ -47,6 +47,9 @@ Synvert::Helper.new 'ruby/parse' do |options|
         if node.receiver.nil? && node.name == :include && definitions.current_node_type == "class" && !node.arguments.nil? && %i[constant_read_node constant_path_node].include?(node.arguments.arguments.first.type)
           definitions.add_include_module(node.arguments.arguments.first.to_source)
         end
+        if node.receiver.nil? && node.name == :prepend && definitions.current_node_type == "class" && !node.arguments.nil? && %i[constant_read_node constant_path_node].include?(node.arguments.arguments.first.type)
+          definitions.add_prepend_module(node.arguments.arguments.first.to_source)
+        end
       end
 
       add_callback :call_node, at: 'start' do |node|
@@ -135,6 +138,10 @@ class RubyDefinitions
     @node.include_modules.push(name)
   end
 
+  def add_prepend_module(name)
+    @node.prepend_modules.push(name)
+  end
+
   def add_method(name)
     method_definition = MethodDefinition.new(parent: @node, name: name)
     @node.methods.push(method_definition)
@@ -194,6 +201,7 @@ class BaseDefinition
         end
         if superclass_class
           ancestors << superclass_class.full_name
+          ancestors.concat(superclass_class.prepend_modules) if superclass_class.prepend_modules
           ancestors.concat(superclass_class.include_modules) if superclass_class.include_modules
           superclass = superclass_class.superclass
         else
@@ -201,6 +209,7 @@ class BaseDefinition
           superclass = nil
         end
       end
+      ancestors.concat(klass.prepend_modules) if klass.prepend_modules
       ancestors.concat(klass.include_modules) if klass.include_modules
       klass.ancestors = ancestors
 
@@ -277,7 +286,7 @@ class ModuleDefinition < BaseDefinition
 end
 
 class ClassDefinition < BaseDefinition
-  attr_reader :parent, :name, :superclass, :modules, :classes, :methods, :static_methods, :constants, :include_modules
+  attr_reader :parent, :name, :superclass, :modules, :classes, :methods, :static_methods, :constants, :include_modules, :prepend_modules
   attr_accessor :singleton, :ancestors
 
   def initialize(parent:, name:, superclass:)
@@ -290,6 +299,7 @@ class ClassDefinition < BaseDefinition
     @static_methods = []
     @constants = []
     @include_modules = []
+    @prepend_modules = []
     @ansestors = []
   end
 
@@ -303,6 +313,7 @@ class ClassDefinition < BaseDefinition
       static_methods: @static_methods.map(&:to_h),
       constants: @constants,
       include_modules: @include_modules,
+      prepend_modules: @prepend_modules,
       singleton: @singleton&.to_h,
       ancestors: @ancestors
     }

@@ -15,6 +15,7 @@ RSpec.describe 'ruby/parse helper', fakefs: true do
       module Synvert
         class User
           include Trackable
+          prepend Authenticatable
 
           ROLES = %w[user admin].freeze
 
@@ -64,8 +65,9 @@ RSpec.describe 'ruby/parse helper', fakefs: true do
               static_methods: [],
               constants: [],
               include_modules: [],
+              prepend_modules: [],
               singleton: nil,
-              ancestors: ["Synvert::User", "Trackable"]
+              ancestors: ["Synvert::User", "Authenticatable", "Trackable"]
             },
             {
               name: "User",
@@ -87,7 +89,8 @@ RSpec.describe 'ruby/parse helper', fakefs: true do
               }],
               constants: [{ name: "ROLES" }],
               include_modules: ["Trackable"],
-              ancestors: ["Trackable"]
+              prepend_modules: ["Authenticatable"],
+              ancestors: ["Authenticatable", "Trackable"]
             }
           ],
           modules: [],
