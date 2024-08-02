@@ -44,13 +44,22 @@ Synvert::Helper.new 'ruby/parse' do |options|
       end
 
       add_callback :call_node, at: 'start' do |node|
-        if node.receiver.nil? && node.name == :include && definitions.current_node_type == "class" && !node.arguments.nil? && %i[constant_read_node constant_path_node].include?(node.arguments.arguments.first.type)
+        if node.receiver.nil? && node.name == :include && definitions.current_node_type == "class" && !node.arguments.nil? && %i[
+          constant_read_node constant_path_node
+        ].include?(node.arguments.arguments.first.type)
+
           definitions.add_include_module(node.arguments.arguments.first.to_source)
         end
-        if node.receiver.nil? && node.name == :prepend && definitions.current_node_type == "class" && !node.arguments.nil? && %i[constant_read_node constant_path_node].include?(node.arguments.arguments.first.type)
+        if node.receiver.nil? && node.name == :prepend && definitions.current_node_type == "class" && !node.arguments.nil? && %i[
+          constant_read_node constant_path_node
+        ].include?(node.arguments.arguments.first.type)
+
           definitions.add_prepend_module(node.arguments.arguments.first.to_source)
         end
-        if node.receiver.nil? && node.name == :extend && definitions.current_node_type == "class" && !node.arguments.nil? && %i[constant_read_node constant_path_node].include?(node.arguments.arguments.first.type)
+        if node.receiver.nil? && node.name == :extend && definitions.current_node_type == "class" && !node.arguments.nil? && %i[
+          constant_read_node constant_path_node
+        ].include?(node.arguments.arguments.first.type)
+
           definitions.add_extend_module(node.arguments.arguments.first.to_source)
         end
       end
@@ -182,7 +191,7 @@ class BaseDefinition
   end
 
   def find_method_by_name(name)
-    methods.find { |method_definition| method_definition.name == name  }
+    methods.find { |method_definition| method_definition.name == name }
   end
 
   def full_name
@@ -259,7 +268,12 @@ class RootDefinition < BaseDefinition
   end
 
   def to_h
-    { modules: @modules.map(&:to_h), classes: @classes.map(&:to_h), constants: @constants, methods: @methods.map(&:to_h) }
+    {
+      modules: @modules.map(&:to_h),
+      classes: @classes.map(&:to_h),
+      constants: @constants,
+      methods: @methods.map(&:to_h)
+    }
   end
 end
 
@@ -286,14 +300,24 @@ class ModuleDefinition < BaseDefinition
       methods: @methods.map(&:to_h),
       static_methods: @static_methods.map(&:to_h),
       constants: @constants,
-      singleton: @singleton &.to_h,
+      singleton: @singleton&.to_h,
       ancestors: @ancestors
     }
   end
 end
 
 class ClassDefinition < BaseDefinition
-  attr_reader :parent, :name, :superclass, :modules, :classes, :methods, :static_methods, :constants, :include_modules, :prepend_modules, :extend_modules
+  attr_reader :parent,
+              :name,
+              :superclass,
+              :modules,
+              :classes,
+              :methods,
+              :static_methods,
+              :constants,
+              :include_modules,
+              :prepend_modules,
+              :extend_modules
   attr_accessor :singleton, :ancestors
 
   def initialize(parent:, name:, superclass:)
@@ -360,11 +384,13 @@ class MethodDefinition
 
   def call_method?(method_name)
     local_calls.include?(method_name) ||
-      local_calls.any? { |local_call_method_name| parent.find_method_by_name(local_call_method_name)&.call_method?(method_name)  }
+      local_calls.any? { |local_call_method_name|
+        parent.find_method_by_name(local_call_method_name)&.call_method?(method_name)
+      }
   end
 
   def call_any_method?(method_names)
-    method_names.any? { |method_name| call_method?(method_name)  }
+    method_names.any? { |method_name| call_method?(method_name) }
   end
 
   def to_h
