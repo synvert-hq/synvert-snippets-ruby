@@ -29,6 +29,7 @@ Synvert::Rewriter.new 'rails', 'enqueue_job_in_after_commit_callback' do
     ```
   EOS
 
+  # find all job classes and mailer classes
   definitions = call_helper 'ruby/parse'
   job_classes = definitions.find_classes_by_ancestor('ApplicationJob').map(&:full_name) +
                 definitions.find_classes_by_ancestor('Sidekiq::Job').map(&:full_name)
@@ -39,11 +40,14 @@ Synvert::Rewriter.new 'rails', 'enqueue_job_in_after_commit_callback' do
       callback_names_with_actions = {}
       job_performed_def_names = []
 
+      # find after_create, after_update, after_save callbacks,
+      # and remember InsertAction to insert _commit to the callback name
       find_node node_type: 'call_node', receiver: nil, name: { in: %i[after_create after_update after_save] } do
         callback_names_with_actions[node.arguments.arguments.first.to_value.to_s] =
           NodeMutation::InsertAction.new(node, '_commit', to: :name, adapter: mutation_adapter)
       end
 
+      # find method names that perform a job or deliver a mailer
       find_node node_type: 'def_node' do
         if_exist_node ".call_node[receiver=~/\\A(#{job_classes.join('|')})/][name IN (perform_later perform_async perform_in perform_at)]" do
           job_performed_def_names << node.name.to_s
@@ -53,6 +57,8 @@ Synvert::Rewriter.new 'rails', 'enqueue_job_in_after_commit_callback' do
         end
       end
 
+      # check if the callback method performs a job or deliver a mailer,
+      # if so, add the InsertAction
       class_definition = definitions.find_class_by_full_name(node.full_name)
       callback_names_with_actions.each do |callback_name, action|
         if job_performed_def_names.include?(callback_name)
