@@ -51,62 +51,66 @@ RSpec.describe 'ruby/parse helper', fakefs: true do
 
     definitions = rewriter.process
 
-    expect(definitions.to_h).to eq({
-      classes: [],
-      modules: [
-        {
-          name: "Synvert",
-          classes: [
-            {
-              name: "Admin",
-              superclass: "User",
-              classes: [],
-              modules: [],
-              methods: [{ name: "user_type", local_calls: [] }],
-              static_methods: [],
-              constants: [],
-              include_modules: [],
-              prepend_modules: [],
-              extend_modules: [],
-              singleton: nil,
-              ancestors: ["Synvert::User", "Authenticatable", "Trackable"]
-            },
-            {
-              name: "User",
-              superclass: nil,
-              singleton: {
+    expect(definitions.to_h).to eq(
+      {
+        classes: [],
+        modules: [
+          {
+            name: "Synvert",
+            classes: [
+              {
+                name: "Admin",
+                superclass: "User",
+                classes: [],
+                modules: [],
+                methods: [{ name: "user_type", local_calls: [] }],
+                static_methods: [],
                 constants: [],
-                methods: [
-                  { name: 'system', local_calls: [] },
-                  { name: 'bot', local_calls: [] }
-                ],
-                ancestors: []
+                include_modules: [],
+                prepend_modules: [],
+                extend_modules: [],
+                singleton: nil,
+                ancestors: ["Synvert::User", "Authenticatable", "Trackable"]
               },
-              classes: [],
-              modules: [],
-              methods: [{ name: "user_type", local_calls: [] }],
-              static_methods: [{
-                name: 'authenticate?',
-                local_calls: ['find_by']
-              }],
-              constants: [{ name: "ROLES" }],
-              include_modules: ["Trackable"],
-              prepend_modules: ["Authenticatable"],
-              extend_modules: ["ClassMethods"],
-              ancestors: ["Authenticatable", "Trackable"]
-            }
-          ],
-          modules: [],
-          methods: [],
-          static_methods: [],
-          constants: [],
-          singleton: nil,
-          ancestors: []
-        }
-      ],
-      constants: [],
-      methods: []
-    })
+              {
+                name: "User",
+                superclass: nil,
+                singleton: {
+                  constants: [],
+                  methods: [
+                    { name: 'system', local_calls: [] },
+                    { name: 'bot', local_calls: [] }
+                  ],
+                  ancestors: []
+                },
+                classes: [],
+                modules: [],
+                methods: [{ name: "user_type", local_calls: [] }],
+                static_methods: [
+                  {
+                    name: 'authenticate?',
+                    local_calls: ['find_by']
+                  }
+                ],
+                constants: [{ name: "ROLES" }],
+                include_modules: ["Trackable"],
+                prepend_modules: ["Authenticatable"],
+                extend_modules: ["ClassMethods"],
+                ancestors: ["Authenticatable", "Trackable"]
+              }
+            ],
+            modules: [],
+            methods: [],
+            static_methods: [],
+            constants: [],
+            singleton: nil,
+            ancestors: []
+          }
+        ],
+        constants: [],
+        methods: []
+      }
+    )
   end
 
   it 'finds class by full_name' do
