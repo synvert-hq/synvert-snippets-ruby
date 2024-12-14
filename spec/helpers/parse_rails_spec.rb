@@ -29,20 +29,22 @@ RSpec.describe 'rails/parse helper', fakefs: true do
 
     definitions = rewriter.process
 
-    expect(definitions.table_definitions.to_h).to eq([
-      {
-        name: "users",
-        columns: [
-          { name: "name", type: "string" },
-          { name: "email", type: "string" },
-          { name: "created_at", type: "datetime" },
-          { name: "updated_at", type: "datetime" }
-        ],
-        indices: [
-          { name: "index_users_on_email", columns: ["email"] }
-        ]
-      }
-    ])
+    expect(definitions.table_definitions.to_h).to eq(
+      [
+        {
+          name: "users",
+          columns: [
+            { name: "name", type: "string" },
+            { name: "email", type: "string" },
+            { name: "created_at", type: "datetime" },
+            { name: "updated_at", type: "datetime" }
+          ],
+          indices: [
+            { name: "index_users_on_email", columns: ["email"] }
+          ]
+        }
+      ]
+    )
   end
 
   it 'gets model definitions' do
@@ -66,20 +68,30 @@ RSpec.describe 'rails/parse helper', fakefs: true do
 
     definitions = rewriter.process
 
-    expect(definitions.model_definitions.to_h).to eq([
-      {
-        name: 'Picture',
-        associations: [
-          { name: 'imageable', type: 'belongs_to', options: { polymorphic: true } },
-        ]
-      },
-      {
-        name: 'User',
-        associations: [
-          { name: 'organization', type: 'belongs_to', options: {} },
-          { name: 'posts', type: 'has_many', options: {} }
-        ]
-      }
-    ])
+    expect(definitions.model_definitions.to_h).to eq(
+      [
+        {
+          name: 'Picture',
+          associations: [
+            {
+              name: 'imageable',
+              type: 'belongs_to',
+              options: { polymorphic: true }
+            },
+          ]
+        },
+        {
+          name: 'User',
+          associations: [
+            {
+              name: 'organization',
+              type: 'belongs_to',
+              options: {}
+            },
+            { name: 'posts', type: 'has_many', options: {} }
+          ]
+        }
+      ]
+    )
   end
 end
