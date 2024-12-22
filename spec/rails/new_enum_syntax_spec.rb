@@ -10,8 +10,8 @@ RSpec.describe 'New enum syntax' do
       enum status: [ :draft, :published, :archived ], _prefix: true, _scopes: false
       enum category: [ :free, :premium ], _suffix: true, _default: :free
 
-      enum :status, { draft: 0, published: 1, archived: 2 }, prefix: true, scopes: false
-      enum :category, { free: 0, premium: 1 }, suffix: true, default: :free
+      enum status: { draft: 0, published: 1, archived: 2 }, prefix: true, scopes: false
+      enum category: { free: 0, premium: 1 }, suffix: true, default: :free
     end
   EOS
 

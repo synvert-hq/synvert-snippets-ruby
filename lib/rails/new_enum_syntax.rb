@@ -10,6 +10,9 @@ Synvert::Rewriter.new 'rails', 'new_enum_syntax' do
       class Post < ApplicationRecord
         enum status: [ :draft, :published, :archived ], _prefix: true, _scopes: false
         enum category: [ :free, :premium ], _suffix: true, _default: :free
+
+        enum status: { draft: 0, published: 1, archived: 2 }, prefix: true, scopes: false
+        enum category: { free: 0, premium: 1 }, suffix: true, default: :free
       end
       ```
 
@@ -19,6 +22,9 @@ Synvert::Rewriter.new 'rails', 'new_enum_syntax' do
       class Post < ApplicationRecord
         enum :status, [ :draft, :published, :archived ], prefix: true, scopes: false
         enum :category, [ :free, :premium ], suffix: true, default: :free
+
+        enum :status, { draft: 0, published: 1, archived: 2 }, prefix: true, scopes: false
+        enum :category, { free: 0, premium: 1 }, suffix: true, default: :free
       end
       ```
     EOS
@@ -38,7 +44,7 @@ Synvert::Rewriter.new 'rails', 'new_enum_syntax' do
                       elements: {
                         first: {
                           node_type: 'assoc_node',
-                          value: { node_type: 'array_node' }
+                          value: { node_type: { in: ['array_node', 'hash_node'] } }
                         }
                       }
                     }
