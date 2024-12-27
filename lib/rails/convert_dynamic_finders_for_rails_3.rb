@@ -28,14 +28,18 @@ Synvert::Rewriter.new 'rails', 'convert_dynamic_finders_for_rails_3' do
   EOS
 
   definitions = call_helper 'rails/parse'
-  table_columns = definitions.table_definitions.flat_map { |table_definition| table_definition.get_column_names }.uniq + ['id']
+  table_columns = definitions.table_definitions.flat_map { |table_definition|
+    table_definition.get_column_names
+  }
+.uniq + ['id']
 
   helper_method :dynamic_finder_to_hash do |prefix|
     fields = node.name.to_s[prefix.length..-1].split('_and_')
     return nil if (fields - table_columns).present?
 
     if fields.length == node.arguments.arguments.length && :hash_node != node.arguments.arguments.first.type
-      fields.length.times.map { |i| fields[i] + ': ' + node.arguments.arguments[i].to_source }.join(', ')
+      fields.length.times.map { |i| fields[i] + ': ' + node.arguments.arguments[i].to_source }
+            .join(', ')
     else
       '{{arguments}}'
     end

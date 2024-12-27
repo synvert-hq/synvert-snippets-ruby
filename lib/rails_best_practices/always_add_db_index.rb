@@ -17,7 +17,10 @@ Synvert::Rewriter.new 'rails_best_practices', 'always_add_db_index' do
       table_name = model_definition.name.tableize
       table_definition = definitions.find_table_definition_by_table_name(table_name)
 
-      model_definition.associations.select { |association_definition| association_definition.type == 'belongs_to' }.each do |association_definition|
+      model_definition.associations.select { |association_definition|
+        association_definition.type == 'belongs_to'
+      }
+.each do |association_definition|
         if association_definition.options[:polymorphic]
           foreign_key = association_definition.options[:foreign_key]&.to_s || association_definition.name.foreign_key
           foreign_type = association_definition.options[:foreign_type]&.to_s || (association_definition.name.demodulize + '_type').underscore
