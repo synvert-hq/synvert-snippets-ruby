@@ -5,4 +5,5 @@ Synvert::Rewriter.new 'rails', 'upgrade_7_2_to_8_0' do
 
   add_snippet 'rails', 'convert_configs_7_2_to_8_0'
   add_snippet 'rails', 'new_enum_syntax'
+  add_snippet 'rails', 'convert_to_params_expect'
 end
