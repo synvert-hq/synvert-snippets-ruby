@@ -24,7 +24,7 @@ Synvert::Rewriter.new 'ruby', 'kernel_open_to_uri_open' do
     # =>
     # URI.open('http://test.com')
     unless_exist_node('.def_node[name=open]') do
-      find_node '.call_node[receiver=nil][name=open][arguments=.arguments_node[arguments.size=1]]' do
+      find_node '.call_node[receiver=nil][name=open][arguments=.arguments_node[arguments.size IN (1 2)]]' do
         insert 'URI.', to: 'name', at: 'beginning'
       end
     end
