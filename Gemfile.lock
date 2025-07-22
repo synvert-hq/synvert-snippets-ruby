@@ -104,7 +104,7 @@ GEM
       prism_ext (>= 0.4.2)
       syntax_tree
       syntax_tree_ext (>= 0.9.2)
-    thor (1.2.1)
+    thor (1.4.0)
     tzinfo (2.0.6)
       concurrent-ruby (~> 1.0)
 
