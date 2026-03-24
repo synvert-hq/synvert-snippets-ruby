@@ -2,7 +2,7 @@
 
 source 'https://rubygems.org'
 
-gem 'activesupport', '7.1.3.4' # support ruby 2.7
+gem 'activesupport', '7.2.3.1' # support ruby 2.7
 gem 'fakefs', require: 'fakefs/safe'
 gem "benchmark"
 gem "irb"
