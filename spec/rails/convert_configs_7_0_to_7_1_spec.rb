@@ -22,6 +22,7 @@ RSpec.describe 'Convert rails configs from 7.0 to 7.1' do
     module Synvert
       class Application < Rails::Application
         config.action_dispatch.show_exceptions = true
+        config.cache_classes = true
       end
     end
   EOS
@@ -29,6 +30,7 @@ RSpec.describe 'Convert rails configs from 7.0 to 7.1' do
     module Synvert
       class Application < Rails::Application
         config.action_dispatch.show_exceptions = :all
+        config.enable_reloading = false
       end
     end
   EOS
@@ -36,6 +38,7 @@ RSpec.describe 'Convert rails configs from 7.0 to 7.1' do
     module Synvert
       class Application < Rails::Application
         config.action_dispatch.show_exceptions = false
+        config.cache_classes = false
       end
     end
   EOS
@@ -43,6 +46,7 @@ RSpec.describe 'Convert rails configs from 7.0 to 7.1' do
     module Synvert
       class Application < Rails::Application
         config.action_dispatch.show_exceptions = :none
+        config.enable_reloading = true
       end
     end
   EOS

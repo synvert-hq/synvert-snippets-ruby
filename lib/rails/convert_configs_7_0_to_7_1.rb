@@ -10,6 +10,9 @@ Synvert::Rewriter.new 'rails', 'convert_configs_7_0_to_7_1' do
 
     2. it replaces `config.action_dispatch.show_exceptions = true` with `config.action_dispatch.show_exceptions = :all`,
         and `config.action_dispatch.show_exceptions = false` with `config.action_dispatch.show_exceptions = :none`.
+
+    3. it replaces `config.cache_classes = true` with `config.enable_reloading = false`,
+        and `config.cache_classes = false` with `config.enable_reloading = true`.
   EOS
 
   if_gem 'rails', '~> 7.1.0'
@@ -29,6 +32,16 @@ Synvert::Rewriter.new 'rails', 'convert_configs_7_0_to_7_1' do
               name: 'show_exceptions=',
               arguments: { node_type: 'arguments_node', arguments: { size: 1, first: false } } do
       replace 'arguments.arguments', with: ':none'
+    end
+
+    with_node node_type: 'call_node',
+              receiver: 'config',
+              name: 'cache_classes=',
+              arguments: { node_type: 'arguments_node', arguments: { size: 1, first: { in: [true, false] } } } do
+      group do
+        replace :message, with: 'enable_reloading'
+        replace 'arguments.arguments', with: (!node.arguments.arguments.first.to_value).to_s
+      end
     end
   end
 end
