@@ -23,7 +23,7 @@ GEM
     date (3.5.1)
     diff-lcs (1.5.0)
     drb (2.2.3)
-    erb (6.0.1)
+    erb (6.0.1.1)
     fakefs (2.4.0)
     ffi (1.15.5)
     formatador (1.1.0)
