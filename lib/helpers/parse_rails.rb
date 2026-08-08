@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-Synvert::Helper.new 'rails/parse' do |options|
+Synvert::Helper.new 'rails/parse' do |_options|
   configure(parser: Synvert::PRISM_PARSER)
 
   MODEL_ASSOCIATIONS = %i[belongs_to has_one has_many has_and_belongs_to_many].freeze
