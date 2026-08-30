@@ -13,6 +13,8 @@ Synvert::Rewriter.new 'rails', 'convert_configs_7_0_to_7_1' do
 
     3. it replaces `config.cache_classes = true` with `config.enable_reloading = false`,
         and `config.cache_classes = false` with `config.enable_reloading = true`.
+
+    4. it replaces `config.fixture_path = <path>` with `config.fixture_paths = [<path>]`.
   EOS
 
   if_gem 'rails', '~> 7.1.0'
@@ -34,6 +36,18 @@ Synvert::Rewriter.new 'rails', 'convert_configs_7_0_to_7_1' do
       group do
         replace :message, with: 'enable_reloading'
         replace 'arguments.arguments', with: (!node.arguments.arguments.first.to_value).to_s
+      end
+    end
+  end
+
+  within_files 'config/**/*.rb' do
+    with_node node_type: 'call_node',
+              receiver: 'config',
+              name: 'fixture_path=',
+              arguments: { node_type: 'arguments_node', arguments: { size: 1 } } do
+      group do
+        replace :message, with: 'fixture_paths'
+        replace 'arguments.arguments', with: "[#{node.arguments.arguments.first.to_source}]"
       end
     end
   end

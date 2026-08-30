@@ -39,6 +39,7 @@ RSpec.describe 'Convert rails configs from 7.0 to 7.1' do
       class Application < Rails::Application
         config.action_dispatch.show_exceptions = false
         config.cache_classes = false
+        config.fixture_path = "\#{Rails.root}/test/fixtures"
       end
     end
   EOS
@@ -47,6 +48,7 @@ RSpec.describe 'Convert rails configs from 7.0 to 7.1' do
       class Application < Rails::Application
         config.action_dispatch.show_exceptions = :none
         config.enable_reloading = true
+        config.fixture_paths = ["\#{Rails.root}/test/fixtures"]
       end
     end
   EOS
