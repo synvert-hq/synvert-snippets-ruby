@@ -29,7 +29,7 @@ RSpec.describe 'Convert rails configs from 7.0 to 7.1' do
   let(:production_rewritten_content) { <<~EOS }
     module Synvert
       class Application < Rails::Application
-        config.action_dispatch.show_exceptions = :all
+        config.action_dispatch.show_exceptions = :rescuable
         config.enable_reloading = false
       end
     end

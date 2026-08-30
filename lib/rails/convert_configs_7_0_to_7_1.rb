@@ -8,7 +8,7 @@ Synvert::Rewriter.new 'rails', 'convert_configs_7_0_to_7_1' do
 
     1. it sets `config.load_defaults 7.1` in config/application.rb.
 
-    2. it replaces `config.action_dispatch.show_exceptions = true` with `config.action_dispatch.show_exceptions = :all`,
+    2. it replaces `config.action_dispatch.show_exceptions = true` with `config.action_dispatch.show_exceptions = :rescuable`,
         and `config.action_dispatch.show_exceptions = false` with `config.action_dispatch.show_exceptions = :none`.
 
     3. it replaces `config.cache_classes = true` with `config.enable_reloading = false`,
@@ -23,15 +23,8 @@ Synvert::Rewriter.new 'rails', 'convert_configs_7_0_to_7_1' do
     with_node node_type: 'call_node',
               receiver: { node_type: 'call_node', receiver: 'config', name: 'action_dispatch' },
               name: 'show_exceptions=',
-              arguments: { node_type: 'arguments_node', arguments: { size: 1, first: true } } do
-      replace 'arguments.arguments', with: ':all'
-    end
-
-    with_node node_type: 'call_node',
-              receiver: { node_type: 'call_node', receiver: 'config', name: 'action_dispatch' },
-              name: 'show_exceptions=',
-              arguments: { node_type: 'arguments_node', arguments: { size: 1, first: false } } do
-      replace 'arguments.arguments', with: ':none'
+              arguments: { node_type: 'arguments_node', arguments: { size: 1, first: { in: [true, false] } } } do
+      replace 'arguments.arguments', with: node.arguments.arguments.first.to_value ? ':rescuable' : ':none'
     end
 
     with_node node_type: 'call_node',
