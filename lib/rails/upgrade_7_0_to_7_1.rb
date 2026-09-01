@@ -5,4 +5,5 @@ Synvert::Rewriter.new 'rails', 'upgrade_7_0_to_7_1' do
 
   add_snippet 'rails', 'convert_configs_7_0_to_7_1'
   add_snippet 'rails', 'new_enum_syntax'
+  add_snippet 'rails', 'serialize_use_keyword_arguments'
 end
